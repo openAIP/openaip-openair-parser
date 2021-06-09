@@ -16,11 +16,18 @@ describe('test tokenize AC line', () => {
 
         expect(openairParser.getErrors().length).toBe(0);
     });
-    test('read AC definition with restriced classes', async () => {
+    test('read AC definition with restricted classes', async () => {
         const classes = ['R', 'RMZ', 'TMZ'];
 
         const openairParser = new Parser({ restrictAcClasses: classes });
         await openairParser.parse('./tests/fixtures/ac-definitions.txt');
+
+        // file contains 2 not allowed classes
+        expect(openairParser.getErrors().length).toBe(2);
+    });
+    test('read AC definition with invalid classes', async () => {
+        const openairParser = new Parser();
+        await openairParser.parse('./tests/fixtures/ac-definitions-invalid.txt');
 
         // file contains 2 not allowed classes
         expect(openairParser.getErrors().length).toBe(2);
