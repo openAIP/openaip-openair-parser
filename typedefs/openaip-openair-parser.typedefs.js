@@ -1,3 +1,3 @@
 /**
- * @namespace typedefs.openaipCloudEvents
+ * @namespace typedefs.openaipOpenairParser
  */

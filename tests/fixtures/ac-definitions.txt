@@ -1,0 +1,7 @@
+* some AC definitions to test the AC token
+
+AC R
+AC RMZ
+AC TMZ
+AC C
+AC E

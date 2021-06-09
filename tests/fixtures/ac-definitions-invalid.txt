@@ -1,0 +1,5 @@
+* some invalid AC definitions to test the AC token
+
+AC
+AC r
+AC R (with invalid comment)

@@ -1,0 +1,8 @@
+* Comments and some blank lines
+*
+
+* Comment line
+* Comment line
+
+* Comment line
+* Comment line
