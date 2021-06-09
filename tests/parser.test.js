@@ -36,6 +36,15 @@ describe('test tokenize AC line', () => {
     });
 });
 
+describe('test tokenize AH/AL lines', () => {
+    test('read AH definitions', async () => {
+        const openairParser = new Parser();
+        await openairParser.parse('./tests/fixtures/ah-definitions.txt');
+
+        expect(openairParser.getErrors().length).toBe(0);
+    });
+});
+
 describe('parse airspace definitions', () => {
     test('parse simple airspace definitions', async () => {
         const openairParser = new Parser();
