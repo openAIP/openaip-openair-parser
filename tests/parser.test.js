@@ -16,6 +16,7 @@ describe('test tokenize AC line', () => {
 
         expect(openairParser.getErrors().length).toBe(0);
     });
+
     test('read AC definition with restricted classes', async () => {
         const classes = ['R', 'RMZ', 'TMZ'];
 
@@ -25,11 +26,21 @@ describe('test tokenize AC line', () => {
         // file contains 2 not allowed classes
         expect(openairParser.getErrors().length).toBe(2);
     });
+
     test('read AC definition with invalid classes', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/ac-definitions-invalid.txt');
 
         // file contains 2 not allowed classes
         expect(openairParser.getErrors().length).toBe(2);
+    });
+});
+
+describe('parse airspace definitions', () => {
+    test('parse simple airspace definitions', async () => {
+        const openairParser = new Parser();
+        await openairParser.parse('./tests/fixtures/simple-airspace.txt');
+
+        expect(true).toEqual(true);
     });
 });

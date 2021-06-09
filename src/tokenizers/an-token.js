@@ -20,7 +20,10 @@ class AnToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        return { line, lineNumber };
+        // remove the AN part of the string to get the airspace name
+        const linePartName = line.replace(/^AN\s+/, '');
+
+        return { line, lineNumber, name: linePartName };
     }
 }
 
