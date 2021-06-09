@@ -1,0 +1,8 @@
+.DS_Store
+.idea/
+_coverage/
+node_modules/
+.env*
+secrets/
+.npmrc
+nohup.out

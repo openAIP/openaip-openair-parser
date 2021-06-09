@@ -1,0 +1,51 @@
+{
+    "name": "@openaip/openaip-openair-parser",
+    "version": "0.1.0",
+    "description": "OpenAIR format parser. Parses openAIR formatted string and outputs it in JSON or GeoJSON.",
+    "authors": [
+        {
+            "name": "Stephan Besser",
+            "email": "stephan@openaip.net",
+            "homepage": "https://www.openaip.net",
+            "role": "Lead developer"
+        }
+    ],
+    "main": "index.js",
+    "license": "mit",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/openAIP/openaip-openair-parser.git"
+    },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
+    "bugs": {
+        "url": "https://github.com/openAIP/openaip-openair-parser/issues"
+    },
+    "homepage": "https://github.com/openAIP/openaip-openair-parser#readme",
+    "scripts": {
+        "test": "TZ='UTC' NODE_ENV=test jest --forceExit -c jest.config.js tests/**",
+        "test-watch": "TZ='UTC' NODE_ENV=test jest --forceExit -c jest.config.js tests/** --watch",
+        "lint": "eslint -c .eslintrc.js .",
+        "run-security-audit": "npm audit --production",
+        "bump-version": "bump -c 'version bump to ' -tp"
+    },
+    "dependencies": {
+        "check-types": "^11.1.2",
+        "luxon": "^1.26.0"
+    },
+    "devDependencies": {
+        "version-bump-prompt": "^6.1.0",
+        "@types/check-types": "^7.3.1",
+        "@types/jest": "^26.0.20",
+        "babel-eslint": "^10.1.0",
+        "eslint": "^7.20.0",
+        "eslint-config-prettier": "^7.2.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-only-warn": "^1.0.2",
+        "eslint-plugin-prettier": "^3.3.1",
+        "jest": "^26.6.3",
+        "nodemon": "^2.0.7",
+        "prettier": "^2.2.1"
+    }
+}

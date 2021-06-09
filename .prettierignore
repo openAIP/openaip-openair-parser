@@ -1,0 +1,6 @@
+.build/
+.coverage/
+_workspace/
+node_modules/
+secrets/
+docs/
