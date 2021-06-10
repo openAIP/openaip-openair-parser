@@ -9,6 +9,8 @@ const DbToken = require('./db-token');
  * Tokenizes "V" airspace circle center coordinate definition.
  */
 class VToken extends BaseLineToken {
+    static type = 'V';
+
     constructor() {
         super();
     }
@@ -33,11 +35,11 @@ class VToken extends BaseLineToken {
             throw new SyntaxError(`Unknown coordinate definition '${line}'`);
         }
 
-        return { line, lineNumber, coordinates };
+        this._tokenized = { line, lineNumber, metadata: { coordinates } };
     }
 
     isAllowedNextToken(token) {
-        return token instanceof CommentToken || token instanceof DcToken || token instanceof DbToken;
+        return [CommentToken.type, DcToken.type, DbToken.type].includes(token.constructor.type);
     }
 }
 

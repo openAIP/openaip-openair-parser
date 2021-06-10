@@ -9,8 +9,10 @@ const CommentToken = require('./comment-token');
  * Tokenizes "AH" airspace upper ceiling definitions.
  */
 class AhToken extends BaseAltitudeToken {
-    constructor() {
-        super();
+    static type = 'AH';
+
+    constructor(config) {
+        super(config);
     }
 
     canHandle(line) {
@@ -27,16 +29,11 @@ class AhToken extends BaseAltitudeToken {
         const linePartAltitude = line.replace(/^AH\s+/, '');
         const altitude = this._getAltitude(linePartAltitude);
 
-        return { line, lineNumber, altitude };
+        this._tokenized = { line, lineNumber, metadata: { altitude } };
     }
 
     isAllowedNextToken(token) {
-        return (
-            token instanceof CommentToken ||
-            token instanceof AlToken ||
-            token instanceof DpToken ||
-            token instanceof VToken
-        );
+        return [CommentToken.type, AlToken.type, DpToken.type, VToken.type].includes(token.constructor.type);
     }
 }
 

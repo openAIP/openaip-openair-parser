@@ -9,8 +9,10 @@ const CommentToken = require('./comment-token');
  * Tokenizes "AL" airspace lower ceiling definitions.
  */
 class AlToken extends BaseAltitudeToken {
-    constructor() {
-        super();
+    static type = 'AL';
+
+    constructor(config) {
+        super(config);
     }
 
     canHandle(line) {
@@ -27,16 +29,11 @@ class AlToken extends BaseAltitudeToken {
         const linePartAltitude = line.replace(/^AL\s+/, '');
         const altitude = this._getAltitude(linePartAltitude);
 
-        return { line, lineNumber, altitude };
+        this._tokenized = { line, lineNumber, metadata: { altitude } };
     }
 
     isAllowedNextToken(token) {
-        return (
-            token instanceof CommentToken ||
-            token instanceof AhToken ||
-            token instanceof DpToken ||
-            token instanceof VToken
-        );
+        return [CommentToken.type, AhToken.type, DpToken.type, VToken.type].includes(token.constructor.type);
     }
 }
 

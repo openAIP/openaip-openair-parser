@@ -37,6 +37,8 @@ const defaultClasses = [
  * Tokenizes "AC" airspace class definitions.
  */
 class AcToken extends BaseLineToken {
+    static type = 'AC';
+
     /**
      * @param {typedefs.openaipOpenairParser.AcToken} config
      */
@@ -68,11 +70,11 @@ class AcToken extends BaseLineToken {
             throw new SyntaxError(`Unknown airspace class '${line}'`);
         }
 
-        return { line, lineNumber, class: linePartClass };
+        this._tokenized = { line, lineNumber, metadata: { class: linePartClass } };
     }
 
     isAllowedNextToken(token) {
-        return token instanceof CommentToken || token instanceof AnToken;
+        return [CommentToken.type, AnToken.type].includes(token.constructor.type);
     }
 }
 

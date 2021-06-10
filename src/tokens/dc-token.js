@@ -7,6 +7,8 @@ const CommentToken = require('./comment-token');
  * Tokenizes "DC" airspace circle radius definition.
  */
 class DcToken extends BaseLineToken {
+    static type = 'DC';
+
     constructor() {
         super();
     }
@@ -29,11 +31,11 @@ class DcToken extends BaseLineToken {
             throw new SyntaxError(`Unknown circle radius definition '${line}'`);
         }
 
-        return { line, lineNumber, radius: linePartRadius };
+        this._tokenized = { line, lineNumber, metadata: { radius: linePartRadius } };
     }
 
     isAllowedNextToken(token) {
-        return token instanceof BlankToken || token instanceof CommentToken;
+        return [BlankToken.type, CommentToken.type].includes(token.constructor.type);
     }
 }
 

@@ -8,6 +8,7 @@ const DpToken = require('./tokens/dp-token');
 const VToken = require('./tokens/v-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
+const EofToken = require('./tokens/eof-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
 
@@ -19,6 +20,7 @@ const fs = require('fs');
 class Tokenizer {
     constructor(config) {
         this._config = config || { encoding: 'utf-8' };
+        /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._tokenizers = [
             new CommentToken(),
             new BlankToken(),
@@ -31,12 +33,21 @@ class Tokenizer {
             new DcToken(),
             new DbToken(),
         ];
+        /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._tokens = [];
         this._currentLine = 0;
         this._errors = [];
     }
 
+    /**
+     * Tokenizes the openAIR file at given path and returns the list of created tokens.
+     *
+     * @param filepath
+     * @return {typedefs.openaipOpenairParser.Token[]}
+     */
     tokenize(filepath) {
+        this._reset();
+
         const liner = new LineByLine(filepath);
         let line;
 
@@ -58,9 +69,12 @@ class Tokenizer {
                 this._error(line, this._currentLine, e.message);
             }
         }
+        // finalize by adding EOF token
+        this._tokens.push(new EofToken(this._currentLine));
 
-        return;
+        return this._tokens;
     }
+
     /**
      * @return {boolean}
      */
@@ -75,6 +89,15 @@ class Tokenizer {
         return this._errors;
     }
 
+    /**
+     * Adds an error object.
+     *
+     * @param {string} line
+     * @param {number} lineNumber
+     * @param {string} errorMessage
+     * @returns {void}
+     * @private
+     */
     _error(line, lineNumber, errorMessage) {
         this._errors.push({
             line,
@@ -83,6 +106,13 @@ class Tokenizer {
         });
     }
 
+    /**
+     * Enforces that the file at given filepath exists.
+     *
+     * @param {string} filepath
+     * @return {Promise<void>}
+     * @private
+     */
     async _enforceFileExists(filepath) {
         const exists = await fs.existsSync(filepath);
         if (!exists) {
@@ -91,10 +121,14 @@ class Tokenizer {
     }
 
     /**
-     * Resets the tokenizer state.
+     * Resets the state.
+     *
+     * @returns {void}
      */
     _reset() {
+        this._tokens = [];
         this._currentLine = 0;
+        this._errors = [];
     }
 }
 

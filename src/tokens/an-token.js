@@ -8,6 +8,8 @@ const CommentToken = require('./comment-token');
  * Tokenizes "AN" airspace name definitions.
  */
 class AnToken extends BaseLineToken {
+    static type = 'AN';
+
     constructor() {
         super();
     }
@@ -25,11 +27,11 @@ class AnToken extends BaseLineToken {
 
         const linePartName = line.replace(/^AN\s+/, '');
 
-        return { line, lineNumber, name: linePartName };
+        this._tokenized = { line, lineNumber, metadata: { name: linePartName } };
     }
 
     isAllowedNextToken(token) {
-        return token instanceof CommentToken || token instanceof AlToken || token instanceof AhToken;
+        return [CommentToken.type, AlToken.type, AhToken.type].includes(token.constructor.type);
     }
 }
 

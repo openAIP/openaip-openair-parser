@@ -8,11 +8,14 @@ const AhToken = require('./ah-token');
 const DpToken = require('./dp-token');
 const VToken = require('./v-token');
 const DcToken = require('./dc-token');
+const EofToken = require('./eof-token');
 
 /**
  * Handles comments, e.g. lines starting with "*".
  */
 class CommentToken extends BaseLineToken {
+    static type = 'COMMENT';
+
     constructor() {
         super();
     }
@@ -28,21 +31,22 @@ class CommentToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        return { line, lineNumber };
+        this._tokenized = { line, lineNumber };
     }
 
     isAllowedNextToken(token) {
-        return (
-            token instanceof CommentToken ||
-            token instanceof BlankToken ||
-            token instanceof AcToken ||
-            token instanceof AnToken ||
-            token instanceof AlToken ||
-            token instanceof AhToken ||
-            token instanceof DpToken ||
-            token instanceof VToken ||
-            token instanceof DcToken
-        );
+        return [
+            CommentToken.type,
+            BlankToken.type,
+            AcToken.type,
+            AnToken.type,
+            AlToken.type,
+            AhToken.type,
+            DpToken.type,
+            VToken.type,
+            DcToken.type,
+            EofToken.type,
+        ].includes(token.constructor.type);
     }
 }
 

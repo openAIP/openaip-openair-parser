@@ -1,11 +1,26 @@
 /**
  * @typedef typedefs.openaipOpenairParser.Token
- * @property {string} line
- * @property {number} lineNumber
+ * @property type
+ * @function getType
+ * @function canHandle
+ * @function tokenize
+ * @function getTokenized
+ * @function isAllowedNextToken
  */
 
 class BaseLineToken {
-    constructor() {}
+    static type = '';
+
+    constructor() {
+        this._tokenized = null;
+    }
+
+    /**
+     * @return {string}
+     */
+    getType() {
+        return this.constructor.type;
+    }
 
     /**
      * Returns true if the token can handle the string. False if not.
@@ -20,10 +35,19 @@ class BaseLineToken {
     /**
      * @param {string} line
      * @param {number} lineNumber
-     * @return {typedefs.openaipOpenairParser.Token}
+     * @return {void}
      */
     tokenize(line, lineNumber) {
         throw new Error('NOT_IMPLEMENTED');
+    }
+
+    /**
+     * Returns the tokenized line.
+     *
+     * @return {{line: string, lineNumber: number, [metadata]: Object}}
+     */
+    getTokenized() {
+        return this._tokenized;
     }
 
     /**

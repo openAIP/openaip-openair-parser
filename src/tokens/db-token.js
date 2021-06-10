@@ -8,6 +8,8 @@ const Coordinates = require('coordinate-parser');
  * Tokenizes "DB" airspace arc endpoints definition.
  */
 class DbToken extends BaseLineToken {
+    static type = 'DB';
+
     constructor() {
         super();
     }
@@ -38,11 +40,11 @@ class DbToken extends BaseLineToken {
             }
         }
 
-        return { line, lineNumber, coordinates };
+        this._tokenized = { line, lineNumber, metadata: { coordinates } };
     }
 
     isAllowedNextToken(token) {
-        return token instanceof BlankToken || token instanceof CommentToken;
+        return [BlankToken.type, CommentToken.type].includes(token.constructor.type);
     }
 }
 

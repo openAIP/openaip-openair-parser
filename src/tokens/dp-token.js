@@ -3,11 +3,14 @@ const checkTypes = require('check-types');
 const Coordinates = require('coordinate-parser');
 const CommentToken = require('./comment-token');
 const BlankToken = require('./blank-token');
+const EofToken = require('./eof-token');
 
 /**
  * Tokenizes "DP" airspace polygon coordinate definition.
  */
 class DpToken extends BaseLineToken {
+    static type = 'DP';
+
     constructor() {
         super();
     }
@@ -32,11 +35,11 @@ class DpToken extends BaseLineToken {
             throw new SyntaxError(`Unknown coordinate definition '${line}'`);
         }
 
-        return { line, lineNumber, coordinates };
+        this._tokenized = { line, lineNumber, metadata: { coordinates } };
     }
 
     isAllowedNextToken(token) {
-        return token instanceof CommentToken || token instanceof DpToken || token instanceof BlankToken;
+        return [CommentToken.type, DpToken.type, BlankToken.type, EofToken.type].includes(token.constructor.type);
     }
 }
 
