@@ -25,6 +25,16 @@ class BaseLineToken {
     tokenize(line, lineNumber) {
         throw new Error('NOT_IMPLEMENTED');
     }
+
+    /**
+     * Checks if the input token as next token or not.
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {boolean}
+     */
+    isAllowedNextToken(token) {
+        throw new Error('NOT_IMPLEMENTED');
+    }
 }
 
 module.exports = BaseLineToken;

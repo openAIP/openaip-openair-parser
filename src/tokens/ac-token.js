@@ -1,5 +1,7 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
+const AnToken = require('./an-token');
+const CommentToken = require('./comment-token');
 
 /**
  * @typedef typedefs.openaipOpenairParser.AcToken
@@ -59,7 +61,6 @@ class AcToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        // remove the AC part of the string to get the airspace class
         const linePartClass = line.replace(/^AC\s+/, '');
 
         // check restricted classes
@@ -68,6 +69,10 @@ class AcToken extends BaseLineToken {
         }
 
         return { line, lineNumber, class: linePartClass };
+    }
+
+    isAllowedNextToken(token) {
+        return token instanceof CommentToken || token instanceof AnToken;
     }
 }
 

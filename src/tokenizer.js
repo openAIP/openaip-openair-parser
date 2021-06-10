@@ -1,9 +1,12 @@
-const IgnoredLineToken = require('./tokens/ignored-line-token');
+const CommentToken = require('./tokens/comment-token');
+const BlankToken = require('./tokens/blank-token');
 const AcToken = require('./tokens/ac-token');
 const AnToken = require('./tokens/an-token');
 const AhToken = require('./tokens/ah-token');
 const AlToken = require('./tokens/al-token');
 const DpToken = require('./tokens/dp-token');
+const VToken = require('./tokens/v-token');
+const DcToken = require('./tokens/dc-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
 
@@ -16,12 +19,15 @@ class Tokenizer {
     constructor(config) {
         this._config = config || { encoding: 'utf-8' };
         this._tokenizers = [
-            new IgnoredLineToken(),
+            new CommentToken(),
+            new BlankToken(),
             new AcToken({ restrictAcClasses: this._config.restrictAcClasses }),
             new AnToken(),
             new AhToken(),
             new AlToken(),
             new DpToken(),
+            new VToken(),
+            new DcToken(),
         ];
         this._tokens = [];
         this._currentLine = 0;
@@ -53,6 +59,12 @@ class Tokenizer {
 
         return;
     }
+    /**
+     * @return {boolean}
+     */
+    hasErrors() {
+        return this._errors.length > 0;
+    }
 
     /**
      * @return {{line: string, lineNumber: number, errorMessage: string}[]}
@@ -77,7 +89,7 @@ class Tokenizer {
     }
 
     /**
-     * Resets the tokenizer status.
+     * Resets the tokenizer state.
      */
     _reset() {
         this._currentLine = 0;

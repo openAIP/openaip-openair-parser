@@ -7,20 +7,25 @@ const Tokenizer = require('./tokenizer');
  * @param {number} [unlimited] - Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
  */
 
+/**
+ * @typedef typedefs.openaipOpenairParser.ParserResult
+ * @param {boolean} success - If true, parsing was successful, false if not.
+ * @param {Array} errors - A list of errors. Empty if parsing was successful.
+ */
+
 class Parser {
     /**
      * @param {typedefs.openaipOpenairParser.ParserConfig} [config] - The parser configuration
      */
     constructor(config) {
         this._config = config || { encoding: 'utf-8' };
-        this._errors = [];
     }
 
     /**
      * Tries to parse the file content.
      *
      * @param filepath
-     * @return {Promise<void>}
+     * @return {Promise<typedefs.openaipOpenairParser.ParserResult>}
      */
     async parse(filepath) {
         // reset the parser status before reading new file
@@ -28,20 +33,25 @@ class Parser {
 
         const tokenizer = new Tokenizer(this._config);
         await tokenizer.tokenize(filepath);
-        this._errors = tokenizer.getErrors();
 
-        return;
+        // abort if tokenizer has syntax errors at this point
+        if (tokenizer.hasErrors()) {
+            const errors = tokenizer.getErrors();
+
+            return {
+                success: errors.length === 0,
+                errors: errors,
+            };
+        }
+
+        return {
+            success: true,
+            errors: [],
+        };
     }
 
     /**
-     * @return {{line: string, lineNumber: number, errorMessage: string}[]}
-     */
-    getErrors() {
-        return this._errors;
-    }
-
-    /**
-     * Resets the parser status.
+     * Resets the parser state.
      */
     _reset() {
         this._errors = [];

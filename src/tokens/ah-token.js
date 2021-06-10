@@ -1,5 +1,9 @@
 const BaseAltitudeToken = require('./base-altitude-token');
 const checkTypes = require('check-types');
+const AlToken = require('./al-token');
+const DpToken = require('./dp-token');
+const VToken = require('./v-token');
+const CommentToken = require('./comment-token');
 
 /**
  * Tokenizes "AH" airspace upper ceiling definitions.
@@ -20,11 +24,19 @@ class AhToken extends BaseAltitudeToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        // remove the AH part of the string to get the airspace altitude definition
         const linePartAltitude = line.replace(/^AH\s+/, '');
         const altitude = this._getAltitude(linePartAltitude);
 
         return { line, lineNumber, altitude };
+    }
+
+    isAllowedNextToken(token) {
+        return (
+            token instanceof CommentToken ||
+            token instanceof AlToken ||
+            token instanceof DpToken ||
+            token instanceof VToken
+        );
     }
 }
 

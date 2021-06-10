@@ -3,53 +3,69 @@ const Parser = require('../src/parser');
 describe('test tokenize ignored line', () => {
     test('handle ignored lines', async () => {
         const openairParser = new Parser();
-        await openairParser.parse('./tests/fixtures/ignored-only.txt');
+        const result = await openairParser.parse('./tests/fixtures/ignored-only.txt');
 
-        expect(true).toEqual(true);
+        expect(result.success).toBe(true);
     });
 });
 
 describe('test tokenize AC line', () => {
     test('read AC definitions', async () => {
         const openairParser = new Parser();
-        await openairParser.parse('./tests/fixtures/ac-definitions.txt');
+        const result = await openairParser.parse('./tests/fixtures/ac-definitions.txt');
 
-        expect(openairParser.getErrors().length).toBe(0);
+        expect(result.success).toBe(true);
     });
 
     test('read AC definition with restricted classes', async () => {
         const classes = ['R', 'RMZ', 'TMZ'];
 
         const openairParser = new Parser({ restrictAcClasses: classes });
-        await openairParser.parse('./tests/fixtures/ac-definitions.txt');
+        const result = await openairParser.parse('./tests/fixtures/ac-definitions.txt');
 
-        // file contains 2 not allowed classes
-        expect(openairParser.getErrors().length).toBe(2);
+        expect(result.success).toBe(false);
+        expect(result.errors.length).toBe(2);
     });
 
     test('read AC definition with invalid classes', async () => {
         const openairParser = new Parser();
-        await openairParser.parse('./tests/fixtures/ac-definitions-invalid.txt');
+        const result = await openairParser.parse('./tests/fixtures/ac-definitions-invalid.txt');
 
-        // file contains 2 not allowed classes
-        expect(openairParser.getErrors().length).toBe(2);
+        expect(result.success).toBe(false);
+        expect(result.errors.length).toBe(2);
     });
 });
 
 describe('test tokenize AH/AL lines', () => {
     test('read AH definitions', async () => {
         const openairParser = new Parser();
-        await openairParser.parse('./tests/fixtures/ah-definitions.txt');
+        const result = await openairParser.parse('./tests/fixtures/ah-definitions.txt');
 
-        expect(openairParser.getErrors().length).toBe(0);
+        expect(result.success).toBe(true);
+    });
+});
+
+describe('test tokenize DP lines', () => {
+    test('read DP definitions', async () => {
+        const openairParser = new Parser();
+        const result = await openairParser.parse('./tests/fixtures/dp-definitions.txt');
+
+        expect(result.success).toBe(true);
     });
 });
 
 describe('parse airspace definitions', () => {
     test('parse simple airspace definitions', async () => {
         const openairParser = new Parser();
-        await openairParser.parse('./tests/fixtures/simple-airspace.txt');
+        const result = await openairParser.parse('./tests/fixtures/simple-airspace.txt');
 
-        expect(true).toEqual(true);
+        expect(result.success).toBe(true);
+    });
+
+    test('parse circle airspace definitions', async () => {
+        const openairParser = new Parser();
+        const result = await openairParser.parse('./tests/fixtures/circle-airspace.txt');
+
+        expect(result.success).toBe(true);
     });
 });
