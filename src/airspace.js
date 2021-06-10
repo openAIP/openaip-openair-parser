@@ -9,6 +9,7 @@ const VToken = require('./tokens/v-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
 const EofToken = require('./tokens/eof-token');
+const checkTypes = require('check-types');
 
 /**
  * @typedef typedefs.openaipOpenairParser.Airspace
@@ -23,6 +24,8 @@ class Airspace {
         this._lastToken = null;
         // airspace properties
         this._name = null;
+        this._class = null;
+        this._coordinates = [];
     }
 
     /**
@@ -38,24 +41,29 @@ class Airspace {
             case CommentToken.type:
                 this._handleCommentToken(token);
                 break;
-            case BlankToken.type:
-                this._handleBlankToken(token);
-                break;
             case AcToken.type:
+                this._handleAcToken(token);
                 break;
             case AnToken.type:
+                this._handleAnToken(token);
                 break;
             case AhToken.type:
+                this._handleAhToken(token);
                 break;
             case AlToken.type:
+                this._handleAlToken(token);
                 break;
             case DpToken.type:
+                this._handleDpToken(token);
                 break;
             case VToken.type:
                 break;
             case DcToken.type:
                 break;
             case DbToken.type:
+                break;
+            case BlankToken.type:
+                this._handleBlankToken(token);
                 break;
             case EofToken.type:
                 break;
@@ -68,11 +76,116 @@ class Airspace {
         this._lastToken = token;
     }
 
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    _handleAnToken(token) {
+        checkTypes.assert.instance(token, AnToken);
+
+        const { metadata } = token.getTokenized();
+        const { name } = metadata;
+
+        checkTypes.assert.nonEmptyString(name);
+
+        this._name = name;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    _handleAcToken(token) {
+        checkTypes.assert.instance(token, AcToken);
+
+        const { metadata } = token.getTokenized();
+        const { class: acClass } = metadata;
+
+        checkTypes.assert.nonEmptyString(acClass);
+
+        this._class = acClass;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    _handleAhToken(token) {
+        checkTypes.assert.instance(token, AhToken);
+
+        const { metadata } = token.getTokenized();
+        const { altitude } = metadata;
+
+        checkTypes.assert.nonEmptyObject(altitude);
+
+        this._upperCeiling = altitude;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    _handleAlToken(token) {
+        checkTypes.assert.instance(token, AlToken);
+
+        const { metadata } = token.getTokenized();
+        const { altitude } = metadata;
+
+        checkTypes.assert.nonEmptyObject(altitude);
+
+        this._lowerCeiling = altitude;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    _handleDpToken(token) {
+        checkTypes.assert.instance(token, DpToken);
+
+        const { metadata } = token.getTokenized();
+        const { coordinate } = metadata;
+
+        checkTypes.assert.nonEmptyObject(coordinate);
+
+        const { latitude, longitude } = coordinate;
+
+        checkTypes.assert.number(latitude);
+        checkTypes.assert.number(longitude);
+
+        this._coordinates.push({ latitude, longitude });
+    }
+
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
     _handleCommentToken(token) {
+        checkTypes.assert.instance(token, CommentToken);
+        // do nothing
         return;
     }
 
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
     _handleBlankToken(token) {
+        checkTypes.assert.instance(token, BlankToken);
         return;
     }
 

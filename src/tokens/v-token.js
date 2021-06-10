@@ -28,14 +28,14 @@ class VToken extends BaseLineToken {
 
         const linePartCoordinate = line.replace(/^V\s+X=/, '');
 
-        let coordinates;
+        let coordinate;
         try {
-            coordinates = new Coordinates(linePartCoordinate);
+            coordinate = new Coordinates(linePartCoordinate);
         } catch (e) {
             throw new SyntaxError(`Unknown coordinate definition '${line}'`);
         }
 
-        this._tokenized = { line, lineNumber, metadata: { coordinates } };
+        this._tokenized = { line, lineNumber, metadata: { coordinate } };
     }
 
     isAllowedNextToken(token) {

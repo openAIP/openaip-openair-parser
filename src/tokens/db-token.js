@@ -31,16 +31,16 @@ class DbToken extends BaseLineToken {
         endpoints.map((value) => value.trim());
 
         // transform each endpoint coordinate string into coordinate object
-        let coordinates = [];
+        let coord = [];
         for (const coordinate of endpoints) {
             try {
-                coordinates.push(new Coordinates(coordinate));
+                coord.push(new Coordinates(coordinate));
             } catch (e) {
                 throw new SyntaxError(`Unknown coordinate definition '${line}'`);
             }
         }
 
-        this._tokenized = { line, lineNumber, metadata: { coordinates } };
+        this._tokenized = { line, lineNumber, metadata: { coordinate: coord } };
     }
 
     isAllowedNextToken(token) {
