@@ -13,6 +13,10 @@ const Tokenizer = require('./tokenizer');
  * @param {Array} errors - A list of errors. Empty if parsing was successful.
  */
 
+/**
+ * Reads content of an openAIR formatted file and returns a normalized representation. For convenience,
+ * JSON and GeoJSON formatters are included.
+ */
 class Parser {
     /**
      * @param {typedefs.openaipOpenairParser.ParserConfig} [config] - The parser configuration
@@ -31,6 +35,14 @@ class Parser {
         // reset the parser status before reading new file
         this._reset();
 
+        /*
+        Tokenize the file contents and will result in a list of tokens and a list of syntax
+        errors encountered during tokenization. Each token represents a single line and hold a
+        "prepared value" if each line, e.g. "DP 52:24:33 N 013:11:02 E" will be converted into
+        a object that contains valid coordinate decimals.
+
+        IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
+         */
         const tokenizer = new Tokenizer(this._config);
         await tokenizer.tokenize(filepath);
 
