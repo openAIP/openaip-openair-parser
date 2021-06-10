@@ -7,6 +7,7 @@ const AlToken = require('./tokens/al-token');
 const DpToken = require('./tokens/dp-token');
 const VToken = require('./tokens/v-token');
 const DcToken = require('./tokens/dc-token');
+const DbToken = require('./tokens/db-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
 
@@ -28,6 +29,7 @@ class Tokenizer {
             new DpToken(),
             new VToken(),
             new DcToken(),
+            new DbToken(),
         ];
         this._tokens = [];
         this._currentLine = 0;

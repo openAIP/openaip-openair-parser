@@ -3,6 +3,7 @@ const checkTypes = require('check-types');
 const Coordinates = require('coordinate-parser');
 const CommentToken = require('./comment-token');
 const DcToken = require('./dc-token');
+const DbToken = require('./db-token');
 
 /**
  * Tokenizes "V" airspace circle center coordinate definition.
@@ -29,14 +30,14 @@ class VToken extends BaseLineToken {
         try {
             coordinates = new Coordinates(linePartCoordinate);
         } catch (e) {
-            throw new SyntaxError(`Unknown coordinate definition '${linePartCoordinate}'`);
+            throw new SyntaxError(`Unknown coordinate definition '${line}'`);
         }
 
         return { line, lineNumber, coordinates };
     }
 
     isAllowedNextToken(token) {
-        return token instanceof CommentToken || token instanceof DcToken;
+        return token instanceof CommentToken || token instanceof DcToken || token instanceof DbToken;
     }
 }
 

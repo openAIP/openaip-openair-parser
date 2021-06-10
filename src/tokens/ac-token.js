@@ -65,7 +65,7 @@ class AcToken extends BaseLineToken {
 
         // check restricted classes
         if (!this._restrictAcClasses.includes(linePartClass)) {
-            throw new SyntaxError(`Unknown airspace class '${linePartClass}'`);
+            throw new SyntaxError(`Unknown airspace class '${line}'`);
         }
 
         return { line, lineNumber, class: linePartClass };

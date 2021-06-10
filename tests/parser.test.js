@@ -55,16 +55,23 @@ describe('test tokenize DP lines', () => {
 });
 
 describe('parse airspace definitions', () => {
-    test('parse simple airspace definitions', async () => {
+    test('parse simple airspace definition', async () => {
         const openairParser = new Parser();
         const result = await openairParser.parse('./tests/fixtures/simple-airspace.txt');
 
         expect(result.success).toBe(true);
     });
 
-    test('parse circle airspace definitions', async () => {
+    test('parse circle airspace definition', async () => {
         const openairParser = new Parser();
         const result = await openairParser.parse('./tests/fixtures/circle-airspace.txt');
+
+        expect(result.success).toBe(true);
+    });
+
+    test('parse arc airspace definition', async () => {
+        const openairParser = new Parser();
+        const result = await openairParser.parse('./tests/fixtures/arc-airspace.txt');
 
         expect(result.success).toBe(true);
     });

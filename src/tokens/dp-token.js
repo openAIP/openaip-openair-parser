@@ -29,7 +29,7 @@ class DpToken extends BaseLineToken {
         try {
             coordinates = new Coordinates(linePartCoordinate);
         } catch (e) {
-            throw new SyntaxError(`Unknown coordinate definition '${linePartCoordinate}'`);
+            throw new SyntaxError(`Unknown coordinate definition '${line}'`);
         }
 
         return { line, lineNumber, coordinates };

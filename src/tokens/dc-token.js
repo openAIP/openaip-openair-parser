@@ -26,7 +26,7 @@ class DcToken extends BaseLineToken {
 
         const isRadius = /^\d+(\.\d+)?$/.test(linePartRadius);
         if (!isRadius) {
-            throw new SyntaxError(`Unknown circle radius definition '${linePartRadius}'`);
+            throw new SyntaxError(`Unknown circle radius definition '${line}'`);
         }
 
         return { line, lineNumber, radius: linePartRadius };
