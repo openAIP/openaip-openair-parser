@@ -4,6 +4,7 @@ const Tokenizer = require('./tokenizer');
  * @typedef typedefs.openaipOpenairParser.ParserConfig
  * @param {string} [encoding] - Sets the encoding to use. Defaults to 'utf-8'.
  * @param {string[]} [restrictAcClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+ * @param {number} [unlimited] - Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
  */
 
 class Parser {
@@ -33,7 +34,7 @@ class Parser {
     }
 
     /**
-     * @return {{line: string, lineNumber: integer, errorMessage: string}[]}
+     * @return {{line: string, lineNumber: number, errorMessage: string}[]}
      */
     getErrors() {
         return this._errors;

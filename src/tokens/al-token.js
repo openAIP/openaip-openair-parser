@@ -20,7 +20,11 @@ class AlToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        return { line, lineNumber };
+        // remove the AL part of the string to get the airspace altitude definition
+        const linePartAltitude = line.replace(/^AL\s+/, '');
+        const altitude = this._getAltitude(linePartAltitude);
+
+        return { line, lineNumber, altitude };
     }
 }
 

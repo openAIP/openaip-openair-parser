@@ -1,7 +1,7 @@
 /**
  * @typedef typedefs.openaipOpenairParser.Token
  * @property {string} line
- * @property {integer} lineNumber
+ * @property {number} lineNumber
  */
 
 class BaseLineToken {
@@ -19,7 +19,7 @@ class BaseLineToken {
 
     /**
      * @param {string} line
-     * @param {integer} lineNumber
+     * @param {number} lineNumber
      * @return {typedefs.openaipOpenairParser.Token}
      */
     tokenize(line, lineNumber) {

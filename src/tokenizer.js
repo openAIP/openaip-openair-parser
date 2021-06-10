@@ -1,9 +1,9 @@
-const IgnoredLineToken = require('./tokenizers/ignored-line-token');
-const AcToken = require('./tokenizers/ac-token');
-const AnToken = require('./tokenizers/an-token');
-const AhToken = require('./tokenizers/ah-token');
-const AlToken = require('./tokenizers/al-token');
-const DpToken = require('./tokenizers/dp-token');
+const IgnoredLineToken = require('./tokens/ignored-line-token');
+const AcToken = require('./tokens/ac-token');
+const AnToken = require('./tokens/an-token');
+const AhToken = require('./tokens/ah-token');
+const AlToken = require('./tokens/al-token');
+const DpToken = require('./tokens/dp-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
 
@@ -55,7 +55,7 @@ class Tokenizer {
     }
 
     /**
-     * @return {{line: string, lineNumber: integer, errorMessage: string}[]}
+     * @return {{line: string, lineNumber: number, errorMessage: string}[]}
      */
     getErrors() {
         return this._errors;

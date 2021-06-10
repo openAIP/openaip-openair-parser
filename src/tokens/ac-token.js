@@ -2,7 +2,7 @@ const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 
 /**
- * @typedef typedefs.openaipOpenairParser.AcTokenizer
+ * @typedef typedefs.openaipOpenairParser.AcToken
  * @param {string[]} [restrictAcClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
  */
 
@@ -36,12 +36,14 @@ const defaultClasses = [
  */
 class AcToken extends BaseLineToken {
     /**
-     * @param {typedefs.openaipOpenairParser.AcTokenizer} config
+     * @param {typedefs.openaipOpenairParser.AcToken} config
      */
     constructor(config) {
         const { restrictAcClasses } = config || {};
 
         super();
+
+        if (restrictAcClasses != null) checkTypes.assert.array.of.nonEmptyString(restrictAcClasses);
 
         this._restrictAcClasses = restrictAcClasses || defaultClasses;
     }
