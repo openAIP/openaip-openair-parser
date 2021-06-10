@@ -79,7 +79,7 @@ class Parser {
         /*
         Iterate of tokens and create airspaces.
          */
-        for (let i = 0; i <= tokens.length; i++) {
+        for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i];
 
             const nextState = this._nextState(token);
@@ -89,12 +89,13 @@ class Parser {
                 if (this._buildAirspace != null) {
                     throw new Error('Parsing failed. Inconsistent airspace build state.');
                 }
-                // set parser state into build state
-                this._state = PARSER_STATE.BUILD;
+
                 // create new airspace instance
                 this._buildAirspace = new Airspace();
                 this._buildAirspace.consumeToken(token);
 
+                // set parser state into build state
+                this._state = PARSER_STATE.BUILD;
                 continue;
             }
 
@@ -103,8 +104,7 @@ class Parser {
                 if (this._buildAirspace == null) {
                     throw new Error('Parsing failed. Inconsistent airspace build state.');
                 }
-                // set parser state into transition state again
-                this._state = PARSER_STATE.TRANSITION;
+
                 // finalize airspace with last token
                 this._buildAirspace.consumeToken(token);
                 // push built airspace into list
@@ -112,7 +112,14 @@ class Parser {
                 // clear built airspace
                 this._buildAirspace = null;
 
+                // set parser state into transition state again
+                this._state = PARSER_STATE.TRANSITION;
                 continue;
+            }
+
+            // BUILD state
+            if (this._state === PARSER_STATE.BUILD) {
+                this._buildAirspace.consumeToken(token);
             }
 
             this._state = nextState;
