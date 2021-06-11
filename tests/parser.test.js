@@ -59,6 +59,7 @@ describe('parse airspace definitions', () => {
         const openairParser = new Parser();
         const result = await openairParser.parse('./tests/fixtures/simple-airspace.txt');
 
+        console.log(JSON.stringify(result.geojson));
         expect(result.success).toBe(true);
     });
 
@@ -66,6 +67,7 @@ describe('parse airspace definitions', () => {
         const openairParser = new Parser();
         const result = await openairParser.parse('./tests/fixtures/circle-airspace.txt');
 
+        console.log(JSON.stringify(result.geojson));
         expect(result.success).toBe(true);
     });
 
@@ -73,6 +75,7 @@ describe('parse airspace definitions', () => {
         const openairParser = new Parser();
         const result = await openairParser.parse('./tests/fixtures/arc-airspace.txt');
 
+        console.log(JSON.stringify(result.geojson));
         expect(result.success).toBe(true);
     });
 });

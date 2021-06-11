@@ -1,19 +1,12 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 const Coordinates = require('coordinate-parser');
-const CommentToken = require('./comment-token');
-const BlankToken = require('./blank-token');
-const EofToken = require('./eof-token');
 
 /**
  * Tokenizes "DP" airspace polygon coordinate definition.
  */
 class DpToken extends BaseLineToken {
     static type = 'DP';
-
-    constructor() {
-        super();
-    }
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -23,7 +16,7 @@ class DpToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new DpToken();
+        const token = new DpToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -43,7 +36,9 @@ class DpToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        return [CommentToken.type, DpToken.type, BlankToken.type, EofToken.type].includes(token.constructor.type);
+        const { COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN } = this._tokenTypes;
+
+        return [COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN].includes(token.constructor.type);
     }
 }
 

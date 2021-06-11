@@ -4,6 +4,7 @@ const checkTypes = require('check-types');
 /**
  * @typedef typedefs.openaipOpenairParser.BaseAltitudeTokenConfig
  * @type Object
+ * @property {typedefs.openaipOpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
  * @property {number} [unlimited] -  Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
  */
 
@@ -209,11 +210,12 @@ class BaseAltitudeToken extends BaseLineToken {
      * @param {typedefs.openaipOpenairParser.BaseAltitudeTokenConfig} config
      */
     constructor(config) {
-        super();
+        const { unlimited, tokenTypes } = config;
 
-        const { unlimited } = config;
+        super({ tokenTypes });
 
-        this._config = config;
+        this._unlimited = unlimited;
+
         /** @type {typedefs.openaipOpenairParser.AltitudeReader[]} */
         this._readers = [
             new AltitudeDefaultReader(),

@@ -1,18 +1,11 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const AcToken = require('./ac-token');
-const CommentToken = require('./comment-token');
-const EofToken = require('./eof-token');
 
 /**
  * Handles blank lines. Each blank line is considered to separate each airspace definition block.
  */
 class BlankToken extends BaseLineToken {
     static type = 'BLANK';
-
-    constructor() {
-        super();
-    }
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -21,7 +14,7 @@ class BlankToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new BlankToken();
+        const token = new BlankToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -32,7 +25,9 @@ class BlankToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        return [BlankToken.type, AcToken.type, CommentToken.type, EofToken.type].includes(token.constructor.type);
+        const { BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN } = this._tokenTypes;
+
+        return [BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN].includes(token.constructor.type);
     }
 }
 

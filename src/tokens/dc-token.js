@@ -1,17 +1,11 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const BlankToken = require('./blank-token');
-const CommentToken = require('./comment-token');
 
 /**
  * Tokenizes "DC" airspace circle radius definition.
  */
 class DcToken extends BaseLineToken {
     static type = 'DC';
-
-    constructor() {
-        super();
-    }
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -21,7 +15,7 @@ class DcToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new DcToken();
+        const token = new DcToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -39,7 +33,9 @@ class DcToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        return [BlankToken.type, CommentToken.type].includes(token.constructor.type);
+        const { BLANK_TOKEN, COMMENT_TOKEN } = this._tokenTypes;
+
+        return [BLANK_TOKEN, COMMENT_TOKEN].includes(token.constructor.type);
     }
 }
 

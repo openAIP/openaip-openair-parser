@@ -1,7 +1,5 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const BlankToken = require('./blank-token');
-const CommentToken = require('./comment-token');
 const Coordinates = require('coordinate-parser');
 
 /**
@@ -9,10 +7,6 @@ const Coordinates = require('coordinate-parser');
  */
 class DbToken extends BaseLineToken {
     static type = 'DB';
-
-    constructor() {
-        super();
-    }
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -22,7 +16,7 @@ class DbToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new DbToken();
+        const token = new DbToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -48,7 +42,9 @@ class DbToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        return [BlankToken.type, CommentToken.type].includes(token.constructor.type);
+        const { BLANK_TOKEN, COMMENT_TOKEN } = this._tokenTypes;
+
+        return [BLANK_TOKEN, COMMENT_TOKEN].includes(token.constructor.type);
     }
 }
 

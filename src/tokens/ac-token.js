@@ -1,12 +1,12 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const AnToken = require('./an-token');
-const CommentToken = require('./comment-token');
 
 /**
  * @typedef typedefs.openaipOpenairParser.AcTokenConfig
  * @type Object
  * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+ * @property {typedefs.openaipOpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
+
  */
 
 /**
@@ -19,12 +19,13 @@ class AcToken extends BaseLineToken {
      * @param {typedefs.openaipOpenairParser.AcTokenConfig} config
      */
     constructor(config) {
-        super();
+        const { airspaceClasses, tokenTypes } = config;
 
-        const { airspaceClasses } = config;
+        super({ tokenTypes });
+
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
 
-        this._config = config;
+        this._airspaceClasses = airspaceClasses;
     }
 
     canHandle(line) {
@@ -35,7 +36,7 @@ class AcToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new AcToken(this._config);
+        const token = new AcToken({ airspaceClasses: this._airspaceClasses, tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -43,7 +44,7 @@ class AcToken extends BaseLineToken {
         const linePartClass = line.replace(/^AC\s+/, '');
 
         // check restricted classes
-        if (!this._config.airspaceClasses.includes(linePartClass)) {
+        if (!this._airspaceClasses.includes(linePartClass)) {
             throw new SyntaxError(`Unknown airspace class '${line}'`);
         }
 
@@ -53,7 +54,9 @@ class AcToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        return [CommentToken.type, AnToken.type].includes(token.constructor.type);
+        const { COMMENT_TOKEN, AN_TOKEN } = this._tokenTypes;
+
+        return [COMMENT_TOKEN, AN_TOKEN].includes(token.constructor.type);
     }
 }
 

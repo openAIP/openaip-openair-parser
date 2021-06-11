@@ -1,19 +1,12 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 const Coordinates = require('coordinate-parser');
-const CommentToken = require('./comment-token');
-const DcToken = require('./dc-token');
-const DbToken = require('./db-token');
 
 /**
  * Tokenizes "V" airspace circle center coordinate definition.
  */
 class VToken extends BaseLineToken {
     static type = 'V';
-
-    constructor() {
-        super();
-    }
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -23,7 +16,7 @@ class VToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new VToken();
+        const token = new VToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -43,7 +36,9 @@ class VToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        return [CommentToken.type, DcToken.type, DbToken.type].includes(token.constructor.type);
+        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN } = this._config.tokenTypes;
+
+        return [COMMENT_TOKEN, DC_TOKEN, DB_TOKEN].includes(token.constructor.type);
     }
 }
 

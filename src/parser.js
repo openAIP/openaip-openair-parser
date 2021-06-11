@@ -151,7 +151,7 @@ class Parser {
     }
 
     /**
-     * @param {typedefs.openaipOpenairParser.BaseAltitudeToken} token
+     * @param {BaseAltitudeToken} token
      * @return {string}
      * @private
      */

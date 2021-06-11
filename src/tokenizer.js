@@ -14,6 +14,38 @@ const fs = require('fs');
 const checkTypes = require('check-types');
 
 /**
+ * List of token types required for "isAllowedNextToken" type checks. Mainly to avoid directly requiring tokens in a token
+ * and creating circular dependencies.
+ *
+ * @typedef typedefs.openaipOpenairParser.TokenTypes
+ * @type {Object}
+ * @property {string} COMMENT_TOKEN
+ * @property {string} BLANK_TOKEN
+ * @property {string} AC_TOKEN
+ * @property {string} AN_TOKEN
+ * @property {string} AH_TOKEN
+ * @property {string} AL_TOKEN
+ * @property {string} DP_TOKEN
+ * @property {string} V_TOKEN
+ * @property {string} DC_TOKEN
+ * @property {string} DB_TOKEN
+ * @property {string} EOF_TOKEN
+ */
+const TOKEN_TYPES = {
+    COMMENT_TOKEN: CommentToken.type,
+    BLANK_TOKEN: BlankToken.type,
+    AC_TOKEN: AcToken.type,
+    AN_TOKEN: AnToken.type,
+    AH_TOKEN: AhToken.type,
+    AL_TOKEN: AlToken.type,
+    DP_TOKEN: DpToken.type,
+    V_TOKEN: VToken.type,
+    DC_TOKEN: DcToken.type,
+    DB_TOKEN: DbToken.type,
+    EOF_TOKEN: EofToken.type,
+};
+
+/**
  * @typedef typedefs.openaipOpenairParser.TokenizerConfig
  * @type Object
  * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
@@ -38,16 +70,16 @@ class Tokenizer {
         this._config = config;
         /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._tokenizers = [
-            new CommentToken(),
-            new BlankToken(),
-            new AcToken({ airspaceClasses }),
-            new AnToken(),
-            new AhToken({ unlimited }),
-            new AlToken({ unlimited }),
-            new DpToken(),
-            new VToken(),
-            new DcToken(),
-            new DbToken(),
+            new CommentToken({ tokenTypes: TOKEN_TYPES }),
+            new BlankToken({ tokenTypes: TOKEN_TYPES }),
+            new AcToken({ tokenTypes: TOKEN_TYPES, airspaceClasses }),
+            new AnToken({ tokenTypes: TOKEN_TYPES }),
+            new AhToken({ tokenTypes: TOKEN_TYPES, unlimited }),
+            new AlToken({ tokenTypes: TOKEN_TYPES, unlimited }),
+            new DpToken({ tokenTypes: TOKEN_TYPES }),
+            new VToken({ tokenTypes: TOKEN_TYPES }),
+            new DcToken({ tokenTypes: TOKEN_TYPES }),
+            new DbToken({ tokenTypes: TOKEN_TYPES }),
         ];
         /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._tokens = [];
@@ -82,11 +114,11 @@ class Tokenizer {
                 const token = lineToken.tokenize(linestring, this._currentLine);
                 this._tokens.push(token);
             } catch (e) {
-                this._error(line, this._currentLine, e.message);
+                this._error(line, this._currentLine, e.message, lineToken.getType());
             }
         }
         // finalize by adding EOF token
-        this._tokens.push(new EofToken(this._currentLine));
+        this._tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this._currentLine }));
 
         return this._tokens;
     }
@@ -111,14 +143,16 @@ class Tokenizer {
      * @param {string} line
      * @param {number} lineNumber
      * @param {string} errorMessage
+     * @param {string} tokenType
      * @returns {void}
      * @private
      */
-    _error(line, lineNumber, errorMessage) {
+    _error(line, lineNumber, errorMessage, tokenType) {
         this._errors.push({
             line,
             lineNumber,
             errorMessage,
+            tokenType,
         });
     }
 

@@ -1,24 +1,11 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const BlankToken = require('./blank-token');
-const AcToken = require('./ac-token');
-const AnToken = require('./an-token');
-const AlToken = require('./al-token');
-const AhToken = require('./ah-token');
-const DpToken = require('./dp-token');
-const VToken = require('./v-token');
-const DcToken = require('./dc-token');
-const EofToken = require('./eof-token');
 
 /**
  * Handles comments, e.g. lines starting with "*".
  */
 class CommentToken extends BaseLineToken {
     static type = 'COMMENT';
-
-    constructor() {
-        super();
-    }
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -28,7 +15,7 @@ class CommentToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new CommentToken();
+        const token = new CommentToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -39,17 +26,30 @@ class CommentToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
+        const {
+            COMMENT_TOKEN,
+            BLANK_TOKEN,
+            AC_TOKEN,
+            AN_TOKEN,
+            AL_TOKEN,
+            AH_TOKEN,
+            DP_TOKEN,
+            V_TOKEN,
+            DC_TOKEN,
+            EOF_TOKEN,
+        } = this._tokenTypes;
+
         return [
-            CommentToken.type,
-            BlankToken.type,
-            AcToken.type,
-            AnToken.type,
-            AlToken.type,
-            AhToken.type,
-            DpToken.type,
-            VToken.type,
-            DcToken.type,
-            EofToken.type,
+            COMMENT_TOKEN,
+            BLANK_TOKEN,
+            AC_TOKEN,
+            AN_TOKEN,
+            AL_TOKEN,
+            AH_TOKEN,
+            DP_TOKEN,
+            V_TOKEN,
+            DC_TOKEN,
+            EOF_TOKEN,
         ].includes(token.constructor.type);
     }
 }

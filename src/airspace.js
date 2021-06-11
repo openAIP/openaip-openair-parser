@@ -118,7 +118,7 @@ class Airspace {
         if (this._config.keepOriginal) {
             properties.openair = [];
             for (const token of this._consumedTokens) {
-                const { line, lineNumber } = token;
+                const { line, lineNumber } = token.getTokenized();
                 properties.openair.push({ line, lineNumber });
             }
         }

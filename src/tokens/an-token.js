@@ -1,18 +1,11 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const AhToken = require('./ah-token');
-const AlToken = require('./al-token');
-const CommentToken = require('./comment-token');
 
 /**
  * Tokenizes "AN" airspace name definitions.
  */
 class AnToken extends BaseLineToken {
     static type = 'AN';
-
-    constructor() {
-        super();
-    }
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -22,7 +15,7 @@ class AnToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new AnToken();
+        const token = new AnToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -35,7 +28,9 @@ class AnToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        return [CommentToken.type, AlToken.type, AhToken.type].includes(token.constructor.type);
+        const { COMMENT_TOKEN, AL_TOKEN, AH_TOKEN } = this._tokenTypes;
+
+        return [COMMENT_TOKEN, AL_TOKEN, AH_TOKEN].includes(token.constructor.type);
     }
 }
 
