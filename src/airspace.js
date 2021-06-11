@@ -89,6 +89,7 @@ class Airspace {
                 this._handleDcToken(token);
                 break;
             case DbToken.type:
+                this._handleDbToken(token);
                 break;
             case BlankToken.type:
                 this._handleBlankToken(token);
@@ -230,6 +231,8 @@ class Airspace {
         checkTypes.assert.number(latitude);
         checkTypes.assert.number(longitude);
 
+        // TODO check that coordinates match second coordinate if lastToken is DbToken
+
         this._coordinates.push([latitude, longitude]);
     }
 
@@ -284,6 +287,40 @@ class Airspace {
         });
         const [coordinates] = geometry.coordinates;
         this._coordinates = coordinates;
+    }
+
+    /**
+     * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    _handleDbToken(token) {
+        // get all required tokens => DpToken BEFORE last token (VToken) and DpToken AFTER current DbToken
+        const precedingDpToken = this._consumedTokens[this._consumedTokens.length - 2].getTokenized();
+        const {
+            metadata: { coordinate: precedingCoordinate },
+        } = precedingDpToken;
+
+        // get arc center point coordinate
+        const { coordinate: arcCenter } = this._lastToken.getTokenized();
+
+        // arc start/end coordinates from DbToken
+        const { metadata: coordinates } = token;
+        const [arcStartCoordinate, arcEndCoordinate] = coordinates;
+
+        // enforce that preceding coordinate matches start coordinate
+        if (precedingDpToken !== arcStartCoordinate) {
+            const { line, lineNumber } = precedingDpToken.getTokenized();
+            throw new SyntaxError(`Coordinates '${line}' at line ${lineNumber} must match the arc start coordinate`);
+        }
+
+        // get required bearings
+
+        // get the radius
+
+        // calculate the line arc
     }
 
     /**
