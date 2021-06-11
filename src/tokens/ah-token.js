@@ -29,9 +29,9 @@ class AhToken extends BaseAltitudeToken {
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, AL_TOKEN, DP_TOKEN, V_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, AL_TOKEN, DP_TOKEN, VX_TOKEN } = this._tokenTypes;
 
-        return [COMMENT_TOKEN, AL_TOKEN, DP_TOKEN, V_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, AL_TOKEN, DP_TOKEN, VX_TOKEN].includes(token.constructor.type);
     }
 }
 

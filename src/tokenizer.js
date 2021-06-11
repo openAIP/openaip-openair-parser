@@ -5,13 +5,15 @@ const AnToken = require('./tokens/an-token');
 const AhToken = require('./tokens/ah-token');
 const AlToken = require('./tokens/al-token');
 const DpToken = require('./tokens/dp-token');
-const VToken = require('./tokens/v-token');
+const VdToken = require('./tokens/vd-token');
+const VxToken = require('./tokens/vx-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
 const EofToken = require('./tokens/eof-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
 const checkTypes = require('check-types');
+const ParserError = require('./parser-error');
 
 /**
  * List of token types required for "isAllowedNextToken" type checks. Mainly to avoid directly requiring tokens in a token
@@ -26,7 +28,8 @@ const checkTypes = require('check-types');
  * @property {string} AH_TOKEN
  * @property {string} AL_TOKEN
  * @property {string} DP_TOKEN
- * @property {string} V_TOKEN
+ * @property {string} VD_TOKEN
+ * @property {string} VX_TOKEN
  * @property {string} DC_TOKEN
  * @property {string} DB_TOKEN
  * @property {string} EOF_TOKEN
@@ -39,7 +42,8 @@ const TOKEN_TYPES = {
     AH_TOKEN: AhToken.type,
     AL_TOKEN: AlToken.type,
     DP_TOKEN: DpToken.type,
-    V_TOKEN: VToken.type,
+    VD_TOKEN: VdToken.type,
+    VX_TOKEN: VxToken.type,
     DC_TOKEN: DcToken.type,
     DB_TOKEN: DbToken.type,
     EOF_TOKEN: EofToken.type,
@@ -77,7 +81,8 @@ class Tokenizer {
             new AhToken({ tokenTypes: TOKEN_TYPES, unlimited }),
             new AlToken({ tokenTypes: TOKEN_TYPES, unlimited }),
             new DpToken({ tokenTypes: TOKEN_TYPES }),
-            new VToken({ tokenTypes: TOKEN_TYPES }),
+            new VdToken({ tokenTypes: TOKEN_TYPES }),
+            new VxToken({ tokenTypes: TOKEN_TYPES }),
             new DcToken({ tokenTypes: TOKEN_TYPES }),
             new DbToken({ tokenTypes: TOKEN_TYPES }),
         ];
@@ -101,7 +106,8 @@ class Tokenizer {
 
         while ((line = liner.next())) {
             this._currentLine++;
-            const linestring = line.toString();
+            // call trim to also remove newlines
+            const linestring = line.toString().trim();
 
             // find the tokenizer that can handle the current line
             const lineToken = this._tokenizers.find((value) => value.canHandle(linestring));
@@ -114,7 +120,13 @@ class Tokenizer {
                 const token = lineToken.tokenize(linestring, this._currentLine);
                 this._tokens.push(token);
             } catch (e) {
-                this._error(line, this._currentLine, e.message, lineToken.getType());
+                this._errors.push(
+                    new ParserError({
+                        line,
+                        lineNumber: this._currentLine,
+                        errorMessage: e.message,
+                    })
+                );
             }
         }
         // finalize by adding EOF token
@@ -135,25 +147,6 @@ class Tokenizer {
      */
     getErrors() {
         return this._errors;
-    }
-
-    /**
-     * Adds an error object.
-     *
-     * @param {string} line
-     * @param {number} lineNumber
-     * @param {string} errorMessage
-     * @param {string} tokenType
-     * @returns {void}
-     * @private
-     */
-    _error(line, lineNumber, errorMessage, tokenType) {
-        this._errors.push({
-            line,
-            lineNumber,
-            errorMessage,
-            tokenType,
-        });
     }
 
     /**

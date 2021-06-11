@@ -5,8 +5,8 @@ const Coordinates = require('coordinate-parser');
 /**
  * Tokenizes "V" airspace circle center coordinate definition.
  */
-class VToken extends BaseLineToken {
-    static type = 'V';
+class VxToken extends BaseLineToken {
+    static type = 'VX';
 
     canHandle(line) {
         checkTypes.assert.string(line);
@@ -16,7 +16,7 @@ class VToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new VToken({ tokenTypes: this._tokenTypes });
+        const token = new VxToken({ tokenTypes: this._tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -42,4 +42,4 @@ class VToken extends BaseLineToken {
     }
 }
 
-module.exports = VToken;
+module.exports = VxToken;

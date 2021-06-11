@@ -7,6 +7,7 @@ const Airspace = require('./airspace');
 const defaultConfig = require('./default-parser-config');
 const checkTypes = require('check-types');
 const { featureCollection: createFeatureCollection } = require('@turf/turf');
+const ParserError = require('./parser-error');
 
 const PARSER_STATE = {
     // parser is traversing down in the list of tokens (from beginning) until EOF is reached or AC token is found
@@ -17,6 +18,8 @@ const PARSER_STATE = {
     BUILD: 'build',
     // parser is at end of a build airspace definition block
     END: 'end',
+    // End of file
+    EOF: 'eof',
 };
 
 /**
@@ -92,56 +95,66 @@ class Parser {
             };
         }
 
-        /*
+        let token;
+        try {
+            /*
         Iterate of tokens and create airspaces.
          */
-        for (let i = 0; i < tokens.length; i++) {
-            const token = tokens[i];
+            for (let i = 0; i < tokens.length; i++) {
+                token = tokens[i];
 
-            const nextState = this._nextState(token);
+                const nextState = this._nextState(token);
 
-            // START state will start new airport instance
-            if (nextState === PARSER_STATE.START) {
-                if (this._buildAirspace != null) {
-                    throw new Error('Parsing failed. Inconsistent airspace build state.');
+                // START state will start new airport instance
+                if (nextState === PARSER_STATE.START) {
+                    if (this._buildAirspace != null) {
+                        throw new Error('Parsing failed. Inconsistent airspace build state.');
+                    }
+
+                    // create new airspace instance
+                    this._buildAirspace = new Airspace({
+                        geometryDetail: this._config.geometryDetail,
+                        keepOriginal: this._config.keepOriginal,
+                    });
+                    this._buildAirspace.consumeToken(token);
+
+                    // set parser state into build state
+                    this._state = PARSER_STATE.BUILD;
+                    continue;
                 }
 
-                // create new airspace instance
-                this._buildAirspace = new Airspace({
-                    geometryDetail: this._config.geometryDetail,
-                    keepOriginal: this._config.keepOriginal,
-                });
-                this._buildAirspace.consumeToken(token);
+                // END state will finalize airport instance
+                if (nextState === PARSER_STATE.END || nextState === PARSER_STATE.EOF) {
+                    if (this._buildAirspace == null) {
+                        throw new Error('Parsing failed. Inconsistent airspace build state.');
+                    }
 
-                // set parser state into build state
-                this._state = PARSER_STATE.BUILD;
-                continue;
-            }
+                    // finalize airspace with last token
+                    this._buildAirspace.consumeToken(token);
+                    // finalize the airspace => creates a GeoJSON feature
+                    this._airspaces.push(this._buildAirspace.finalize().asGeoJson());
+                    // clear built airspace
+                    this._buildAirspace = null;
 
-            // END state will finalize airport instance
-            if (nextState === PARSER_STATE.END) {
-                if (this._buildAirspace == null) {
-                    throw new Error('Parsing failed. Inconsistent airspace build state.');
+                    // set parser state into transition state again
+                    this._state = PARSER_STATE.TRANSITION;
+                    continue;
                 }
 
-                // finalize airspace with last token
-                this._buildAirspace.consumeToken(token);
-                // finalize the airspace => creates a GeoJSON feature
-                this._airspaces.push(this._buildAirspace.finalize().asGeoJson());
-                // clear built airspace
-                this._buildAirspace = null;
+                // BUILD state
+                if (this._state === PARSER_STATE.BUILD) {
+                    this._buildAirspace.consumeToken(token);
+                }
 
-                // set parser state into transition state again
-                this._state = PARSER_STATE.TRANSITION;
-                continue;
+                this._state = nextState;
             }
+        } catch (e) {
+            const { line, lineNumber } = token.getTokenized();
 
-            // BUILD state
-            if (this._state === PARSER_STATE.BUILD) {
-                this._buildAirspace.consumeToken(token);
-            }
-
-            this._state = nextState;
+            return {
+                success: false,
+                errors: [new ParserError({ line, lineNumber, errorMessage: e.message })],
+            };
         }
 
         return {
@@ -158,6 +171,8 @@ class Parser {
     _nextState(token) {
         // state does not change when reading a comment line
         if (token instanceof CommentToken) return this._state;
+
+        if (token instanceof EofToken) return PARSER_STATE.EOF;
 
         // parser is in transition and reached blank line => will not change current state
         if (this._state === PARSER_STATE.TRANSITION && token instanceof BlankToken) {

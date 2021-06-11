@@ -36,15 +36,15 @@ class DbToken extends BaseLineToken {
             }
         }
 
-        token._tokenized = { line, lineNumber, metadata: { coordinate: coord } };
+        token._tokenized = { line, lineNumber, metadata: { coordinates: coord } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, COMMENT_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN } = this._tokenTypes;
 
-        return [BLANK_TOKEN, COMMENT_TOKEN].includes(token.constructor.type);
+        return [BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN].includes(token.constructor.type);
     }
 }
 

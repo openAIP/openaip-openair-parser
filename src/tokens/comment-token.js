@@ -34,7 +34,9 @@ class CommentToken extends BaseLineToken {
             AL_TOKEN,
             AH_TOKEN,
             DP_TOKEN,
-            V_TOKEN,
+            VX_TOKEN,
+            VD_TOKEN,
+            DB_TOKEN,
             DC_TOKEN,
             EOF_TOKEN,
         } = this._tokenTypes;
@@ -47,7 +49,9 @@ class CommentToken extends BaseLineToken {
             AL_TOKEN,
             AH_TOKEN,
             DP_TOKEN,
-            V_TOKEN,
+            VX_TOKEN,
+            VD_TOKEN,
+            DB_TOKEN,
             DC_TOKEN,
             EOF_TOKEN,
         ].includes(token.constructor.type);

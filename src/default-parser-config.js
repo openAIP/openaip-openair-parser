@@ -15,9 +15,12 @@ module.exports = {
         'G',
         // classes commonly found in openair files
         'R',
-        'D',
         'Q',
+        'D',
+        'P',
+        'GP',
         'WAVE',
+        'W',
         'GLIDING',
         'RMZ',
         'TMZ',

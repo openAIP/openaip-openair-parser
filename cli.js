@@ -13,6 +13,12 @@ program
     const parser = new Parser();
     const result = await parser.parse(program.inputFilepath);
 
-    const { geojson } = result;
-    await fs.writeFileSync(program.outputFilepath, Buffer.from(JSON.stringify(geojson, null, 2), 'utf-8'));
+    const { success, errors, geojson } = result;
+    if (success) {
+        await fs.writeFileSync(program.outputFilepath, Buffer.from(JSON.stringify(geojson, null, 2), 'utf-8'));
+    } else {
+        for (const error of errors) {
+            console.log(error);
+        }
+    }
 })();

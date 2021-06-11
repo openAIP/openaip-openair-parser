@@ -5,12 +5,20 @@ const AnToken = require('./tokens/an-token');
 const AhToken = require('./tokens/ah-token');
 const AlToken = require('./tokens/al-token');
 const DpToken = require('./tokens/dp-token');
-const VToken = require('./tokens/v-token');
+const VdToken = require('./tokens/vd-token');
+const VxToken = require('./tokens/vx-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
 const EofToken = require('./tokens/eof-token');
 const checkTypes = require('check-types');
-const { circle: createCircle, polygon: createPolygon, feature: createFeature } = require('@turf/turf');
+const {
+    circle: createCircle,
+    polygon: createPolygon,
+    feature: createFeature,
+    lineArc: createArc,
+    bearing: calcBearing,
+    distance: calcDistance,
+} = require('@turf/turf');
 const uuid = require('uuid');
 
 /**
@@ -34,11 +42,13 @@ class Airspace {
      */
     constructor(config) {
         const { geometryDetail, keepOriginal } = config;
+
         checkTypes.assert.integer(geometryDetail);
         checkTypes.assert.boolean(keepOriginal);
 
+        this._keepOriginal = keepOriginal;
+        this._geometryDetail = geometryDetail;
         this._isFinalized = false;
-        this._config = config;
         /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._consumedTokens = [];
         /** @type {typedefs.openaipOpenairParser.Token|null} */
@@ -82,8 +92,11 @@ class Airspace {
             case DpToken.type:
                 this._handleDpToken(token);
                 break;
-            case VToken.type:
-                this._handleVToken(token);
+            case VdToken.type:
+                this._handleVdToken(token);
+                break;
+            case VxToken.type:
+                this._handleVxToken(token);
                 break;
             case DcToken.type:
                 this._handleDcToken(token);
@@ -117,7 +130,7 @@ class Airspace {
             lowerCeiling: this._lowerCeiling,
         };
         // inject the original openAIR content if configured
-        if (this._config.keepOriginal) {
+        if (this._keepOriginal) {
             properties.openair = [];
             for (const token of this._consumedTokens) {
                 const { line, lineNumber } = token.getTokenized();
@@ -156,8 +169,6 @@ class Airspace {
         const { metadata } = token.getTokenized();
         const { name } = metadata;
 
-        checkTypes.assert.nonEmptyString(name);
-
         this._name = name;
     }
 
@@ -172,8 +183,6 @@ class Airspace {
 
         const { metadata } = token.getTokenized();
         const { class: acClass } = metadata;
-
-        checkTypes.assert.nonEmptyString(acClass);
 
         this._class = acClass;
     }
@@ -190,8 +199,6 @@ class Airspace {
         const { metadata } = token.getTokenized();
         const { altitude } = metadata;
 
-        checkTypes.assert.nonEmptyObject(altitude);
-
         this._upperCeiling = altitude;
     }
 
@@ -206,8 +213,6 @@ class Airspace {
 
         const { metadata } = token.getTokenized();
         const { altitude } = metadata;
-
-        checkTypes.assert.nonEmptyObject(altitude);
 
         this._lowerCeiling = altitude;
     }
@@ -226,36 +231,32 @@ class Airspace {
 
         checkTypes.assert.nonEmptyObject(coordinate);
 
-        const { latitude, longitude } = coordinate;
-
-        checkTypes.assert.number(latitude);
-        checkTypes.assert.number(longitude);
-
         // TODO check that coordinates match second coordinate if lastToken is DbToken
 
-        this._coordinates.push([latitude, longitude]);
+        // IMPORTANT subsequently push coordinates
+        this._coordinates.push(this._toArrayLike(coordinate));
     }
 
     /**
-     * Only checks if metadata is available. To create a circle, the next token must be a DcToken.
-     * Creation of the circle geometry is handled in the DcToken handler.
+     * Does nothing but required to create an arc.
      *
      * @param {typedefs.openaipOpenairParser.Token} token
      * @return {void}
      * @private
      */
-    _handleVToken(token) {
-        checkTypes.assert.instance(token, VToken);
+    _handleVdToken(token) {
+        // do nothing
+    }
 
-        const { metadata } = token.getTokenized();
-        const { coordinate } = metadata;
-
-        checkTypes.assert.nonEmptyObject(coordinate);
-
-        const { latitude, longitude } = coordinate;
-
-        checkTypes.assert.number(latitude);
-        checkTypes.assert.number(longitude);
+    /**
+     * Does nothing but required to create an arc.
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    _handleVxToken(token) {
+        // do nothing
     }
 
     /**
@@ -271,21 +272,21 @@ class Airspace {
         const { metadata } = token.getTokenized();
         const { radius } = metadata;
 
-        checkTypes.assert.number(radius);
-
+        const precedingVxToken = this._getPrecedingToken(VxToken.type);
+        // TODO check that token is found
         // to create a circle, the center point coordinate from the previous VToken is required
-        const { metadata: vtokenMetadata } = this._lastToken.getTokenized();
+        const { metadata: vtokenMetadata } = precedingVxToken.getTokenized();
         const { coordinate } = vtokenMetadata;
-        const { latitude, longitude } = coordinate;
 
         // convert radius in NM to meters
         const radiusM = radius * 1852;
 
-        const { geometry } = createCircle([longitude, latitude], radiusM, {
-            steps: this._config.geometryDetail,
+        const { geometry } = createCircle(this._toArrayLike(coordinate), radiusM, {
+            steps: this._geometryDetail,
             units: 'meters',
         });
         const [coordinates] = geometry.coordinates;
+        // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
         this._coordinates = coordinates;
     }
 
@@ -297,30 +298,81 @@ class Airspace {
      * @private
      */
     _handleDbToken(token) {
-        // get all required tokens => DpToken BEFORE last token (VToken) and DpToken AFTER current DbToken
-        const precedingDpToken = this._consumedTokens[this._consumedTokens.length - 2].getTokenized();
-        const {
-            metadata: { coordinate: precedingCoordinate },
-        } = precedingDpToken;
+        const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this._getBuildArcCoordinates(token);
 
-        // get arc center point coordinate
-        const { coordinate: arcCenter } = this._lastToken.getTokenized();
+        // calculate line arc
 
-        // arc start/end coordinates from DbToken
-        const { metadata: coordinates } = token;
-        const [arcStartCoordinate, arcEndCoordinate] = coordinates;
+        const centerCoord = this._toArrayLike(centerCoordinate);
+        const startCoord = this._toArrayLike(startCoordinate);
+        const endCoord = this._toArrayLike(endCoordinate);
 
-        // enforce that preceding coordinate matches start coordinate
-        if (precedingDpToken !== arcStartCoordinate) {
+        // get required bearings
+        const startBearing = calcBearing(centerCoord, startCoord);
+        const endBearing = calcBearing(centerCoord, endCoord);
+        // get the radius in meters
+        const radiusM = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
+        // calculate the line arc
+        const { geometry } = createArc(centerCoord, radiusM, startBearing, endBearing, {
+            steps: this._geometryDetail,
+            // units can't be set => will result in error "options is invalid" => bug?
+        });
+        // IMPORTANT subsequently push coordinates
+        this._coordinates = this._coordinates.concat(geometry.coordinates);
+    }
+
+    /**
+     *
+     * @param {typedefs.openaipOpenairParser.Token} token - Must be a DbToken!
+     * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array clockwise: boolean}}
+     * @private
+     */
+    _getBuildArcCoordinates(token) {
+        if (token.getType() !== DbToken.type) {
+            throw new Error('Token must be a DB token');
+        }
+
+        // Current "token" is the DbToken => defines arc start/end coordinates
+        const { metadata: metadataDbToken } = token.getTokenized();
+        const { coordinates: dbTokenCoordinates } = metadataDbToken;
+        const [dbTokenStartCoordinate, dbTokenEndCoordinate] = dbTokenCoordinates;
+
+        // get preceding DpToken to verify that arc endpoint matches
+        const precedingDpToken = this._getPrecedingToken(DpToken.type);
+        if (precedingDpToken === null) {
+            throw new Error(`Preceding DP token not found.`);
+        }
+        const { metadata: metadataDpToken } = precedingDpToken.getTokenized();
+        const { coordinate: precedingDpTokenCoordinate } = metadataDpToken;
+
+        // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
+        const vdToken = this._getPrecedingToken(VdToken.type);
+        // TODO handle clockwise/counter-clockwise
+
+        // get preceding VxToken => defines the arc center
+        const vxToken = this._getPrecedingToken(VxToken.type);
+        if (vxToken === null) {
+            throw new Error(`Preceding VX token not found.`);
+        }
+        const { metadata: metadataVxToken } = vxToken.getTokenized();
+        const { coordinate: vxTokenCoordinate } = metadataVxToken;
+
+        // enforce that preceding DP coordinate matches arc start coordinate
+        if (
+            this._toArrayLike(precedingDpTokenCoordinate).toString() !==
+            this._toArrayLike(dbTokenStartCoordinate).toString()
+        ) {
             const { line, lineNumber } = precedingDpToken.getTokenized();
             throw new SyntaxError(`Coordinates '${line}' at line ${lineNumber} must match the arc start coordinate`);
         }
 
-        // get required bearings
+        // TODO add func "getNextToken" => check that next DP token matches arc endpoint
 
-        // get the radius
-
-        // calculate the line arc
+        return {
+            centerCoordinate: vxTokenCoordinate,
+            startCoordinate: dbTokenStartCoordinate,
+            endCoordinate: dbTokenEndCoordinate,
+            clockwise: true,
+        };
     }
 
     /**
@@ -360,6 +412,34 @@ class Airspace {
 
             throw new SyntaxError(`Unexpected token ${token.getType()} at line ${lineNumber}`);
         }
+    }
+
+    /**
+     * @param {Object} coordinate
+     * @return {number[]}
+     * @private
+     */
+    _toArrayLike(coordinate) {
+        return [coordinate.getLongitude(), coordinate.getLatitude()];
+    }
+
+    /**
+     * Traverses up the list of "consumed tokens" from the LAST item until a token with the specified type is found.
+     *
+     * @param {string} tokenType
+     * @return {typedefs.openaipOpenairParser.Token|null}
+     * @private
+     */
+    _getPrecedingToken(tokenType) {
+        for (let i = this._consumedTokens.length - 1; i >= 0; i--) {
+            const nextToken = this._consumedTokens[i];
+
+            if (nextToken.getType() === tokenType) {
+                return nextToken;
+            }
+        }
+
+        return null;
     }
 }
 
