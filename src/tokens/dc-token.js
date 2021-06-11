@@ -27,15 +27,15 @@ class DcToken extends BaseLineToken {
             throw new SyntaxError(`Unknown circle radius definition '${line}'`);
         }
 
-        token._tokenized = { line, lineNumber, metadata: { radius: linePartRadius } };
+        token._tokenized = { line, lineNumber, metadata: { radius: parseFloat(linePartRadius) } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, COMMENT_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN } = this._tokenTypes;
 
-        return [BLANK_TOKEN, COMMENT_TOKEN].includes(token.constructor.type);
+        return [BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN].includes(token.constructor.type);
     }
 }
 

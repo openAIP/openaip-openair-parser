@@ -24,6 +24,6 @@ module.exports = {
         'CTR',
     ],
     unlimited: 999,
-    geometryDetail: 50,
+    geometryDetail: 100,
     keepOriginal: false,
 };

@@ -86,6 +86,7 @@ class Airspace {
                 this._handleVToken(token);
                 break;
             case DcToken.type:
+                this._handleDcToken(token);
                 break;
             case DbToken.type:
                 break;
@@ -277,8 +278,12 @@ class Airspace {
         // convert radius in NM to meters
         const radiusM = radius * 1852;
 
-        const { geometry } = createCircle([latitude, longitude], radiusM, { steps: this._config.geometryDetail });
-        this._coordinates = geometry.coordinates;
+        const { geometry } = createCircle([longitude, latitude], radiusM, {
+            steps: this._config.geometryDetail,
+            units: 'meters',
+        });
+        const [coordinates] = geometry.coordinates;
+        this._coordinates = coordinates;
     }
 
     /**

@@ -36,7 +36,7 @@ class VToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN } = this._config.tokenTypes;
+        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN } = this._tokenTypes;
 
         return [COMMENT_TOKEN, DC_TOKEN, DB_TOKEN].includes(token.constructor.type);
     }
