@@ -11,23 +11,39 @@ const DbToken = require('./tokens/db-token');
 const EofToken = require('./tokens/eof-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
+const checkTypes = require('check-types');
 
 /**
- * @typedef typedefs.openaipOpenairParser.ParserConfig
- * @param {string} [encoding] - Sets the encoding to use. Defaults to 'utf-8'.
+ * @typedef typedefs.openaipOpenairParser.TokenizerConfig
+ * @type Object
+ * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+ * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
+
  */
 
+/**
+ * Reads the contents of a give file and tokenizes it. Each line will result in a single token.
+ * Each token holds a tokenized representation of the read line.
+ * The tokenizer will return a list of all read and created tokens and a list of occurred errors if any.
+ */
 class Tokenizer {
+    /**
+     * @param {typedefs.openaipOpenairParser.TokenizerConfig} config
+     */
     constructor(config) {
-        this._config = config || { encoding: 'utf-8' };
+        const { airspaceClasses, unlimited } = config;
+        checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
+        checkTypes.assert.integer(unlimited);
+
+        this._config = config;
         /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._tokenizers = [
             new CommentToken(),
             new BlankToken(),
-            new AcToken({ restrictAcClasses: this._config.restrictAcClasses }),
+            new AcToken({ airspaceClasses }),
             new AnToken(),
-            new AhToken(),
-            new AlToken(),
+            new AhToken({ unlimited }),
+            new AlToken({ unlimited }),
             new DpToken(),
             new VToken(),
             new DcToken(),
@@ -63,8 +79,8 @@ class Tokenizer {
             }
 
             try {
-                lineToken.tokenize(linestring, this._currentLine);
-                this._tokens.push(lineToken);
+                const token = lineToken.tokenize(linestring, this._currentLine);
+                this._tokens.push(token);
             } catch (e) {
                 this._error(line, this._currentLine, e.message);
             }

@@ -22,12 +22,16 @@ class AnToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
+        const token = new AnToken();
+
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
         const linePartName = line.replace(/^AN\s+/, '');
 
-        this._tokenized = { line, lineNumber, metadata: { name: linePartName } };
+        token._tokenized = { line, lineNumber, metadata: { name: linePartName } };
+
+        return token;
     }
 
     isAllowedNextToken(token) {

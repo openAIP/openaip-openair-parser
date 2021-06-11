@@ -1,5 +1,6 @@
 /**
  * @typedef typedefs.openaipOpenairParser.Token
+ * @type Object
  * @property type
  * @function getType
  * @function canHandle
@@ -33,9 +34,11 @@ class BaseLineToken {
     }
 
     /**
+     * Returns a new token that contains the tokenized representation of the parsed openair line.
+     *
      * @param {string} line
      * @param {number} lineNumber
-     * @return {void}
+     * @return {BaseLineToken}
      */
     tokenize(line, lineNumber) {
         throw new Error('NOT_IMPLEMENTED');

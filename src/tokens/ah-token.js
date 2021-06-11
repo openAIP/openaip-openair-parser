@@ -11,10 +11,6 @@ const CommentToken = require('./comment-token');
 class AhToken extends BaseAltitudeToken {
     static type = 'AH';
 
-    constructor(config) {
-        super(config);
-    }
-
     canHandle(line) {
         checkTypes.assert.string(line);
 
@@ -23,13 +19,17 @@ class AhToken extends BaseAltitudeToken {
     }
 
     tokenize(line, lineNumber) {
+        const token = new AhToken(this._config);
+
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
         const linePartAltitude = line.replace(/^AH\s+/, '');
         const altitude = this._getAltitude(linePartAltitude);
 
-        this._tokenized = { line, lineNumber, metadata: { altitude } };
+        token._tokenized = { line, lineNumber, metadata: { altitude } };
+
+        return token;
     }
 
     isAllowedNextToken(token) {

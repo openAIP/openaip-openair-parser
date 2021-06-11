@@ -23,6 +23,8 @@ class VToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
+        const token = new VToken();
+
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
@@ -35,7 +37,9 @@ class VToken extends BaseLineToken {
             throw new SyntaxError(`Unknown coordinate definition '${line}'`);
         }
 
-        this._tokenized = { line, lineNumber, metadata: { coordinate } };
+        token._tokenized = { line, lineNumber, metadata: { coordinate } };
+
+        return token;
     }
 
     isAllowedNextToken(token) {

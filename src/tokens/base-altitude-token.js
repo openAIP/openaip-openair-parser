@@ -2,12 +2,14 @@ const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 
 /**
- * @typedef typedefs.openaipOpenairParser.BaseAltitudeToken
- * @param {number} [unlimited] -  Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
+ * @typedef typedefs.openaipOpenairParser.BaseAltitudeTokenConfig
+ * @type Object
+ * @property {number} [unlimited] -  Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
  */
 
 /**
  * @typedef typedefs.openaipOpenairParser.AltitudeReader
+ * @type Object
  * @function canHandle
  * @function read
  */
@@ -172,9 +174,9 @@ class AltitudeUnlimitedReader {
      * @param {{unlimited: number}} config - Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
      */
     constructor({ unlimited }) {
-        if (unlimited != null) checkTypes.assert.integer(unlimited);
+        checkTypes.assert.integer(unlimited);
 
-        this._unlimited = unlimited || 999;
+        this._unlimited = unlimited;
         // unlimited ceiling definition
         this.REGEX_ALTITUDE = /^(UNLIMITED|UNL)$/;
     }
@@ -204,13 +206,14 @@ class AltitudeUnlimitedReader {
  */
 class BaseAltitudeToken extends BaseLineToken {
     /**
-     * @param {typedefs.openaipOpenairParser.BaseAltitudeToken} config
+     * @param {typedefs.openaipOpenairParser.BaseAltitudeTokenConfig} config
      */
     constructor(config) {
-        const { unlimited } = config || {};
-
         super();
 
+        const { unlimited } = config;
+
+        this._config = config;
         /** @type {typedefs.openaipOpenairParser.AltitudeReader[]} */
         this._readers = [
             new AltitudeDefaultReader(),

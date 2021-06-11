@@ -21,10 +21,14 @@ class BlankToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
+        const token = new BlankToken();
+
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        this._tokenized = { line, lineNumber };
+        token._tokenized = { line, lineNumber };
+
+        return token;
     }
 
     isAllowedNextToken(token) {

@@ -28,10 +28,14 @@ class CommentToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
+        const token = new CommentToken();
+
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        this._tokenized = { line, lineNumber };
+        token._tokenized = { line, lineNumber };
+
+        return token;
     }
 
     isAllowedNextToken(token) {

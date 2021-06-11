@@ -21,6 +21,8 @@ class DcToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
+        const token = new DcToken();
+
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
@@ -31,7 +33,9 @@ class DcToken extends BaseLineToken {
             throw new SyntaxError(`Unknown circle radius definition '${line}'`);
         }
 
-        this._tokenized = { line, lineNumber, metadata: { radius: linePartRadius } };
+        token._tokenized = { line, lineNumber, metadata: { radius: linePartRadius } };
+
+        return token;
     }
 
     isAllowedNextToken(token) {

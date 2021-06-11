@@ -20,7 +20,7 @@ describe('test tokenize AC line', () => {
     test('read AC definition with restricted classes', async () => {
         const classes = ['R', 'RMZ', 'TMZ'];
 
-        const openairParser = new Parser({ restrictAcClasses: classes });
+        const openairParser = new Parser({ airspaceClasses: classes });
         const result = await openairParser.parse('./tests/fixtures/ac-definitions.txt');
 
         expect(result.success).toBe(false);

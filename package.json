@@ -31,14 +31,16 @@
         "bump-version": "bump -c 'version bump to ' -tp"
     },
     "dependencies": {
+        "@turf/turf": "^5.1.6",
         "check-types": "^11.1.2",
         "coordinate-parser": "^1.0.7",
-        "luxon": "^1.26.0",
-        "n-readlines": "^1.0.1"
+        "n-readlines": "^1.0.1",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "@types/check-types": "^7.3.1",
         "@types/jest": "^26.0.20",
+        "@types/uuid": "^8.3.0",
         "babel-eslint": "^10.1.0",
         "eslint": "^7.20.0",
         "eslint-config-prettier": "^7.2.0",

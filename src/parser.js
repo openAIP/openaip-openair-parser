@@ -4,6 +4,9 @@ const CommentToken = require('./tokens/comment-token');
 const AcToken = require('./tokens/ac-token');
 const EofToken = require('./tokens/eof-token');
 const Airspace = require('./airspace');
+const defaultConfig = require('./default-parser-config');
+const checkTypes = require('check-types');
+const { featureCollection: createFeatureCollection } = require('@turf/turf');
 
 const PARSER_STATE = {
     // parser is traversing down in the list of tokens (from beginning) until EOF is reached or AC token is found
@@ -18,27 +21,37 @@ const PARSER_STATE = {
 
 /**
  * @typedef typedefs.openaipOpenairParser.ParserConfig
- * @param {string} [encoding] - Sets the encoding to use. Defaults to 'utf-8'.
- * @param {string[]} [restrictAcClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
- * @param {number} [unlimited] - Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
+ * @type Object
+ * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+ * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
+ * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
+ * @property {boolean} [keepOriginal] - If true, the returned GeoJson features will contain the original openAIR airspace block definitions. Defaults to false.
  */
 
 /**
  * @typedef typedefs.openaipOpenairParser.ParserResult
- * @param {boolean} success - If true, parsing was successful, false if not.
- * @param {Array} errors - A list of errors. Empty if parsing was successful.
+ * @type Object
+ * @property {boolean} success - If true, parsing was successful, false if not.
+ * @property {FeatureCollection} - [geojson] - On success, contains a GeoJson FeatureCollection representation of the parsed openAIR file.
+ * @property {Array} [errors] - A list of errors if parsing was NOT successful.
  */
 
 /**
- * Reads content of an openAIR formatted file and returns a normalized representation. For convenience,
- * JSON and GeoJSON formatters are included.
+ * Reads content of an openAIR formatted file and returns a GeoJSON representation.
  */
 class Parser {
     /**
      * @param {typedefs.openaipOpenairParser.ParserConfig} [config] - The parser configuration
      */
     constructor(config) {
-        this._config = config || { encoding: 'utf-8' };
+        const configuration = Object.assign(defaultConfig, config);
+        const { airspaceClasses, unlimited, geometryDetail, keepOriginal } = configuration;
+        checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
+        checkTypes.assert.integer(unlimited);
+        checkTypes.assert.integer(geometryDetail);
+        checkTypes.assert.boolean(keepOriginal);
+
+        this._config = configuration;
         // default state of parser
         this._state = PARSER_STATE.TRANSITION;
         /** @type {typedefs.openaipOpenairParser.Airspace[]} */
@@ -64,7 +77,10 @@ class Parser {
 
         IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
          */
-        const tokenizer = new Tokenizer(this._config);
+        const tokenizer = new Tokenizer({
+            airspaceClasses: this._config.airspaceClasses,
+            unlimited: this._config.unlimited,
+        });
         const tokens = await tokenizer.tokenize(filepath);
         // abort if tokenizer has syntax errors at this point
         if (tokenizer.hasErrors()) {
@@ -91,7 +107,10 @@ class Parser {
                 }
 
                 // create new airspace instance
-                this._buildAirspace = new Airspace();
+                this._buildAirspace = new Airspace({
+                    geometryDetail: this._config.geometryDetail,
+                    keepOriginal: this._config.keepOriginal,
+                });
                 this._buildAirspace.consumeToken(token);
 
                 // set parser state into build state
@@ -107,8 +126,8 @@ class Parser {
 
                 // finalize airspace with last token
                 this._buildAirspace.consumeToken(token);
-                // push built airspace into list
-                this._airspaces.push(this._buildAirspace);
+                // finalize the airspace => creates a GeoJSON feature
+                this._airspaces.push(this._buildAirspace.finalize().asGeoJson());
                 // clear built airspace
                 this._buildAirspace = null;
 
@@ -127,7 +146,7 @@ class Parser {
 
         return {
             success: true,
-            errors: [],
+            geojson: createFeatureCollection(this._airspaces),
         };
     }
 
