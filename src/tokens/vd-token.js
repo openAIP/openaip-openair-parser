@@ -21,7 +21,10 @@ class VdToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        token._tokenized = { line, lineNumber };
+        // canHandle function already validated correct clockwise/counter-clockwise definition => only get +/-
+        const linePartClockwise = line.replace(/^V\s+D=/, '');
+
+        token._tokenized = { line, lineNumber, metadata: { clockwise: linePartClockwise === '+' } };
 
         return token;
     }

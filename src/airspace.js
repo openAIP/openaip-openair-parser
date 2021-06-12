@@ -53,6 +53,7 @@ class Airspace {
         this._consumedTokens = [];
         /** @type {typedefs.openaipOpenairParser.Token|null} */
         this._lastToken = null;
+        this._currentTokenIndex = null;
         // airspace properties
         this._name = null;
         this._class = null;
@@ -60,52 +61,59 @@ class Airspace {
         this._geojson = null;
     }
 
+    static fromTokens(tokens, options) {
+
+    }
+
     /**
      * @param {typedefs.openaipOpenairParser.Token} token
+     * @param {typedefs.openaipOpenairParser.Token[]} tokens - Complete list of tokens
      */
-    consumeToken(token) {
+    consumeToken(token, tokens) {
+        // get index of current token in tokens list
+        this._currentTokenIndex = tokens.findIndex((value) => value === token);
+
         // if finalized, cannot consume tokens anymore
         if (this._isFinalized) {
             throw new Error('Airspace is already finalized');
         }
-        this._enforceIsAllowedToken(token);
 
         const type = token.getType();
         const { lineNumber } = token.getTokenized();
 
         switch (type) {
             case CommentToken.type:
-                this._handleCommentToken(token);
+                this._handleCommentToken(token, tokens);
                 break;
             case AcToken.type:
-                this._handleAcToken(token);
+                this._handleAcToken(token, tokens);
                 break;
             case AnToken.type:
-                this._handleAnToken(token);
+                this._handleAnToken(token, tokens);
                 break;
             case AhToken.type:
-                this._handleAhToken(token);
+                this._handleAhToken(token, tokens);
                 break;
             case AlToken.type:
-                this._handleAlToken(token);
+                this._handleAlToken(token, tokens);
                 break;
             case DpToken.type:
-                this._handleDpToken(token);
+                this._handleDpToken(token, tokens);
                 break;
             case VdToken.type:
-                this._handleVdToken(token);
+                this._handleVdToken(token, tokens);
                 break;
             case VxToken.type:
-                this._handleVxToken(token);
+                this._handleVxToken(token, tokens);
                 break;
             case DcToken.type:
-                this._handleDcToken(token);
+                this._handleDcToken(token, tokens);
                 break;
             case DbToken.type:
-                this._handleDbToken(token);
+                this._handleDbToken(token, tokens);
                 break;
             case BlankToken.type:
-                this._handleBlankToken(token);
+                this._handleBlankToken(token, tokens);
                 break;
             case EofToken.type:
                 break;
@@ -273,10 +281,12 @@ class Airspace {
         const { radius } = metadata;
 
         const precedingVxToken = this._getPrecedingToken(VxToken.type);
-        // TODO check that token is found
+        if (precedingVxToken === null) {
+            throw new Error(`Preceding VX token not found.`);
+        }
         // to create a circle, the center point coordinate from the previous VToken is required
-        const { metadata: vtokenMetadata } = precedingVxToken.getTokenized();
-        const { coordinate } = vtokenMetadata;
+        const { metadata: vxTokenMetadata } = precedingVxToken.getTokenized();
+        const { coordinate } = vxTokenMetadata;
 
         // convert radius in NM to meters
         const radiusM = radius * 1852;
@@ -336,17 +346,13 @@ class Airspace {
         const { coordinates: dbTokenCoordinates } = metadataDbToken;
         const [dbTokenStartCoordinate, dbTokenEndCoordinate] = dbTokenCoordinates;
 
-        // get preceding DpToken to verify that arc endpoint matches
-        const precedingDpToken = this._getPrecedingToken(DpToken.type);
-        if (precedingDpToken === null) {
-            throw new Error(`Preceding DP token not found.`);
-        }
-        const { metadata: metadataDpToken } = precedingDpToken.getTokenized();
-        const { coordinate: precedingDpTokenCoordinate } = metadataDpToken;
-
+        // by default, arcs are defined clockwise and usally no VD token is present
+        let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
         const vdToken = this._getPrecedingToken(VdToken.type);
-        // TODO handle clockwise/counter-clockwise
+        if (vdToken) {
+            clockwise = vdToken.getTokenized().metadata.clockwise;
+        }
 
         // get preceding VxToken => defines the arc center
         const vxToken = this._getPrecedingToken(VxToken.type);
@@ -355,6 +361,22 @@ class Airspace {
         }
         const { metadata: metadataVxToken } = vxToken.getTokenized();
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
+
+        // get preceding DpToken to verify that arc start point matches
+        const precedingDpToken = this._getPrecedingToken(DpToken.type);
+        if (precedingDpToken === null) {
+            throw new Error(`Preceding DP token not found.`);
+        }
+        const { metadata: metadataPrecedingDpToken } = precedingDpToken.getTokenized();
+        const { coordinate: precedingDpTokenCoordinate } = metadataPrecedingDpToken;
+
+        // get net DpToken to verify that arc end point matches
+        const nextDpToken = this._getNextToken(DpToken.type, idx);
+        if (nextDpToken === null) {
+            throw new Error(`Next DP token not found.`);
+        }
+        const { metadata: metadataNextDpToken } = precedingDpToken.getTokenized();
+        const { coordinate: nextDpTokenCoordinate } = metadataNextDpToken;
 
         // enforce that preceding DP coordinate matches arc start coordinate
         if (
@@ -365,7 +387,13 @@ class Airspace {
             throw new SyntaxError(`Coordinates '${line}' at line ${lineNumber} must match the arc start coordinate`);
         }
 
-        // TODO add func "getNextToken" => check that next DP token matches arc endpoint
+        // enforce that preceding DP coordinate matches arc start coordinate
+        if (
+            this._toArrayLike(nextDpTokenCoordinate).toString() !== this._toArrayLike(dbTokenEndCoordinate).toString()
+        ) {
+            const { line, lineNumber } = nextDpToken.getTokenized();
+            throw new SyntaxError(`Coordinates '${line}' at line ${lineNumber} must match the arc end coordinate`);
+        }
 
         return {
             centerCoordinate: vxTokenCoordinate,
@@ -399,22 +427,6 @@ class Airspace {
     }
 
     /**
-     * Check that given token is allowed as "next token".
-     *
-     * @param {typedefs.openaipOpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    _enforceIsAllowedToken(token) {
-        // check that new token is allowed
-        if (this._lastToken != null && this._lastToken.isAllowedNextToken(token) === false) {
-            const { lineNumber } = token.getTokenized();
-
-            throw new SyntaxError(`Unexpected token ${token.getType()} at line ${lineNumber}`);
-        }
-    }
-
-    /**
      * @param {Object} coordinate
      * @return {number[]}
      * @private
@@ -433,6 +445,26 @@ class Airspace {
     _getPrecedingToken(tokenType) {
         for (let i = this._consumedTokens.length - 1; i >= 0; i--) {
             const nextToken = this._consumedTokens[i];
+
+            if (nextToken.getType() === tokenType) {
+                return nextToken;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Traverses up the list of "consumed tokens" from the LAST item until a token with the specified type is found.
+     *
+     * @param {string} tokenType
+     * @param {number} startIndex - Index in array to start search from. Defaults to 0.
+     * @return {typedefs.openaipOpenairParser.Token|null}
+     * @private
+     */
+    _getNextToken(tokenType, startIndex = 0) {
+        for (startIndex; startIndex <= this._consumedTokens.length - 1; startIndex++) {
+            const nextToken = this._consumedTokens[startIndex];
 
             if (nextToken.getType() === tokenType) {
                 return nextToken;
