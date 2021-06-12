@@ -3,7 +3,7 @@ const BlankToken = require('./tokens/blank-token');
 const CommentToken = require('./tokens/comment-token');
 const AcToken = require('./tokens/ac-token');
 const EofToken = require('./tokens/eof-token');
-const Airspace = require('./airspace');
+const AirspaceFactory = require('./airspace-factory');
 const defaultConfig = require('./default-parser-config');
 const checkTypes = require('check-types');
 const { featureCollection: createFeatureCollection } = require('@turf/turf');
@@ -55,7 +55,7 @@ class Parser {
         this._config = configuration;
         // default state of parser
         this._currentState = PARSER_STATE.TRANSITION;
-        /** @type {typedefs.openaipOpenairParser.Airspace[]} */
+        /** @type {Airspace[]} */
         this._airspaces = [];
         this._lastToken = null;
         this._currentToken = null;
@@ -125,12 +125,15 @@ class Parser {
                 ) {
                     // do not push current token to airspace tokens list => token is either blank or eof
                     // build airspace from read tokens
-                    const airspace = Airspace.fromTokens(this._airspaceTokens, {
+                    const factory = new AirspaceFactory({
                         geometryDetail: this._config.geometryDetail,
                         keepOriginal: this._config.keepOriginal,
                     });
-                    // push new airspace GeoJSON to list
-                    this._airspaces.push(airspace.asGeoJson());
+                    const airspace = factory.createAirspace(this._airspaceTokens);
+                    // push new airspace to list
+                    this._airspaces.push(airspace);
+                    // reset read airspace tokens
+                    this._airspaceTokens = [];
 
                     // only change state to transition if if EOF is NOT reached yet
                     if (this._currentState === PARSER_STATE.BUILD) this._currentToken = PARSER_STATE.TRANSITION;
@@ -152,7 +155,7 @@ class Parser {
 
         return {
             success: true,
-            geojson: createFeatureCollection(this._airspaces),
+            geojson: createFeatureCollection(this._airspaces.map((value) => value.asGeoJson())),
         };
     }
 
