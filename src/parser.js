@@ -109,8 +109,6 @@ class Parser {
                     throw new SyntaxError(`Unexpected token ${this._currentToken.getType()} at line ${lineNumber}`);
                 }
 
-                // depending on state,  or start building an airspace
-
                 // add new airspace tokens to airspace token list => in process if reading a single airspace definition block
                 if (this._currentState === PARSER_STATE.READ) {
                     this._airspaceTokens.push(this._currentToken);
@@ -140,9 +138,6 @@ class Parser {
 
                     continue;
                 }
-
-                // parser is in unhandled state
-                throw new Error('Parser has reached unhandled state ');
             }
         } catch (e) {
             const { line, lineNumber } = this._currentToken.getTokenized();
@@ -153,9 +148,13 @@ class Parser {
             };
         }
 
+        const geojsonFeatures = this._airspaces.map((value) => {
+            return value.asGeoJson();
+        });
+
         return {
             success: true,
-            geojson: createFeatureCollection(this._airspaces.map((value) => value.asGeoJson())),
+            geojson: createFeatureCollection(geojsonFeatures),
         };
     }
 

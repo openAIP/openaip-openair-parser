@@ -59,9 +59,6 @@ class AirspaceFactory {
         for (const token of tokens) {
             this._consumeToken(token);
         }
-        // finalize airspace
-        this._finalize();
-
         const airspace = this._airspace;
 
         this._tokens = null;

@@ -17,8 +17,9 @@ class Airspace {
             upperCeiling: this.upperCeiling,
             lowerCeiling: this.lowerCeiling,
         };
-        const polygon = createPolygon([this._coordinates]);
-        this._geojson = createFeature(polygon.geometry, properties, { id: uuid.v4() });
+        const polygon = createPolygon([this.coordinates]);
+
+        return createFeature(polygon.geometry, properties, { id: uuid.v4() });
     }
 }
 
