@@ -261,8 +261,16 @@ class AirspaceFactory {
         // calculate line arc
 
         const centerCoord = this._toArrayLike(centerCoordinate);
-        const startCoord = this._toArrayLike(startCoordinate);
-        const endCoord = this._toArrayLike(endCoordinate);
+        let startCoord;
+        let endCoord;
+        if (clockwise) {
+            startCoord = this._toArrayLike(startCoordinate);
+            endCoord = this._toArrayLike(endCoordinate);
+        } else {
+            // flip coordinates
+            endCoord = this._toArrayLike(startCoordinate);
+            startCoord = this._toArrayLike(endCoordinate);
+        }
 
         // get required bearings
         const startBearing = calcBearing(centerCoord, startCoord);
@@ -274,8 +282,10 @@ class AirspaceFactory {
             steps: this._geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
-        // IMPORTANT subsequently push coordinates
-        this._airspace.coordinates = this._airspace.coordinates.concat(geometry.coordinates);
+
+        // if counter-clockwise, reverse coordinate list order
+        const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
     }
 
     /**
@@ -354,7 +364,7 @@ class AirspaceFactory {
             centerCoordinate: vxTokenCoordinate,
             startCoordinate: dbTokenStartCoordinate,
             endCoordinate: dbTokenEndCoordinate,
-            clockwise: true,
+            clockwise,
         };
     }
 
