@@ -39,8 +39,16 @@ class Airspace {
 
         if (validate) {
             if (!isValid || !isSimple) {
-                const { lineNumber } = this.consumedTokens[0].getTokenized();
-                throw new Error(`Geometry of airspace ${this.name} starting on line ${lineNumber} is invalid`);
+                const selfIntersect = this._getSelfIntersections(polygon);
+                if (selfIntersect) {
+                    const { lineNumber } = this.consumedTokens[0].getTokenized();
+                    throw new Error(
+                        `Geometry of airspace ${this.name} starting on line ${lineNumber} is invalid due to a self intersection`
+                    );
+                } else {
+                    const { lineNumber } = this.consumedTokens[0].getTokenized();
+                    throw new Error(`Geometry of airspace ${this.name} starting on line ${lineNumber} is invalid`);
+                }
             }
         }
 
