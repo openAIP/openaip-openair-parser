@@ -71,9 +71,6 @@ class AirspaceFactory {
      * @param {BaseLineToken} token
      */
     _consumeToken(token) {
-        // get index of current token in tokens list
-        this._currentTokenIndex = this._tokens.findIndex((value) => value === token);
-
         const type = token.getType();
         const { lineNumber } = token.getTokenized();
 
@@ -231,7 +228,7 @@ class AirspaceFactory {
         const { metadata } = token.getTokenized();
         const { radius } = metadata;
 
-        const precedingVxToken = this._getPrecedingToken(VxToken.type);
+        const precedingVxToken = this._getNextToken(token, VxToken.type, false);
         if (precedingVxToken === null) {
             throw new Error(`Preceding VX token not found.`);
         }
@@ -278,7 +275,7 @@ class AirspaceFactory {
             // units can't be set => will result in error "options is invalid" => bug?
         });
         // IMPORTANT subsequently push coordinates
-        this._coordinates = this._coordinates.concat(geometry.coordinates);
+        this._airspace.coordinates = this._airspace.coordinates.concat(geometry.coordinates);
     }
 
     /**
@@ -297,16 +294,16 @@ class AirspaceFactory {
         const { coordinates: dbTokenCoordinates } = metadataDbToken;
         const [dbTokenStartCoordinate, dbTokenEndCoordinate] = dbTokenCoordinates;
 
-        // by default, arcs are defined clockwise and usally no VD token is present
+        // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken = this._getPrecedingToken(VdToken.type);
+        const vdToken = this._getNextToken(token, VdToken.type, false);
         if (vdToken) {
             clockwise = vdToken.getTokenized().metadata.clockwise;
         }
 
         // get preceding VxToken => defines the arc center
-        const vxToken = this._getPrecedingToken(VxToken.type);
+        const vxToken = this._getNextToken(token, VxToken.type, false);
         if (vxToken === null) {
             throw new Error(`Preceding VX token not found.`);
         }
@@ -314,7 +311,7 @@ class AirspaceFactory {
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         // get preceding DpToken to verify that arc start point matches
-        const precedingDpToken = this._getPrecedingToken(DpToken.type);
+        const precedingDpToken = this._getNextToken(token, DpToken.type, false);
         if (precedingDpToken === null) {
             throw new Error(`Preceding DP token not found.`);
         }
@@ -322,11 +319,11 @@ class AirspaceFactory {
         const { coordinate: precedingDpTokenCoordinate } = metadataPrecedingDpToken;
 
         // get net DpToken to verify that arc end point matches
-        const nextDpToken = this._getNextToken(DpToken.type, idx);
+        const nextDpToken = this._getNextToken(token, DpToken.type, true);
         if (nextDpToken === null) {
             throw new Error(`Next DP token not found.`);
         }
-        const { metadata: metadataNextDpToken } = precedingDpToken.getTokenized();
+        const { metadata: metadataNextDpToken } = nextDpToken.getTokenized();
         const { coordinate: nextDpTokenCoordinate } = metadataNextDpToken;
 
         // enforce that preceding DP coordinate matches arc start coordinate
@@ -334,16 +331,23 @@ class AirspaceFactory {
             this._toArrayLike(precedingDpTokenCoordinate).toString() !==
             this._toArrayLike(dbTokenStartCoordinate).toString()
         ) {
+            const { line: startpointLine, lineNumber: startpointLineNumber } = token.getTokenized();
             const { line, lineNumber } = precedingDpToken.getTokenized();
-            throw new SyntaxError(`Coordinates '${line}' at line ${lineNumber} must match the arc start coordinate`);
+            throw new SyntaxError(
+                `Coordinates '${line}' at line ${lineNumber} must match the arc start coordinate '${startpointLine}' at line ${startpointLineNumber}`
+            );
         }
 
         // enforce that preceding DP coordinate matches arc start coordinate
         if (
             this._toArrayLike(nextDpTokenCoordinate).toString() !== this._toArrayLike(dbTokenEndCoordinate).toString()
         ) {
+            const { line: endpointLine, lineNumber: endpointLineNumber } = token.getTokenized();
             const { line, lineNumber } = nextDpToken.getTokenized();
-            throw new SyntaxError(`Coordinates '${line}' at line ${lineNumber} must match the arc end coordinate`);
+
+            throw new SyntaxError(
+                `Coordinates '${line}' at line ${lineNumber} must match the arc end coordinate '${endpointLine}' at line ${endpointLineNumber}`
+            );
         }
 
         return {
@@ -384,41 +388,33 @@ class AirspaceFactory {
     }
 
     /**
-     * TODO use IDX
-     * Traverses up the list of "consumed tokens" from the LAST item until a token with the specified type is found.
+     * Traverses up the list of "consumed tokens" from the token until a token with the specified type is found.
      *
-     * @param {string} tokenType
+     * @param {BaseLineToken} token - Currently consumed token
+     * @param {string} tokenType - Token type to search for
+     * @param {boolean} [lookAhead] - If true, searches for NEXT token in list with specified type. If false, searches preceding token.
      * @return {BaseLineToken|null}
      * @private
      */
-    _getPrecedingToken(tokenType) {
-        for (let i = this._tokens.length - 1; i >= 0; i--) {
-            const nextToken = this._tokens[i];
+    _getNextToken(token, tokenType, lookAhead = true) {
+        // get index of current token in tokens list
+        let currentIndex = this._tokens.findIndex((value) => value === token);
 
-            if (nextToken.getType() === tokenType) {
-                return nextToken;
+        if (lookAhead) {
+            for (currentIndex; currentIndex <= this._tokens.length - 1; currentIndex++) {
+                const nextToken = this._tokens[currentIndex];
+
+                if (nextToken.getType() === tokenType) {
+                    return nextToken;
+                }
             }
-        }
+        } else {
+            for (currentIndex; currentIndex >= 0; currentIndex--) {
+                const nextToken = this._tokens[currentIndex];
 
-        return null;
-    }
-
-    /**
-     * TODO use IDX
-     *
-     * Traverses up the list of "consumed tokens" from the LAST item until a token with the specified type is found.
-     *
-     * @param {string} tokenType
-     * @param {number} startIndex - Index in array to start search from. Defaults to 0.
-     * @return {typedefs.openaipOpenairParser.Token|null}
-     * @private
-     */
-    _getNextToken(tokenType, startIndex = 0) {
-        for (startIndex; startIndex <= this._consumedTokens.length - 1; startIndex++) {
-            const nextToken = this._consumedTokens[startIndex];
-
-            if (nextToken.getType() === tokenType) {
-                return nextToken;
+                if (nextToken.getType() === tokenType) {
+                    return nextToken;
+                }
             }
         }
 
