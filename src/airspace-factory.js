@@ -320,46 +320,6 @@ class AirspaceFactory {
         const { metadata: metadataVxToken } = vxToken.getTokenized();
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
-        // get preceding DpToken to verify that arc start point matches
-        const precedingDpToken = this._getNextToken(token, DpToken.type, false);
-        if (precedingDpToken === null) {
-            throw new Error(`Preceding DP token not found.`);
-        }
-        const { metadata: metadataPrecedingDpToken } = precedingDpToken.getTokenized();
-        const { coordinate: precedingDpTokenCoordinate } = metadataPrecedingDpToken;
-
-        // get net DpToken to verify that arc end point matches
-        const nextDpToken = this._getNextToken(token, DpToken.type, true);
-        if (nextDpToken === null) {
-            throw new Error(`Next DP token not found.`);
-        }
-        const { metadata: metadataNextDpToken } = nextDpToken.getTokenized();
-        const { coordinate: nextDpTokenCoordinate } = metadataNextDpToken;
-
-        // enforce that preceding DP coordinate matches arc start coordinate
-        if (
-            this._toArrayLike(precedingDpTokenCoordinate).toString() !==
-            this._toArrayLike(dbTokenStartCoordinate).toString()
-        ) {
-            const { line: startpointLine, lineNumber: startpointLineNumber } = token.getTokenized();
-            const { line, lineNumber } = precedingDpToken.getTokenized();
-            throw new SyntaxError(
-                `Coordinates '${line}' at line ${lineNumber} must match the arc start coordinate '${startpointLine}' at line ${startpointLineNumber}`
-            );
-        }
-
-        // enforce that preceding DP coordinate matches arc start coordinate
-        if (
-            this._toArrayLike(nextDpTokenCoordinate).toString() !== this._toArrayLike(dbTokenEndCoordinate).toString()
-        ) {
-            const { line: endpointLine, lineNumber: endpointLineNumber } = token.getTokenized();
-            const { line, lineNumber } = nextDpToken.getTokenized();
-
-            throw new SyntaxError(
-                `Coordinates '${line}' at line ${lineNumber} must match the arc end coordinate '${endpointLine}' at line ${endpointLineNumber}`
-            );
-        }
-
         return {
             centerCoordinate: vxTokenCoordinate,
             startCoordinate: dbTokenStartCoordinate,

@@ -134,7 +134,7 @@ class Parser {
                     this._airspaceTokens = [];
 
                     // only change state to transition if if EOF is NOT reached yet
-                    if (this._currentState === PARSER_STATE.BUILD) this._currentToken = PARSER_STATE.TRANSITION;
+                    if (this._currentState === PARSER_STATE.BUILD) this._currentState = PARSER_STATE.TRANSITION;
 
                     continue;
                 }
