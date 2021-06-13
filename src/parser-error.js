@@ -19,7 +19,7 @@ class ParserError {
     }
 
     toString() {
-        return `Error found at line ${this.line}: ${this.errorMessage}`;
+        return `Error found in '${this.line}' at line ${this.lineNumber}: ${this.errorMessage}`;
     }
 }
 

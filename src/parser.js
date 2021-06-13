@@ -59,6 +59,8 @@ class Parser {
         checkTypes.assert.boolean(fixGeometry);
 
         this._config = configuration;
+        // custom formatters
+        this.formatter = [];
         // default state of parser
         this._currentState = PARSER_STATE.TRANSITION;
         /** @type {Airspace[]} */
@@ -72,7 +74,7 @@ class Parser {
      * Tries to parse the file content.
      *
      * @param filepath
-     * @return {Promise<typedefs.openaipOpenairParser.ParserResult>}
+     * @return {Promise<Parser>}
      */
     async parse(filepath) {
         this._reset();
@@ -93,11 +95,9 @@ class Parser {
         // abort if tokenizer has syntax errors at this point
         if (tokenizer.hasErrors()) {
             const errors = tokenizer.getErrors();
+            const messages = errors.map((value) => value.toString());
 
-            return {
-                success: errors.length === 0,
-                errors: errors,
-            };
+            throw new SyntaxError('\n' + messages.join('\n'));
         }
 
         try {
@@ -146,20 +146,31 @@ class Parser {
         } catch (e) {
             const { line, lineNumber } = this._currentToken.getTokenized();
 
-            return {
-                success: false,
-                errors: [new ParserError({ line, lineNumber, errorMessage: e.message })],
-            };
+            throw new ParserError({ line, lineNumber, errorMessage: e.message });
         }
+    }
 
+    /**
+     * @param {string} format
+     */
+    toFormat(format) {
+        switch (format) {
+            case 'geojson':
+                return this.toGeojson();
+            default:
+                throw new Error(`Unknown format '${format}'`);
+        }
+    }
+
+    /**
+     * @return {typedefs.openaipOpenairParser.ParserResult}
+     */
+    toGeojson() {
         const geojsonFeatures = this._airspaces.map((value) => {
             return value.asGeoJson({ validate: this._config.validateGeometry, fix: this._config.fixGeometry });
         });
 
-        return {
-            success: true,
-            geojson: createFeatureCollection(geojsonFeatures),
-        };
+        return createFeatureCollection(geojsonFeatures);
     }
 
     /**

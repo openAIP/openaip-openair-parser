@@ -88,7 +88,8 @@ class Tokenizer {
         ];
         /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._tokens = [];
-        this._currentLine = 0;
+        this._currentLineString = null;
+        this._currentLineNumber = 0;
         this._errors = [];
     }
 
@@ -105,32 +106,31 @@ class Tokenizer {
         let line;
 
         while ((line = liner.next())) {
-            this._currentLine++;
+            this._currentLineNumber++;
             // call trim to also remove newlines
-            const linestring = line.toString().trim();
+            this._currentLineString = line.toString().trim();
 
             // find the tokenizer that can handle the current line
-            const lineToken = this._tokenizers.find((value) => value.canHandle(linestring));
+            const lineToken = this._tokenizers.find((value) => value.canHandle(this._currentLineString));
             if (lineToken == null) {
                 // fail hard if unable to find a tokenizer for a specific line
-                throw new SyntaxError(`Failed to read line ${this._currentLine}. Unknown syntax.`);
+                throw new SyntaxError(`Failed to read line ${this._currentLineNumber}. Unknown syntax.`);
             }
 
             try {
-                const token = lineToken.tokenize(linestring, this._currentLine);
+                const token = lineToken.tokenize(this._currentLineString, this._currentLineNumber);
                 this._tokens.push(token);
             } catch (e) {
-                this._errors.push(
-                    new ParserError({
-                        line,
-                        lineNumber: this._currentLine,
-                        errorMessage: e.message,
-                    })
-                );
+                const error = new ParserError({
+                    line: this._currentLineString,
+                    lineNumber: this._currentLineNumber,
+                    errorMessage: e.message,
+                });
+                this._errors.push(error);
             }
         }
         // finalize by adding EOF token
-        this._tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this._currentLine }));
+        this._tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this._currentLineNumber }));
 
         return this._tokens;
     }
@@ -170,7 +170,8 @@ class Tokenizer {
      */
     _reset() {
         this._tokens = [];
-        this._currentLine = 0;
+        this._currentLine = null;
+        this._currentLineNumber = 0;
         this._errors = [];
     }
 }
