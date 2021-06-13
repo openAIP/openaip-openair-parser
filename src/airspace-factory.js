@@ -290,7 +290,6 @@ class AirspaceFactory {
     }
 
     /**
-     *
      * @param {BaseLineToken} token - Must be a DbToken!
      * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array clockwise: boolean}}
      * @private

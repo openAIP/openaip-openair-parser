@@ -100,10 +100,10 @@ class Parser {
             throw new SyntaxError('\n' + messages.join('\n'));
         }
 
-        try {
-            /*
+        /*
         Iterate of tokens and create airspaces.
          */
+        try {
             for (let i = 0; i < tokens.length; i++) {
                 this._currentToken = tokens[i];
                 this._currentState = this._nextState(this._currentToken);

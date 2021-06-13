@@ -63,7 +63,6 @@ class Airspace {
     _fixGeometry(polygonFeature) {
         const reader = new jsts.io.GeoJSONReader();
         const writer = new jsts.io.GeoJSONWriter();
-
         const jstsGeometry = reader.read(polygonFeature.geometry);
         const convexHull = jstsGeometry.convexHull();
 
@@ -78,7 +77,6 @@ class Airspace {
     _isValid(polygonFeature) {
         const reader = new jsts.io.GeoJSONReader();
         const jstsGeometry = reader.read(polygonFeature.geometry);
-
         const isValidValidator = new jsts.operation.valid.IsValidOp(jstsGeometry);
 
         return isValidValidator.isValid();
@@ -92,12 +90,16 @@ class Airspace {
     _isSimple(polygonFeature) {
         const reader = new jsts.io.GeoJSONReader();
         const jstsGeometry = reader.read(polygonFeature.geometry);
-
         const isSimpleValidator = new jsts.operation.IsSimpleOp(jstsGeometry);
 
         return isSimpleValidator.isSimple();
     }
 
+    /**
+     * @param {Object} polygonFeature
+     * @return {Object|null}
+     * @private
+     */
     _getSelfIntersections(polygonFeature) {
         const reader = new jsts.io.GeoJSONReader();
         const jstsGeometry = reader.read(polygonFeature.geometry);
