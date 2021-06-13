@@ -27,6 +27,8 @@ const PARSER_STATE = {
  * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
  * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
  * @property {boolean} [keepOriginal] - If true, the returned GeoJson features will contain the original openAIR airspace block definitions. Defaults to false.
+ * @property {boolean} [validateGeometry] - If true, the GeoJson features are validate. Parser will throw an error if an invalid geometry is found. Defaults to true.
+ * @property {boolean} [fixGeometry] - If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
  */
 
 /**
@@ -46,11 +48,15 @@ class Parser {
      */
     constructor(config) {
         const configuration = Object.assign(defaultConfig, config);
-        const { airspaceClasses, unlimited, geometryDetail, keepOriginal } = configuration;
+        const { airspaceClasses, unlimited, geometryDetail, keepOriginal, validateGeometry, fixGeometry } =
+            configuration;
+
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
         checkTypes.assert.integer(unlimited);
         checkTypes.assert.integer(geometryDetail);
         checkTypes.assert.boolean(keepOriginal);
+        checkTypes.assert.boolean(validateGeometry);
+        checkTypes.assert.boolean(fixGeometry);
 
         this._config = configuration;
         // default state of parser
@@ -135,8 +141,6 @@ class Parser {
 
                     // only change state to transition if if EOF is NOT reached yet
                     if (this._currentState === PARSER_STATE.BUILD) this._currentState = PARSER_STATE.TRANSITION;
-
-                    continue;
                 }
             }
         } catch (e) {
@@ -149,7 +153,7 @@ class Parser {
         }
 
         const geojsonFeatures = this._airspaces.map((value) => {
-            return value.asGeoJson();
+            return value.asGeoJson({ validate: this._config.validateGeometry, fix: this._config.fixGeometry });
         });
 
         return {

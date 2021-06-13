@@ -29,4 +29,6 @@ module.exports = {
     unlimited: 999,
     geometryDetail: 100,
     keepOriginal: false,
+    validateGeometry: true,
+    fixGeometry: true,
 };
