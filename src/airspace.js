@@ -43,11 +43,11 @@ class Airspace {
                 if (selfIntersect) {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
                     throw new Error(
-                        `Geometry of airspace ${this.name} starting on line ${lineNumber} is invalid due to a self intersection`
+                        `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection`
                     );
                 } else {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
-                    throw new Error(`Geometry of airspace ${this.name} starting on line ${lineNumber} is invalid`);
+                    throw new Error(`Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`);
                 }
             }
         }

@@ -30,5 +30,5 @@ module.exports = {
     geometryDetail: 100,
     keepOriginal: false,
     validateGeometry: true,
-    fixGeometry: true,
+    fixGeometry: false,
 };
