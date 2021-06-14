@@ -2,6 +2,8 @@
 
 A configurable [OpenAIR](http://www.winpilot.com/usersguide/userairspace.asp) format parser for Node.
 
+#Node
+
 ```javascript
 const Parser = require('@openaip/openair-parser');
 
@@ -86,4 +88,25 @@ Parser result is a GeoJSON FeatureCollection:
         }
     ]
 }
+```
+
+#CLI
+
+```bash
+node cli.js -h
+
+Usage: cli [options]
+
+Options:
+  -f, --input-filepath <inFilepath>    The input file path to the openAIR file
+  -o, --output-filepath <outFilepath>  The output filename of the generated geojson file
+  -V, --validate                       If set to true, validates geometries. Defaults to true.
+  -F, --fix-geometry                   If set to true, tries to fix geometries. Defaults to false.
+  -h, --help                           output usage information
+```
+
+Simple command line usage:
+
+```bash
+node cli.js -f ./tests/fixtures/full-airspaces.txt -o test.json
 ```
