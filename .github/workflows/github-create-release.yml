@@ -67,7 +67,7 @@ jobs:
                   #NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
                   NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_PAT_PACKAGE_TOKEN}}
 
-    publish-package:
+    publish-package-github:
         needs: build-package
         runs-on: ubuntu-latest
         steps:
@@ -85,3 +85,19 @@ jobs:
             - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+    publish-package-npm:
+        needs: build-package
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
+            - uses: actions/setup-node@v1
+              with:
+                  # TODO set to v15 when https://github.com/actions/setup-node/issues/213 is fixed
+                  node-version: 14
+                  registry-url: https://registry.npmjs.org
+                  scope: '@openaip'
+            - run: npm install
+            - run: npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
