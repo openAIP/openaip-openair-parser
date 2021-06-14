@@ -41,6 +41,8 @@ const PARSER_STATE = {
 
 /**
  * Reads content of an openAIR formatted file and returns a GeoJSON representation.
+ * Parser implements the openAIR specification according to http://www.winpilot.com/usersguide/userairspace.asp
+ * except the following tokens: AT,TO,TC,SP,SB,DA,DY.
  */
 class Parser {
     /**
@@ -65,7 +67,6 @@ class Parser {
         this._currentState = PARSER_STATE.TRANSITION;
         /** @type {Airspace[]} */
         this._airspaces = [];
-        this._lastToken = null;
         this._currentToken = null;
         this._airspaceTokens = [];
     }
@@ -107,13 +108,6 @@ class Parser {
             for (let i = 0; i < tokens.length; i++) {
                 this._currentToken = tokens[i];
                 this._currentState = this._nextState(this._currentToken);
-
-                // enforce the tokens are in syntactically correct sequence
-                if (this._lastToken != null && this._lastToken.isAllowedNextToken(this._currentToken) === false) {
-                    const { lineNumber } = this._currentToken.getTokenized();
-
-                    throw new SyntaxError(`Unexpected token ${this._currentToken.getType()} at line ${lineNumber}`);
-                }
 
                 // add new airspace tokens to airspace token list => in process if reading a single airspace definition block
                 if (this._currentState === PARSER_STATE.READ) {
@@ -217,7 +211,6 @@ class Parser {
     _reset() {
         this._currentState = PARSER_STATE.TRANSITION;
         this._airspaces = [];
-        this._lastToken = null;
         this._currentToken = null;
         this._airspaceTokens = [];
     }

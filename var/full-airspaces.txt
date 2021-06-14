@@ -1,67 +1,12 @@
 *#########################################################################################################
 *#########################################################################################################
-* Open-Airspace-file Germany created by Peter Kemme
-* please send any comment to peter.kemme[at]gmx.de
-*
-* effective from 20th May 2021
-* All data and information contained in this data file is provided without guarantee as to their completeness or correctness.
-* Any conclusions drawn from these data and information are the sole responsibility of the user.
-*
-*
-* The times for the restricted and danger areas (ED-R�s and ED-D�s) are from German-AIP.
-*
-*   e.g.    MON-THU     = this area is active from Monday till Thursday
-*           MON-FRI+    = this area is normally active from Monday till Friday. Activation for SAT, SUN and HOL is possible by NOTAM
-*                         Special times [e.g. MON 0600 (0500)-FRI 1300(1200)] are NOT indicated!!
-*           NOTAM       = this area will only be activated by NOTAM
-*           H24         = this area is 24hours every day active including holidays!!
-*           HX          = undefined activation times, activation is possible on short notice at every time
-*
-* Changes to this times can be distributed at every time by NOTAM
-*
-*
-* A big "THANK YOU" to Michael Paus, who developed a software to check the file against typo�s
-*        mpMediaSoft GmbH
-*        Sch�naicher Str. 3
-*        70597 Stuttgart
-*        Tel.: +49-711-765-4094
-*        EMail: info (�t) mpmediasoft.de
-*
-*
+* Comment 1
+* Comment 2
 *########################################################################################################
 *########################################################################################################
 *
 *
 *
-* changes 2021_01 -> 2021_03
-* RMZ EDAY new
-* ED-R 54 activation times changed
-* ED-R 56 A and B merged to ED-R 56
-* ED-R 74 splitted into 74A, 74B and 74C
-* ED-R 145 coordinates changed
-* upper limits of ED-D 44, 46 and 47 changed
-* class C changed at: EDDB, EDDF, EDDH, EDDV
-* CTR�s changed: LFSB, EDDE
-* class D (non CTR) changed at: EDHI, EDDV, EDDW
-* TMZ new: EDDW, EDDE
-* TMZ changed at: EDDC, EDDH, EDDV, EDDP, EDJA
-* glider sectors changed at: EDDH
-* glider sectors withdrawn at: EDDV
-*
-* changes 2021_03 -> 2021_04
-* PJE Brilon withdrawn
-* some typos corrected
-* lower limit of TMZ-EDDE corrected
-*
-* changes 2021_04 -> 2021_05
-* CTR Berlin-Tegel withdrawn
-*
-*
-*
-*################################################################################
-*
-*
-*####### BEGIN AIRSPACE -RESTRICTED AREAS- ########
 
 AC R
 AN ED-R SkySails HX 125.100

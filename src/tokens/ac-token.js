@@ -6,7 +6,6 @@ const checkTypes = require('check-types');
  * @type Object
  * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
  * @property {typedefs.openaipOpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
-
  */
 
 /**

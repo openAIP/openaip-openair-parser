@@ -88,6 +88,9 @@ class Tokenizer {
         ];
         /** @type {typedefs.openaipOpenairParser.Token[]} */
         this._tokens = [];
+        // previous processed token, used to validate correct token order
+        /** @type {BaseLineToken} */
+        this._prevToken = null;
         this._currentLineString = null;
         this._currentLineNumber = 0;
         this._errors = [];
@@ -117,9 +120,21 @@ class Tokenizer {
                 throw new SyntaxError(`Failed to read line ${this._currentLineNumber}. Unknown syntax.`);
             }
 
+            // validate correct token order
+            if (this._prevToken && this._prevToken.isAllowedNextToken(lineToken) === false) {
+                const { lineNumber: prevTokenLineNumber } = this._prevToken.getTokenized();
+                const { lineNumber: currentTokenLineNumber } = this._prevToken.getTokenized();
+
+                throw new SyntaxError(
+                    `Previous token '${this._prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${lineToken.getType()}' on line ${currentTokenLineNumber}`
+                );
+            }
+
             try {
                 const token = lineToken.tokenize(this._currentLineString, this._currentLineNumber);
                 this._tokens.push(token);
+                // keep processed as "previous token" to check token order
+                this._prevToken = token;
             } catch (e) {
                 const error = new ParserError({
                     line: this._currentLineString,
@@ -170,6 +185,7 @@ class Tokenizer {
      */
     _reset() {
         this._tokens = [];
+        this._prevToken = null;
         this._currentLine = null;
         this._currentLineNumber = 0;
         this._errors = [];

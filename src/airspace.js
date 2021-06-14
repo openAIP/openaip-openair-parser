@@ -2,6 +2,9 @@ const { polygon: createPolygon, feature: createFeature, cleanCoords } = require(
 const uuid = require('uuid');
 const jsts = require('jsts');
 
+/**
+ * Result of a parsed airspace definition block. Can be output as GeoJSON.
+ */
 class Airspace {
     constructor() {
         this.consumedTokens = [];

@@ -1,0 +1,8 @@
+* some AC definitions to test the AC token
+
+AC R
+AN ED-R SkySails HX 125.100
+AH 2500ft AGL
+AL GND
+V X=54:48:22 N 008:51:53 E
+DC 1.0

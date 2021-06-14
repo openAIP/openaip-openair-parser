@@ -3,7 +3,7 @@
   "features": [
     {
       "type": "Feature",
-      "id": "d7fe6e63-562a-4ceb-bf31-bc228af15f81",
+      "id": "a1cd362f-fe3a-46f4-b2a7-e6cb9805513f",
       "properties": {
         "name": "ED-R SkySails HX 125.100",
         "class": "R",
@@ -432,7 +432,7 @@
     },
     {
       "type": "Feature",
-      "id": "e5432e7e-ea91-47d7-85dc-60fc3d283c98",
+      "id": "a6969be4-da8c-4ea6-8a65-be415d7890e6",
       "properties": {
         "name": "ED-R1 Garching H24",
         "class": "R",
@@ -861,7 +861,7 @@
     },
     {
       "type": "Feature",
-      "id": "d0348467-df49-4d48-a100-3de4de07d004",
+      "id": "0be1ee54-3467-41e0-9af4-bc9546b0b5f1",
       "properties": {
         "name": "ED-R3 Geesthacht H24",
         "class": "R",
@@ -1290,7 +1290,7 @@
     },
     {
       "type": "Feature",
-      "id": "bf85e1cf-8f0a-4c2b-a8ee-8aa6899dcb5b",
+      "id": "b538f93e-b5c5-4baa-b862-0dfa16a33517",
       "properties": {
         "name": "ED-R4 Wannsee H24",
         "class": "R",
@@ -1639,7 +1639,7 @@
     },
     {
       "type": "Feature",
-      "id": "6469b630-74a3-4044-a547-ca872de9bf76",
+      "id": "78c0322c-b01f-492c-811b-1793054aa61e",
       "properties": {
         "name": "ED-R5 Biblis H24",
         "class": "R",
@@ -2068,7 +2068,7 @@
     },
     {
       "type": "Feature",
-      "id": "0ec08061-79ff-4d5b-ab81-bf802e6ba7d9",
+      "id": "6bcc25cc-af11-4819-aaf6-7d88c7ad91bd",
       "properties": {
         "name": "ED-R6 Brokdorf H24",
         "class": "R",
@@ -2497,7 +2497,7 @@
     },
     {
       "type": "Feature",
-      "id": "d4d4c828-00e1-4cf9-b57d-69135e5e29dd",
+      "id": "1d4d0ead-56c2-481e-b2e5-c5cbef087948",
       "properties": {
         "name": "ED-R7 Brunsbuettel H24",
         "class": "R",
@@ -2926,7 +2926,7 @@
     },
     {
       "type": "Feature",
-      "id": "59281928-e13b-4247-9f6e-c5f0a9868d42",
+      "id": "9fd3966c-b573-41ae-bef2-fc80331c441a",
       "properties": {
         "name": "ED-R8 Emsland H24",
         "class": "R",
@@ -3355,7 +3355,7 @@
     },
     {
       "type": "Feature",
-      "id": "cd883483-e9b6-4c21-ae58-6abaa2881550",
+      "id": "c23cf98d-96b6-45b6-9478-664813a78dcd",
       "properties": {
         "name": "ED-R10A Todendorf-Putlos MON-SAT+",
         "class": "R",
@@ -3420,7 +3420,7 @@
     },
     {
       "type": "Feature",
-      "id": "07b9993d-1c3a-42c7-b669-c76c58afc713",
+      "id": "f5fbcdfe-b537-4b28-931b-041537edf5ff",
       "properties": {
         "name": "ED-R10B Todendorf-Putlos MON-SAT+",
         "class": "R",
@@ -3473,7 +3473,7 @@
     },
     {
       "type": "Feature",
-      "id": "f98fd412-6643-4249-801f-ab8ab58298fb",
+      "id": "9c352f2d-acc6-40fd-a8b5-1beb18a9669e",
       "properties": {
         "name": "ED-R10C Todendorf-Putlos MON-SAT+",
         "class": "R",
@@ -3526,7 +3526,7 @@
     },
     {
       "type": "Feature",
-      "id": "cd590b54-b48a-4f84-99f1-d336052b3bbd",
+      "id": "d3847138-39a2-470a-8052-a1ad0b2aad04",
       "properties": {
         "name": "ED-R10C_2 Todendorf-Putlos NOTAM",
         "class": "R",
@@ -3579,7 +3579,7 @@
     },
     {
       "type": "Feature",
-      "id": "230eb387-f10d-427e-9b4f-0a16070af3ec",
+      "id": "7078af39-a3bd-47eb-bd9a-1ae4bc4934a8",
       "properties": {
         "name": "ED-R10D Todendorf-Putlos MON-SAT+",
         "class": "R",
@@ -3624,7 +3624,7 @@
     },
     {
       "type": "Feature",
-      "id": "cd5d49e0-41ae-4161-97fa-5e79e43af0a7",
+      "id": "bfc46de2-b2f0-4565-86d1-c12e72233a56",
       "properties": {
         "name": "ED-R10E Todendorf-Putlos MON-SAT+",
         "class": "R",
@@ -3673,7 +3673,7 @@
     },
     {
       "type": "Feature",
-      "id": "89a61efc-f132-4574-acf7-53c4c3e64f9b",
+      "id": "11b4e338-da91-4269-9efb-63bc1ab5771b",
       "properties": {
         "name": "ED-R11A Ostsee MON-FRI+",
         "class": "R",
@@ -3722,7 +3722,7 @@
     },
     {
       "type": "Feature",
-      "id": "ea0cb5ab-87a3-4835-9707-d5230dbec70f",
+      "id": "f59edd5d-19b0-4ab7-872b-d4d4fee0cb18",
       "properties": {
         "name": "ED-R11B Ostsee MON-FRI+",
         "class": "R",
@@ -3783,7 +3783,7 @@
     },
     {
       "type": "Feature",
-      "id": "f85a01c5-a86f-45d1-b930-d7d0f661f0d6",
+      "id": "1dd6ea3d-6b34-44bd-abbc-4a1d326e336e",
       "properties": {
         "name": "ED-R12A Schoenhagen MON-FRI+",
         "class": "R",
@@ -3828,7 +3828,7 @@
     },
     {
       "type": "Feature",
-      "id": "0a016db5-927b-4f7d-9e91-b119887a9ece",
+      "id": "ce5bd721-88e4-4c01-afca-880d5c7564ea",
       "properties": {
         "name": "ED-R12A_2 Schoenhagen NOTAM",
         "class": "R",
@@ -3873,7 +3873,7 @@
     },
     {
       "type": "Feature",
-      "id": "4bd748ba-7fcf-41e3-8d5d-27faeeb17863",
+      "id": "d2558d4a-e514-4ad7-868c-db12e0e7e369",
       "properties": {
         "name": "ED-R12B Schoenhagen MON-FRI+",
         "class": "R",
@@ -3926,7 +3926,7 @@
     },
     {
       "type": "Feature",
-      "id": "17dfea47-8f87-4845-9905-4e3ebdfc5638",
+      "id": "616bc0ff-e133-4a17-acfc-0a48c8c728ca",
       "properties": {
         "name": "ED-R13A Meldorfer Bucht MON-FRI+",
         "class": "R",
@@ -3975,7 +3975,7 @@
     },
     {
       "type": "Feature",
-      "id": "f7151b34-877a-42b8-b887-5cc989e79b0b",
+      "id": "51591ef7-547d-44b0-887e-4db355245a60",
       "properties": {
         "name": "ED-R13A_2 Meldorfer Bucht NOTAM",
         "class": "R",
@@ -4024,7 +4024,7 @@
     },
     {
       "type": "Feature",
-      "id": "c7c2d67e-33ab-4f69-b3f5-e112e3917fab",
+      "id": "d46fa669-dd39-4ea6-8ddb-fe3ef2874fcb",
       "properties": {
         "name": "ED-R13B Meldorfer Bucht MON-FRI+",
         "class": "R",
@@ -4089,7 +4089,7 @@
     },
     {
       "type": "Feature",
-      "id": "1449d276-826b-4e6f-83c8-8fac469002d5",
+      "id": "2fb6fbf1-49c9-4b11-9309-9d9003df07e4",
       "properties": {
         "name": "ED-R14 Moorkamp MON-THU",
         "class": "R",
@@ -4518,7 +4518,7 @@
     },
     {
       "type": "Feature",
-      "id": "c55c9800-3115-4bde-83f3-f403386ea5bf",
+      "id": "007acc79-4b2c-4241-bb4f-6d47964d0457",
       "properties": {
         "name": "ED-R15 Karow MON-FRI+",
         "class": "R",
@@ -4563,7 +4563,7 @@
     },
     {
       "type": "Feature",
-      "id": "3de592cc-ef24-4525-9c7d-9c135cb3f51e",
+      "id": "07adff61-7ebe-46aa-959a-e747f67faa40",
       "properties": {
         "name": "ED-R17 Jaegerbrueck MON-FRI+",
         "class": "R",
@@ -4616,7 +4616,7 @@
     },
     {
       "type": "Feature",
-      "id": "14a69301-8e55-4508-aad3-cb168e8fd05b",
+      "id": "f03cde37-0c4b-4013-8421-c5b6371eb655",
       "properties": {
         "name": "ED-R22 Hagenow MON-FRI+",
         "class": "R",
@@ -4661,7 +4661,7 @@
     },
     {
       "type": "Feature",
-      "id": "ffb4735c-6145-456a-a19c-c74be4d39536",
+      "id": "1e198f1d-73ef-42f8-921d-7c7d856c675a",
       "properties": {
         "name": "ED-R23 Grafenrheinfeld H24",
         "class": "R",
@@ -5090,7 +5090,7 @@
     },
     {
       "type": "Feature",
-      "id": "73300dbd-7c97-4702-ae8d-84015f90910c",
+      "id": "1b7897e5-77b9-4fe8-9241-ab3c3b87220e",
       "properties": {
         "name": "ED-R24 Grohnde H24",
         "class": "R",
@@ -5519,7 +5519,7 @@
     },
     {
       "type": "Feature",
-      "id": "41a5c3e7-8748-42c1-a9ac-814454e9a00d",
+      "id": "991bec2a-8610-464c-ba1a-ae482de0e9cf",
       "properties": {
         "name": "ED-R25 Gundremmingen H24",
         "class": "R",
@@ -5948,7 +5948,7 @@
     },
     {
       "type": "Feature",
-      "id": "f6d440d5-7472-4567-8ac0-b334b73e1ea9",
+      "id": "d3e02591-6155-45cd-9214-033b270fda87",
       "properties": {
         "name": "ED-R27 Isar H24",
         "class": "R",
@@ -6377,7 +6377,7 @@
     },
     {
       "type": "Feature",
-      "id": "8592fce0-a171-4c0d-a9fc-d3dc7ba4201f",
+      "id": "2e23ce12-bc09-4aad-a183-4c33bd766dd7",
       "properties": {
         "name": "ED-R30 Ehra-Lessien MON-FRI+",
         "class": "R",
@@ -6430,7 +6430,7 @@
     },
     {
       "type": "Feature",
-      "id": "64c05ba4-de17-471d-aaad-f408f500623c",
+      "id": "c0edbb24-ae74-4fd0-9326-8cc7e5c1d7d9",
       "properties": {
         "name": "ED-R30_2 Ehra-Lessien NOTAM",
         "class": "R",
@@ -6483,7 +6483,7 @@
     },
     {
       "type": "Feature",
-      "id": "b2952377-2d45-4ced-aca3-dd3e2abb6187",
+      "id": "19b5c97a-9ff8-4919-a881-69b782881107",
       "properties": {
         "name": "ED-R31 Bergen MON-FRI+",
         "class": "R",
@@ -6556,7 +6556,7 @@
     },
     {
       "type": "Feature",
-      "id": "1f05829b-6d87-4713-b0a4-e2b2f172ef3c",
+      "id": "71c1d338-33ca-4c19-95c7-2310a4842307",
       "properties": {
         "name": "ED-R32A Munster MON-FRI+",
         "class": "R",
@@ -6617,7 +6617,7 @@
     },
     {
       "type": "Feature",
-      "id": "7924f870-a78d-4fd7-8c8c-7ef81b2e9adf",
+      "id": "3dde4236-b216-49eb-b2e4-4d35e1a7f9ce",
       "properties": {
         "name": "ED-R32B Munster MON-FRI+",
         "class": "R",
@@ -6666,7 +6666,7 @@
     },
     {
       "type": "Feature",
-      "id": "ab3eea30-f6e7-4012-8022-1db63b02cf9c",
+      "id": "73113001-2e14-48bd-9d90-a3a546cc3fa7",
       "properties": {
         "name": "ED-R33A Unterluess MON-SAT",
         "class": "R",
@@ -6719,7 +6719,7 @@
     },
     {
       "type": "Feature",
-      "id": "ade49500-4a7a-4ef7-b589-b718cb417208",
+      "id": "bc61bd97-05b2-45d0-9965-be57e660e082",
       "properties": {
         "name": "ED-R33B Unterluess MON-SAT",
         "class": "R",
@@ -6764,7 +6764,7 @@
     },
     {
       "type": "Feature",
-      "id": "1d2daf38-e0be-4a4e-b26a-44c82e52d9c6",
+      "id": "e60a25ae-fa6b-4288-b184-a10e213a88d9",
       "properties": {
         "name": "ED-R34A Meppen MON-FRI+",
         "class": "R",
@@ -6813,7 +6813,7 @@
     },
     {
       "type": "Feature",
-      "id": "c715a95d-ad92-42f6-8af9-39410060c81a",
+      "id": "2dba7fb4-dcad-4e3d-a3e7-e64214f90ecd",
       "properties": {
         "name": "ED-R34B Meppen MON-FRI+",
         "class": "R",
@@ -6858,7 +6858,7 @@
     },
     {
       "type": "Feature",
-      "id": "365885d8-bb97-4626-84c8-fc618f2efacf",
+      "id": "f2c90446-3845-4f0b-9f02-b9d9cd46f770",
       "properties": {
         "name": "ED-R34C Meppen NOTAM",
         "class": "R",
@@ -6907,7 +6907,7 @@
     },
     {
       "type": "Feature",
-      "id": "4a4de16e-a5cb-484d-8601-3a3b41f8293c",
+      "id": "b925f86d-51ab-46b4-b45c-6bb65faa5da5",
       "properties": {
         "name": "ED-R37A Nordhorn MON-FRI",
         "class": "R",
@@ -7336,7 +7336,7 @@
     },
     {
       "type": "Feature",
-      "id": "9d2c278a-ffcb-4439-90a0-a9fe31fb8506",
+      "id": "7b377d97-e377-4116-ab20-903bb5bdc313",
       "properties": {
         "name": "ED-R37B Nordhorn MON-FRI",
         "class": "R",
@@ -7541,7 +7541,7 @@
     },
     {
       "type": "Feature",
-      "id": "85c13a12-1d53-4fe3-a6c5-f5e5672741ee",
+      "id": "093da245-2062-4c11-b560-b1710331e448",
       "properties": {
         "name": "ED-R37B_2 Nordhorn NOTAM",
         "class": "R",
@@ -7746,7 +7746,7 @@
     },
     {
       "type": "Feature",
-      "id": "d0544c6b-9381-4837-9497-6c286db9626f",
+      "id": "1e23d0a0-f716-4165-a53e-f3a211285423",
       "properties": {
         "name": "ED-R38 Neckarwestheim H24",
         "class": "R",
@@ -8175,7 +8175,7 @@
     },
     {
       "type": "Feature",
-      "id": "5c418f22-e896-4333-9fa4-5492e46dee6d",
+      "id": "02ce524f-d8d3-4314-bdf7-48b9f2f04340",
       "properties": {
         "name": "ED-R39 Obrigheim H24",
         "class": "R",
@@ -8604,7 +8604,7 @@
     },
     {
       "type": "Feature",
-      "id": "18b3a2d3-8bc7-485f-8498-ae17942a2682",
+      "id": "0ea553ef-739a-4662-9f25-e333323bf05c",
       "properties": {
         "name": "ED-R40 Philippsburg H24",
         "class": "R",
@@ -9033,7 +9033,7 @@
     },
     {
       "type": "Feature",
-      "id": "3580bdae-4cb5-4857-ae43-1fc2efca693c",
+      "id": "4029668f-d5e9-4606-ac31-06d23c2cd92c",
       "properties": {
         "name": "ED-R41 Unterweser H24",
         "class": "R",
@@ -9462,7 +9462,7 @@
     },
     {
       "type": "Feature",
-      "id": "19ac5500-0cb3-4761-b756-3bdd872980a4",
+      "id": "92f27e21-71e3-48bd-a822-687f6ac02694",
       "properties": {
         "name": "ED-R45 Melpitz NOTAM",
         "class": "R",
@@ -9891,7 +9891,7 @@
     },
     {
       "type": "Feature",
-      "id": "8734ab1d-818c-4efa-a62d-c58e62905062",
+      "id": "2f14f645-655c-476c-b35b-01ec274a2a56",
       "properties": {
         "name": "ED-R50 Meseberg NOTAM",
         "class": "R",
@@ -10320,7 +10320,7 @@
     },
     {
       "type": "Feature",
-      "id": "690edf09-f015-4977-b4d0-38958c71b91b",
+      "id": "76d15cbf-6886-4b37-9c5b-a1ceb1efd513",
       "properties": {
         "name": "ED-R54 Lehnin MON-FRI",
         "class": "R",
@@ -10377,7 +10377,7 @@
     },
     {
       "type": "Feature",
-      "id": "00af72c8-26da-4e9e-a30e-00d7a826781a",
+      "id": "29d86138-2e28-4bfe-8fbc-61e7974dd201",
       "properties": {
         "name": "ED-R55 Storkow MON-FRI+",
         "class": "R",
@@ -10422,7 +10422,7 @@
     },
     {
       "type": "Feature",
-      "id": "adada04f-9cb9-42a7-ad80-bff0d7cb3956",
+      "id": "931ee679-1dd4-4f18-86a1-dcf3c7716153",
       "properties": {
         "name": "ED-R56 Kummersdorf MON-FRI",
         "class": "R",
@@ -10879,7 +10879,7 @@
     },
     {
       "type": "Feature",
-      "id": "31e98b47-19f7-40b6-b234-c0a09f28ee0a",
+      "id": "4901c825-b6c5-4552-b8ce-8ad004953316",
       "properties": {
         "name": "ED-R60 Oberpfaffenh. NOTAM nighttime",
         "class": "R",
@@ -11308,7 +11308,7 @@
     },
     {
       "type": "Feature",
-      "id": "bb73f070-a96c-4fd0-b09c-ced28dec1356",
+      "id": "e6585513-974c-4c58-92f3-d7847482d0ef",
       "properties": {
         "name": "ED-R70 Holzdorf MON-FRI+",
         "class": "R",
@@ -11373,7 +11373,7 @@
     },
     {
       "type": "Feature",
-      "id": "f4961c5f-0365-46db-8640-e1eb5f89e139",
+      "id": "7b480e2e-839a-46e4-8e13-071546cf96d9",
       "properties": {
         "name": "ED-R70_2 Holzdorf NOTAM",
         "class": "R",
@@ -11438,7 +11438,7 @@
     },
     {
       "type": "Feature",
-      "id": "6f285cd6-904d-4c98-bbde-f871cfbd5dd9",
+      "id": "d3ac8126-d078-41bd-873d-a227c4de851b",
       "properties": {
         "name": "ED-R71 Klietz MON-FRI+",
         "class": "R",
@@ -11503,7 +11503,7 @@
     },
     {
       "type": "Feature",
-      "id": "52586495-40e0-4503-adde-da449ad86d43",
+      "id": "acaaca06-fcad-4e74-a945-541a3fc8b97e",
       "properties": {
         "name": "ED-R73A Altengrabow MON-FRI+",
         "class": "R",
@@ -11560,7 +11560,7 @@
     },
     {
       "type": "Feature",
-      "id": "adf7f61f-6b8a-4709-9c74-da9b01078a96",
+      "id": "8b4a018b-7061-499f-8338-092ece57c5c3",
       "properties": {
         "name": "ED-R73B Altengrabow NOTAM",
         "class": "R",
@@ -11617,7 +11617,7 @@
     },
     {
       "type": "Feature",
-      "id": "1c86ca56-d5f9-4fd2-bfcc-d919fbc34d70",
+      "id": "f93367ca-a5a9-4a3b-ba1e-f2e3060b787a",
       "properties": {
         "name": "ED-R73C Altengrabow NOTAM",
         "class": "R",
@@ -11666,7 +11666,7 @@
     },
     {
       "type": "Feature",
-      "id": "e85c8732-db1d-4d0c-82cc-3344284a9bb5",
+      "id": "2afb0b85-b38c-48dc-b9a4-e6dfc3df4b5e",
       "properties": {
         "name": "ED-R74A Altmark H24",
         "class": "R",
@@ -11731,7 +11731,7 @@
     },
     {
       "type": "Feature",
-      "id": "7259eb71-278c-423c-b0a7-8315871c631c",
+      "id": "f25ead77-e70d-4318-baa5-fe2a21f26275",
       "properties": {
         "name": "ED-R74B Altmark H24",
         "class": "R",
@@ -11772,7 +11772,7 @@
     },
     {
       "type": "Feature",
-      "id": "b660c218-5152-4e7e-9e10-5c10bd4fb4b1",
+      "id": "7eac98d1-86b2-4f5d-b388-a38885e4a483",
       "properties": {
         "name": "ED-R74C Altmark NOTAM",
         "class": "R",
@@ -12201,7 +12201,7 @@
     },
     {
       "type": "Feature",
-      "id": "781799af-d816-4a8c-94bb-70dd72934f98",
+      "id": "86c89c12-cfd5-4360-a1e2-c69de646ead7",
       "properties": {
         "name": "ED-R76A Oberlausitz MON-FRI+",
         "class": "R",
@@ -12406,7 +12406,7 @@
     },
     {
       "type": "Feature",
-      "id": "b9f87e96-1cb3-4dad-9067-905b2193056d",
+      "id": "d6baed54-d965-478d-89f6-72ec8114ee6d",
       "properties": {
         "name": "ED-R76B Oberlausitz MON-FRI+",
         "class": "R",
@@ -12467,7 +12467,7 @@
     },
     {
       "type": "Feature",
-      "id": "44d55068-80bc-4443-ac85-0778487fe1f9",
+      "id": "02f5ce55-52c2-4445-b3c7-6527a04c2758",
       "properties": {
         "name": "ED-R76C Oberlausitz MON-FRI+",
         "class": "R",
@@ -12524,7 +12524,7 @@
     },
     {
       "type": "Feature",
-      "id": "0934d794-0bfe-4826-93bf-0e1e7ee0eaba",
+      "id": "e7389b87-5a63-46b1-b350-46215738cf95",
       "properties": {
         "name": "ED-R76C_2 Oberlausitz NOTAM",
         "class": "R",
@@ -12581,7 +12581,7 @@
     },
     {
       "type": "Feature",
-      "id": "cd6a4b65-db49-4a9a-a679-3714919e0413",
+      "id": "e0bbe115-44fb-4e87-ac19-dbc52d712478",
       "properties": {
         "name": "ED-R76D Oberlausitz MON-FRI+",
         "class": "R",
@@ -12630,7 +12630,7 @@
     },
     {
       "type": "Feature",
-      "id": "71e5e993-29bb-4092-99fa-6b473a235557",
+      "id": "c319b643-d025-4a1e-a276-e62c5f58efb7",
       "properties": {
         "name": "ED-R76D_2 Oberlausitz NOTAM",
         "class": "R",
@@ -12679,7 +12679,7 @@
     },
     {
       "type": "Feature",
-      "id": "2cd3d772-3af1-4041-95b0-c43c38af0350",
+      "id": "686dcdad-681b-4dd1-b45c-f539d07eef1d",
       "properties": {
         "name": "ED-R77 Marienberg MON-FRI+",
         "class": "R",
@@ -12724,7 +12724,7 @@
     },
     {
       "type": "Feature",
-      "id": "c3ca1710-9672-4d20-8027-ac80c514666d",
+      "id": "f21db6de-63e5-443d-9535-d64b0ee3bdc8",
       "properties": {
         "name": "ED-R90 Wartburg H24",
         "class": "R",
@@ -13153,7 +13153,7 @@
     },
     {
       "type": "Feature",
-      "id": "c2a21c98-a7b5-4a88-9277-893d85193bc5",
+      "id": "4a3db7a1-b816-4f87-8577-c95f0cbfda5f",
       "properties": {
         "name": "ED-R92 Bad Salzungen MON-FRI+",
         "class": "R",
@@ -13198,7 +13198,7 @@
     },
     {
       "type": "Feature",
-      "id": "fa0c00e7-160a-4e75-a7ac-fd4f0b26e903",
+      "id": "b0a7946a-39fd-47dd-806c-67917d58f6fd",
       "properties": {
         "name": "ED-R93 Bad Frankenhausen MON-FRI+",
         "class": "R",
@@ -13243,7 +13243,7 @@
     },
     {
       "type": "Feature",
-      "id": "a983ddaf-2c5a-48f1-9a8f-46e08b678967",
+      "id": "a1145688-60c0-40dd-902c-af0dc70b5812",
       "properties": {
         "name": "ED-R94 Sondershausen MON-FRI+",
         "class": "R",
@@ -13288,7 +13288,7 @@
     },
     {
       "type": "Feature",
-      "id": "898bae37-f768-4d65-a5c4-c5106885f007",
+      "id": "3cf4d826-24b4-4e82-b73f-e1e4f63c6b87",
       "properties": {
         "name": "ED-R95A Ohrdruf MON-FRI+",
         "class": "R",
@@ -13337,7 +13337,7 @@
     },
     {
       "type": "Feature",
-      "id": "93054b2c-97df-4244-a516-7fbecd2ec681",
+      "id": "0f6cb7c5-fd0c-49ae-b75a-f72073697141",
       "properties": {
         "name": "ED-R95B Ohrdruf MON-FRI+",
         "class": "R",
@@ -13378,7 +13378,7 @@
     },
     {
       "type": "Feature",
-      "id": "acb75c2b-be93-4a70-ba33-d7235fbe1a4b",
+      "id": "39a41c75-fae6-4fab-ac8c-e7d3952f98d4",
       "properties": {
         "name": "ED-R96 Romrod MON-FRI",
         "class": "R",
@@ -13807,7 +13807,7 @@
     },
     {
       "type": "Feature",
-      "id": "bd018f33-485f-4cf1-96be-86106cc9ea24",
+      "id": "9a43f59f-7a48-4f23-befe-9bdeda0289dc",
       "properties": {
         "name": "ED-R97A Schwarzenborn MON-FRI+",
         "class": "R",
@@ -13860,7 +13860,7 @@
     },
     {
       "type": "Feature",
-      "id": "daef29c1-5b7f-4bbc-a096-c212ab3c030e",
+      "id": "2ed21986-0f46-4a5c-9f1a-52efec0da0a8",
       "properties": {
         "name": "ED-R97B Schwarzenborn MON-FRI",
         "class": "R",
@@ -13905,7 +13905,7 @@
     },
     {
       "type": "Feature",
-      "id": "1d515876-725d-46ca-a154-c78b8ae8b6b6",
+      "id": "15eee1b9-db0f-4c06-879c-74298e5fd60c",
       "properties": {
         "name": "ED-R111 Juelich H24",
         "class": "R",
@@ -14334,7 +14334,7 @@
     },
     {
       "type": "Feature",
-      "id": "c0ee9653-2b40-4a3a-b49a-6530c84dcffb",
+      "id": "e9e9aa59-ae25-4000-9c1c-2daa90b5b505",
       "properties": {
         "name": "ED-R112A Senne MON-FRI+",
         "class": "R",
@@ -14407,7 +14407,7 @@
     },
     {
       "type": "Feature",
-      "id": "4c49edaa-502e-4884-9cbf-f85aa3be26bc",
+      "id": "822bcb57-e363-4d21-bbdf-dd0e45450dae",
       "properties": {
         "name": "ED-R112B Senne MON-FRI+",
         "class": "R",
@@ -14452,7 +14452,7 @@
     },
     {
       "type": "Feature",
-      "id": "f98acd95-cde5-47b4-8bda-43333f0a1e6e",
+      "id": "9c4dab39-875b-4ebf-91fa-e4e6977a45c2",
       "properties": {
         "name": "ED-R116 Baumholder MON-SAT+",
         "class": "R",
@@ -14505,7 +14505,7 @@
     },
     {
       "type": "Feature",
-      "id": "adc7e775-8f77-4293-b8ca-be348c49b586",
+      "id": "63fef25c-4e91-4afa-9a5c-ab385c7c60b2",
       "properties": {
         "name": "Korridor F",
         "class": "Q",
@@ -14550,7 +14550,7 @@
     },
     {
       "type": "Feature",
-      "id": "351deee8-496d-4a29-b1a3-64caaf4a9d32",
+      "id": "c52428cd-c29b-4ac9-adc9-79342d4c4ef3",
       "properties": {
         "name": "ED-R117 Elsenborn H24",
         "class": "R",
@@ -15979,7 +15979,7 @@
     },
     {
       "type": "Feature",
-      "id": "727fef58-e322-41d0-8bad-7d598b4854e1",
+      "id": "6a26acb2-4f54-4635-bfc1-c0b516a8f4d6",
       "properties": {
         "name": "ED-R118 Pirmasens TUE+",
         "class": "R",
@@ -16408,7 +16408,7 @@
     },
     {
       "type": "Feature",
-      "id": "d99c0996-ae14-494d-95b1-89875e1ee596",
+      "id": "7d3579eb-7a02-4263-a545-0f6249208081",
       "properties": {
         "name": "ED-R131 Lampoldshausen MON-FRI+",
         "class": "R",
@@ -16837,7 +16837,7 @@
     },
     {
       "type": "Feature",
-      "id": "1f882530-b06b-4055-9b84-11f1554e862a",
+      "id": "ce2cd90c-96d0-4a53-809d-3e89eb225c8f",
       "properties": {
         "name": "ED-R132A Heuberg MON-FRI+",
         "class": "R",
@@ -16882,7 +16882,7 @@
     },
     {
       "type": "Feature",
-      "id": "9a65c717-4f78-4713-a238-d1302524a476",
+      "id": "18fec171-13bd-4f26-8f4b-f188d3134046",
       "properties": {
         "name": "ED-R132B Heuberg NOTAM",
         "class": "R",
@@ -16935,7 +16935,7 @@
     },
     {
       "type": "Feature",
-      "id": "4002e87b-89d6-4251-a2d9-f88eeaccd061",
+      "id": "7c114cb2-d429-40d2-9286-8ba111530e5f",
       "properties": {
         "name": "ED-R133 Karlsruhe H24",
         "class": "R",
@@ -17364,7 +17364,7 @@
     },
     {
       "type": "Feature",
-      "id": "d7fb2d69-af0f-40a9-ba17-a5a98d18350d",
+      "id": "5935ae9e-1d9d-48ce-9ad8-8175d266846d",
       "properties": {
         "name": "ED-R134 Wildflecken MON-FRI+",
         "class": "R",
@@ -17409,7 +17409,7 @@
     },
     {
       "type": "Feature",
-      "id": "6a8f7a66-f82e-43fe-b8c7-be79d1218647",
+      "id": "74875dd0-88a2-468f-af4c-0ad012378170",
       "properties": {
         "name": "ED-R135 Hammelburg MON-FRI+",
         "class": "R",
@@ -17454,7 +17454,7 @@
     },
     {
       "type": "Feature",
-      "id": "3215d0cb-fb79-4b44-8675-2f032a01b153",
+      "id": "419a68ea-58b5-4c6a-8c64-05c736911834",
       "properties": {
         "name": "ED-R136A Grafenwoehr H24",
         "class": "R",
@@ -17519,7 +17519,7 @@
     },
     {
       "type": "Feature",
-      "id": "d3bd7556-1f61-4aa8-9a69-593c2a0e5df9",
+      "id": "ad5341c1-6bee-400c-8015-df1dcdd3b149",
       "properties": {
         "name": "ED-R136B Grafenwoehr MO-FR+",
         "class": "R",
@@ -17568,7 +17568,7 @@
     },
     {
       "type": "Feature",
-      "id": "d7679a79-bba6-44d5-91c0-0c3a439aae63",
+      "id": "0e55f925-0b0b-4a6f-9c3a-1683ffa83984",
       "properties": {
         "name": "ED-R137A Hohenfels H24",
         "class": "R",
@@ -17641,7 +17641,7 @@
     },
     {
       "type": "Feature",
-      "id": "fba1c12b-9b69-4ab6-bf82-4bcf8ed97d61",
+      "id": "c68be1db-ca9c-4333-bbc3-7f6642e39d29",
       "properties": {
         "name": "ED-R137A_2 Hohenfels NOTAM",
         "class": "R",
@@ -17714,7 +17714,7 @@
     },
     {
       "type": "Feature",
-      "id": "46f64572-3170-449b-a8cf-db52b21a6f18",
+      "id": "a67f5a42-d484-4e29-9440-5c057853e5b7",
       "properties": {
         "name": "ED-R137B Hohenfels NOTAM",
         "class": "R",
@@ -17755,7 +17755,7 @@
     },
     {
       "type": "Feature",
-      "id": "c07fb606-748e-4219-b5a5-a0792a8fedfe",
+      "id": "765061ae-e947-408f-908d-7cbf8acd191f",
       "properties": {
         "name": "ED-R137B_2 Hohenfels NOTAM",
         "class": "R",
@@ -17796,7 +17796,7 @@
     },
     {
       "type": "Feature",
-      "id": "489c69b0-c316-4433-9be4-fbb7a5496fe9",
+      "id": "85047b3e-d6a3-4a89-a71b-72089df0f257",
       "properties": {
         "name": "ED-R138A Siegenburg MO-FR+",
         "class": "R",
@@ -17845,7 +17845,7 @@
     },
     {
       "type": "Feature",
-      "id": "3ce3a92f-da25-4d89-8d02-d9803b2d037d",
+      "id": "87488aad-4eeb-4a11-a2df-7ceb2671119b",
       "properties": {
         "name": "ED-R139 Wettzell H24",
         "class": "R",
@@ -18274,7 +18274,7 @@
     },
     {
       "type": "Feature",
-      "id": "3cff4ccc-ea00-491e-9f6d-5dd14929e38d",
+      "id": "f062be19-c6f2-428c-a168-f88375bf8818",
       "properties": {
         "name": "ED-R141 Altenstadt MON-FRI",
         "class": "R",
@@ -18319,7 +18319,7 @@
     },
     {
       "type": "Feature",
-      "id": "19560b91-43c7-4d87-962a-a67845309c99",
+      "id": "3a0aa50f-863c-4b39-b715-447651732fca",
       "properties": {
         "name": "ED-R142 Reiteralpe MON-FRI+",
         "class": "R",
@@ -18452,7 +18452,7 @@
     },
     {
       "type": "Feature",
-      "id": "64d5fe66-e2f4-4fec-ae9b-d438f4cc0868",
+      "id": "78aa8a82-9f05-4b1a-80e3-cb1cf95db062",
       "properties": {
         "name": "ED-R143 Hagenauer Forst MON-FRI+",
         "class": "R",
@@ -18881,7 +18881,7 @@
     },
     {
       "type": "Feature",
-      "id": "b1bf56db-5aec-4ac0-9bda-b4de938203a7",
+      "id": "19f46432-2ffb-4813-b9f0-d513cd3a580e",
       "properties": {
         "name": "ED-R144 Franken MON-FRI+",
         "class": "R",
@@ -18950,7 +18950,7 @@
     },
     {
       "type": "Feature",
-      "id": "3d9517e2-2b21-4f06-b73d-be595d3d569a",
+      "id": "463f02c0-2dea-4bfd-869e-0115f5e46487",
       "properties": {
         "name": "ED-R145 Spatzenhausen MON-THU",
         "class": "R",
@@ -18999,7 +18999,7 @@
     },
     {
       "type": "Feature",
-      "id": "b4d311e8-c34c-4588-ade2-76f2ab59cd23",
+      "id": "c5cdd504-8459-4cb6-b711-2749a9d47494",
       "properties": {
         "name": "ED-R146 Berlin H24",
         "class": "R",
@@ -19428,7 +19428,7 @@
     },
     {
       "type": "Feature",
-      "id": "cf9a5aa4-489c-4f02-9b1b-64742d6cc514",
+      "id": "817a506c-8330-413e-ba24-101c36120a40",
       "properties": {
         "name": "ED-R147 Manching HX (FIS)",
         "class": "R",
@@ -19481,7 +19481,7 @@
     },
     {
       "type": "Feature",
-      "id": "c967e1cc-4d74-44cd-98b4-4d3dc80dae40",
+      "id": "5a80455d-935a-41d2-8590-bf1a2023a865",
       "properties": {
         "name": "ED-R148 Schleswig HX (FIS)",
         "class": "R",
@@ -19534,7 +19534,7 @@
     },
     {
       "type": "Feature",
-      "id": "06d6e4d6-57ff-413f-ab53-ad597e58ee0f",
+      "id": "e7caca1e-902c-4333-9b84-9fbf6e831226",
       "properties": {
         "name": "ED-R201A TRA-Friesland MON-FRI",
         "class": "R",
@@ -19595,7 +19595,7 @@
     },
     {
       "type": "Feature",
-      "id": "de6eac21-c5d1-4c27-89ed-6ec983c72fc9",
+      "id": "07d86508-7501-4f1f-88b1-1e892e405656",
       "properties": {
         "name": "ED-R201B TRA-Friesland MON-FRI",
         "class": "R",
@@ -19644,7 +19644,7 @@
     },
     {
       "type": "Feature",
-      "id": "2313fdbd-04a8-4f7e-90d6-eee8cf852858",
+      "id": "6cc3a339-dbb7-40d1-ae7e-b86280462642",
       "properties": {
         "name": "ED-R201C TRA-Friesland MON-FRI",
         "class": "R",
@@ -19693,7 +19693,7 @@
     },
     {
       "type": "Feature",
-      "id": "4b906786-876b-4a89-9c2c-3c43928a2c9e",
+      "id": "57473c7e-1507-4132-84df-d46045bc2288",
       "properties": {
         "name": "ED-R201D TRA-Friesland MON-FRI",
         "class": "R",
@@ -19746,7 +19746,7 @@
     },
     {
       "type": "Feature",
-      "id": "4def6270-7da0-470e-8c1c-d27d6e2ea7e1",
+      "id": "8b264d79-b9b6-4174-be14-20657bbb9665",
       "properties": {
         "name": "ED-R201E TRA-Friesland MON-FRI",
         "class": "R",
@@ -20259,7 +20259,7 @@
     },
     {
       "type": "Feature",
-      "id": "b637cfd2-2e6d-41a8-a403-d6b4a6d70e29",
+      "id": "8f7f376d-344a-4a30-9f06-ca4628b1aa25",
       "properties": {
         "name": "ED-R201F TRA-Friesland MON-FRI",
         "class": "R",
@@ -20348,7 +20348,7 @@
     },
     {
       "type": "Feature",
-      "id": "e03f497a-4b7c-452c-90b2-ce20e13a1de0",
+      "id": "031fa7e6-dff9-48cc-b95a-2edde6f5c0ee",
       "properties": {
         "name": "ED-R202A TRA-Weser MON-FRI",
         "class": "R",
@@ -20445,7 +20445,7 @@
     },
     {
       "type": "Feature",
-      "id": "a3f76db9-2202-47f6-8b93-7b746508eee0",
+      "id": "bb2fbdbe-ae39-4217-814a-f04e846ed946",
       "properties": {
         "name": "ED-R202B TRA-Weser MON-FRI",
         "class": "R",
@@ -20490,7 +20490,7 @@
     },
     {
       "type": "Feature",
-      "id": "850207e3-022a-4ad8-9430-8f7720c8f8d5",
+      "id": "97dd05b4-87fa-478a-bb42-f97f371d7fc4",
       "properties": {
         "name": "ED-R202C TRA-Weser MON-FRI",
         "class": "R",
@@ -20543,7 +20543,7 @@
     },
     {
       "type": "Feature",
-      "id": "465a767a-bf37-456a-8ca2-f58449e1b6cb",
+      "id": "63823b62-2e8f-4bcb-af0f-80ed0d889fc6",
       "properties": {
         "name": "ED-R202D TRA-Weser MON-FRI",
         "class": "R",
@@ -20608,7 +20608,7 @@
     },
     {
       "type": "Feature",
-      "id": "2f09c033-5c71-483f-9e52-144887882d5a",
+      "id": "62763830-60b3-48f2-b3cf-2413fcd4db52",
       "properties": {
         "name": "ED-R202E TRA-Weser MON-FRI",
         "class": "R",
@@ -20721,7 +20721,7 @@
     },
     {
       "type": "Feature",
-      "id": "4173b15a-f687-4d8e-95ad-4b748d27ea53",
+      "id": "e98df91e-cb4b-42cf-a517-86d7ce7c4c6b",
       "properties": {
         "name": "ED-R203A TRA-Muensterland MON-FRI",
         "class": "R",
@@ -20778,7 +20778,7 @@
     },
     {
       "type": "Feature",
-      "id": "fa794118-bb79-4f89-b643-438de16887d9",
+      "id": "44345be0-33bc-4c97-9527-4cec7153dfbc",
       "properties": {
         "name": "EUC SEA 1 MON-FRI",
         "class": "R",
@@ -20831,7 +20831,7 @@
     },
     {
       "type": "Feature",
-      "id": "f790b4b7-39ca-4c66-b3f9-870131fcf111",
+      "id": "39b6d358-65f9-4f6f-982a-ee6fdaf6e43c",
       "properties": {
         "name": "LASER Kuehlungsborn H24",
         "class": "Q",
@@ -21260,7 +21260,7 @@
     },
     {
       "type": "Feature",
-      "id": "3d35cf96-8b66-4bb9-9047-3f8782619faa",
+      "id": "bc586f8d-2a25-4fb4-8f10-effa99c61800",
       "properties": {
         "name": "LASER Grevenbroich H24",
         "class": "Q",
@@ -21689,7 +21689,7 @@
     },
     {
       "type": "Feature",
-      "id": "7a8c6f86-8fad-4b44-ba78-463349879da6",
+      "id": "d7c29ee3-14e5-4d50-8ffe-5fd91ddff3d2",
       "properties": {
         "name": "ED-D19A Todendorf-Putlos MO-SA+",
         "class": "Q",
@@ -21738,7 +21738,7 @@
     },
     {
       "type": "Feature",
-      "id": "fae7f181-ef17-4d2d-96e5-2a146f64eebe",
+      "id": "cde9708c-5375-4219-960c-6d7d675018a5",
       "properties": {
         "name": "ED-D19B Todendorf-Putlos MO-SA+",
         "class": "Q",
@@ -21783,7 +21783,7 @@
     },
     {
       "type": "Feature",
-      "id": "06708067-7a12-4936-be2d-6d314853caf6",
+      "id": "7af8dd2b-4582-4818-89ea-90e0dc160617",
       "properties": {
         "name": "ED-D19B_2 Todendorf-Putlos NOTAM",
         "class": "Q",
@@ -21828,7 +21828,7 @@
     },
     {
       "type": "Feature",
-      "id": "57558109-37d0-4d84-aac5-1daf52fa953e",
+      "id": "3aba969b-e6d6-4a13-8fda-88cf781d4225",
       "properties": {
         "name": "ED-D28 Ostsee MO-FR+",
         "class": "Q",
@@ -21885,7 +21885,7 @@
     },
     {
       "type": "Feature",
-      "id": "f1e69ee5-29c8-4fdb-8b57-f16ae5bd7a7c",
+      "id": "14fc140f-5f82-483a-aa3c-3a2c1fd929e3",
       "properties": {
         "name": "ED-D41A Sylt MO-FR",
         "class": "Q",
@@ -21942,7 +21942,7 @@
     },
     {
       "type": "Feature",
-      "id": "48aea3d0-8bde-4ed7-ac07-93aa07b12858",
+      "id": "7822c576-d618-4fbf-8725-a8a3aafd8af3",
       "properties": {
         "name": "ED-D41B Sylt MO-FR",
         "class": "Q",
@@ -21991,7 +21991,7 @@
     },
     {
       "type": "Feature",
-      "id": "294f8812-7209-4f11-a72d-f1c050545a8f",
+      "id": "169f6f2b-7428-48a7-bc28-fedb18cb4d5c",
       "properties": {
         "name": "ED-D44 Helgoland MO-FR+",
         "class": "Q",
@@ -22036,7 +22036,7 @@
     },
     {
       "type": "Feature",
-      "id": "7c410f33-2f64-4106-a571-59418d6ead9e",
+      "id": "81126dbe-fdf4-47cc-9a9d-914c6fcf4608",
       "properties": {
         "name": "ED-D46 Nordsee MO-FR",
         "class": "Q",
@@ -22101,7 +22101,7 @@
     },
     {
       "type": "Feature",
-      "id": "8754aa11-ce3b-4a4b-849b-d79f94f5fb65",
+      "id": "fb25918e-98e7-4406-9523-741cf32065a0",
       "properties": {
         "name": "ED-D47A Ruegen MO-FR+",
         "class": "Q",
@@ -22150,7 +22150,7 @@
     },
     {
       "type": "Feature",
-      "id": "b059873a-e9a8-4bd4-8a3e-06e75e5e0197",
+      "id": "665be8c7-2c67-4934-a4ec-b9d2b94b19a5",
       "properties": {
         "name": "ED-D47B Ruegen MO-FR+",
         "class": "Q",
@@ -22203,7 +22203,7 @@
     },
     {
       "type": "Feature",
-      "id": "96303461-7f2c-41d0-a07a-51ba4e168d70",
+      "id": "069704d6-9d35-43af-8b60-c364fbed75f0",
       "properties": {
         "name": "ED-D47C Ruegen MO-FR+",
         "class": "Q",
@@ -22256,7 +22256,7 @@
     },
     {
       "type": "Feature",
-      "id": "7e93281b-c02c-4beb-b45e-4bf434c5b840",
+      "id": "f766c76b-a27e-4609-8991-66446742c9f3",
       "properties": {
         "name": "ED-D100 Borkum MO-FR",
         "class": "Q",
@@ -22305,7 +22305,7 @@
     },
     {
       "type": "Feature",
-      "id": "52df099e-0542-4ed0-b0ee-60d4f98ed610",
+      "id": "16f45fad-2fa9-449c-9ea8-a9942e72e2ff",
       "properties": {
         "name": "ED-D100A Borkum MO-FR",
         "class": "Q",
@@ -22370,7 +22370,7 @@
     },
     {
       "type": "Feature",
-      "id": "6868cd4c-89cd-4671-a01a-1c68611768e1",
+      "id": "a7c3cc09-db2a-40ef-9ac5-735681a6c9fc",
       "properties": {
         "name": "ED-D101A Deutsche Bucht MO-FR",
         "class": "Q",
@@ -22443,7 +22443,7 @@
     },
     {
       "type": "Feature",
-      "id": "e09b8b46-c68b-4e4a-8513-8037f49ea221",
+      "id": "ac718fd6-aecb-4d8f-89f8-70359190f461",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -22588,7 +22588,7 @@
     },
     {
       "type": "Feature",
-      "id": "53bf64b5-53fb-41e5-b285-832a39d8d8bc",
+      "id": "b652057d-6e2b-4b80-98d5-f789abfe0e35",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -22633,7 +22633,7 @@
     },
     {
       "type": "Feature",
-      "id": "757fc573-439b-4402-aa81-07f07916fd6a",
+      "id": "6da8e38b-5681-47ba-abd4-0f762fa2fbda",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -22814,7 +22814,7 @@
     },
     {
       "type": "Feature",
-      "id": "08b43c53-5dec-4bc6-967a-a2c91086cda7",
+      "id": "d2253229-0d4d-4abf-bf9a-25cbb09c04a4",
       "properties": {
         "name": "Berlin (HX-West) 133.630",
         "class": "C",
@@ -22903,7 +22903,7 @@
     },
     {
       "type": "Feature",
-      "id": "4d14dab7-a16d-4361-a1b0-372916f5e72d",
+      "id": "ab2c2062-4a9f-460b-a070-c09e1bf8976c",
       "properties": {
         "name": "Berlin (HX-East) 133.630",
         "class": "C",
@@ -22988,7 +22988,7 @@
     },
     {
       "type": "Feature",
-      "id": "9e1c7790-daac-4a61-8c21-2b7835b3d44f",
+      "id": "3bb526e2-86de-4f01-8544-2d7e05bc08ce",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -23033,7 +23033,7 @@
     },
     {
       "type": "Feature",
-      "id": "e16c3a72-3112-4a84-a9f8-32080274271d",
+      "id": "f08fd6ac-e650-4930-99c1-fe5bc6e5b171",
       "properties": {
         "name": "Berlin (HX-West) 133.630",
         "class": "C",
@@ -23090,7 +23090,7 @@
     },
     {
       "type": "Feature",
-      "id": "c661a012-1609-4361-872d-2945e29b6342",
+      "id": "d5268ee1-d031-4ec5-8e5b-d5c7351637e9",
       "properties": {
         "name": "Berlin (HX-East) 133.630",
         "class": "C",
@@ -23147,7 +23147,7 @@
     },
     {
       "type": "Feature",
-      "id": "9e1a2066-ee96-40f6-93fc-0520a07e9fca",
+      "id": "be1e0dee-916d-4141-bace-24208ffcf8ca",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -23228,7 +23228,7 @@
     },
     {
       "type": "Feature",
-      "id": "a270e925-2eb8-4b93-8b0e-ca2bb0fcd6a8",
+      "id": "78cf270e-5173-48f8-9c63-003f02cef7cb",
       "properties": {
         "name": "Berlin (HX-WEST) 133.630",
         "class": "C",
@@ -23333,7 +23333,7 @@
     },
     {
       "type": "Feature",
-      "id": "7db6e1d3-b16f-4cb5-a3e1-731b26759bdb",
+      "id": "d9346690-6864-42a3-af3d-5b36b52ee49b",
       "properties": {
         "name": "Berlin (HX-EAST) 133.630",
         "class": "C",
@@ -23446,7 +23446,7 @@
     },
     {
       "type": "Feature",
-      "id": "aa8182e8-7789-466b-bb83-a4125fcb4ae5",
+      "id": "ba88cb6c-672c-4400-bf9c-41ccc4a6f0b9",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -23523,7 +23523,7 @@
     },
     {
       "type": "Feature",
-      "id": "2a1dd086-1653-4e76-8a71-c97c49191bda",
+      "id": "acc1e58b-d269-4e47-8a5f-4496f1a55be8",
       "properties": {
         "name": "Berlin (HX-EAST) 133.630",
         "class": "C",
@@ -23616,7 +23616,7 @@
     },
     {
       "type": "Feature",
-      "id": "7b0ec951-44e4-4d4e-bcc6-a03c36fe0664",
+      "id": "223e06ac-c406-497c-b316-1a9ec2d22edc",
       "properties": {
         "name": "Berlin (HX-WEST) 133.630",
         "class": "C",
@@ -23693,7 +23693,7 @@
     },
     {
       "type": "Feature",
-      "id": "3d9a2a04-7ab7-4fcd-85f3-14e1a145960a",
+      "id": "9fb7928e-4dab-4b5d-9b83-78d30300f393",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -23766,7 +23766,7 @@
     },
     {
       "type": "Feature",
-      "id": "0ba28ba2-f1c2-4119-815e-b94816d8337a",
+      "id": "a838172a-fb70-4fc5-8344-cb72a0091be1",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -23851,7 +23851,7 @@
     },
     {
       "type": "Feature",
-      "id": "eec7c899-2eed-445d-95b9-eddc86c07e7b",
+      "id": "16e307e8-f408-47af-985b-0da7244b2646",
       "properties": {
         "name": "Berlin (HX-West) 133.630",
         "class": "C",
@@ -23976,7 +23976,7 @@
     },
     {
       "type": "Feature",
-      "id": "13bb4312-f11a-4148-9024-14d78216c4fd",
+      "id": "d086ddf3-feb7-4166-873c-7b6bb649f7db",
       "properties": {
         "name": "Berlin (HX-East) 133.630",
         "class": "C",
@@ -24105,7 +24105,7 @@
     },
     {
       "type": "Feature",
-      "id": "09196e74-a062-44f4-97d5-d572ef9b7be8",
+      "id": "6aa9e2d7-2104-495c-806a-74d0205bc465",
       "properties": {
         "name": "Berlin (HX-East) 133.630",
         "class": "C",
@@ -24182,7 +24182,7 @@
     },
     {
       "type": "Feature",
-      "id": "5e1abf49-072a-4b78-b1fc-a866a014373c",
+      "id": "7aa2cfea-5f85-4b18-8855-c703b81ba6dd",
       "properties": {
         "name": "Berlin (HX-West) 133.630",
         "class": "C",
@@ -24315,7 +24315,7 @@
     },
     {
       "type": "Feature",
-      "id": "49511749-908a-461f-8017-4034ee7f4a26",
+      "id": "374cfc9d-4fd8-4087-a0cd-d3f4a5dfeb68",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -24404,7 +24404,7 @@
     },
     {
       "type": "Feature",
-      "id": "1bde8471-9fc1-4299-8280-1bcac64c5bd9",
+      "id": "8dabe56e-66df-49cb-a09c-72406f7da291",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -24489,7 +24489,7 @@
     },
     {
       "type": "Feature",
-      "id": "5d7d6847-755d-40c3-b542-a58e7b3b2911",
+      "id": "51c06174-7840-4309-8a7f-472443640770",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -24594,7 +24594,7 @@
     },
     {
       "type": "Feature",
-      "id": "6723dc72-83cd-4cfb-b207-353e0b10cd0d",
+      "id": "71b5639e-b240-44ae-9c76-c0a5820e6115",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -24707,7 +24707,7 @@
     },
     {
       "type": "Feature",
-      "id": "e647cfba-39cc-4d3e-8cb4-0ab11c847712",
+      "id": "04b51681-84b2-463b-ba9a-84b1bc3e6d7a",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -24800,7 +24800,7 @@
     },
     {
       "type": "Feature",
-      "id": "a3d852f8-112b-4055-bc39-028995c5fae5",
+      "id": "409d5b9f-2293-4df3-be3e-aed282287ccc",
       "properties": {
         "name": "Berlin 132.650",
         "class": "C",
@@ -24877,7 +24877,7 @@
     },
     {
       "type": "Feature",
-      "id": "d377bbfd-2e86-4a6e-973a-ec602a4653f3",
+      "id": "c5420092-07fe-4742-8924-28f94275d5b2",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -24922,7 +24922,7 @@
     },
     {
       "type": "Feature",
-      "id": "e6cf27c6-5b64-4245-b7f6-8876b3f842a3",
+      "id": "11614df2-5c6d-4e07-90b0-5acaec9a29c7",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -24975,7 +24975,7 @@
     },
     {
       "type": "Feature",
-      "id": "eebce3a1-11e9-4377-ba3f-1259373b5098",
+      "id": "5a73d6fa-3cf4-451e-b667-c0c155a497d0",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -25032,7 +25032,7 @@
     },
     {
       "type": "Feature",
-      "id": "f2594b46-dafa-4809-a837-ab89e22ec19d",
+      "id": "99dd90da-7de5-4435-b898-bb8d732d392a",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -25081,7 +25081,7 @@
     },
     {
       "type": "Feature",
-      "id": "c65e3864-2fc0-4ec7-a6e9-8737ffc9a63f",
+      "id": "cd8429df-62d2-4dc2-ad60-b20c0aa4b802",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25162,7 +25162,7 @@
     },
     {
       "type": "Feature",
-      "id": "1f77103f-fc63-428b-bd6d-5b8f9f1be4c4",
+      "id": "81444a7e-488a-40db-8b73-177142c7c86c",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25215,7 +25215,7 @@
     },
     {
       "type": "Feature",
-      "id": "7c3bdc6f-5852-45e1-9d38-0c46322f6967",
+      "id": "881dee79-9d85-444a-b70c-30b7b0d915a8",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25260,7 +25260,7 @@
     },
     {
       "type": "Feature",
-      "id": "6be07b93-19d8-46e8-940d-16dd607fb9c4",
+      "id": "d1b02408-5182-4615-8d32-ad29a20ae970",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25309,7 +25309,7 @@
     },
     {
       "type": "Feature",
-      "id": "91a72d3f-e1ab-45ce-8427-c09b400ec327",
+      "id": "85794a7c-5a49-4304-a268-085c3c4de676",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -25362,7 +25362,7 @@
     },
     {
       "type": "Feature",
-      "id": "f49ea281-6d65-4dd6-9cf2-e2ad73465067",
+      "id": "4416495c-47b8-41bb-8070-68de509845ce",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -25423,7 +25423,7 @@
     },
     {
       "type": "Feature",
-      "id": "a5c4e992-9670-461a-ba59-20de436a4462",
+      "id": "67c54c36-7195-4706-a7c6-497b7a916443",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25484,7 +25484,7 @@
     },
     {
       "type": "Feature",
-      "id": "fd6e68f4-8c3c-4b4d-85a4-4516c97905ef",
+      "id": "a87bf066-b8dd-472a-b24c-7599e5d6af72",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25529,7 +25529,7 @@
     },
     {
       "type": "Feature",
-      "id": "16a68dc1-39f9-44e0-8ac7-fa4f60a713ac",
+      "id": "8ef921da-7c22-4b85-94b1-e970d61ea88c",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -25598,7 +25598,7 @@
     },
     {
       "type": "Feature",
-      "id": "4ba5dc88-594e-4616-9d13-f2792c0a864f",
+      "id": "742c0595-417d-4bb7-8c7c-c750f1610dfe",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -25647,7 +25647,7 @@
     },
     {
       "type": "Feature",
-      "id": "8c9d2f0e-c232-47ad-898c-b747d60d9984",
+      "id": "9dae2391-64e9-42bb-8e6b-30c8c7cf2992",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25740,7 +25740,7 @@
     },
     {
       "type": "Feature",
-      "id": "0b13968e-8f92-43d3-9570-28c6f605564b",
+      "id": "c50a1eec-e2b6-4348-bf94-f867c6077abb",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -25817,7 +25817,7 @@
     },
     {
       "type": "Feature",
-      "id": "c95a7e85-2734-4e9b-bfaa-770067d0f00c",
+      "id": "f7e5fa85-ba77-4510-a2ea-eb8144967102",
       "properties": {
         "name": "Duesseldorf/Koeln-Bonn",
         "class": "C",
@@ -25934,7 +25934,7 @@
     },
     {
       "type": "Feature",
-      "id": "bf7eeb04-116c-4371-b38d-d0b4c503eb5a",
+      "id": "fc0d56c7-665e-4c8b-b6b4-fb2ec8e57617",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -25995,7 +25995,7 @@
     },
     {
       "type": "Feature",
-      "id": "f089e46b-141c-4d7e-9706-6e88baefd70b",
+      "id": "009ad9b2-7fc1-4c78-8723-a741a20d4c97",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -26044,7 +26044,7 @@
     },
     {
       "type": "Feature",
-      "id": "74a84d24-95db-49c0-af8b-218ca084febe",
+      "id": "f28beb3f-9a89-4878-a788-32467511292e",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -26093,7 +26093,7 @@
     },
     {
       "type": "Feature",
-      "id": "de87a2fa-ef36-4472-ba88-bfc967c32457",
+      "id": "f6bec390-6bda-47ba-8a58-1fb81264500d",
       "properties": {
         "name": "Koeln-Bonn",
         "class": "C",
@@ -26158,7 +26158,7 @@
     },
     {
       "type": "Feature",
-      "id": "604768d3-4586-483e-8767-e309a3d697c1",
+      "id": "c2ac80e4-e32a-4088-806d-dee32fdf8236",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -26275,7 +26275,7 @@
     },
     {
       "type": "Feature",
-      "id": "fbb1891b-5ba4-46b2-8f42-119bc88de9e6",
+      "id": "a6ee5d38-3512-4fcd-8c25-29fee52d8826",
       "properties": {
         "name": "Duesseldorf",
         "class": "C",
@@ -26320,7 +26320,7 @@
     },
     {
       "type": "Feature",
-      "id": "1b5657b2-0a5b-4555-a565-7b26f139de19",
+      "id": "3a2b9ad6-3d8f-4cb3-828e-d7c58ce1155c",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26381,7 +26381,7 @@
     },
     {
       "type": "Feature",
-      "id": "fccc5f23-fd6e-417c-ad6d-0aa86b0c6750",
+      "id": "ad3bf07f-de50-48c1-a14d-5de552457e9f",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26450,7 +26450,7 @@
     },
     {
       "type": "Feature",
-      "id": "46db9067-be27-491f-9db7-3e78158c386b",
+      "id": "d24abb02-9660-49fd-ba4b-5c22d5741e4d",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26499,7 +26499,7 @@
     },
     {
       "type": "Feature",
-      "id": "72a1bfb1-4c6e-45d9-84c0-10b60bb013cf",
+      "id": "8782384d-bf7b-4e9f-a589-080f88d486ff",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26544,7 +26544,7 @@
     },
     {
       "type": "Feature",
-      "id": "851d5e95-24ec-4cc1-995a-3c1d77ca8812",
+      "id": "1272bdad-888d-47fe-8f0a-a683c3e37306",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26589,7 +26589,7 @@
     },
     {
       "type": "Feature",
-      "id": "408c1355-e619-4e86-bf15-d3ea79ec7ed8",
+      "id": "8afa4d81-fc9f-40e5-9328-bdcfc766787c",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26646,7 +26646,7 @@
     },
     {
       "type": "Feature",
-      "id": "26dbdc0a-11a3-4454-bca7-740aa84ac7d4",
+      "id": "b4c619cf-1b81-482c-a2a5-409a1434fc5b",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26707,7 +26707,7 @@
     },
     {
       "type": "Feature",
-      "id": "42d188e3-376a-41f0-85ed-780437c0579d",
+      "id": "e7cf39b9-c643-49ad-838a-e1b2e64b23cb",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26784,7 +26784,7 @@
     },
     {
       "type": "Feature",
-      "id": "9a41198a-c178-4149-969b-e0b24ace2b5d",
+      "id": "5a9147b3-279f-4dc7-ad8b-1cfc2c3f7dbb",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26833,7 +26833,7 @@
     },
     {
       "type": "Feature",
-      "id": "767833ea-bf5c-4f12-8b0c-7f2b4377c38c",
+      "id": "511ed67c-cb25-40f7-875a-a1bc7c637e57",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26882,7 +26882,7 @@
     },
     {
       "type": "Feature",
-      "id": "f3336f70-d76a-489e-9405-530e96fd0539",
+      "id": "59288558-1106-4abe-8b1f-f070b4c19318",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26935,7 +26935,7 @@
     },
     {
       "type": "Feature",
-      "id": "e3ff5dcf-5a9d-4063-90b8-8ad2e64b373e",
+      "id": "01a9103a-56b1-4b2e-a8aa-a9cfbb9641d3",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -26988,7 +26988,7 @@
     },
     {
       "type": "Feature",
-      "id": "a31f6764-f687-490e-97de-d388c07ade22",
+      "id": "ccd8c8ee-61ce-4063-933a-4bccf1ddb370",
       "properties": {
         "name": "Frankfurt",
         "class": "C",
@@ -27033,7 +27033,7 @@
     },
     {
       "type": "Feature",
-      "id": "afb325dc-df01-4fe3-9cff-02312c682083",
+      "id": "a2dbe883-5942-4471-8421-5528be964e32",
       "properties": {
         "name": "Hamburg",
         "class": "C",
@@ -27434,7 +27434,7 @@
     },
     {
       "type": "Feature",
-      "id": "ad1a6b2b-b197-4629-997c-d82f3a4ee7ec",
+      "id": "a428ca85-63f4-4558-a0dc-5503e97942cb",
       "properties": {
         "name": "Hamburg",
         "class": "C",
@@ -27811,7 +27811,7 @@
     },
     {
       "type": "Feature",
-      "id": "82e729e4-d2a1-4487-bca4-b1cf07324651",
+      "id": "c9a83cb1-7896-451c-8108-cf95285fa390",
       "properties": {
         "name": "Hamburg",
         "class": "C",
@@ -27964,7 +27964,7 @@
     },
     {
       "type": "Feature",
-      "id": "6ca5fb57-37e5-451d-bd91-d6eeceaf9cdc",
+      "id": "48b79858-ed05-4dc7-9573-85bc8a38857d",
       "properties": {
         "name": "Hamburg",
         "class": "C",
@@ -28121,7 +28121,7 @@
     },
     {
       "type": "Feature",
-      "id": "691a0443-982d-45a7-872b-b17348a6eb5b",
+      "id": "278db3b1-1b3c-4233-b116-2a80f780164e",
       "properties": {
         "name": "Hannover",
         "class": "C",
@@ -28342,7 +28342,7 @@
     },
     {
       "type": "Feature",
-      "id": "16b941a8-24bd-408d-a502-a04ea99bdf22",
+      "id": "24ccbaec-b180-4c72-bf7e-7b6f4356ba2a",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -28463,7 +28463,7 @@
     },
     {
       "type": "Feature",
-      "id": "b77b3463-09ef-4c93-8171-7b8607430f1e",
+      "id": "30730ed5-4e10-4af0-bc9b-4705ff8f0ff3",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -28592,7 +28592,7 @@
     },
     {
       "type": "Feature",
-      "id": "44b63050-83fd-4f4e-9afd-799042876501",
+      "id": "d44eaa68-289a-4d2f-bd9f-251f3175a30f",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -28709,7 +28709,7 @@
     },
     {
       "type": "Feature",
-      "id": "d38bee42-248a-4a9e-90f0-9467afa0239b",
+      "id": "13b96a56-6106-42ac-80d3-315b4aed8ac4",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -28874,7 +28874,7 @@
     },
     {
       "type": "Feature",
-      "id": "aea13361-8b8d-4fb7-9e46-1da750427ad9",
+      "id": "811be04b-6e1f-49cf-a0db-5818e63ee4bb",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -29263,7 +29263,7 @@
     },
     {
       "type": "Feature",
-      "id": "49a19db5-5ce5-4fc0-971b-a8124a52050a",
+      "id": "b28934f4-c0d0-4705-8bb8-31225fa8e469",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -29424,7 +29424,7 @@
     },
     {
       "type": "Feature",
-      "id": "a4cc3884-e11b-4d3d-8386-e6f296c8bfe8",
+      "id": "20e8c057-d252-4b9d-a3bb-5b9b8856884d",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -29533,7 +29533,7 @@
     },
     {
       "type": "Feature",
-      "id": "d40e46db-9b07-4597-a789-92bdc6bb8fe2",
+      "id": "6d1ef67e-cbcf-4d31-befc-6d852dc4a7ac",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -29710,7 +29710,7 @@
     },
     {
       "type": "Feature",
-      "id": "e443c17e-9d94-4c34-afbc-08cd19884c21",
+      "id": "51efab97-3bd7-4c1d-b004-73ee16c779b8",
       "properties": {
         "name": "Muenchen",
         "class": "C",
@@ -29871,7 +29871,7 @@
     },
     {
       "type": "Feature",
-      "id": "bbf13b0c-8eac-41f9-82e8-cc8df9a67a2f",
+      "id": "3c57707c-4b40-4634-ac05-368206828e0e",
       "properties": {
         "name": "Stuttgart",
         "class": "C",
@@ -30068,7 +30068,7 @@
     },
     {
       "type": "Feature",
-      "id": "505e6aec-2b84-45cb-a3ca-038edd6ad2f3",
+      "id": "4690b3cb-3914-4878-bda2-387490d94eec",
       "properties": {
         "name": "CTR Ansbach",
         "class": "CTR",
@@ -30113,7 +30113,7 @@
     },
     {
       "type": "Feature",
-      "id": "ecd6234f-c541-41ff-87a0-8399e3e8f144",
+      "id": "c759a669-ddfa-4ebb-a91a-fef7cab3e9fa",
       "properties": {
         "name": "Sektor Ansbach-Petersd. (HX)",
         "class": "D",
@@ -30326,7 +30326,7 @@
     },
     {
       "type": "Feature",
-      "id": "b627cb1a-fc7d-4487-99b7-bdb1acfe347f",
+      "id": "54a8a66c-750b-4886-9b12-bdee6fd2e09e",
       "properties": {
         "name": "CTR Augsburg",
         "class": "CTR",
@@ -30371,7 +30371,7 @@
     },
     {
       "type": "Feature",
-      "id": "8d44a990-2c07-439b-8465-1cbd4ee8ab05",
+      "id": "a865d1ce-0781-45f6-9dfa-913d3081ae91",
       "properties": {
         "name": "Sektor EDMA Segelflug",
         "class": "D",
@@ -30428,7 +30428,7 @@
     },
     {
       "type": "Feature",
-      "id": "d0d2553a-670c-4a0f-8cce-0499d2307e7b",
+      "id": "3a8d6b88-408a-4b4a-94af-6b15fa62ba17",
       "properties": {
         "name": "Bale-Mulhouse",
         "class": "CTR",
@@ -30777,7 +30777,7 @@
     },
     {
       "type": "Feature",
-      "id": "92b05367-1d37-4e7b-8d0d-43e18aed2c40",
+      "id": "08bf98f4-f76d-4990-a17c-350190e6ee99",
       "properties": {
         "name": "CTR Berlin",
         "class": "CTR",
@@ -30822,7 +30822,7 @@
     },
     {
       "type": "Feature",
-      "id": "4db920c6-d1a4-4a70-b4b1-7d45ab0c94d2",
+      "id": "84d43d29-d162-4fcb-b930-23f7721902dd",
       "properties": {
         "name": "CTR Braunschweig",
         "class": "CTR",
@@ -30867,7 +30867,7 @@
     },
     {
       "type": "Feature",
-      "id": "33860cb4-53c0-4cfe-8c0b-1acda62523ca",
+      "id": "b2b2725a-52ec-43d7-83fb-2f9db0409784",
       "properties": {
         "name": "CTR Bremen",
         "class": "CTR",
@@ -30916,7 +30916,7 @@
     },
     {
       "type": "Feature",
-      "id": "7f69d5b2-125c-403d-9a66-37dd19c02f6a",
+      "id": "172ce2bb-b095-4e96-9dd3-e5def0057ad6",
       "properties": {
         "name": "CTR Buechel",
         "class": "CTR",
@@ -30961,7 +30961,7 @@
     },
     {
       "type": "Feature",
-      "id": "86f7c20d-f4fe-4a91-b013-601cb6fdf27d",
+      "id": "195b5224-5e44-4cd9-8137-23fc7dacd2f6",
       "properties": {
         "name": "CTR Bueckeburg",
         "class": "CTR",
@@ -31342,7 +31342,7 @@
     },
     {
       "type": "Feature",
-      "id": "71b8ac4e-e0e7-4f46-b5b4-97cef0c2b606",
+      "id": "0142baa5-b9d4-4591-aa8a-f7d08051a9cc",
       "properties": {
         "name": "CTR Celle",
         "class": "CTR",
@@ -31591,7 +31591,7 @@
     },
     {
       "type": "Feature",
-      "id": "c48b4554-ebf5-4201-8e2b-b9f7d6274985",
+      "id": "f889b1c7-beec-4ced-894c-a19bb47a3d39",
       "properties": {
         "name": "CTR Diepholz",
         "class": "CTR",
@@ -31636,7 +31636,7 @@
     },
     {
       "type": "Feature",
-      "id": "59e71805-30af-49b3-922a-a14d2365f759",
+      "id": "c6178b02-f516-4651-a547-6ba142e34cca",
       "properties": {
         "name": "CTR Dortmund",
         "class": "CTR",
@@ -31681,7 +31681,7 @@
     },
     {
       "type": "Feature",
-      "id": "22f54172-1c17-4604-a198-8f248970a5f6",
+      "id": "64340c2d-929d-4f9d-bb85-7f7ad92a8e3f",
       "properties": {
         "name": "Sektor Kamen 1A",
         "class": "D",
@@ -31738,7 +31738,7 @@
     },
     {
       "type": "Feature",
-      "id": "bcba1261-828c-434e-8134-cfb9fef0d6e6",
+      "id": "49af41e9-f728-4a3f-9da2-5b24bd54654c",
       "properties": {
         "name": "Sektor Kamen 1B",
         "class": "D",
@@ -31779,7 +31779,7 @@
     },
     {
       "type": "Feature",
-      "id": "c91d7807-c46e-4270-9365-2c9837f64e98",
+      "id": "884cd7e6-aa27-479a-9d16-521afe4cf95f",
       "properties": {
         "name": "CTR Dresden",
         "class": "CTR",
@@ -31824,7 +31824,7 @@
     },
     {
       "type": "Feature",
-      "id": "8ae1931a-2134-4a78-a787-2a5b81689844",
+      "id": "7b5fe07f-a5a3-4f5c-a733-3536e599161c",
       "properties": {
         "name": "CTR Duesseldorf",
         "class": "CTR",
@@ -32001,7 +32001,7 @@
     },
     {
       "type": "Feature",
-      "id": "ca230bd9-e1d5-4502-9347-73561ac439c2",
+      "id": "be493090-82ef-4f00-8d17-9d0d3ab45f54",
       "properties": {
         "name": "CTR Erfurt",
         "class": "CTR",
@@ -32178,7 +32178,7 @@
     },
     {
       "type": "Feature",
-      "id": "ffd6e46a-b5e8-4096-bd8a-7891201a5bd9",
+      "id": "addcd957-d007-4707-aa4f-951fecb1f34c",
       "properties": {
         "name": "CTR Fassberg",
         "class": "CTR",
@@ -32355,7 +32355,7 @@
     },
     {
       "type": "Feature",
-      "id": "8eefd848-961a-4a4e-b1b1-b774b6472e60",
+      "id": "3c42e228-5a28-4a9d-93bf-36cf7f631da6",
       "properties": {
         "name": "CTR Frankfurt",
         "class": "CTR",
@@ -32428,7 +32428,7 @@
     },
     {
       "type": "Feature",
-      "id": "37d87915-6984-42ea-acad-6654a5001a9c",
+      "id": "d2be6d15-6c35-48a2-a065-ec69a01beb3a",
       "properties": {
         "name": "CTR Friedrichshafen",
         "class": "CTR",
@@ -32481,7 +32481,7 @@
     },
     {
       "type": "Feature",
-      "id": "d3ce1cda-78c9-40ca-baa4-de4d4ae0fa26",
+      "id": "2053fdf7-55e7-450c-86e1-123b46a204b7",
       "properties": {
         "name": "CTR Fritzlar",
         "class": "CTR",
@@ -32526,7 +32526,7 @@
     },
     {
       "type": "Feature",
-      "id": "bdf37ec2-0ebf-46f4-b182-4ed889540ccb",
+      "id": "c79892f5-415d-47e0-a7ce-a394a3ba42dc",
       "properties": {
         "name": "CTR Sektor Mosenberg (HX)",
         "class": "D",
@@ -32571,7 +32571,7 @@
     },
     {
       "type": "Feature",
-      "id": "d36b82a0-1a47-401a-8758-29cefb938faf",
+      "id": "9e88a6b8-aa93-4115-bfe5-4cf62f47d6ed",
       "properties": {
         "name": "CTR Geilenkirchen",
         "class": "CTR",
@@ -32740,7 +32740,7 @@
     },
     {
       "type": "Feature",
-      "id": "a89ea451-e437-4415-8792-332ea15a1251",
+      "id": "50b0936a-9955-41fe-b63e-d21318c41d62",
       "properties": {
         "name": "CTR Grafenwoehr",
         "class": "CTR",
@@ -32785,7 +32785,7 @@
     },
     {
       "type": "Feature",
-      "id": "6b7c4432-aff3-4875-86d7-1c7a5e0f979e",
+      "id": "44290abf-4309-4c8b-b958-2f3c93275472",
       "properties": {
         "name": "CTR Hahn",
         "class": "CTR",
@@ -32830,7 +32830,7 @@
     },
     {
       "type": "Feature",
-      "id": "64d538de-4703-465a-8977-33048e4f3937",
+      "id": "7870ce3a-5269-4fcd-afef-c8d762b86f82",
       "properties": {
         "name": "CTR Hamburg",
         "class": "CTR",
@@ -32915,7 +32915,7 @@
     },
     {
       "type": "Feature",
-      "id": "e88354c7-80b9-48db-844b-6fe614a83609",
+      "id": "08166fb8-08bb-420e-9484-5a2b752ad15b",
       "properties": {
         "name": "CTR Sector Boberg HX",
         "class": "CTR",
@@ -32960,7 +32960,7 @@
     },
     {
       "type": "Feature",
-      "id": "9969c2b6-b072-4cf0-a28e-45dc8f1647a9",
+      "id": "02b571af-fc2c-456c-b11b-04b70d8f2ce2",
       "properties": {
         "name": "CTR Sector Finkenwerder HX",
         "class": "CTR",
@@ -33005,7 +33005,7 @@
     },
     {
       "type": "Feature",
-      "id": "49d353a2-b92f-4463-89c1-84fa96c2641d",
+      "id": "29b1d566-7951-4ecf-abef-565ed690c5d6",
       "properties": {
         "name": "CTR Hannover",
         "class": "CTR",
@@ -33050,7 +33050,7 @@
     },
     {
       "type": "Feature",
-      "id": "ea3e0394-7123-4b4e-81b5-7c7a3f79f166",
+      "id": "c2dc6419-1cfe-4c91-b3c2-5480c04beba9",
       "properties": {
         "name": "CTR Heringsdorf",
         "class": "CTR",
@@ -33095,7 +33095,7 @@
     },
     {
       "type": "Feature",
-      "id": "10f9d4d7-d94c-4d71-a81c-39a6411db04f",
+      "id": "8b02669b-4906-44be-aae6-e3b6fe87fbd8",
       "properties": {
         "name": "Sector Mellenthin",
         "class": "D",
@@ -33140,7 +33140,7 @@
     },
     {
       "type": "Feature",
-      "id": "0c26c68f-f6c4-4d2a-a2f1-8fadf9bf430e",
+      "id": "20448217-8336-4765-8a6e-c9fb7128f97f",
       "properties": {
         "name": "CTR Hof",
         "class": "CTR",
@@ -33185,7 +33185,7 @@
     },
     {
       "type": "Feature",
-      "id": "9f71e126-a757-4c3c-b04e-036bba8bb1c4",
+      "id": "9d38d19d-b31a-4863-bb8e-6b860969fdfe",
       "properties": {
         "name": "CTR Hohn",
         "class": "CTR",
@@ -33230,7 +33230,7 @@
     },
     {
       "type": "Feature",
-      "id": "ecb6ac69-7b13-4721-a8d1-fed5bc5dabb8",
+      "id": "26202bc3-1d24-4820-8825-2380d81f0dbd",
       "properties": {
         "name": "CTR Holzdorf",
         "class": "CTR",
@@ -33275,7 +33275,7 @@
     },
     {
       "type": "Feature",
-      "id": "9600771d-5515-4f65-8c9a-2b20ec76d0ba",
+      "id": "ba26ad20-bf73-47a3-826e-c141be656c17",
       "properties": {
         "name": "CTR Illesheim",
         "class": "CTR",
@@ -33520,7 +33520,7 @@
     },
     {
       "type": "Feature",
-      "id": "0ecaa26f-ff42-4744-864c-51931dc2a8a5",
+      "id": "d10dbd85-796b-4d7a-a36a-1c7d8be5065c",
       "properties": {
         "name": "CTR Sektor Windsheim (HX)",
         "class": "D",
@@ -33573,7 +33573,7 @@
     },
     {
       "type": "Feature",
-      "id": "3d8dcaed-d8e2-4d14-9429-4432eca6299c",
+      "id": "6d7b6c3b-bcdd-4fd9-b96a-020912221c77",
       "properties": {
         "name": "CTR Ingolstadt",
         "class": "CTR",
@@ -33618,7 +33618,7 @@
     },
     {
       "type": "Feature",
-      "id": "d85a1370-03b9-45d4-9595-4381cef95dfb",
+      "id": "d3600854-a383-4dbe-a63d-0bdaf78c474a",
       "properties": {
         "name": "CTR Karlsruhe-Baden",
         "class": "CTR",
@@ -33671,7 +33671,7 @@
     },
     {
       "type": "Feature",
-      "id": "aa6e4625-cd49-4612-9853-fe1bd3764ac8",
+      "id": "f8dcb8fd-6b1c-43e3-8611-05492c2d88d4",
       "properties": {
         "name": "CTR Sektor Baden-Oos (HX)",
         "class": "D",
@@ -33724,7 +33724,7 @@
     },
     {
       "type": "Feature",
-      "id": "ae311efe-a654-4d7c-b795-56fea59ef1e3",
+      "id": "366fd69f-de0a-46c7-84c6-c417dde590ac",
       "properties": {
         "name": "CTR Kassel",
         "class": "CTR",
@@ -33769,7 +33769,7 @@
     },
     {
       "type": "Feature",
-      "id": "0c071654-7164-4e6d-9643-8a8a0fc7a091",
+      "id": "badf76d1-b583-4080-9fb0-c592f3c06553",
       "properties": {
         "name": "CTR Koeln/Bonn",
         "class": "CTR",
@@ -33850,7 +33850,7 @@
     },
     {
       "type": "Feature",
-      "id": "e0ef63c7-67a5-40ad-8b02-ce672dc01ad3",
+      "id": "c3487cba-5073-4a41-af28-d8ab28e10ea2",
       "properties": {
         "name": "CTR Sektor Duennwald (HX)",
         "class": "D",
@@ -33891,7 +33891,7 @@
     },
     {
       "type": "Feature",
-      "id": "e4e13ff7-d4d3-41bf-88bc-e2113fc371c2",
+      "id": "b8f0f8f4-8c51-4d38-875f-8a5e8308711d",
       "properties": {
         "name": "CTR Laage",
         "class": "CTR",
@@ -33936,7 +33936,7 @@
     },
     {
       "type": "Feature",
-      "id": "dd5fdb77-a432-43ce-89bc-911caa90b878",
+      "id": "ecf4c638-dfc8-41aa-8635-aa0b4cbf9c3c",
       "properties": {
         "name": "CTR Lahr",
         "class": "CTR",
@@ -34013,7 +34013,7 @@
     },
     {
       "type": "Feature",
-      "id": "e1d4b933-48b0-4664-a119-5aaa3467fa3e",
+      "id": "c8812d3f-c11a-4e56-b080-2cb777723d41",
       "properties": {
         "name": "CTR Sektor Altdorf (HX)",
         "class": "D",
@@ -34058,7 +34058,7 @@
     },
     {
       "type": "Feature",
-      "id": "febb9bb6-ea1b-45dd-8abe-07db7b7e0560",
+      "id": "b84ed388-0555-49e0-9b77-5ce6ba64f431",
       "properties": {
         "name": "CTR Sektor Offenburg (HX)",
         "class": "D",
@@ -34103,7 +34103,7 @@
     },
     {
       "type": "Feature",
-      "id": "44fcff09-0117-4bb7-80ba-c298d2b839c2",
+      "id": "249cb31f-ccee-4520-af7a-0db0b328fe8c",
       "properties": {
         "name": "CTR Laupheim",
         "class": "CTR",
@@ -34148,7 +34148,7 @@
     },
     {
       "type": "Feature",
-      "id": "494f267a-6856-40ec-b70b-3c04e632fe7f",
+      "id": "b42def82-0017-4100-bc21-c3c2bfaceb04",
       "properties": {
         "name": "CTR Lechfeld",
         "class": "CTR",
@@ -34193,7 +34193,7 @@
     },
     {
       "type": "Feature",
-      "id": "946e156c-2498-43eb-8df3-9eec79516f3f",
+      "id": "abe19f10-1a85-4c67-90f7-40a4c6f2f6ff",
       "properties": {
         "name": "CTR Leipzig",
         "class": "CTR",
@@ -34238,7 +34238,7 @@
     },
     {
       "type": "Feature",
-      "id": "7aaf4535-eac9-4c80-9c54-530dfd8417bd",
+      "id": "3d903596-855f-4b4e-9a34-809b33b598ad",
       "properties": {
         "name": "CTR Luebeck",
         "class": "CTR",
@@ -34283,7 +34283,7 @@
     },
     {
       "type": "Feature",
-      "id": "a47098a3-62cc-45b6-94d2-929be9209107",
+      "id": "cdf735c5-e401-490e-a788-769f23ab944c",
       "properties": {
         "name": "CTR Maastricht",
         "class": "CTR",
@@ -34412,7 +34412,7 @@
     },
     {
       "type": "Feature",
-      "id": "b0cbeed9-b396-467d-a438-385d0ada6abf",
+      "id": "4cfdd929-7b45-44a9-b0e4-a1c957cce813",
       "properties": {
         "name": "CTR Mannheim",
         "class": "CTR",
@@ -34457,7 +34457,7 @@
     },
     {
       "type": "Feature",
-      "id": "9e7676e5-abff-4df7-9000-4adfa4a9a6e7",
+      "id": "19f940e0-6d52-4bd9-8cc8-b3a5bf5b6540",
       "properties": {
         "name": "CTR Memmingen",
         "class": "CTR",
@@ -34502,7 +34502,7 @@
     },
     {
       "type": "Feature",
-      "id": "454bc274-ab00-4ed1-9987-81d931a42802",
+      "id": "c436b38b-0715-4d16-a0e0-7324b463bc63",
       "properties": {
         "name": "CTR Moenchengladbach",
         "class": "CTR",
@@ -34559,7 +34559,7 @@
     },
     {
       "type": "Feature",
-      "id": "d330cc2a-7500-41ba-904a-acc4f139b6d1",
+      "id": "3c485702-f648-4035-8aed-1962b0b22ccc",
       "properties": {
         "name": "CTR Muenchen",
         "class": "CTR",
@@ -34624,7 +34624,7 @@
     },
     {
       "type": "Feature",
-      "id": "18311c38-6cb3-452c-9cd8-854f638223b2",
+      "id": "2695f943-eaf1-4fa0-b6b6-5a70c59df0a0",
       "properties": {
         "name": "CTR Sektor EDNX (HX)",
         "class": "D",
@@ -34669,7 +34669,7 @@
     },
     {
       "type": "Feature",
-      "id": "fcbeca27-8d09-4908-90e8-5a6191eb1dab",
+      "id": "839d457e-47d9-49d7-b6f6-838fa766f888",
       "properties": {
         "name": "CTR Muenster/Osnabrueck",
         "class": "CTR",
@@ -34846,7 +34846,7 @@
     },
     {
       "type": "Feature",
-      "id": "f73d58a7-5ddf-4b99-82b1-e9b7e94449ae",
+      "id": "01952497-63b2-4112-a884-510a65d6c515",
       "properties": {
         "name": "CTR Neuburg",
         "class": "CTR",
@@ -34891,7 +34891,7 @@
     },
     {
       "type": "Feature",
-      "id": "5ade63cd-7642-40bf-a21d-3edc5d1a753b",
+      "id": "284d2beb-99c8-45bf-8421-e058b3eb366a",
       "properties": {
         "name": "CTR Niederrhein",
         "class": "CTR",
@@ -35016,7 +35016,7 @@
     },
     {
       "type": "Feature",
-      "id": "1ad49cb4-be7b-469f-9b65-ccf837d14edf",
+      "id": "89c1c1ee-e021-4669-92e7-94cc9ca930c3",
       "properties": {
         "name": "CTR Niederstetten",
         "class": "CTR",
@@ -35061,7 +35061,7 @@
     },
     {
       "type": "Feature",
-      "id": "bd2c470f-226f-4c62-b4fe-6f8fb8463729",
+      "id": "465862cd-6481-419c-830a-d15873d7f4b2",
       "properties": {
         "name": "CTR Nordholz",
         "class": "CTR",
@@ -35106,7 +35106,7 @@
     },
     {
       "type": "Feature",
-      "id": "82fac6ca-5fa0-40cb-8583-ab41962a57a6",
+      "id": "e9c1f81f-21ab-4388-8a43-22e1aaaa3a38",
       "properties": {
         "name": "CTR Noervenich",
         "class": "CTR",
@@ -35151,7 +35151,7 @@
     },
     {
       "type": "Feature",
-      "id": "77050bb5-1374-478c-9116-1e766492343d",
+      "id": "b1815e65-a6ea-458a-8222-df5121906c44",
       "properties": {
         "name": "CTR Nuernberg",
         "class": "CTR",
@@ -35460,7 +35460,7 @@
     },
     {
       "type": "Feature",
-      "id": "dab98cfa-933d-4414-bd4d-945d9a7d6cf2",
+      "id": "80c21873-97bd-41ed-a766-f4876dd41968",
       "properties": {
         "name": "CTR Sector Fuerth",
         "class": "D",
@@ -35505,7 +35505,7 @@
     },
     {
       "type": "Feature",
-      "id": "a7de8f6d-cc5e-44d0-a2df-e00b1662461f",
+      "id": "96b298a4-e3f2-440f-aa61-e73931d8d620",
       "properties": {
         "name": "CTR Oberpfaffenhofen",
         "class": "CTR",
@@ -35550,7 +35550,7 @@
     },
     {
       "type": "Feature",
-      "id": "8736978f-8ca0-4b05-a6f7-8ae829f371d6",
+      "id": "f5058a11-4447-4953-9572-66dd25515ea6",
       "properties": {
         "name": "UAV-AREA",
         "class": "R",
@@ -35595,7 +35595,7 @@
     },
     {
       "type": "Feature",
-      "id": "e64cfa90-909c-4c49-bf0c-4a450e21cfa6",
+      "id": "c5bc6405-29b6-4eb0-8d1d-3e6b9dc924d7",
       "properties": {
         "name": "CTR Paderborn",
         "class": "CTR",
@@ -35640,7 +35640,7 @@
     },
     {
       "type": "Feature",
-      "id": "321c7363-feda-4750-9fd8-de1cd9f61a6b",
+      "id": "8bd10e5e-e979-4652-aeeb-27b4fbe5466d",
       "properties": {
         "name": "CTR Ramstein",
         "class": "CTR",
@@ -35685,7 +35685,7 @@
     },
     {
       "type": "Feature",
-      "id": "e4d50b47-092e-4afb-9b5a-a553bbf8b9ff",
+      "id": "1454ceeb-9afd-4d9b-a8d9-626f156145f5",
       "properties": {
         "name": "CTR Saarbruecken",
         "class": "CTR",
@@ -35734,7 +35734,7 @@
     },
     {
       "type": "Feature",
-      "id": "5bd6a65f-6292-40d7-a83a-31e08609cf71",
+      "id": "ff2d415a-4e6d-42ba-b5b8-1535defeb57c",
       "properties": {
         "name": "CTR Salzburg",
         "class": "CTR",
@@ -35903,7 +35903,7 @@
     },
     {
       "type": "Feature",
-      "id": "2817429f-7812-4e31-bd04-059305b1b96a",
+      "id": "9ee56b8b-9723-4d33-a8f9-553d0b684416",
       "properties": {
         "name": "CTR Schleswig",
         "class": "CTR",
@@ -35952,7 +35952,7 @@
     },
     {
       "type": "Feature",
-      "id": "96ff7c3c-820b-43ed-9f31-040a9a6319f7",
+      "id": "e8334884-7103-4704-bbbf-76c98a6dcdf4",
       "properties": {
         "name": "CTR Spangdahlem",
         "class": "CTR",
@@ -36005,7 +36005,7 @@
     },
     {
       "type": "Feature",
-      "id": "b92ec056-1f7a-4623-913c-74da60b3bb15",
+      "id": "73e7574e-cb26-4e7a-93a4-e42f20c1c662",
       "properties": {
         "name": "CTR Strasbourg",
         "class": "CTR",
@@ -36066,7 +36066,7 @@
     },
     {
       "type": "Feature",
-      "id": "e568627a-3af6-4ba9-ab2c-42dad524120a",
+      "id": "ca3f83cc-c349-4254-89b8-c4c86c91c804",
       "properties": {
         "name": "CTR Stuttgart",
         "class": "CTR",
@@ -36111,7 +36111,7 @@
     },
     {
       "type": "Feature",
-      "id": "7809d7ae-a0f8-407b-a7ac-c6c0e4c3c9ab",
+      "id": "6fbf2ddf-f54a-4572-848f-254ba16e2c56",
       "properties": {
         "name": "CTR Sylt",
         "class": "CTR",
@@ -36292,7 +36292,7 @@
     },
     {
       "type": "Feature",
-      "id": "824d274d-cf88-4af5-acb1-4358567615fc",
+      "id": "c847e9e4-b1c3-4f0f-8f71-81847b9af6e3",
       "properties": {
         "name": "CTR Wiesbaden",
         "class": "CTR",
@@ -36345,7 +36345,7 @@
     },
     {
       "type": "Feature",
-      "id": "3ab45846-30fd-4447-a2a2-3753f8732876",
+      "id": "6286c193-becd-43c9-a8e6-73822706866b",
       "properties": {
         "name": "CTR Wittmund",
         "class": "CTR",
@@ -36390,7 +36390,7 @@
     },
     {
       "type": "Feature",
-      "id": "511bc87d-7333-41b9-9ee5-a7bcde260a16",
+      "id": "fb1aff0d-7280-4005-a7e9-3ba0ef5d62fa",
       "properties": {
         "name": "CTR Wunstorf",
         "class": "CTR",
@@ -36435,7 +36435,7 @@
     },
     {
       "type": "Feature",
-      "id": "2c6077db-c74d-47a2-973d-87828094ae50",
+      "id": "270293ba-8dd2-422f-9a9f-c73934692e2e",
       "properties": {
         "name": "Bale-Mulhouse 1",
         "class": "D",
@@ -36496,7 +36496,7 @@
     },
     {
       "type": "Feature",
-      "id": "12a39587-914a-47cb-a358-bc5cc15086a4",
+      "id": "89333a9f-3927-4421-862b-5e76a3f1f2ff",
       "properties": {
         "name": "Bale-Mulhouse 2",
         "class": "D",
@@ -36553,7 +36553,7 @@
     },
     {
       "type": "Feature",
-      "id": "950dceba-b3c9-44cc-882a-9f8dd097206f",
+      "id": "dd1f43b3-17b2-4fd8-bf77-f42031aacbb4",
       "properties": {
         "name": "Bale-Mulhouse 2",
         "class": "D",
@@ -36602,7 +36602,7 @@
     },
     {
       "type": "Feature",
-      "id": "11aeaf67-a3f6-4c35-9993-c52c8c68e6ca",
+      "id": "ed7feb8b-b991-4800-adfc-9fcb8df1c28b",
       "properties": {
         "name": "Bale-Mulhouse 3",
         "class": "D",
@@ -36683,7 +36683,7 @@
     },
     {
       "type": "Feature",
-      "id": "b9ba5902-e84b-4a72-86b6-e1c7c0570c1c",
+      "id": "60b7a754-ed81-479c-ada9-cdf39643a339",
       "properties": {
         "name": "Bremen",
         "class": "D",
@@ -36728,7 +36728,7 @@
     },
     {
       "type": "Feature",
-      "id": "e673e89d-01fd-42dd-923c-ea198b556677",
+      "id": "88464360-feea-4612-a40c-8ffa8fe8a4bd",
       "properties": {
         "name": "Bremen",
         "class": "D",
@@ -36773,7 +36773,7 @@
     },
     {
       "type": "Feature",
-      "id": "2b273745-14c1-443a-9d3f-f0c133e79808",
+      "id": "08bb5bea-e065-4e2f-90a5-cc0b3d889fc7",
       "properties": {
         "name": "Bremen",
         "class": "D",
@@ -36938,7 +36938,7 @@
     },
     {
       "type": "Feature",
-      "id": "3c50b554-910a-44c1-b4de-b23fcd025ca1",
+      "id": "6e2b703e-898d-4279-ba76-5e16030640a2",
       "properties": {
         "name": "Bremen",
         "class": "D",
@@ -37015,7 +37015,7 @@
     },
     {
       "type": "Feature",
-      "id": "3273fabf-cb0a-40f1-95c5-c81eb5bd3c23",
+      "id": "7ae56707-6ab8-4c18-89e3-0cb803a1b553",
       "properties": {
         "name": "Bremen",
         "class": "D",
@@ -37088,7 +37088,7 @@
     },
     {
       "type": "Feature",
-      "id": "37131d84-eafc-4305-9c3a-9dcf0bd174eb",
+      "id": "81d77840-7a12-408c-9c1a-d55d4b1d822d",
       "properties": {
         "name": "Dortmund 129.875",
         "class": "D",
@@ -37137,7 +37137,7 @@
     },
     {
       "type": "Feature",
-      "id": "2a83bcb4-b75c-4b31-89e8-fb39b3c15ae3",
+      "id": "fbf1eee1-bb91-4c97-a882-c1f8abc4a216",
       "properties": {
         "name": "Dortmund 129.875",
         "class": "D",
@@ -37214,7 +37214,7 @@
     },
     {
       "type": "Feature",
-      "id": "6c52252d-7e73-4ce8-9265-0015e4b92898",
+      "id": "774bd74f-8ad7-4f79-8bd7-621508c655b9",
       "properties": {
         "name": "Dresden 125.875",
         "class": "D",
@@ -37415,7 +37415,7 @@
     },
     {
       "type": "Feature",
-      "id": "e360070d-f9e8-4d2a-bb30-d98f387898c0",
+      "id": "662a93bc-d401-41ff-826f-2076d8782948",
       "properties": {
         "name": "Dresden 125.875",
         "class": "D",
@@ -37580,7 +37580,7 @@
     },
     {
       "type": "Feature",
-      "id": "43b93fce-afba-4540-9815-a2cadd6ed77a",
+      "id": "52571ea3-c167-4c84-97a4-a6b8d7fc1289",
       "properties": {
         "name": "Friedrichshafen",
         "class": "D",
@@ -37625,7 +37625,7 @@
     },
     {
       "type": "Feature",
-      "id": "d45c6051-ac3d-49a1-b92d-ec9f64a42d49",
+      "id": "205105d3-f7cc-42ac-a006-4635047a96cc",
       "properties": {
         "name": "Hahn 123.525",
         "class": "D",
@@ -37670,7 +37670,7 @@
     },
     {
       "type": "Feature",
-      "id": "efc58ecd-2c05-4520-921e-06b6b97a437e",
+      "id": "e9c8f402-7d88-4a48-a5c2-98d9974cd369",
       "properties": {
         "name": "Hahn 123.525",
         "class": "D",
@@ -37715,7 +37715,7 @@
     },
     {
       "type": "Feature",
-      "id": "47eade4d-4788-4394-9f07-e7f3c9f08d6b",
+      "id": "26a218ab-8235-4f03-b2d7-61155a950751",
       "properties": {
         "name": "Hahn 123.525",
         "class": "D",
@@ -37760,7 +37760,7 @@
     },
     {
       "type": "Feature",
-      "id": "8c7b4458-d1bf-4ec5-b7c2-4634ca26b1ca",
+      "id": "bfe799b8-9374-47f4-b432-2d64d90f551e",
       "properties": {
         "name": "Hahn 123.525",
         "class": "D",
@@ -37805,7 +37805,7 @@
     },
     {
       "type": "Feature",
-      "id": "21cde70e-067d-494b-a4d7-ab8b712352e0",
+      "id": "5862d31d-36f9-4949-9916-8528985505d4",
       "properties": {
         "name": "Hahn 123.525",
         "class": "D",
@@ -37850,7 +37850,7 @@
     },
     {
       "type": "Feature",
-      "id": "cb96d905-39d9-4d68-a572-b819d0f29ca0",
+      "id": "f3fc112b-a741-4f5c-a41b-4f5e6d976e12",
       "properties": {
         "name": "Hamb.-Finkenw. HX (RWY05 at EDHI)",
         "class": "D",
@@ -37927,7 +37927,7 @@
     },
     {
       "type": "Feature",
-      "id": "1059d015-b98f-4295-acbe-d450e33e1089",
+      "id": "71f60245-9cf8-43e1-8f29-fc729b022470",
       "properties": {
         "name": "Hannover 119.825",
         "class": "D",
@@ -38124,7 +38124,7 @@
     },
     {
       "type": "Feature",
-      "id": "b556dee9-b8da-48a5-bd76-e9d41c939e67",
+      "id": "34267d30-2eac-4749-9344-0b059ed239f7",
       "properties": {
         "name": "Hannover 119.825",
         "class": "D",
@@ -38505,7 +38505,7 @@
     },
     {
       "type": "Feature",
-      "id": "7451dea0-cb88-412c-94c6-826ed7af967f",
+      "id": "dcd76e20-e5ba-4f02-8cc1-634e6f78204b",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38558,7 +38558,7 @@
     },
     {
       "type": "Feature",
-      "id": "f6f5e700-9b77-45e3-bccc-d8644eef0710",
+      "id": "b4fbbe47-f04c-4557-84cb-6192c449ce97",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38611,7 +38611,7 @@
     },
     {
       "type": "Feature",
-      "id": "30105e5e-1e3c-4a70-ab9d-c76ebc8d6bfb",
+      "id": "c8cf48e1-c1c4-4bb0-8144-742f84cc9120",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38664,7 +38664,7 @@
     },
     {
       "type": "Feature",
-      "id": "ead154b7-c96e-4ad2-a035-bf76a3c56c99",
+      "id": "6db1c7e3-5e51-490a-80f7-489f39fdc392",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38717,7 +38717,7 @@
     },
     {
       "type": "Feature",
-      "id": "24e284eb-1054-4cdb-b91f-05eb84d0f784",
+      "id": "3db0b31f-57b4-422d-b444-de1809efed89",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38802,7 +38802,7 @@
     },
     {
       "type": "Feature",
-      "id": "40e412dd-f21b-4950-a11d-27823dc2f02b",
+      "id": "1bb41e8f-9650-4ac2-b171-32fe03448386",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38855,7 +38855,7 @@
     },
     {
       "type": "Feature",
-      "id": "c3c2b076-1637-43fa-bd76-77f0064eef5e",
+      "id": "271b0804-fd8e-4aa3-af3f-f996699b3c77",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38900,7 +38900,7 @@
     },
     {
       "type": "Feature",
-      "id": "764ba975-60b1-402d-a888-78ccb12f6f4e",
+      "id": "02db58ca-79be-4a6f-be93-e80de75fb521",
       "properties": {
         "name": "Karlsruhe 128.950",
         "class": "D",
@@ -38953,7 +38953,7 @@
     },
     {
       "type": "Feature",
-      "id": "29ca97d9-5a1c-4438-9e31-dc74abd45be1",
+      "id": "2bd6b14e-e54c-41b0-baf0-99846de21921",
       "properties": {
         "name": "Koeln",
         "class": "D",
@@ -38998,7 +38998,7 @@
     },
     {
       "type": "Feature",
-      "id": "ac6bd416-e355-46f3-8570-718c9404a6de",
+      "id": "a109a232-c1c0-44a1-9ee5-79a8e7746cc6",
       "properties": {
         "name": "Leipzig 126.175",
         "class": "D",
@@ -39175,7 +39175,7 @@
     },
     {
       "type": "Feature",
-      "id": "541b875b-317e-47f5-acdd-8053294b8f6a",
+      "id": "a66df4cd-f359-4c0b-9b59-2b0f25a96a81",
       "properties": {
         "name": "Leipzig (HX-West) 134.460",
         "class": "D",
@@ -39316,7 +39316,7 @@
     },
     {
       "type": "Feature",
-      "id": "3e97afd0-9552-4ce8-8e60-c4d02f82f9a3",
+      "id": "f728fd1c-5136-4037-8053-45cd9ee9b8e5",
       "properties": {
         "name": "Leipzig 126.175",
         "class": "D",
@@ -39369,7 +39369,7 @@
     },
     {
       "type": "Feature",
-      "id": "cab7e3a8-699c-4f61-b893-2c45d6e58e84",
+      "id": "521fa680-b77a-4dda-8cc0-4f71ab0e8f3a",
       "properties": {
         "name": "Leipzig (HX-East) 134.460",
         "class": "D",
@@ -39514,7 +39514,7 @@
     },
     {
       "type": "Feature",
-      "id": "7264babf-74de-4792-9acd-c0c1a35279e5",
+      "id": "c2c12fe1-0811-4c65-a830-5e4e9144cdb4",
       "properties": {
         "name": "Leipzig 126.175",
         "class": "D",
@@ -39567,7 +39567,7 @@
     },
     {
       "type": "Feature",
-      "id": "be5f9c1d-1398-4a79-98b7-3a856d116ad8",
+      "id": "63424595-b11e-4d5b-8aa5-0736b198caad",
       "properties": {
         "name": "Leipzig (HX-West) 134.460",
         "class": "D",
@@ -39648,7 +39648,7 @@
     },
     {
       "type": "Feature",
-      "id": "7b1c8d22-9e4e-4c0b-ac8c-6651a3c6b1fd",
+      "id": "98f78248-bfa9-4ec9-b4c1-329152a437ac",
       "properties": {
         "name": "Leipzig (HX-East) 134.460",
         "class": "D",
@@ -39729,7 +39729,7 @@
     },
     {
       "type": "Feature",
-      "id": "40766593-22b0-4d11-b12f-775e92679949",
+      "id": "305388bd-5498-413d-9390-ca3027cfe655",
       "properties": {
         "name": "Leipzig 126.175",
         "class": "D",
@@ -39774,7 +39774,7 @@
     },
     {
       "type": "Feature",
-      "id": "362c5924-bb15-48da-97e6-64823f72f4b2",
+      "id": "1c5d5f60-71ab-4672-a4dd-7b0e79b77a97",
       "properties": {
         "name": "Leipzig 126.175",
         "class": "D",
@@ -39819,7 +39819,7 @@
     },
     {
       "type": "Feature",
-      "id": "10e55d73-7a50-4d11-a391-e1f01c130542",
+      "id": "63d04a13-d02e-44a6-933c-8d942a16cff9",
       "properties": {
         "name": "Leipzig (HX-West) 134.460",
         "class": "D",
@@ -39908,7 +39908,7 @@
     },
     {
       "type": "Feature",
-      "id": "283041d3-26cc-4d3e-bdb0-7b6bc18bd999",
+      "id": "207c9282-4ca2-4358-b1d3-08965ef229e4",
       "properties": {
         "name": "Leipzig (HX-East) 134.460",
         "class": "D",
@@ -39997,7 +39997,7 @@
     },
     {
       "type": "Feature",
-      "id": "2813384b-4f1a-42a6-841a-eb1daf8db9d6",
+      "id": "dda86eea-acc8-4361-a8b0-302105a82045",
       "properties": {
         "name": "Leipzig (HX-East) 134.460",
         "class": "D",
@@ -40074,7 +40074,7 @@
     },
     {
       "type": "Feature",
-      "id": "2f0580db-57cd-4d69-9312-99e8fb06e5af",
+      "id": "7fc73827-23a6-46c7-b945-3277403e9992",
       "properties": {
         "name": "Leipzig (HX-West) 134.460",
         "class": "D",
@@ -40163,7 +40163,7 @@
     },
     {
       "type": "Feature",
-      "id": "614fd0d0-3c14-4dfa-b093-85d75275f5b7",
+      "id": "b7f1d085-acdd-4133-9f91-e8f74fc46024",
       "properties": {
         "name": "Luxembourg 118.905",
         "class": "D",
@@ -40468,7 +40468,7 @@
     },
     {
       "type": "Feature",
-      "id": "629f26ad-f9a5-4c17-ad2b-3a2ca12bdb2c",
+      "id": "08b73f83-19f0-4ad9-b412-aca6634aa66f",
       "properties": {
         "name": "Luxembourg 118.905",
         "class": "D",
@@ -40697,7 +40697,7 @@
     },
     {
       "type": "Feature",
-      "id": "d8d924cd-4b95-4c22-bb31-23f73ea3129b",
+      "id": "1182b62f-baa8-4eb3-be39-a4896816678c",
       "properties": {
         "name": "Muenster-Osnabrueck 129.875",
         "class": "D",
@@ -40750,7 +40750,7 @@
     },
     {
       "type": "Feature",
-      "id": "05b48fb7-f4cd-46ee-8adf-70843fcd7272",
+      "id": "b4749c09-3783-46ab-bc5d-1a6cf594db56",
       "properties": {
         "name": "Niederrhein 129.875",
         "class": "D",
@@ -40891,7 +40891,7 @@
     },
     {
       "type": "Feature",
-      "id": "c8250746-a915-4e77-b3b8-fc2c09d92f5f",
+      "id": "12b6cb35-f303-4249-9154-667d048fc134",
       "properties": {
         "name": "Nuernberg 120.650",
         "class": "D",
@@ -41080,7 +41080,7 @@
     },
     {
       "type": "Feature",
-      "id": "f1821802-c9ee-4280-807e-8ffc21e3ec63",
+      "id": "50635a6a-e9aa-4267-9cf5-bade77c98fb5",
       "properties": {
         "name": "Nuernberg 120.650",
         "class": "D",
@@ -41329,7 +41329,7 @@
     },
     {
       "type": "Feature",
-      "id": "670ddd28-ed8e-4c9d-9a2a-7f7d9ca709fa",
+      "id": "5ec91e9d-d3f4-4cc2-8596-3ca1100a0b44",
       "properties": {
         "name": "Nuernberg 120.650",
         "class": "D",
@@ -41446,7 +41446,7 @@
     },
     {
       "type": "Feature",
-      "id": "1f8ced86-3060-442e-9b46-8fad54f3349c",
+      "id": "b00f1d18-633b-4500-b651-8744549d78f7",
       "properties": {
         "name": "Nuernberg 120.650",
         "class": "D",
@@ -41563,7 +41563,7 @@
     },
     {
       "type": "Feature",
-      "id": "2d403733-ac69-4862-909f-ace0c7b8ac8d",
+      "id": "1ba88c46-5421-486a-8b31-bed57539ecd0",
       "properties": {
         "name": "Salzburg 123.725",
         "class": "D",
@@ -41636,7 +41636,7 @@
     },
     {
       "type": "Feature",
-      "id": "f17168f4-1342-40b7-be9d-5d254be7b388",
+      "id": "241fac9a-479a-43c2-9109-b56058085fab",
       "properties": {
         "name": "Salzburg 123.725",
         "class": "D",
@@ -41685,7 +41685,7 @@
     },
     {
       "type": "Feature",
-      "id": "6220e3f3-7ebf-4bb8-81b5-c3d5c8194053",
+      "id": "0306c2a9-5421-4e3a-a0bc-eedfa7168494",
       "properties": {
         "name": "Salzburg 123.725",
         "class": "D",
@@ -41746,7 +41746,7 @@
     },
     {
       "type": "Feature",
-      "id": "c981334e-530e-4bf9-b764-6afb5421ecf4",
+      "id": "45516f56-ba5b-4339-9745-51f60188e5a4",
       "properties": {
         "name": "Salzburg 123.725",
         "class": "D",
@@ -41827,7 +41827,7 @@
     },
     {
       "type": "Feature",
-      "id": "af431a8c-2034-4a87-ba2e-e2b670b8240b",
+      "id": "d2e55301-7c14-4d84-8012-174497576235",
       "properties": {
         "name": "Stuttgart 128.950",
         "class": "D",
@@ -42048,7 +42048,7 @@
     },
     {
       "type": "Feature",
-      "id": "108b1e37-fc61-4cd9-8cce-34ae6dfb0a60",
+      "id": "e4dd4609-66a1-4e5a-b83c-72e8683cec09",
       "properties": {
         "name": "Stuttgart 128.950",
         "class": "D",
@@ -42245,7 +42245,7 @@
     },
     {
       "type": "Feature",
-      "id": "72e1384f-5458-4994-a728-b3944b441cc9",
+      "id": "c60a8461-3bd2-427d-85cf-1174d8169305",
       "properties": {
         "name": "Stuttgart 128.950",
         "class": "D",
@@ -42442,7 +42442,7 @@
     },
     {
       "type": "Feature",
-      "id": "7718bc33-7872-46ce-a44b-ebacb6d71020",
+      "id": "35ea9456-2a83-4294-8a26-682237773b1d",
       "properties": {
         "name": "Stuttgart 128.950",
         "class": "D",
@@ -42619,7 +42619,7 @@
     },
     {
       "type": "Feature",
-      "id": "3772f9fe-7b4c-4489-857b-f73217c52fc2",
+      "id": "082a48b8-55da-4948-b036-974ac2bfbf5d",
       "properties": {
         "name": "Stuttgart 128.950",
         "class": "D",
@@ -42680,7 +42680,7 @@
     },
     {
       "type": "Feature",
-      "id": "ad58b7a0-77fe-43ce-a867-cc905407cec8",
+      "id": "2d2b0bb6-8b18-4367-867a-018b0f61af19",
       "properties": {
         "name": "RMZ EDFQ 135.165",
         "class": "RMZ",
@@ -42725,7 +42725,7 @@
     },
     {
       "type": "Feature",
-      "id": "bb293923-81f4-4add-86db-8c10310882e1",
+      "id": "3d783b83-3063-44cd-aea4-91324dfd159c",
       "properties": {
         "name": "RMZ EDAC 123.580",
         "class": "RMZ",
@@ -42770,7 +42770,7 @@
     },
     {
       "type": "Feature",
-      "id": "02a52b3b-1693-40d4-a29f-609ec9e53569",
+      "id": "7466ca74-30db-420b-aea1-804ec08ff8eb",
       "properties": {
         "name": "RMZ EDBH 118.080",
         "class": "RMZ",
@@ -42815,7 +42815,7 @@
     },
     {
       "type": "Feature",
-      "id": "2b40ddca-5964-4d69-b2e8-b9cae5887684",
+      "id": "7b7e6f31-cb4d-4ad1-8f29-2920fa267f2e",
       "properties": {
         "name": "RMZ EDAB 120.605",
         "class": "RMZ",
@@ -42860,7 +42860,7 @@
     },
     {
       "type": "Feature",
-      "id": "d24d768e-4ac9-471b-972d-57cd04131631",
+      "id": "1f9ec677-f9f6-4938-89ad-b1e50039f598",
       "properties": {
         "name": "RMZ EDQD 127.530",
         "class": "RMZ",
@@ -42905,7 +42905,7 @@
     },
     {
       "type": "Feature",
-      "id": "ed9275f8-72a0-4203-aaff-d9d2d64104aa",
+      "id": "bac46d58-276d-46f4-ab1d-b4a571433b54",
       "properties": {
         "name": "RMZ EDQC 128.680",
         "class": "RMZ",
@@ -42950,7 +42950,7 @@
     },
     {
       "type": "Feature",
-      "id": "fd5dab06-12f6-41e2-b815-eabdc0546a1d",
+      "id": "3cb5ce4b-b4c3-4917-9b41-5e2052f2997e",
       "properties": {
         "name": "RMZ EDTD 126.690",
         "class": "RMZ",
@@ -42995,7 +42995,7 @@
     },
     {
       "type": "Feature",
-      "id": "f7094242-9e5a-47a5-aed9-2ebddb33f49b",
+      "id": "20fcbd39-bbb8-4dad-8d9b-cbb33b2bc92f",
       "properties": {
         "name": "Satellitenzone-Sued",
         "class": "G",
@@ -43040,7 +43040,7 @@
     },
     {
       "type": "Feature",
-      "id": "6bc374f5-755d-4765-b848-172dfc39548c",
+      "id": "58338cb7-1bb3-48be-b487-4fb0c6a633cb",
       "properties": {
         "name": "Satellitenzone-Nord 127.535",
         "class": "G",
@@ -43085,7 +43085,7 @@
     },
     {
       "type": "Feature",
-      "id": "ab5b2eac-564e-4313-a9b1-fefcc3e09a7f",
+      "id": "16a4280d-8f3d-47b0-bd85-f4ed78204fde",
       "properties": {
         "name": "RMZ EDPR 122.055",
         "class": "RMZ",
@@ -43130,7 +43130,7 @@
     },
     {
       "type": "Feature",
-      "id": "65797c9f-50a3-421d-8374-fa731fc32e24",
+      "id": "9258678b-52fa-4136-8cf2-221b65feff80",
       "properties": {
         "name": "RMZ EDME 120.305",
         "class": "RMZ",
@@ -43175,7 +43175,7 @@
     },
     {
       "type": "Feature",
-      "id": "a1ce453c-2214-4244-ba56-0c795366388c",
+      "id": "8d83cd84-2c05-45e5-b113-00423a912106",
       "properties": {
         "name": "RMZ Sektor Pfarrkirchen 119.980",
         "class": "G",
@@ -43220,7 +43220,7 @@
     },
     {
       "type": "Feature",
-      "id": "ccd96c39-f789-42c6-a7b8-c6a5ba875f00",
+      "id": "d17a0ad9-19ef-4ad3-8342-42148410bda1",
       "properties": {
         "name": "RMZ EDWE 118.605",
         "class": "RMZ",
@@ -43265,7 +43265,7 @@
     },
     {
       "type": "Feature",
-      "id": "4f86ba74-8e35-49f6-a5e1-6e5a790d9f1f",
+      "id": "0df11a17-0103-4671-83c9-7e76a057f5fe",
       "properties": {
         "name": "RMZ/ATZ/TMZ EDFE 118.405",
         "class": "RMZ",
@@ -43310,7 +43310,7 @@
     },
     {
       "type": "Feature",
-      "id": "a250105b-9651-463f-b2ed-3bd1e1120a09",
+      "id": "92beecf8-7e12-40f4-a2bb-4d1aa961f0ba",
       "properties": {
         "name": "RMZ EDQG 122.505",
         "class": "RMZ",
@@ -43355,7 +43355,7 @@
     },
     {
       "type": "Feature",
-      "id": "94c5f7dd-e3df-4a48-96dd-8f5a26fca577",
+      "id": "1609a125-e706-4a7e-9d3d-febc534f3581",
       "properties": {
         "name": "RMZ EDQT 119.805",
         "class": "RMZ",
@@ -43400,7 +43400,7 @@
     },
     {
       "type": "Feature",
-      "id": "c944575f-233e-4e83-bb2c-8bd999ec5f51",
+      "id": "dc7339b8-63be-495c-8263-d04da56a56da",
       "properties": {
         "name": "RMZ EDHK 119.980",
         "class": "RMZ",
@@ -43445,7 +43445,7 @@
     },
     {
       "type": "Feature",
-      "id": "a2140bfb-9622-44ea-b8de-ebaa6ef2e540",
+      "id": "364d55f1-96bb-4958-a50f-f685ac1ae214",
       "properties": {
         "name": "RMZ EDBM 119.305",
         "class": "RMZ",
@@ -43490,7 +43490,7 @@
     },
     {
       "type": "Feature",
-      "id": "71ab1ec7-c04e-4548-9d1f-3dbebcfb8a05",
+      "id": "225c544c-4fe4-4cac-bf40-3b02b50b4fd5",
       "properties": {
         "name": "RMZ EDTM 135.180",
         "class": "RMZ",
@@ -43535,7 +43535,7 @@
     },
     {
       "type": "Feature",
-      "id": "7998ddde-4c60-4306-8fa9-ae896bb078fa",
+      "id": "d5206936-a9e9-437b-9fef-6489c4f110ce",
       "properties": {
         "name": "RMZ Sektor Saulgau 123.605",
         "class": "G",
@@ -43580,7 +43580,7 @@
     },
     {
       "type": "Feature",
-      "id": "32c534a6-e17b-4ee0-b2f0-7cbbf72d7e01",
+      "id": "29e7fa4b-e475-40f3-8534-cb9f5511c88a",
       "properties": {
         "name": "RMZ EDBN 119.180",
         "class": "RMZ",
@@ -43625,7 +43625,7 @@
     },
     {
       "type": "Feature",
-      "id": "ecd99a2c-6200-4aa6-bce1-c75c91bd5998",
+      "id": "a8c387ed-5edd-430a-ac46-c89348b53a53",
       "properties": {
         "name": "RMZ EDMX 131.130",
         "class": "RMZ",
@@ -43686,7 +43686,7 @@
     },
     {
       "type": "Feature",
-      "id": "862c9fcd-fbf2-40b4-8d6e-b22cbe4e4045",
+      "id": "dad55ba4-21f2-4d9c-b3de-37a47e1f3245",
       "properties": {
         "name": "RMZ EDAZ 131.155",
         "class": "RMZ",
@@ -43739,7 +43739,7 @@
     },
     {
       "type": "Feature",
-      "id": "aaf93be8-d311-4206-943c-353e4c89dc54",
+      "id": "c2e5b170-5123-47c1-9751-1ff53e003fa7",
       "properties": {
         "name": "RMZ EDTY 129.230",
         "class": "RMZ",
@@ -43784,7 +43784,7 @@
     },
     {
       "type": "Feature",
-      "id": "a0881fe0-b792-43e1-a307-a02c09e0cc89",
+      "id": "4e97d858-83a8-48a8-a25f-b46f57603e52",
       "properties": {
         "name": "RMZ EDGS 120.380",
         "class": "RMZ",
@@ -43829,7 +43829,7 @@
     },
     {
       "type": "Feature",
-      "id": "50c61a06-68fe-4a2f-a6fb-14914c9f6630",
+      "id": "79679987-d1a6-4b3d-8846-6c8bda0bc1af",
       "properties": {
         "name": "RMZ EDMS 127.155",
         "class": "RMZ",
@@ -43874,7 +43874,7 @@
     },
     {
       "type": "Feature",
-      "id": "7583ab11-9c8a-4ff7-87be-3cbf2e7be134",
+      "id": "1c3d678a-41cc-4b72-98a3-406d9ba70455",
       "properties": {
         "name": "RMZ EDAY 118.735",
         "class": "RMZ",
@@ -43919,7 +43919,7 @@
     },
     {
       "type": "Feature",
-      "id": "fa5020a4-e4d5-45d2-9213-2b55ca13d2d7",
+      "id": "35d0395f-8df4-46f9-9167-458f1810796b",
       "properties": {
         "name": "RMZ EDWI 129.255",
         "class": "RMZ",
@@ -43964,7 +43964,7 @@
     },
     {
       "type": "Feature",
-      "id": "5a0075b0-1f2d-478a-9b5c-47b46a5bd50a",
+      "id": "1aed1282-8f5a-439c-b58a-0553d78be00f",
       "properties": {
         "name": "RMZ EDRZ 123.830",
         "class": "RMZ",
@@ -44085,7 +44085,7 @@
     },
     {
       "type": "Feature",
-      "id": "9134a807-cedd-4e4e-b1bc-0cef16b84f76",
+      "id": "d0c926db-62c0-4cab-84fd-37cfebdc422e",
       "properties": {
         "name": "RMZ Sektor Pirmasens 122.355",
         "class": "G",
@@ -44134,7 +44134,7 @@
     },
     {
       "type": "Feature",
-      "id": "6a926438-9a22-42b3-8aa6-8b5227e7121b",
+      "id": "2179a443-8cf2-46f1-845d-1586f8b5dec7",
       "properties": {
         "name": "TMZ-EDDW A4471 124.800",
         "class": "TMZ",
@@ -44355,7 +44355,7 @@
     },
     {
       "type": "Feature",
-      "id": "ff80e923-e32e-448f-a41f-c75cbfddf2f1",
+      "id": "771d4f1a-e7ff-46cc-b0a6-cc45c97c912e",
       "properties": {
         "name": "TMZ-EDLW A6102 125.225",
         "class": "TMZ",
@@ -44404,7 +44404,7 @@
     },
     {
       "type": "Feature",
-      "id": "820ca14b-4424-4208-a04e-f864f5d8d800",
+      "id": "a2d4f410-a6f5-4535-b9fc-cb884550aad9",
       "properties": {
         "name": "TMZ-EDLW A6102 125.225",
         "class": "TMZ",
@@ -44481,7 +44481,7 @@
     },
     {
       "type": "Feature",
-      "id": "a14f16d4-910d-4b8c-95cc-78c21a4582b6",
+      "id": "3ad12da8-a52c-440e-82ff-f241f010c71c",
       "properties": {
         "name": "TMZ-EDLW A6102 125.225",
         "class": "TMZ",
@@ -44566,7 +44566,7 @@
     },
     {
       "type": "Feature",
-      "id": "191cef00-d943-423c-bede-9f37f105ef65",
+      "id": "9cdeadb8-2729-4d83-8639-00460bde3d2a",
       "properties": {
         "name": "TMZ-EDLW A6102 125.225",
         "class": "TMZ",
@@ -44615,7 +44615,7 @@
     },
     {
       "type": "Feature",
-      "id": "ecd7e0e7-5898-4001-bdfe-9095ab3c0893",
+      "id": "ace6f5f1-de0e-4e01-bf08-23d336457227",
       "properties": {
         "name": "TMZ-EDDC A4410 125.875",
         "class": "TMZ",
@@ -44852,7 +44852,7 @@
     },
     {
       "type": "Feature",
-      "id": "ea5d42dc-0bf5-43c1-b79d-aaba518d99e6",
+      "id": "23f69240-76f1-40be-a50d-2cd7539a738a",
       "properties": {
         "name": "TMZ-EDDE HX A4410 126.175",
         "class": "TMZ",
@@ -44897,7 +44897,7 @@
     },
     {
       "type": "Feature",
-      "id": "02010c29-98db-4da6-82fe-c805a19e9f89",
+      "id": "b96f698f-ee47-4674-9339-2e2ac8738e4a",
       "properties": {
         "name": "TMZ-EDDE HX A4410 126.175",
         "class": "TMZ",
@@ -44942,7 +44942,7 @@
     },
     {
       "type": "Feature",
-      "id": "b4df3018-e3b2-434e-af68-b150f79dd82d",
+      "id": "bb30b3f8-f62d-404a-9d77-8878be9da267",
       "properties": {
         "name": "TMZ-EDDE HX A4410 126.175",
         "class": "TMZ",
@@ -45019,7 +45019,7 @@
     },
     {
       "type": "Feature",
-      "id": "0d295e44-d50a-4c67-aa2f-d0b49614bc94",
+      "id": "22386ea2-c567-4cf0-a405-1b685b92621c",
       "properties": {
         "name": "TMZ-EDNY A2677 119.925",
         "class": "TMZ",
@@ -45100,7 +45100,7 @@
     },
     {
       "type": "Feature",
-      "id": "876093b5-bad2-4947-84eb-9b0c9282f909",
+      "id": "33e92c6d-d521-423a-bff8-617f99d8b7f4",
       "properties": {
         "name": "TMZ-EDNY A2677 119.925",
         "class": "TMZ",
@@ -45445,7 +45445,7 @@
     },
     {
       "type": "Feature",
-      "id": "34ff305a-69a4-47c2-8205-49916007aaab",
+      "id": "b55da321-e073-4052-8059-c3acf0988035",
       "properties": {
         "name": "TMZ-EDFH A0424 125.600",
         "class": "TMZ",
@@ -45518,7 +45518,7 @@
     },
     {
       "type": "Feature",
-      "id": "2c4c28a2-fe82-421a-8c13-16140fb29dc6",
+      "id": "ff120199-c1cd-44f6-a4ec-82d0c2943c87",
       "properties": {
         "name": "TMZ-EDFH A0424 125.600",
         "class": "TMZ",
@@ -45579,7 +45579,7 @@
     },
     {
       "type": "Feature",
-      "id": "c4b02b5e-2bf4-4e40-90b9-473e9214ec00",
+      "id": "2526e336-a5c8-42be-9443-1320cd6d1517",
       "properties": {
         "name": "TMZ-EDFH A0424 125.600",
         "class": "TMZ",
@@ -45628,7 +45628,7 @@
     },
     {
       "type": "Feature",
-      "id": "08a941c7-9529-46ea-ab7d-a0d4582b1532",
+      "id": "d5dc758c-8243-4173-8ce2-da5151a1d12d",
       "properties": {
         "name": "TMZ-EDFH A0424 125.600",
         "class": "TMZ",
@@ -45677,7 +45677,7 @@
     },
     {
       "type": "Feature",
-      "id": "fd057bb0-45d5-49c5-94fd-8618c4a64a4b",
+      "id": "8e7b1338-a869-47e4-8f4a-431f70afa67c",
       "properties": {
         "name": "TMZ-EDFH A0424 125.600",
         "class": "TMZ",
@@ -45754,7 +45754,7 @@
     },
     {
       "type": "Feature",
-      "id": "bbb49342-83b2-4317-be40-a1952ce54b97",
+      "id": "cc5ef0e8-6040-42bc-88a5-5086c0ff333d",
       "properties": {
         "name": "TMZ-EDDH A4671 119.510",
         "class": "TMZ",
@@ -45863,7 +45863,7 @@
     },
     {
       "type": "Feature",
-      "id": "2ced61ee-16ab-4674-afe2-f922744c76ba",
+      "id": "5e5362fd-c3ab-463b-83ef-3e2930aec369",
       "properties": {
         "name": "TMZ-EDDH A4671 119.510",
         "class": "TMZ",
@@ -46012,7 +46012,7 @@
     },
     {
       "type": "Feature",
-      "id": "27b9ab67-797f-47f8-ad45-1592dd9e1238",
+      "id": "c1b73cc4-0873-4b3d-bf4c-09f04716fdd3",
       "properties": {
         "name": "TMZ-EDDH A4671 134.255",
         "class": "TMZ",
@@ -46165,7 +46165,7 @@
     },
     {
       "type": "Feature",
-      "id": "b0077cb1-f126-49f2-b5ef-a4d5af2dea61",
+      "id": "a15edd1a-d520-4c7d-a5f6-ed7444b60057",
       "properties": {
         "name": "TMZ-EDDV HX-WEST A4676 131.330",
         "class": "TMZ",
@@ -46290,7 +46290,7 @@
     },
     {
       "type": "Feature",
-      "id": "a6d50ebb-27fa-4e41-a7ca-7b0de302850a",
+      "id": "2dd2e596-3780-4e46-935b-a62aac81da8f",
       "properties": {
         "name": "TMZ-EDDV A4676 131.330",
         "class": "TMZ",
@@ -46335,7 +46335,7 @@
     },
     {
       "type": "Feature",
-      "id": "e02d20bc-ba8d-4851-ad0b-7adf81e67764",
+      "id": "c3645de4-607a-4148-89aa-450c260d4746",
       "properties": {
         "name": "TMZ-EDDV HX-EAST A4676 131.330",
         "class": "TMZ",
@@ -46548,7 +46548,7 @@
     },
     {
       "type": "Feature",
-      "id": "b73f4c8b-193a-41c3-9269-2e840eb7bd3d",
+      "id": "9b7a82a5-48a8-4515-b177-4bd8fbeda9af",
       "properties": {
         "name": "TMZ-EDDV HX-WEST A4676 131.330",
         "class": "TMZ",
@@ -46673,7 +46673,7 @@
     },
     {
       "type": "Feature",
-      "id": "328baa6c-e785-4534-892a-4419f2e59c87",
+      "id": "97b55d99-6210-45ba-853c-f1450e0b9b3b",
       "properties": {
         "name": "TMZ-EDDV HX-WEST A4676 131.330",
         "class": "TMZ",
@@ -46718,7 +46718,7 @@
     },
     {
       "type": "Feature",
-      "id": "1e45aec8-8776-4d84-b97a-124de22f15dd",
+      "id": "6ae84b45-1d5d-4777-a8a3-0d7b8d2c744e",
       "properties": {
         "name": "TMZ-EDDV HX-WEST A4676 131.330",
         "class": "TMZ",
@@ -46843,7 +46843,7 @@
     },
     {
       "type": "Feature",
-      "id": "0eb79a54-6f67-4c78-aca6-e34beea5b29a",
+      "id": "6b567207-af2d-4e64-a7b1-0a11deeeeb3e",
       "properties": {
         "name": "TMZ-EDDP HX-WEST A4404 126.175",
         "class": "TMZ",
@@ -46928,7 +46928,7 @@
     },
     {
       "type": "Feature",
-      "id": "07bbcd2c-c578-40d5-8b4b-9b440936bc3b",
+      "id": "54cb6dc9-15a3-4e37-92a5-fce22b503355",
       "properties": {
         "name": "TMZ-EDDP A4404 126.175",
         "class": "TMZ",
@@ -47137,7 +47137,7 @@
     },
     {
       "type": "Feature",
-      "id": "18a95dc0-9eb0-4565-a654-5a83f0fb459d",
+      "id": "26f5d50e-26ef-4582-b805-7cbe9ad94ea7",
       "properties": {
         "name": "TMZ-EDDP HX-EAST A4404 126.175",
         "class": "TMZ",
@@ -47226,7 +47226,7 @@
     },
     {
       "type": "Feature",
-      "id": "c22c5103-e8f2-4dec-a648-cda7c440fa3d",
+      "id": "72a2be9b-c5cb-4884-992d-5762ed2319b0",
       "properties": {
         "name": "TMZ-EDJA A4404 129.450",
         "class": "TMZ",
@@ -47271,7 +47271,7 @@
     },
     {
       "type": "Feature",
-      "id": "78330606-ca84-4a57-a93f-b07746a98bdc",
+      "id": "96041eef-2ffd-4ea0-80c9-a96c7be16832",
       "properties": {
         "name": "TMZ-EDJA A4404 129.450",
         "class": "TMZ",
@@ -47316,7 +47316,7 @@
     },
     {
       "type": "Feature",
-      "id": "b01e13ea-46bc-4673-8d74-d6ed7e88ebdd",
+      "id": "e8bad8ab-181e-4a89-a2c5-1c163be75a84",
       "properties": {
         "name": "TMZ-EDJA A4404 129.450",
         "class": "TMZ",
@@ -47377,7 +47377,7 @@
     },
     {
       "type": "Feature",
-      "id": "661a6dab-973f-46a8-86b9-9f20245acc3e",
+      "id": "d18ebc1e-d946-4ca0-a982-d11e13aad014",
       "properties": {
         "name": "TMZ-EDJA A4404 129.450",
         "class": "TMZ",
@@ -47422,7 +47422,7 @@
     },
     {
       "type": "Feature",
-      "id": "def73dce-23c6-411a-a09f-ed2f63532247",
+      "id": "da8a5373-a7fe-4720-8440-a98b9ba21bf8",
       "properties": {
         "name": "TMZ-EDJA A4404 129.450",
         "class": "TMZ",
@@ -47467,7 +47467,7 @@
     },
     {
       "type": "Feature",
-      "id": "76469565-fdb9-4649-af7c-ff66e84518e5",
+      "id": "c7829f2e-2947-4d4d-b635-1f141dc7336f",
       "properties": {
         "name": "TMZ-EDJA A4404 129.450",
         "class": "TMZ",
@@ -47512,7 +47512,7 @@
     },
     {
       "type": "Feature",
-      "id": "e042cd61-ee8e-4c7b-b333-dbbb04fec802",
+      "id": "615427ec-e322-481f-b9d2-d47e34d8d6ec",
       "properties": {
         "name": "TMZ-EDJA A4404 129.450",
         "class": "TMZ",
@@ -47557,7 +47557,7 @@
     },
     {
       "type": "Feature",
-      "id": "c37f0b17-9145-4674-bde4-274318592aeb",
+      "id": "f2494d33-cd1c-4e39-aaed-ce0672bd8fec",
       "properties": {
         "name": "TMZ-EDDG A6104 129.300",
         "class": "TMZ",
@@ -47618,7 +47618,7 @@
     },
     {
       "type": "Feature",
-      "id": "8b37254b-5467-47ae-bceb-fda637414022",
+      "id": "8401003a-930d-483f-83a2-e7d83876e91a",
       "properties": {
         "name": "TMZ-EDDG A6104 129.300",
         "class": "TMZ",
@@ -47679,7 +47679,7 @@
     },
     {
       "type": "Feature",
-      "id": "975c799b-792e-46ea-b9ff-7781ef6649a3",
+      "id": "0b115411-8697-4744-b1bb-93f512fafbf4",
       "properties": {
         "name": "TMZ-EDDG A6104 129.300",
         "class": "TMZ",
@@ -47724,7 +47724,7 @@
     },
     {
       "type": "Feature",
-      "id": "9185014e-8607-4061-ad6e-9b62eaabb873",
+      "id": "136f87a1-3cbb-414a-9031-077f1f88db87",
       "properties": {
         "name": "TMZ-EDDG A6104 129.300",
         "class": "TMZ",
@@ -47769,7 +47769,7 @@
     },
     {
       "type": "Feature",
-      "id": "ee1cfe06-1252-4eab-af50-486d528fd002",
+      "id": "e7e20cc0-c3c1-410a-8381-960c1ad804ad",
       "properties": {
         "name": "TMZ-EDLV A6101 119.110",
         "class": "TMZ",
@@ -47814,7 +47814,7 @@
     },
     {
       "type": "Feature",
-      "id": "2386b998-343e-4b44-844e-9b652f19e478",
+      "id": "19b7b80b-f611-43f8-8606-599577fa8e0c",
       "properties": {
         "name": "TMZ-EDLV A6101 119.110",
         "class": "TMZ",
@@ -47931,7 +47931,7 @@
     },
     {
       "type": "Feature",
-      "id": "c91d2dd8-606b-4ad3-91b7-fc8472ae9728",
+      "id": "614c8928-2ec1-4559-9539-b938258e4e49",
       "properties": {
         "name": "TMZ-EDLV A6101 119.110",
         "class": "TMZ",
@@ -48012,7 +48012,7 @@
     },
     {
       "type": "Feature",
-      "id": "63fe11dd-f9e5-48de-a760-eadfeeefe91b",
+      "id": "cac6042b-5cac-4791-9c11-f133a3cf506d",
       "properties": {
         "name": "TMZ-EDLV A6101 119.110",
         "class": "TMZ",
@@ -48141,7 +48141,7 @@
     },
     {
       "type": "Feature",
-      "id": "a6c9fd17-f8db-45e5-a936-876a65b7c508",
+      "id": "648e1c8a-b252-44d8-962d-da935f18ea5c",
       "properties": {
         "name": "TMZ-EDLV A6101 119.110",
         "class": "TMZ",
@@ -48198,7 +48198,7 @@
     },
     {
       "type": "Feature",
-      "id": "3473a964-70b4-4f0d-b221-9cfbcd0033c2",
+      "id": "0d39dd91-752b-4bba-979c-b0c90436450a",
       "properties": {
         "name": "TMZ-EDLV A6101 119.110",
         "class": "TMZ",
@@ -48243,7 +48243,7 @@
     },
     {
       "type": "Feature",
-      "id": "c10c3282-6b36-4574-b62d-f5ff1c2c4606",
+      "id": "0a325225-5341-4e3b-be4a-e6af98bec15f",
       "properties": {
         "name": "TMZ-EDLV A6101 119.110",
         "class": "TMZ",
@@ -48292,7 +48292,7 @@
     },
     {
       "type": "Feature",
-      "id": "a3070709-7b90-4e35-9317-ddecb5cb528f",
+      "id": "838628e8-82db-427d-ba32-29209d652918",
       "properties": {
         "name": "TMZ-EDDN A4404 129.525",
         "class": "TMZ",
@@ -48565,7 +48565,7 @@
     },
     {
       "type": "Feature",
-      "id": "7b3b24a9-949e-4cc8-963f-be52b0270aa0",
+      "id": "08ba6fe8-b4ff-4614-900a-515354e54606",
       "properties": {
         "name": "TMZ-EDLP A6102 125.225",
         "class": "TMZ",
@@ -48610,7 +48610,7 @@
     },
     {
       "type": "Feature",
-      "id": "9950317e-733a-483a-8d58-0487e45dd5f2",
+      "id": "4497da8f-e34d-4ddd-ac41-523d8833e4e0",
       "properties": {
         "name": "TMZ-EDLP A6102 125.225",
         "class": "TMZ",
@@ -48675,7 +48675,7 @@
     },
     {
       "type": "Feature",
-      "id": "af6fc240-2d64-4af6-bfda-ea8d794fe6e8",
+      "id": "ab40d701-63eb-441c-a465-f262bfb2eddd",
       "properties": {
         "name": "TMZ-EDLP A6102 125.225",
         "class": "TMZ",
@@ -48744,7 +48744,7 @@
     },
     {
       "type": "Feature",
-      "id": "94a4e7b4-551d-42a3-a4d4-c6768865a4a0",
+      "id": "563a81d5-5a58-4f31-a842-dc3440c288c1",
       "properties": {
         "name": "TMZ-EDLP A6102 125.225",
         "class": "TMZ",
@@ -48793,7 +48793,7 @@
     },
     {
       "type": "Feature",
-      "id": "9715aa94-77cd-48d9-8466-e672e9939609",
+      "id": "f6276dd8-f147-44d7-b8ce-10e030e17054",
       "properties": {
         "name": "TMZ-EDLP A6102 125.225",
         "class": "TMZ",
@@ -48846,7 +48846,7 @@
     },
     {
       "type": "Feature",
-      "id": "a58a8dd3-6ca3-4e3b-8233-edceef45b70f",
+      "id": "b78cb673-e161-49a7-ad8a-d806ff7b8b32",
       "properties": {
         "name": "TMZ-ETNT A4472 131.015",
         "class": "TMZ",
@@ -48891,7 +48891,7 @@
     },
     {
       "type": "Feature",
-      "id": "b8748e22-9a17-47b0-8a62-726243350fd1",
+      "id": "66ea6135-cb7e-456c-87d4-e513bc073636",
       "properties": {
         "name": "TMZ-ETNT A4472 131.015",
         "class": "TMZ",
@@ -48952,7 +48952,7 @@
     },
     {
       "type": "Feature",
-      "id": "7f924fc2-5b9c-4148-ae67-c553096325c8",
+      "id": "81d868a7-9fa1-4bd7-ab3a-dddd923e4e9c",
       "properties": {
         "name": "Baumholder-West 128.360",
         "class": "W",
@@ -48997,7 +48997,7 @@
     },
     {
       "type": "Feature",
-      "id": "cebe364f-2c47-41cc-9eb4-5c783d81276f",
+      "id": "4c8eee33-b16d-4dcc-82bc-66e7ca74cf7d",
       "properties": {
         "name": "Boxberg 123.255",
         "class": "W",
@@ -49054,7 +49054,7 @@
     },
     {
       "type": "Feature",
-      "id": "9eccc7f6-c06b-40b4-90bf-16c1c0031e67",
+      "id": "9e43729c-aa72-4889-b1e4-e085b7672b7e",
       "properties": {
         "name": "Aukrug 118.985",
         "class": "W",
@@ -49167,7 +49167,7 @@
     },
     {
       "type": "Feature",
-      "id": "c8c57b3f-a84d-4722-8dc5-9ccc7a7b36ac",
+      "id": "1f2bec27-8c5b-4eba-be19-15ef7f2cacdd",
       "properties": {
         "name": "Winsen 128.585",
         "class": "W",
@@ -49276,7 +49276,7 @@
     },
     {
       "type": "Feature",
-      "id": "73cfda19-103f-440d-b537-3c048c62ea65",
+      "id": "216b5a5b-75db-4563-84b0-26b0bd5bddd0",
       "properties": {
         "name": "Lueneburg 128.585",
         "class": "W",
@@ -49433,7 +49433,7 @@
     },
     {
       "type": "Feature",
-      "id": "b3724a08-15bd-4881-84a1-f4abf00d0e8a",
+      "id": "73dd46ca-38f2-46c4-9607-6843eb8c48e7",
       "properties": {
         "name": "Hamburg-West 122.705",
         "class": "W",
@@ -49690,7 +49690,7 @@
     },
     {
       "type": "Feature",
-      "id": "b90479ad-fc35-4d4c-9f1a-f44ccba2ea66",
+      "id": "27672835-d9eb-4938-889e-ca86a086b66f",
       "properties": {
         "name": "Hamburg-Ost 125.100",
         "class": "W",
@@ -49843,7 +49843,7 @@
     },
     {
       "type": "Feature",
-      "id": "9aadd5d3-8d68-42f7-b98e-eff0a7d32549",
+      "id": "64c7a465-6fb9-4302-813e-5e6fd5759925",
       "properties": {
         "name": "Guteborn 128.110",
         "class": "W",
@@ -50000,7 +50000,7 @@
     },
     {
       "type": "Feature",
-      "id": "5e5a7ee2-8caa-45a2-9459-47f1653a73dc",
+      "id": "37e3b7e8-1451-4f60-9e8a-b4e8c711dbe1",
       "properties": {
         "name": "Radeberg 118.630",
         "class": "W",
@@ -50053,7 +50053,7 @@
     },
     {
       "type": "Feature",
-      "id": "18466417-d279-495d-b643-2dc495c5529c",
+      "id": "b35192e4-ab4f-493c-adc2-e0e94dec5c31",
       "properties": {
         "name": "Teuto A 129.875",
         "class": "W",
@@ -50102,7 +50102,7 @@
     },
     {
       "type": "Feature",
-      "id": "92b9cb1a-a07c-4f62-b097-f27e348ff618",
+      "id": "1a46af36-15ed-47bb-b35d-e96b538279bf",
       "properties": {
         "name": "Teuto B 129.875",
         "class": "W",
@@ -50151,7 +50151,7 @@
     },
     {
       "type": "Feature",
-      "id": "49983424-979a-4155-9c38-ba4a436a002d",
+      "id": "daa13d08-ad4d-4ccf-9ec3-f87e6c94a9be",
       "properties": {
         "name": "Koeln-Nord A 129.875",
         "class": "W",
@@ -50208,7 +50208,7 @@
     },
     {
       "type": "Feature",
-      "id": "71df67a2-b323-42f6-94d2-f973ecfbbede",
+      "id": "9223c258-adb5-4866-9e2e-d1bdc3a6155f",
       "properties": {
         "name": "Koeln-Nord B 129.875",
         "class": "W",
@@ -50261,7 +50261,7 @@
     },
     {
       "type": "Feature",
-      "id": "7775708f-afda-40ba-8a46-f96d15072b1e",
+      "id": "3959f071-d9ab-49f3-a733-c7929963287b",
       "properties": {
         "name": "Koeln-Sued A1 123.525",
         "class": "W",
@@ -50322,7 +50322,7 @@
     },
     {
       "type": "Feature",
-      "id": "63fff2f0-e819-4f03-92d3-b17481657048",
+      "id": "5c03dbd7-1f22-47e0-bda9-923530f9b8bf",
       "properties": {
         "name": "Koeln-Sued A2 123.525",
         "class": "W",
@@ -50371,7 +50371,7 @@
     },
     {
       "type": "Feature",
-      "id": "f303db36-9dee-4b77-a96a-1df7471b6a67",
+      "id": "8c2cf51f-7881-45fc-a6fb-2d3dc40f8c0c",
       "properties": {
         "name": "Koeln-Sued A3 123.525",
         "class": "W",
@@ -50412,7 +50412,7 @@
     },
     {
       "type": "Feature",
-      "id": "d853bfcd-06fb-4c31-845a-a3fed7fc4004",
+      "id": "ad21d207-6820-475d-930e-a661d8893ad5",
       "properties": {
         "name": "Koeln-Sued A4 123.525",
         "class": "W",
@@ -50457,7 +50457,7 @@
     },
     {
       "type": "Feature",
-      "id": "52dc7a02-7425-48cc-8e7a-7f694297b14c",
+      "id": "e2d981e4-634e-4b1c-84ee-390abe38cb9d",
       "properties": {
         "name": "Koeln-Sued B1 123.525",
         "class": "W",
@@ -50498,7 +50498,7 @@
     },
     {
       "type": "Feature",
-      "id": "8d9e95f2-d2b8-4936-8199-6cfaf63f3c7a",
+      "id": "b6b8bdda-c14c-4186-9041-83ac6a714b81",
       "properties": {
         "name": "Koeln-Sued B2 123.525",
         "class": "W",
@@ -50547,7 +50547,7 @@
     },
     {
       "type": "Feature",
-      "id": "fd17877e-7512-4369-8f45-8623d4b059ac",
+      "id": "6e26b856-ede9-4f44-a3d5-0211d75a713b",
       "properties": {
         "name": "Koeln-Ost A 129.875",
         "class": "W",
@@ -50604,7 +50604,7 @@
     },
     {
       "type": "Feature",
-      "id": "b0cd6576-ae72-4f38-a3e9-fe85225cb045",
+      "id": "7bb4462c-d696-493c-bfdd-33f9d345b74a",
       "properties": {
         "name": "Koeln-Ost B 129.875",
         "class": "W",
@@ -50661,7 +50661,7 @@
     },
     {
       "type": "Feature",
-      "id": "24ccbb6c-20ae-41f9-a62a-61f7b9e2630e",
+      "id": "d6cc33b9-dfe8-4028-8cc6-f1840b3ab760",
       "properties": {
         "name": "Bad Neuenahr 123.525",
         "class": "W",
@@ -50710,7 +50710,7 @@
     },
     {
       "type": "Feature",
-      "id": "079810cc-d577-4e63-964c-3eb829613c57",
+      "id": "59a08c86-0dee-4842-b092-399efdd47b75",
       "properties": {
         "name": "Dierdorf 123.525",
         "class": "W",
@@ -50759,7 +50759,7 @@
     },
     {
       "type": "Feature",
-      "id": "b064ffec-20cd-45e0-90b1-c3aaf9a824ee",
+      "id": "865420cd-865a-493b-bdbc-43aad6df6601",
       "properties": {
         "name": "Bochum 129.875",
         "class": "W",
@@ -50828,7 +50828,7 @@
     },
     {
       "type": "Feature",
-      "id": "3d46dab9-6582-4727-8ae7-a75aba004d7e",
+      "id": "5a4a0acd-be40-4ffa-9db0-4086e1a6ed5f",
       "properties": {
         "name": "Gustorf 1 129.875",
         "class": "W",
@@ -50877,7 +50877,7 @@
     },
     {
       "type": "Feature",
-      "id": "84ce460e-4ae3-483d-b62d-722fded211fe",
+      "id": "a8ae84bc-1f30-432c-8460-71ec9cf9c5b8",
       "properties": {
         "name": "Gustorf 2 129.875",
         "class": "W",
@@ -50934,7 +50934,7 @@
     },
     {
       "type": "Feature",
-      "id": "a7dcda43-ea6a-4e04-acab-22b539232d76",
+      "id": "0308f04f-4d6a-40ad-aa9a-c47357e102ef",
       "properties": {
         "name": "Wanlo 129.875",
         "class": "W",
@@ -50979,7 +50979,7 @@
     },
     {
       "type": "Feature",
-      "id": "8192d89d-bd91-4cea-a789-2da0351a0705",
+      "id": "f4eabe9e-a08f-49d7-b00d-b7c6beaab0d6",
       "properties": {
         "name": "Birken-65 129.805",
         "class": "W",
@@ -51040,7 +51040,7 @@
     },
     {
       "type": "Feature",
-      "id": "476490ff-9fae-48d5-94e8-53b5449b9b96",
+      "id": "47991f31-34bf-457c-b271-35bd44a94ce1",
       "properties": {
         "name": "Birken-75-SUED 129.805",
         "class": "W",
@@ -51173,7 +51173,7 @@
     },
     {
       "type": "Feature",
-      "id": "12e87667-fa73-45c6-a913-92abe1e0c8ef",
+      "id": "7c30c8bd-283e-4c1e-afa4-b0fc51bf9a74",
       "properties": {
         "name": "Birken-75-NORD 129.805",
         "class": "W",
@@ -51310,7 +51310,7 @@
     },
     {
       "type": "Feature",
-      "id": "7168f0f8-f144-45e6-917b-8d79a5c08143",
+      "id": "484f08a0-cec5-4b2e-af80-77fffb2ee8c0",
       "properties": {
         "name": "GAMOLA-95-Sued 129.805",
         "class": "W",
@@ -51403,7 +51403,7 @@
     },
     {
       "type": "Feature",
-      "id": "130d9bf5-a5c9-4e73-aea8-be4279b79c3a",
+      "id": "78e2e042-b628-465b-a0ff-e0cd12bf149c",
       "properties": {
         "name": "GAMOLA-95-Nord 129.805",
         "class": "W",
@@ -51488,7 +51488,7 @@
     },
     {
       "type": "Feature",
-      "id": "caaf63f1-54a7-42c1-81eb-f37fe519ed8e",
+      "id": "51e9b099-e44f-4cb2-9d14-f483f550e7b4",
       "properties": {
         "name": "Gammelsdorf-55 129.805",
         "class": "W",
@@ -51533,7 +51533,7 @@
     },
     {
       "type": "Feature",
-      "id": "af0f91df-c431-4a8d-83f6-53cf342c5423",
+      "id": "14f227f5-f491-45c1-9232-5a4afd323625",
       "properties": {
         "name": "Gammelsdorf-65 129.805",
         "class": "W",
@@ -51578,7 +51578,7 @@
     },
     {
       "type": "Feature",
-      "id": "ed3073b9-6b6d-4438-b0ae-dfa4d41dac80",
+      "id": "3a6672f6-3240-451a-8a37-1ab3fe452084",
       "properties": {
         "name": "Landshut 129.805",
         "class": "W",
@@ -51631,7 +51631,7 @@
     },
     {
       "type": "Feature",
-      "id": "98196896-1f75-409d-b058-cd716f553e16",
+      "id": "d5ba73ff-57ea-4480-90da-e09e8627e688",
       "properties": {
         "name": "Moosburg 129.805",
         "class": "W",
@@ -51680,7 +51680,7 @@
     },
     {
       "type": "Feature",
-      "id": "4f460ea3-e385-499e-86ad-ca82afd808b6",
+      "id": "c07b0714-573f-41dc-8dc1-3af86060fc7f",
       "properties": {
         "name": "Sevelen 129.875",
         "class": "W",
@@ -51725,7 +51725,7 @@
     },
     {
       "type": "Feature",
-      "id": "67fccb81-63be-49b4-8f52-dccdd53e2b98",
+      "id": "56919aa0-e741-4723-8c85-a59ade488d93",
       "properties": {
         "name": "Erlangen-Hetzles 123.605",
         "class": "W",
@@ -51770,7 +51770,7 @@
     },
     {
       "type": "Feature",
-      "id": "164a3897-d1a7-4dc9-91da-cca6eb7373f2",
+      "id": "978d2952-f197-4ada-88ae-9b904a437a65",
       "properties": {
         "name": "Erlangen-Lauf  128.585",
         "class": "W",
@@ -51851,7 +51851,7 @@
     },
     {
       "type": "Feature",
-      "id": "9fd0ee14-e126-460b-9c69-233ab02f6a00",
+      "id": "827c6c68-18a0-4108-99b2-ba3fa6b3dcca",
       "properties": {
         "name": "Hersbruck  123.685",
         "class": "W",
@@ -51916,7 +51916,7 @@
     },
     {
       "type": "Feature",
-      "id": "634ccde8-9596-49f3-8f1a-80738c90248e",
+      "id": "9749432c-f3d5-4e25-a3a5-8d21c5a8e144",
       "properties": {
         "name": "Happurg 123.685",
         "class": "W",
@@ -51985,7 +51985,7 @@
     },
     {
       "type": "Feature",
-      "id": "77a2ba85-f9c8-448e-be44-81c2df475396",
+      "id": "d97d31b3-49e7-4e40-a2df-31bbf3d43dca",
       "properties": {
         "name": "Altdorf-Ost 129.980",
         "class": "W",
@@ -52118,7 +52118,7 @@
     },
     {
       "type": "Feature",
-      "id": "f55491e8-dece-44c4-98c8-1d9fa73b8f47",
+      "id": "ab40eb80-5f73-4e62-bb15-3678c9fb38b9",
       "properties": {
         "name": "Feucht 129.980",
         "class": "W",
@@ -52163,7 +52163,7 @@
     },
     {
       "type": "Feature",
-      "id": "4e3ec63b-efde-493a-8a2a-e9c7d7137b2e",
+      "id": "de253b83-67b4-4ace-9325-76e48c0101cf",
       "properties": {
         "name": "Seckendorf 132.810",
         "class": "W",
@@ -52244,7 +52244,7 @@
     },
     {
       "type": "Feature",
-      "id": "a068ea86-aafe-4dcd-8024-5fbea9f78bcc",
+      "id": "78955fe2-2619-4a5c-90ac-24412aeab927",
       "properties": {
         "name": "Popperg 123.685",
         "class": "W",
@@ -52361,7 +52361,7 @@
     },
     {
       "type": "Feature",
-      "id": "423aad0c-debf-4101-9c9c-d17ee82e449e",
+      "id": "00ee0023-8fcf-4331-9430-60dc30fad26f",
       "properties": {
         "name": "Weihenzell 132.810",
         "class": "W",
@@ -52442,7 +52442,7 @@
     },
     {
       "type": "Feature",
-      "id": "23fa15f9-a504-409d-b90a-d8b45a872f8a",
+      "id": "6dc54308-b476-45f6-a0de-12d716a01045",
       "properties": {
         "name": "Langenfeld 118.930",
         "class": "W",
@@ -52555,7 +52555,7 @@
     },
     {
       "type": "Feature",
-      "id": "e3e7d955-8fbf-485c-9255-d7c5f212d6dc",
+      "id": "16c5be33-69fd-42e7-981d-e0b76ba7c5c2",
       "properties": {
         "name": "Vestenbergsgreuth 130.780",
         "class": "W",
@@ -52648,7 +52648,7 @@
     },
     {
       "type": "Feature",
-      "id": "8f2e628c-53b4-4ab1-af2e-eece5e2e5c21",
+      "id": "64ef34b9-961e-4962-a847-fdf5fd8a27b0",
       "properties": {
         "name": "Feuerstein-West 130.780",
         "class": "W",
@@ -52753,7 +52753,7 @@
     },
     {
       "type": "Feature",
-      "id": "e8ede67d-03dc-49ce-a5d2-2e9422d87f1a",
+      "id": "d2177d67-3d39-4b7c-ae80-9246c694abf5",
       "properties": {
         "name": "Feuerstein-Ost 130.780",
         "class": "W",
@@ -52798,7 +52798,7 @@
     },
     {
       "type": "Feature",
-      "id": "ec04e50b-2e05-4ac8-8d8d-adc39ab7de4f",
+      "id": "840f701c-5937-495c-9769-2bc3a11dc5e8",
       "properties": {
         "name": "Laucha-Nord 118.960",
         "class": "W",
@@ -52847,7 +52847,7 @@
     },
     {
       "type": "Feature",
-      "id": "bab38748-1005-4cc1-b86c-dbd5c022451f",
+      "id": "853df67f-8423-4e53-84e4-7aedd5b02574",
       "properties": {
         "name": "Laucha-Sued 118.960",
         "class": "W",
@@ -52936,7 +52936,7 @@
     },
     {
       "type": "Feature",
-      "id": "34e8931e-6bac-4081-add8-a6c2743d25a0",
+      "id": "0d558259-7e03-4695-8705-0e982833b69d",
       "properties": {
         "name": "Roitzschjora Nord 128.010",
         "class": "W",
@@ -53025,7 +53025,7 @@
     },
     {
       "type": "Feature",
-      "id": "b125c8fe-1be5-4e82-acd7-73f701ec49e7",
+      "id": "0780fbd9-a02e-4b71-82b9-87d87dd498a8",
       "properties": {
         "name": "Roitzschjora Sued 128.010",
         "class": "W",
@@ -53074,7 +53074,7 @@
     },
     {
       "type": "Feature",
-      "id": "b0412e98-127f-4c77-a9a7-86b38788d124",
+      "id": "9b675394-8172-4f1c-93cf-41701e8afe75",
       "properties": {
         "name": "Alb-Nord_1 128.950",
         "class": "W",
@@ -53147,7 +53147,7 @@
     },
     {
       "type": "Feature",
-      "id": "c27d8025-fde5-43f0-856a-311548265beb",
+      "id": "124bcb9e-dfa2-4ee6-8965-9bcb5054ee07",
       "properties": {
         "name": "Alb-Nord_2 128.950",
         "class": "W",
@@ -53224,7 +53224,7 @@
     },
     {
       "type": "Feature",
-      "id": "e3077be6-3f61-44ed-9224-90162580cc57",
+      "id": "edd54747-15b7-40e0-b61e-4d61c789d726",
       "properties": {
         "name": "Alb-Sued 128.950",
         "class": "W",
@@ -53269,7 +53269,7 @@
     },
     {
       "type": "Feature",
-      "id": "f1745970-71ec-4510-8292-505f7d24adcb",
+      "id": "8d26d282-caf1-4ea2-981a-7cde51933e69",
       "properties": {
         "name": "Alb-Ost 128.950",
         "class": "W",
@@ -53350,7 +53350,7 @@
     },
     {
       "type": "Feature",
-      "id": "8347c031-03c3-42dc-bf9a-35e297df2654",
+      "id": "9c155bde-e5dc-4532-b831-02d69fb38c7b",
       "properties": {
         "name": "Alb-West 128.950",
         "class": "W",
@@ -53399,7 +53399,7 @@
     },
     {
       "type": "Feature",
-      "id": "5c891ffc-1b60-47f3-9f04-df58e88f74b7",
+      "id": "13219180-350b-49ee-beb0-edbf8a495cf2",
       "properties": {
         "name": "Nagold 128.950",
         "class": "W",
@@ -53648,7 +53648,7 @@
     },
     {
       "type": "Feature",
-      "id": "6cfa6dbe-5ab4-4908-b17c-f10f4fec5bf1",
+      "id": "2863dc9b-f957-4dfc-b569-5baa97484fd4",
       "properties": {
         "name": "Schwarzwald 128.950",
         "class": "W",
@@ -53757,7 +53757,7 @@
     },
     {
       "type": "Feature",
-      "id": "ec51e532-1564-4e85-a4c3-21152681b870",
+      "id": "a31bc0ab-ba18-401a-886a-9b05aeff0a84",
       "properties": {
         "name": "Goeppingen 128.950",
         "class": "W",
@@ -53858,7 +53858,7 @@
     },
     {
       "type": "Feature",
-      "id": "f65ef75d-f05a-4c1f-b5b9-05ea17052873",
+      "id": "f1052940-a221-4a80-a754-10562eea0f8c",
       "properties": {
         "name": "Hornberg 128.950",
         "class": "W",
@@ -53951,7 +53951,7 @@
     },
     {
       "type": "Feature",
-      "id": "a0c97039-975a-4311-bfd1-e99469f78e40",
+      "id": "bf518ce5-d68d-4edf-84d0-6d8967b2d565",
       "properties": {
         "name": "Idar-Oberstein_1 128.360",
         "class": "W",
@@ -54000,7 +54000,7 @@
     },
     {
       "type": "Feature",
-      "id": "2bf74f15-6b85-49ce-8289-c33e4004520b",
+      "id": "5962094d-fc22-41a4-91a5-6e606ca1dc19",
       "properties": {
         "name": "Idar-Oberstein_2 128.360",
         "class": "W",
@@ -54041,7 +54041,7 @@
     },
     {
       "type": "Feature",
-      "id": "7d5c6b6a-5add-4a4e-8691-7218dcb59493",
+      "id": "c20231c5-b0a0-49b5-898e-110ec918060f",
       "properties": {
         "name": "Hahn-Sued 128.360",
         "class": "W",
@@ -54086,7 +54086,7 @@
     },
     {
       "type": "Feature",
-      "id": "f95cea67-666d-4ee8-9454-64b67a52b74a",
+      "id": "1e7f8c2a-2bd3-4739-9783-2086502ab558",
       "properties": {
         "name": "Hahn-Nord 128.360",
         "class": "W",
@@ -54131,7 +54131,7 @@
     },
     {
       "type": "Feature",
-      "id": "93ea94ae-de55-4e3c-ab8d-7479f641a9f7",
+      "id": "ba2eee67-6cb1-4c6c-92bd-5a92982c5f23",
       "properties": {
         "name": "Senne 129.875",
         "class": "W",
@@ -54192,7 +54192,7 @@
     },
     {
       "type": "Feature",
-      "id": "120549ee-6878-4d97-95ca-0adfc35d962f",
+      "id": "0ff4f452-d169-4948-b6d8-74e682dabc8c",
       "properties": {
         "name": "Warstein 129.875",
         "class": "W",
@@ -54241,7 +54241,7 @@
     },
     {
       "type": "Feature",
-      "id": "eed31ac4-357b-4ac5-a159-75a0e6ff7b5f",
+      "id": "aba83e0b-f170-47d9-9245-942ab0faac1b",
       "properties": {
         "name": "Dortmund Nord_1 125.225",
         "class": "W",
@@ -54286,7 +54286,7 @@
     },
     {
       "type": "Feature",
-      "id": "d8d2f1f4-fc42-43f7-9b85-31a931b01d85",
+      "id": "9d1342c5-4a5a-44de-b1ba-c0191b7dcba6",
       "properties": {
         "name": "Dortmund Nord_2 125.225",
         "class": "W",
@@ -54339,7 +54339,7 @@
     },
     {
       "type": "Feature",
-      "id": "31d749f8-3e5e-4f36-bef2-df04ee162007",
+      "id": "19334c92-c704-495c-b302-4dac0973e9d0",
       "properties": {
         "name": "Dortmund Nord-CTR 125.225",
         "class": "W",
@@ -54400,7 +54400,7 @@
     },
     {
       "type": "Feature",
-      "id": "6ef6ebb7-669a-4b37-b036-5fb49620fa7d",
+      "id": "1773700a-f2e7-4606-9afd-8ee667371572",
       "properties": {
         "name": "Dortmund Sued_1 125.225",
         "class": "W",
@@ -54445,7 +54445,7 @@
     },
     {
       "type": "Feature",
-      "id": "e522e75b-20ca-47d7-a8c2-888f0579e331",
+      "id": "54556a83-c050-4b6e-a8d8-963ca35092b2",
       "properties": {
         "name": "Dortmund Sued_2 125.225",
         "class": "W",
@@ -54498,7 +54498,7 @@
     },
     {
       "type": "Feature",
-      "id": "5258237e-2061-4d22-973d-ea0cdbd71872",
+      "id": "591a2d25-2bed-460b-8d4e-9b1afef5b716",
       "properties": {
         "name": "Dortmund Sued_D45 125.225",
         "class": "W",
@@ -54543,7 +54543,7 @@
     },
     {
       "type": "Feature",
-      "id": "45a21e5a-3564-49bd-8d89-e3491a9dbf65",
+      "id": "badeaf72-5ea6-46db-bf78-08a1951e9f7c",
       "properties": {
         "name": "Waldsee 118.040",
         "class": "W",
@@ -54888,7 +54888,7 @@
     },
     {
       "type": "Feature",
-      "id": "9e1d03de-19d3-4c9c-b184-07f56df84dba",
+      "id": "8cbf0360-95ff-41a9-84d8-6f8742598aee",
       "properties": {
         "name": "Rheinstetten 121.240",
         "class": "W",
@@ -54937,7 +54937,7 @@
     },
     {
       "type": "Feature",
-      "id": "3d4ec96a-2aac-4c2b-be9f-755714ba416f",
+      "id": "bcfbda03-f5bc-4bb0-be8f-8942f6a28e71",
       "properties": {
         "name": "BayWa 118.555",
         "class": "W",
@@ -54994,7 +54994,7 @@
     },
     {
       "type": "Feature",
-      "id": "b0783a07-e9a8-4963-9acb-deff3df8a09a",
+      "id": "90faab62-be2b-47e7-82f2-9148bc04b1cf",
       "properties": {
         "name": "N-FGEB 132.830",
         "class": "W",
@@ -55043,7 +55043,7 @@
     },
     {
       "type": "Feature",
-      "id": "6b9c654f-87d5-4d76-a718-023b331e675a",
+      "id": "84ddd0ea-b65e-4c85-9012-a01ac6c5dade",
       "properties": {
         "name": "Harz 127.560",
         "class": "W",
@@ -55088,7 +55088,7 @@
     },
     {
       "type": "Feature",
-      "id": "162e684a-56cc-4ab6-8ba3-7a773bc39474",
+      "id": "9f5baee5-4cf2-4a54-b0cf-cbe3ab5c6a80",
       "properties": {
         "name": "Hoher Meissner 125.490",
         "class": "W",
@@ -55137,7 +55137,7 @@
     },
     {
       "type": "Feature",
-      "id": "18774c0a-96d5-4348-a177-865d61dc6c7e",
+      "id": "68928b8c-114f-4094-8d95-ccdb599d6b83",
       "properties": {
         "name": "Murgtal 128.950",
         "class": "W",
@@ -55182,7 +55182,7 @@
     },
     {
       "type": "Feature",
-      "id": "96ecdd59-569c-4f9f-8d61-ce5cd792b5e0",
+      "id": "b3274a0e-3c80-40cf-b366-3c321f91eb98",
       "properties": {
         "name": "OPFWA 120.255",
         "class": "W",
@@ -55247,7 +55247,7 @@
     },
     {
       "type": "Feature",
-      "id": "effd858e-4b93-4041-a91c-6cb693e11ff6",
+      "id": "56ddc692-185c-407b-9004-e3ced6168673",
       "properties": {
         "name": "untererThuer.Wald 131.260",
         "class": "W",
@@ -55300,7 +55300,7 @@
     },
     {
       "type": "Feature",
-      "id": "a377b137-1d1d-4f2d-aecb-d6a05ad6dd52",
+      "id": "ce6fb0d9-b7e9-45e9-863d-79b51df3d79b",
       "properties": {
         "name": "obererThuer.Wald 131.260",
         "class": "W",
@@ -55353,7 +55353,7 @@
     },
     {
       "type": "Feature",
-      "id": "be2e37b1-1097-48ec-8164-0ca3e033b834",
+      "id": "edebed9b-30f6-4d51-84b7-9600899f001d",
       "properties": {
         "name": "PARA Ailertchen EDGA 126.410",
         "class": "Q",
@@ -55782,7 +55782,7 @@
     },
     {
       "type": "Feature",
-      "id": "9660703d-c4e5-412c-9361-20fe8a20fa60",
+      "id": "cff31383-c639-4d7f-8c95-0312e9724eae",
       "properties": {
         "name": "PARA Altenstadt ETHA 122.100",
         "class": "Q",
@@ -56211,7 +56211,7 @@
     },
     {
       "type": "Feature",
-      "id": "08e9b311-d344-464e-9838-1b855e9281db",
+      "id": "7f65c6f5-1931-417d-8cd8-addd6d0f6ab0",
       "properties": {
         "name": "PARA Arnstadt EDBA 131.260",
         "class": "Q",
@@ -56640,7 +56640,7 @@
     },
     {
       "type": "Feature",
-      "id": "ada8ec20-0449-48fb-97e5-78ee20e0621b",
+      "id": "adcac5b8-17cd-464c-a9db-d3008021032d",
       "properties": {
         "name": "PARA Bad Ditzenbach EDPB 135.985",
         "class": "Q",
@@ -57069,7 +57069,7 @@
     },
     {
       "type": "Feature",
-      "id": "7d176eb5-7754-492f-ada4-680ed2b1fd7e",
+      "id": "0f387d2f-798f-49e7-b555-1efb579653bc",
       "properties": {
         "name": "PARA Bad Duerkheim EDRF 122.405",
         "class": "Q",
@@ -57498,7 +57498,7 @@
     },
     {
       "type": "Feature",
-      "id": "0a66cce8-1da8-40ad-b897-167fbea9bfd7",
+      "id": "0e7ec655-b9ac-4b8a-ae35-3f579c12750c",
       "properties": {
         "name": "PARA Bad Frankenhausen EDOF 121.190",
         "class": "Q",
@@ -57927,7 +57927,7 @@
     },
     {
       "type": "Feature",
-      "id": "55fb19d6-3377-47e7-83e2-e7eb9c80dd26",
+      "id": "6d7698ff-30eb-4414-840a-2f7138797d17",
       "properties": {
         "name": "PARA Bad Woerish.-Nord EDNH 122.605",
         "class": "Q",
@@ -58356,7 +58356,7 @@
     },
     {
       "type": "Feature",
-      "id": "f4fef368-5d07-40ad-901e-74e986beee57",
+      "id": "f854188e-5606-4779-b445-f4cf3fb1e3e4",
       "properties": {
         "name": "PARA Ballenstedt EDCB 122.705",
         "class": "Q",
@@ -58785,7 +58785,7 @@
     },
     {
       "type": "Feature",
-      "id": "6c67d5a1-a26a-4e43-983f-3633c28f6a0b",
+      "id": "04ad1471-303f-4017-afe5-ffce387a02aa",
       "properties": {
         "name": "PARA Barth EDBH 118.080",
         "class": "Q",
@@ -59214,7 +59214,7 @@
     },
     {
       "type": "Feature",
-      "id": "916351a0-0552-41b2-8328-829d46b287a3",
+      "id": "0dd42d6b-2aeb-4c4a-b8fa-9277ff6bccad",
       "properties": {
         "name": "PARA Bautzen EDAB 120.605",
         "class": "Q",
@@ -59643,7 +59643,7 @@
     },
     {
       "type": "Feature",
-      "id": "bd869a97-76f2-4078-87ec-8dc3598fa7d8",
+      "id": "3afcba0d-1a3c-4cc4-8cfc-dc34381469c0",
       "properties": {
         "name": "PARA Bielefeld EDLI 118.355",
         "class": "Q",
@@ -60072,7 +60072,7 @@
     },
     {
       "type": "Feature",
-      "id": "485e10af-8a9e-4ddd-892b-c9438f3e38b8",
+      "id": "b5d37cfa-8e7f-4e65-a367-08e80938e7e2",
       "properties": {
         "name": "PARA Bienenfarm EDOI 134.990",
         "class": "Q",
@@ -60501,7 +60501,7 @@
     },
     {
       "type": "Feature",
-      "id": "5fbf2776-a9e1-4546-9fc3-e6882db577d9",
+      "id": "5c79f5d4-03be-4654-b424-f83b3f03b2d1",
       "properties": {
         "name": "PARA Bitburg EDRB 118.705",
         "class": "Q",
@@ -60930,7 +60930,7 @@
     },
     {
       "type": "Feature",
-      "id": "ef7d5f83-b6b4-400f-9f78-9b726be6486e",
+      "id": "6e648768-d67d-4787-b3bd-71988da6600e",
       "properties": {
         "name": "PARA Bonn-Hangelar EDKB 135.155",
         "class": "Q",
@@ -61359,7 +61359,7 @@
     },
     {
       "type": "Feature",
-      "id": "21e05f0c-0ee2-45d8-aa6e-480feb31df50",
+      "id": "6dbbbedc-cb0e-424b-9c0e-daab0d305fbe",
       "properties": {
         "name": "PARA Braunschweig EDVE 120.055",
         "class": "Q",
@@ -61788,7 +61788,7 @@
     },
     {
       "type": "Feature",
-      "id": "5886c96d-96d6-4eaa-b779-dfc0a4f21295",
+      "id": "74436d4d-c912-45ad-aa7e-a129389e7001",
       "properties": {
         "name": "PARA Breitscheid EDGB 122.530",
         "class": "Q",
@@ -62217,7 +62217,7 @@
     },
     {
       "type": "Feature",
-      "id": "c81e47e2-348d-4595-92e4-9fc4021c6b9b",
+      "id": "a8478d08-abf2-4770-8761-224424c869eb",
       "properties": {
         "name": "PARA Bremgarten EDTG 124.030",
         "class": "Q",
@@ -62646,7 +62646,7 @@
     },
     {
       "type": "Feature",
-      "id": "b96950a7-d5ce-4e93-af1e-9d32947f2024",
+      "id": "8120990a-e961-40ce-9d42-07aad5b7d9c8",
       "properties": {
         "name": "PARA Bruchsal 126.730",
         "class": "Q",
@@ -63075,7 +63075,7 @@
     },
     {
       "type": "Feature",
-      "id": "0b8ea911-44df-4542-bccf-a38fe9adaa84",
+      "id": "3af96a71-04b8-4f74-940e-a6e3fbc541a6",
       "properties": {
         "name": "PARA Brunsiek-Meissendorf 126.730",
         "class": "Q",
@@ -63504,7 +63504,7 @@
     },
     {
       "type": "Feature",
-      "id": "ed7fbe2f-c92c-4b94-9df9-9a2c3656b6f2",
+      "id": "658ae68c-c215-4178-b968-efb97e7b6eac",
       "properties": {
         "name": "PARA Burgheim 134.410",
         "class": "Q",
@@ -63933,7 +63933,7 @@
     },
     {
       "type": "Feature",
-      "id": "24ff0556-a642-4e9e-895c-891a0907730f",
+      "id": "b3142095-e97a-409f-8fb2-05a95b79e2b3",
       "properties": {
         "name": "PARA Calw 126.730",
         "class": "Q",
@@ -64362,7 +64362,7 @@
     },
     {
       "type": "Feature",
-      "id": "ba4b7f7e-31cb-402a-9ae9-bc675afb0aa1",
+      "id": "a4062c93-6f45-4adf-9cbf-ab0917fc0a26",
       "properties": {
         "name": "PARA Dahlemer Binz EDKV 130.085",
         "class": "Q",
@@ -64791,7 +64791,7 @@
     },
     {
       "type": "Feature",
-      "id": "5c15b6e0-37fd-43ff-b5bf-617691955de9",
+      "id": "d03241c5-1ca2-4be8-88ef-e4364102d46e",
       "properties": {
         "name": "PARA Damme EDWC 133.305",
         "class": "Q",
@@ -65220,7 +65220,7 @@
     },
     {
       "type": "Feature",
-      "id": "4358f5dc-3bfd-416f-80a7-d6e7a5cd5e0a",
+      "id": "1ffabc4b-cef2-4978-8743-f50715db40d9",
       "properties": {
         "name": "PARA Deggendorf EDMW 122.030",
         "class": "Q",
@@ -65649,7 +65649,7 @@
     },
     {
       "type": "Feature",
-      "id": "cdae1c8c-2a87-4cfe-99d2-ffdd97f45ab8",
+      "id": "e42039ea-f818-4462-a7f5-496612a98593",
       "properties": {
         "name": "PARA Dessau EDAD 118.180",
         "class": "Q",
@@ -66078,7 +66078,7 @@
     },
     {
       "type": "Feature",
-      "id": "d51e0510-a506-4991-a25f-cf9ca50f0626",
+      "id": "befadec6-3e6a-4beb-abf3-6a080f6c929e",
       "properties": {
         "name": "PARA Dinkelsbuehl EDND 134.535",
         "class": "Q",
@@ -66507,7 +66507,7 @@
     },
     {
       "type": "Feature",
-      "id": "8b37554d-12a4-4994-b8b5-43be406a7043",
+      "id": "5f79d110-0c3e-4793-a315-83bf19baee4c",
       "properties": {
         "name": "PARA Eggenfelden EDME 120.305",
         "class": "Q",
@@ -66936,7 +66936,7 @@
     },
     {
       "type": "Feature",
-      "id": "704dcb26-2c3f-4937-b13a-cd408d89186e",
+      "id": "0a49e793-c3c6-4ee8-af4d-2726a51e78be",
       "properties": {
         "name": "PARA Eisenach EDGE 119.755",
         "class": "Q",
@@ -67365,7 +67365,7 @@
     },
     {
       "type": "Feature",
-      "id": "8114bd10-3468-4d7f-92b9-879eca8176dd",
+      "id": "2cab6d39-128f-47f4-b2d2-4200b4b7de64",
       "properties": {
         "name": "PARA Fehrbellin EDBF 133.940",
         "class": "Q",
@@ -67794,7 +67794,7 @@
     },
     {
       "type": "Feature",
-      "id": "8284a238-0e3f-42d5-8f62-db6984548652",
+      "id": "f7b0a231-2b14-47d5-a012-26e1a7caa613",
       "properties": {
         "name": "PARA Finsterwalde EDUS 134.540",
         "class": "Q",
@@ -68223,7 +68223,7 @@
     },
     {
       "type": "Feature",
-      "id": "6ce2b8be-c778-424c-87fa-fb2e7c13f3d6",
+      "id": "e3f660e4-6291-4feb-a593-c05f13a5546b",
       "properties": {
         "name": "PARA Flensburg EDXF 122.855",
         "class": "Q",
@@ -68652,7 +68652,7 @@
     },
     {
       "type": "Feature",
-      "id": "2df2ec81-c093-4272-a842-deb70591e310",
+      "id": "48859db9-9173-478f-8f1b-d943ca6f04ce",
       "properties": {
         "name": "PARA Freiburg EDTF 118.255",
         "class": "Q",
@@ -69081,7 +69081,7 @@
     },
     {
       "type": "Feature",
-      "id": "73985611-be28-4e69-8531-df82aa2e3028",
+      "id": "79f9a7dc-6a6a-4b47-847e-56a3f986b890",
       "properties": {
         "name": "PARA Fuerstenzell EDMF 128.740",
         "class": "Q",
@@ -69510,7 +69510,7 @@
     },
     {
       "type": "Feature",
-      "id": "d00e421c-42cc-485c-a5ce-824b6bbab7df",
+      "id": "45430357-b132-4aa5-8623-9a8533f2ed4e",
       "properties": {
         "name": "PARA Ganderkesee EDWQ 118.630",
         "class": "Q",
@@ -69939,7 +69939,7 @@
     },
     {
       "type": "Feature",
-      "id": "3471900d-7b8e-4931-b16a-09d426a8f863",
+      "id": "60a323cc-5297-4e6f-a8f1-98e800fc33de",
       "properties": {
         "name": "PARA Gelnhausen EDFG 123.055",
         "class": "Q",
@@ -70368,7 +70368,7 @@
     },
     {
       "type": "Feature",
-      "id": "2ab7fcde-b1ab-46a6-848a-31ac22530de7",
+      "id": "bfd12567-d119-4a25-9dd3-a6874d1cfd7c",
       "properties": {
         "name": "PARA Gera EDAJ 118.080",
         "class": "Q",
@@ -70797,7 +70797,7 @@
     },
     {
       "type": "Feature",
-      "id": "98456f09-9fef-40f9-936f-9821ed43c2c7",
+      "id": "7764b654-9676-4503-92c7-de603f558c71",
       "properties": {
         "name": "PARA Giessen EDFL 122.505",
         "class": "Q",
@@ -71226,7 +71226,7 @@
     },
     {
       "type": "Feature",
-      "id": "64fa057e-27a5-4f10-a6ba-c4629659bd49",
+      "id": "a4609f0f-e0df-4d04-b8f6-8dfd754df625",
       "properties": {
         "name": "PARA Gransee 135.580",
         "class": "Q",
@@ -71655,7 +71655,7 @@
     },
     {
       "type": "Feature",
-      "id": "32a57219-5695-41ca-a009-5a6559569880",
+      "id": "919673c0-ec73-4bb6-86ef-7e567ca5753c",
       "properties": {
         "name": "PARA Grefrath EDLF 126.705",
         "class": "Q",
@@ -72084,7 +72084,7 @@
     },
     {
       "type": "Feature",
-      "id": "32a40515-1d0f-4671-aef9-1b739fc0eabb",
+      "id": "6a1b8d97-5b86-40c9-8edf-49f598dcc7cd",
       "properties": {
         "name": "PARA Grossrueckerswalde EDAG 118.585",
         "class": "Q",
@@ -72513,7 +72513,7 @@
     },
     {
       "type": "Feature",
-      "id": "7a1e127c-16bf-449a-a7ca-d43995dd8c62",
+      "id": "e1f51267-94e6-44ae-9876-a5dce5bfe24b",
       "properties": {
         "name": "PARA Guenzburg EDMG 118.130",
         "class": "Q",
@@ -72942,7 +72942,7 @@
     },
     {
       "type": "Feature",
-      "id": "62bec38b-053d-4cce-8004-7632679c0d82",
+      "id": "ffebedea-a768-4991-a7b6-0f4f4fe3324d",
       "properties": {
         "name": "PARA Hartenholm EDHM 118.130",
         "class": "Q",
@@ -73371,7 +73371,7 @@
     },
     {
       "type": "Feature",
-      "id": "c2613609-da47-4d92-8a00-cc799bcd7866",
+      "id": "61808893-c184-4dec-8165-363f9101cdcb",
       "properties": {
         "name": "PARA Hassfurt-Schweinf. EDQT 119.805",
         "class": "Q",
@@ -73800,7 +73800,7 @@
     },
     {
       "type": "Feature",
-      "id": "15b3b3a9-86dc-411f-b2f0-c052ad7dd2d7",
+      "id": "810dc3ca-87df-4a32-aec3-e935597fa27b",
       "properties": {
         "name": "PARA Herrenteich EDEH 132.055",
         "class": "Q",
@@ -74229,7 +74229,7 @@
     },
     {
       "type": "Feature",
-      "id": "7627c436-85d6-4621-86d2-e80a35443570",
+      "id": "f100b21d-4b18-47d2-b2fe-cd94ec3a0d19",
       "properties": {
         "name": "PARA Hildesheim EDVM 118.310",
         "class": "Q",
@@ -74658,7 +74658,7 @@
     },
     {
       "type": "Feature",
-      "id": "e7b52017-03a1-4871-ae2b-fac4cac1fe42",
+      "id": "d4c81c0f-22c3-4655-ab35-ba7ce6c7c4b2",
       "properties": {
         "name": "PARA Hodenhagen EDVH 119.005",
         "class": "Q",
@@ -75087,7 +75087,7 @@
     },
     {
       "type": "Feature",
-      "id": "21058278-b9db-4273-8906-5410a4c397a4",
+      "id": "84040720-695c-4dac-9a1a-3801145e4c8b",
       "properties": {
         "name": "PARA Hoexter EDVI 130.280",
         "class": "Q",
@@ -75516,7 +75516,7 @@
     },
     {
       "type": "Feature",
-      "id": "ccd2dbf0-6722-4234-8f86-fbcbcf8cda93",
+      "id": "c557afdb-93dc-48e4-b519-95d519e21280",
       "properties": {
         "name": "PARA Huettenbusch EDXU 120.835",
         "class": "Q",
@@ -75945,7 +75945,7 @@
     },
     {
       "type": "Feature",
-      "id": "233504ce-6b26-4931-9dc3-10d461b63a18",
+      "id": "d5ba24c8-d686-4663-bfb0-0f8f7efe3c75",
       "properties": {
         "name": "PARA Illertissen EDMI 128.865",
         "class": "Q",
@@ -76374,7 +76374,7 @@
     },
     {
       "type": "Feature",
-      "id": "adb9c218-9bd8-44ca-8369-0ceeab1cb379",
+      "id": "357e8399-6ae5-401b-87c2-ea1e8a66eb10",
       "properties": {
         "name": "PARA Itzehoe EDHF 127.110",
         "class": "Q",
@@ -76803,7 +76803,7 @@
     },
     {
       "type": "Feature",
-      "id": "c6a7bc48-6172-49d4-b35b-11cde90e1df0",
+      "id": "cee39dfa-edff-4e54-ac38-c7b108a0423e",
       "properties": {
         "name": "PARA Jena EDBJ 118.735",
         "class": "Q",
@@ -77232,7 +77232,7 @@
     },
     {
       "type": "Feature",
-      "id": "ac0b50cd-fbaa-4712-b5bd-fb73a3b60b6e",
+      "id": "61b63177-cafd-4ac5-bd11-f4add66ec2a2",
       "properties": {
         "name": "PARA Karlshoefen EDWK 118.930",
         "class": "Q",
@@ -77661,7 +77661,7 @@
     },
     {
       "type": "Feature",
-      "id": "307a7635-92e0-475d-b7aa-20d585e84ac7",
+      "id": "aa65c819-8faf-462d-bd9e-af2f15b3a361",
       "properties": {
         "name": "PARA Kassel EDVK 118.105",
         "class": "Q",
@@ -78090,7 +78090,7 @@
     },
     {
       "type": "Feature",
-      "id": "32d82796-9422-4d2c-937e-24c00c26bda9",
+      "id": "989883f1-769a-4c58-8624-e497e0bf6365",
       "properties": {
         "name": "PARA Kiel EDHK 119.980",
         "class": "Q",
@@ -78519,7 +78519,7 @@
     },
     {
       "type": "Feature",
-      "id": "803ff0d4-d48e-43d1-a57e-a0d91ad58854",
+      "id": "f7a870cd-79a9-48bf-adb9-a3f6d04f05a9",
       "properties": {
         "name": "PARA Kuehrstedt EDXZ 135.005",
         "class": "Q",
@@ -78948,7 +78948,7 @@
     },
     {
       "type": "Feature",
-      "id": "fe547f3b-fa37-4e7b-b71a-85dc48698010",
+      "id": "2e30fbfd-e7e3-45b0-b591-1bb8a511c9a2",
       "properties": {
         "name": "PARA Lachen-Speyerdorf EDRL 128.585",
         "class": "Q",
@@ -79377,7 +79377,7 @@
     },
     {
       "type": "Feature",
-      "id": "01b964e6-b6ea-408a-833d-ee02214e29b0",
+      "id": "537a66a1-c799-4b0b-9962-549cc6357e73",
       "properties": {
         "name": "PARA Lahr EDTL 125.180",
         "class": "Q",
@@ -79806,7 +79806,7 @@
     },
     {
       "type": "Feature",
-      "id": "40371cc9-4ddb-424d-9e18-4479f25d21b1",
+      "id": "891f86eb-b3ae-4e14-af3c-e1cc6c225b22",
       "properties": {
         "name": "PARA Altenburg EDAC 123.580",
         "class": "Q",
@@ -80235,7 +80235,7 @@
     },
     {
       "type": "Feature",
-      "id": "f4fc9f75-a7c2-4636-9042-fe230523a8db",
+      "id": "a38eceba-bca4-4c9b-932d-1879698491b9",
       "properties": {
         "name": "PARA Leutkirch EDNL 122.880",
         "class": "Q",
@@ -80280,7 +80280,7 @@
     },
     {
       "type": "Feature",
-      "id": "08dee85c-7bfc-4637-94de-446aeb5900f7",
+      "id": "656678e6-9672-4f55-b3e2-e9e169c69ea5",
       "properties": {
         "name": "PARA Luechow EDHC 125.365",
         "class": "Q",
@@ -80709,7 +80709,7 @@
     },
     {
       "type": "Feature",
-      "id": "dd7a99a1-0f21-42a0-b487-3b9cda870a4d",
+      "id": "9ea36086-eff1-490e-9ad2-ca2fac686abe",
       "properties": {
         "name": "PARA Magdeburg EDBM 119.305",
         "class": "Q",
@@ -81138,7 +81138,7 @@
     },
     {
       "type": "Feature",
-      "id": "5dc616d5-74a6-42e8-ad3c-c38141984e6b",
+      "id": "42d4c41c-4ec7-40fd-ad54-70838593ac7c",
       "properties": {
         "name": "PARA Mainbullau EDFU 121.035",
         "class": "Q",
@@ -81567,7 +81567,7 @@
     },
     {
       "type": "Feature",
-      "id": "7280fe83-c100-4644-b577-89530c3b7ac6",
+      "id": "37777c46-b9e8-4e34-9d6b-6d5eaab28403",
       "properties": {
         "name": "PARA Marl-Loemuehle EDLM 134.610",
         "class": "Q",
@@ -81996,7 +81996,7 @@
     },
     {
       "type": "Feature",
-      "id": "d493e1e0-418e-4b1e-a652-3552763d2133",
+      "id": "05fa4f2c-25d9-4bfc-b9e1-dde92011e3e5",
       "properties": {
         "name": "PARA Merseburg EDAM 118.990",
         "class": "Q",
@@ -82425,7 +82425,7 @@
     },
     {
       "type": "Feature",
-      "id": "32dc92a9-d121-4fe2-9c85-3156b0699c96",
+      "id": "78700ec6-f1d4-4381-b736-4f27874d5c64",
       "properties": {
         "name": "PARA Muenster-Telgte EDLT 122.855",
         "class": "Q",
@@ -82854,7 +82854,7 @@
     },
     {
       "type": "Feature",
-      "id": "1a57cd2b-0977-49fd-bf04-5ec53a47e39b",
+      "id": "914a55ff-6d35-4095-aebf-ff7e6402e824",
       "properties": {
         "name": "PARA Nardt EDAT 120.390",
         "class": "Q",
@@ -83283,7 +83283,7 @@
     },
     {
       "type": "Feature",
-      "id": "d69e8547-3e3c-4222-b796-72c2d61d55d3",
+      "id": "1321d98f-cc55-4f10-8e8d-bcd969233d8d",
       "properties": {
         "name": "PARA Neuhausen EDAP 122.730",
         "class": "Q",
@@ -83712,7 +83712,7 @@
     },
     {
       "type": "Feature",
-      "id": "a656f1d4-e225-4e99-b99e-7732137e5325",
+      "id": "00c99ac3-5f66-480b-aa4c-b513f503a079",
       "properties": {
         "name": "PARA Neustadt/Aisch EDQN 118.930",
         "class": "Q",
@@ -84141,7 +84141,7 @@
     },
     {
       "type": "Feature",
-      "id": "144a723b-a383-471c-8040-cf8324b15fe2",
+      "id": "5d43f3a0-1c3e-4ded-8866-006616effae6",
       "properties": {
         "name": "PARA Neustadt-Glewe EDAN 118.815",
         "class": "Q",
@@ -84570,7 +84570,7 @@
     },
     {
       "type": "Feature",
-      "id": "da4d05c1-87f2-4c22-986d-fc676442b3d9",
+      "id": "03c32ad8-5653-4d42-ab3b-9403f150172f",
       "properties": {
         "name": "PARA Pad-Haxterberg EDLR 121.035",
         "class": "Q",
@@ -84999,7 +84999,7 @@
     },
     {
       "type": "Feature",
-      "id": "b5bcff6f-d6b1-423d-b1e9-78d9fd805284",
+      "id": "bc198563-82ef-423c-ac84-a3e5dda07b94",
       "properties": {
         "name": "PARA Pad-Lippstadt EDLP 133.380",
         "class": "Q",
@@ -85428,7 +85428,7 @@
     },
     {
       "type": "Feature",
-      "id": "158568fb-341c-448a-a8f1-2a1811ca6a57",
+      "id": "bfb4f842-c09b-4233-a1bf-20344e794dbf",
       "properties": {
         "name": "PARA Radevormwald 118.265",
         "class": "Q",
@@ -85857,7 +85857,7 @@
     },
     {
       "type": "Feature",
-      "id": "482007f3-87fa-43ba-a153-5011c7335a6b",
+      "id": "1c6b9e5a-8421-4bfc-a930-2e7d9cda135b",
       "properties": {
         "name": "PARA Rheine/Hopsten EDXE 127.685",
         "class": "Q",
@@ -86286,7 +86286,7 @@
     },
     {
       "type": "Feature",
-      "id": "e71263ac-dfe5-4951-aa84-d602d410589d",
+      "id": "1b1557c0-c5da-46dc-b326-1fe4b0af18cc",
       "properties": {
         "name": "PARA Riedenheim 126.730",
         "class": "Q",
@@ -86715,7 +86715,7 @@
     },
     {
       "type": "Feature",
-      "id": "c637a18b-1e01-4fe4-872f-5fc00aa37494",
+      "id": "d71ba54e-c34b-40c9-bb6a-83b21469b9f0",
       "properties": {
         "name": "PARA Roitzschjora EDAW 128.010",
         "class": "Q",
@@ -87144,7 +87144,7 @@
     },
     {
       "type": "Feature",
-      "id": "f615b7e0-cf8a-41f6-add6-5574daf6d3ca",
+      "id": "9972031f-10da-4159-bb30-06ddf8568fb6",
       "properties": {
         "name": "PARA Rosenthal EDQP 127.455",
         "class": "Q",
@@ -87573,7 +87573,7 @@
     },
     {
       "type": "Feature",
-      "id": "4085a73f-68c9-48a3-916b-767f2f1e4493",
+      "id": "c16590c2-a4ff-4aa7-9bb1-be3700000a91",
       "properties": {
         "name": "PARA Rothenburg odT EDFR 128.360",
         "class": "Q",
@@ -88002,7 +88002,7 @@
     },
     {
       "type": "Feature",
-      "id": "e64c3d72-b71a-44e8-9fb3-92994c196766",
+      "id": "ac8bb9ca-e5a4-4934-acfb-01086cb914f2",
       "properties": {
         "name": "PARA Rottweil EDSZ 129.505",
         "class": "Q",
@@ -88431,7 +88431,7 @@
     },
     {
       "type": "Feature",
-      "id": "bd551008-c635-4612-b902-55927a5966b5",
+      "id": "bdf6ac02-173a-42c1-8a5b-505c70886feb",
       "properties": {
         "name": "PARA Ruegen EDCG 123.005",
         "class": "Q",
@@ -88860,7 +88860,7 @@
     },
     {
       "type": "Feature",
-      "id": "32c63a0b-d435-4183-9340-09d4cf0e0649",
+      "id": "4ac97eaa-01fd-4996-adf6-04ec5c0f2412",
       "properties": {
         "name": "PARA Saarlouis EDRJ 121.210",
         "class": "Q",
@@ -89289,7 +89289,7 @@
     },
     {
       "type": "Feature",
-      "id": "747df0ba-b72f-4af0-b710-7e8c2f03dd8c",
+      "id": "eee260c7-e366-4082-a581-02e2d3e41fcf",
       "properties": {
         "name": "PARA Saulgau EDTU 123.605",
         "class": "Q",
@@ -89718,7 +89718,7 @@
     },
     {
       "type": "Feature",
-      "id": "8f51e165-ce72-4635-9fc2-f1876e9bfe5d",
+      "id": "2f69e629-0b0b-4999-9a02-b4ba01f5b209",
       "properties": {
         "name": "PARA Schlierstadt 133.290",
         "class": "Q",
@@ -90147,7 +90147,7 @@
     },
     {
       "type": "Feature",
-      "id": "01fd345a-3e80-44b9-82d5-56ea2a2835db",
+      "id": "d6b3513c-2d2f-4b1c-8edb-d52da516fa22",
       "properties": {
         "name": "PARA Schmallenberg EDKR 127.090",
         "class": "Q",
@@ -90576,7 +90576,7 @@
     },
     {
       "type": "Feature",
-      "id": "4ad90f2c-ab2e-41b8-9160-ccfdec30e63e",
+      "id": "9ef9edd9-bf3b-47dd-950c-6a3848364691",
       "properties": {
         "name": "PARA Schwaeb.-Hall EDTX 129.230",
         "class": "Q",
@@ -91005,7 +91005,7 @@
     },
     {
       "type": "Feature",
-      "id": "8e2a108a-b37c-4920-a005-afe2f0b175a1",
+      "id": "8501138e-aa83-4f8a-8dea-c5436abafefc",
       "properties": {
         "name": "PARA Schweighofen EDRO 123.005",
         "class": "Q",
@@ -91434,7 +91434,7 @@
     },
     {
       "type": "Feature",
-      "id": "74be49cc-dc3c-44d8-9752-1107f328973d",
+      "id": "29e25313-a6c2-479f-a798-5de10873fa33",
       "properties": {
         "name": "PARA Schwenningen EDTS 127.535",
         "class": "Q",
@@ -91863,7 +91863,7 @@
     },
     {
       "type": "Feature",
-      "id": "4665ef17-67f0-4ff8-8a5d-8cd37a678062",
+      "id": "9ff933eb-ccde-44bf-aea3-90bfda0a158d",
       "properties": {
         "name": "PARA Seedorf EDXS 119.665",
         "class": "Q",
@@ -92292,7 +92292,7 @@
     },
     {
       "type": "Feature",
-      "id": "288b9056-12f8-47b0-82cb-c66107afa898",
+      "id": "112bb95c-b6b7-46ea-a30a-af22f4e9403a",
       "properties": {
         "name": "PARA Sendenhorst 126.730",
         "class": "Q",
@@ -92721,7 +92721,7 @@
     },
     {
       "type": "Feature",
-      "id": "66cbbad4-06ee-434b-88e8-3ea69650d42f",
+      "id": "ca342adb-5b00-4290-a298-4fb0409a8c23",
       "properties": {
         "name": "PARA Siegerland EDGS 120.380",
         "class": "Q",
@@ -93150,7 +93150,7 @@
     },
     {
       "type": "Feature",
-      "id": "0b2b8217-12d0-4458-8310-8583d019d99e",
+      "id": "eea2c6e5-e758-4492-9ff2-aab912a6457e",
       "properties": {
         "name": "PARA Sierksdorf EDXT 125.385",
         "class": "Q",
@@ -93579,7 +93579,7 @@
     },
     {
       "type": "Feature",
-      "id": "67d49da5-6afa-462b-aea9-c13a5daeba2d",
+      "id": "aecda222-1039-4148-a195-5c77e04a72df",
       "properties": {
         "name": "PARA Soest EDLZ 133.465",
         "class": "Q",
@@ -94008,7 +94008,7 @@
     },
     {
       "type": "Feature",
-      "id": "682d2940-5fee-4410-9b07-023c43689526",
+      "id": "b7816961-27e6-4b07-a024-336a134914ca",
       "properties": {
         "name": "PARA Stadtallendorf MO-FR  119.150",
         "class": "Q",
@@ -94437,7 +94437,7 @@
     },
     {
       "type": "Feature",
-      "id": "d354eb55-cfe3-4fcd-9263-cc82801a0504",
+      "id": "9e398bd8-f12c-4036-b618-ed83dcee2916",
       "properties": {
         "name": "PARA Stadtlohn EDLS 119.205",
         "class": "Q",
@@ -94866,7 +94866,7 @@
     },
     {
       "type": "Feature",
-      "id": "b488fdfc-0770-4cc6-8ad2-859ad388650e",
+      "id": "341c996c-b9f7-4bc0-8f97-69984d696503",
       "properties": {
         "name": "PARA Sylt EDXW 119.750",
         "class": "Q",
@@ -95295,7 +95295,7 @@
     },
     {
       "type": "Feature",
-      "id": "6b1f2ab1-44b6-42dc-9917-3d5e9d79c24c",
+      "id": "1cc7cbfa-276d-4b60-b128-c0891412510e",
       "properties": {
         "name": "PARA Tannheim EDMT 122.830",
         "class": "Q",
@@ -95340,7 +95340,7 @@
     },
     {
       "type": "Feature",
-      "id": "dc0c4676-3cb4-4650-9932-07cd5cb53668",
+      "id": "2fd8012c-8f2e-4122-89f4-42c40ea78fdf",
       "properties": {
         "name": "PARA Thalmaessing EDPW 128.860",
         "class": "Q",
@@ -95769,7 +95769,7 @@
     },
     {
       "type": "Feature",
-      "id": "d66cd98c-c08e-4b28-a44a-0849df2f167b",
+      "id": "24ef83b4-cb1e-4fea-9380-5c9261f36e42",
       "properties": {
         "name": "PARA Trier EDRT 118.390",
         "class": "Q",
@@ -96198,7 +96198,7 @@
     },
     {
       "type": "Feature",
-      "id": "c8e4de2e-bfbc-43a7-87e8-e8d2d087a9d0",
+      "id": "7dac9ae4-d415-40ed-984a-ac0797e3ced3",
       "properties": {
         "name": "PARA Unterschuepf EDGU 132.015",
         "class": "Q",
@@ -96627,7 +96627,7 @@
     },
     {
       "type": "Feature",
-      "id": "559966d4-130e-4872-af5e-cf662131416d",
+      "id": "3d5a39ae-93e0-4c8a-9574-bea59d6e923c",
       "properties": {
         "name": "PARA Varrelbusch EDWU 132.565",
         "class": "Q",
@@ -97056,7 +97056,7 @@
     },
     {
       "type": "Feature",
-      "id": "9215db21-c4fb-4418-910f-ee6519143595",
+      "id": "23a113d5-4629-4a6e-97e6-36db7e2dc65a",
       "properties": {
         "name": "PARA Walldorf EDGX 118.265",
         "class": "Q",
@@ -97485,7 +97485,7 @@
     },
     {
       "type": "Feature",
-      "id": "ecd910a7-233d-45f1-945e-d281befffc47",
+      "id": "3d45c082-9d9c-41ce-b2c9-742288159100",
       "properties": {
         "name": "PARA Westerstede EDWX 122.685",
         "class": "Q",
@@ -97914,7 +97914,7 @@
     },
     {
       "type": "Feature",
-      "id": "f1fa3693-4f11-4a88-8534-8ea22f06abf4",
+      "id": "a6847dd8-9c91-498a-b04b-679e0d8e99c1",
       "properties": {
         "name": "PARA Zerbst EDUZ 124.485",
         "class": "Q",
@@ -98343,7 +98343,7 @@
     },
     {
       "type": "Feature",
-      "id": "d9363d03-07b0-4ce6-9456-128014eb65f2",
+      "id": "f38c9a16-06d2-4687-bc59-22ef8c7ad583",
       "properties": {
         "name": "PARA Zweibruecken EDRZ 123.830",
         "class": "Q",
@@ -98772,7 +98772,7 @@
     },
     {
       "type": "Feature",
-      "id": "c2caccca-0dd3-4b8b-9208-b5349924389f",
+      "id": "ea474076-b5af-484e-b57b-76e5d8ec2ad6",
       "properties": {
         "name": "CTR LSZH 118.100",
         "class": "CTR",
@@ -99269,7 +99269,7 @@
     },
     {
       "type": "Feature",
-      "id": "cc3a12cb-a44b-4b5a-8f29-136b67bff587",
+      "id": "7f0f6480-9184-403f-81ca-49a080a0b822",
       "properties": {
         "name": "CTR LSZH 2 118.100 118.975",
         "class": "CTR",
@@ -99322,7 +99322,7 @@
     },
     {
       "type": "Feature",
-      "id": "db3e7840-4b26-4017-8ac4-ca893ddace70",
+      "id": "0fb3de28-eb41-49f9-823f-6dbaf9b649c2",
       "properties": {
         "name": "TMA LSZH 1",
         "class": "C",
@@ -99727,7 +99727,7 @@
     },
     {
       "type": "Feature",
-      "id": "24cad246-4214-48e4-b187-a2fa0245ed2b",
+      "id": "491c29ab-240a-4f22-967c-8639ee5a6b2f",
       "properties": {
         "name": "TMA LSZH 2",
         "class": "C",
@@ -99788,7 +99788,7 @@
     },
     {
       "type": "Feature",
-      "id": "dc1153f1-d03c-4a53-aa7f-c616e25460b2",
+      "id": "2bcaaf28-5a94-42ea-8e00-bb8d64f94a3f",
       "properties": {
         "name": "TMA LSZH 3",
         "class": "C",
@@ -99841,7 +99841,7 @@
     },
     {
       "type": "Feature",
-      "id": "2a99ec8c-89c9-4634-9790-0e77d1b04349",
+      "id": "1cc00ad3-bdfb-4a52-a698-b1da6a2daf81",
       "properties": {
         "name": "TMA LSZH 4A",
         "class": "C",
@@ -99938,7 +99938,7 @@
     },
     {
       "type": "Feature",
-      "id": "8638a368-daa8-4c56-978b-ac21e8f10f90",
+      "id": "99c26cb4-216f-4e20-bd52-86233341da96",
       "properties": {
         "name": "TMA LSZH 4B",
         "class": "C",
@@ -100023,7 +100023,7 @@
     },
     {
       "type": "Feature",
-      "id": "48f07f76-d5e6-4814-90f1-6ac0b37e1c8d",
+      "id": "6f57e0dc-1333-43b2-943d-0b1cd2ffe368",
       "properties": {
         "name": "TMA LSZH 4C",
         "class": "C",
@@ -100540,7 +100540,7 @@
     },
     {
       "type": "Feature",
-      "id": "1b25171d-50e5-4f6d-8f5c-9dbb3b41269d",
+      "id": "2b826ff7-6923-42c4-97f4-8f8d340ff86f",
       "properties": {
         "name": "TMA LSZH 5",
         "class": "C",
@@ -100665,7 +100665,7 @@
     },
     {
       "type": "Feature",
-      "id": "2d7c9eaf-5b6e-4d9d-99eb-43d7347bbe95",
+      "id": "df395e03-046c-4329-9f85-e995d2bced04",
       "properties": {
         "name": "TMA LSZH 6",
         "class": "C",
@@ -100738,7 +100738,7 @@
     },
     {
       "type": "Feature",
-      "id": "a7a49930-c074-478c-a151-50103879814a",
+      "id": "1445ce8c-f8b2-4776-8f36-cad1df936c72",
       "properties": {
         "name": "TMA LSZH 7",
         "class": "C",
@@ -100795,7 +100795,7 @@
     },
     {
       "type": "Feature",
-      "id": "3d5bec41-cefd-4a9f-a946-6c94e670aae6",
+      "id": "bf8890d1-f97e-4729-8464-9f1755b4ccfc",
       "properties": {
         "name": "TMA LSZH 8",
         "class": "C",
@@ -100856,7 +100856,7 @@
     },
     {
       "type": "Feature",
-      "id": "4bbcbfe7-8ac6-432b-900d-146518dd9742",
+      "id": "3cedcabb-07cf-4759-976b-347656757440",
       "properties": {
         "name": "TMA LSZH 9",
         "class": "C",
@@ -100901,7 +100901,7 @@
     },
     {
       "type": "Feature",
-      "id": "8c612214-6b60-44e5-b692-24b688328311",
+      "id": "42f4e8a4-8cfb-4c94-883f-65cca771cc65",
       "properties": {
         "name": "TMA LSZH 10",
         "class": "C",
@@ -100946,7 +100946,7 @@
     },
     {
       "type": "Feature",
-      "id": "1fb66ce6-23be-47b0-8f94-7a704a05c003",
+      "id": "36e585aa-66df-4a06-9336-a7885ce7f9c0",
       "properties": {
         "name": "TMA LSZH 11",
         "class": "C",
@@ -101035,7 +101035,7 @@
     },
     {
       "type": "Feature",
-      "id": "c69f862b-7f61-48dd-b3a8-b7c621d7d449",
+      "id": "7c97e093-efa2-4866-a637-e40ea038f0b0",
       "properties": {
         "name": "TMA LSZH 12",
         "class": "C",
@@ -101080,7 +101080,7 @@
     },
     {
       "type": "Feature",
-      "id": "803e9449-b5bc-4109-b134-037b62d0e25b",
+      "id": "f4478397-0e0d-4ad2-8720-80e716b8f559",
       "properties": {
         "name": "TMA LSZH 13",
         "class": "C",
@@ -101129,7 +101129,7 @@
     },
     {
       "type": "Feature",
-      "id": "ae920bfb-2cc6-49c3-95a9-be2b88455820",
+      "id": "ecc55e64-8612-4202-b646-de0b21a33755",
       "properties": {
         "name": "TMA LSZH 14",
         "class": "C",
@@ -101186,7 +101186,7 @@
     },
     {
       "type": "Feature",
-      "id": "3ab7b52e-5110-4353-9762-65401ee7e8c0",
+      "id": "f68adf64-8dac-43eb-b36d-9ac984e69808",
       "properties": {
         "name": "TMA LSZH 15",
         "class": "C",
@@ -101239,7 +101239,7 @@
     },
     {
       "type": "Feature",
-      "id": "147c0aa6-b956-4ab3-b4f1-ce60e00bed45",
+      "id": "7df6235c-bac5-427c-8c3a-26dada3ab65b",
       "properties": {
         "name": "TMA LFSB ZURICH-AZ3",
         "class": "C",
@@ -101280,7 +101280,7 @@
     },
     {
       "type": "Feature",
-      "id": "118d365b-0899-4b88-a1a0-95d1bd31fcaf",
+      "id": "4b67af47-a57b-4d23-84b2-2863aaa93156",
       "properties": {
         "name": "FIS Langen 125.100",
         "class": "C",
@@ -101821,7 +101821,7 @@
     },
     {
       "type": "Feature",
-      "id": "7f2cbd49-0a10-4db5-b10b-175fe41dd3de",
+      "id": "ab9337f9-2cb9-464e-9fec-fb3644fef515",
       "properties": {
         "name": "FIS Langen 128.525",
         "class": "C",
@@ -102042,7 +102042,7 @@
     },
     {
       "type": "Feature",
-      "id": "293d37f0-ee90-448d-a13d-2fc250c1b0b9",
+      "id": "aca879a0-2c17-4dfc-aabd-78db3f2b1201",
       "properties": {
         "name": "FIS Langen 132.650",
         "class": "C",
@@ -103191,7 +103191,7 @@
     },
     {
       "type": "Feature",
-      "id": "23c5927d-8633-4d8d-b871-b9faaa0ff8ab",
+      "id": "20329542-6856-4202-8d0a-a8e7636d7cf0",
       "properties": {
         "name": "FIS Langen 119.825",
         "class": "C",
@@ -103256,7 +103256,7 @@
     },
     {
       "type": "Feature",
-      "id": "9032e04c-ae83-4340-88eb-d57753c4ae10",
+      "id": "8fbcabcf-8b61-4617-9251-48450e3d8f75",
       "properties": {
         "name": "FIS Langen 129.875",
         "class": "C",
@@ -105197,7 +105197,7 @@
     },
     {
       "type": "Feature",
-      "id": "40ca65a7-7b2e-4e3e-8186-eb1532c99368",
+      "id": "fc908a12-3146-4c66-addc-dbff8a4c097d",
       "properties": {
         "name": "FIS Langen 123.525",
         "class": "C",
@@ -108194,7 +108194,7 @@
     },
     {
       "type": "Feature",
-      "id": "a91e95f7-dde8-4b41-b827-b8670d96d5e3",
+      "id": "b91df179-571c-46a2-8e68-f541c2579187",
       "properties": {
         "name": "FIS Langen 128.950",
         "class": "C",
@@ -108539,7 +108539,7 @@
     },
     {
       "type": "Feature",
-      "id": "8870b2fa-d839-465e-9129-0e85f4fa1ec8",
+      "id": "d5ab8211-fdbd-48cb-bf0b-1a937aa1511c",
       "properties": {
         "name": "FIS Langen 119.150",
         "class": "C",
@@ -108600,7 +108600,7 @@
     },
     {
       "type": "Feature",
-      "id": "d9a8ce07-e957-49e0-bbc0-72b1d90a9042",
+      "id": "41ad2acd-d3ef-4b7c-b502-b13c1c9f3189",
       "properties": {
         "name": "FIS Langen 126.950",
         "class": "C",
@@ -108809,7 +108809,7 @@
     },
     {
       "type": "Feature",
-      "id": "f241d090-c84a-4135-834d-3d36bd23fb74",
+      "id": "f44442be-300c-4944-9806-56646bd121e3",
       "properties": {
         "name": "FIS Langen 125.800",
         "class": "C",
@@ -108914,7 +108914,7 @@
     },
     {
       "type": "Feature",
-      "id": "c353f9b1-ad5f-419e-8d85-81aa5019f54d",
+      "id": "3989a739-4380-4458-957b-94973af8354e",
       "properties": {
         "name": "FIS Langen 120.650",
         "class": "C",
@@ -109031,7 +109031,7 @@
     },
     {
       "type": "Feature",
-      "id": "b61866de-b5e5-4600-8feb-03d269667d3c",
+      "id": "2f7382b9-b98f-49b7-8fbb-309f27a6f630",
       "properties": {
         "name": "Alpine Area FIS Langen",
         "class": "C",
@@ -113524,7 +113524,7 @@
     },
     {
       "type": "Feature",
-      "id": "8a266560-cbab-4b6f-bac2-25c5d3cb9d7a",
+      "id": "7a3a56a7-5852-497f-859a-b4170486dd65",
       "properties": {
         "name": "FIS Zuerich 124.700",
         "class": "C",
