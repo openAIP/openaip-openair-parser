@@ -24,7 +24,6 @@ const Airspace = require('./airspace');
  * @typedef typedefs.openaipOpenairParser.AirspaceFactoryConfig
  * @type Object
  * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
- * @property {boolean} [keepOriginal] - If true, the returned GeoJson features will contain the original openAIR airspace block definitions. Defaults to false.
  */
 
 class AirspaceFactory {
@@ -32,12 +31,10 @@ class AirspaceFactory {
      * @param {typedefs.openaipOpenairParser.AirspaceFactoryConfig} config
      */
     constructor(config) {
-        const { geometryDetail, keepOriginal } = config;
+        const { geometryDetail } = config;
 
         checkTypes.assert.integer(geometryDetail);
-        checkTypes.assert.boolean(keepOriginal);
 
-        this._keepOriginal = keepOriginal;
         this._geometryDetail = geometryDetail;
 
         /** @type {BaseLineToken[]} */

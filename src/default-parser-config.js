@@ -4,6 +4,7 @@
  * @type {typedefs.openaipOpenairParser.ParserConfig}
  */
 module.exports = {
+    // defines allowed airspace classes used with the AC token
     airspaceClasses: [
         // default ICAO classes
         'A',
@@ -26,9 +27,12 @@ module.exports = {
         'TMZ',
         'CTR',
     ],
+    // flight level value to set for upper ceilings defined as "UNLIMITED"
     unlimited: 999,
+    // defines the level of detail (smoothness) of arc/circular geometries
     geometryDetail: 100,
-    keepOriginal: false,
+    // if true, validates each built airspace geometry to be valid/simple geometry - also checks for self intersections
     validateGeometry: true,
+    // if true, uses "convexHull" to fix an invalid geometry - note that this potentially alters the original airspace geometry!
     fixGeometry: false,
 };

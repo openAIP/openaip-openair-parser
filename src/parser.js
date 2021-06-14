@@ -26,7 +26,6 @@ const PARSER_STATE = {
  * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
  * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
  * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
- * @property {boolean} [keepOriginal] - If true, the returned GeoJson features will contain the original openAIR airspace block definitions. Defaults to false.
  * @property {boolean} [validateGeometry] - If true, the GeoJson features are validate. Parser will throw an error if an invalid geometry is found. Defaults to true.
  * @property {boolean} [fixGeometry] - If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
  */
@@ -50,13 +49,11 @@ class Parser {
      */
     constructor(config) {
         const configuration = Object.assign(defaultConfig, config);
-        const { airspaceClasses, unlimited, geometryDetail, keepOriginal, validateGeometry, fixGeometry } =
-            configuration;
+        const { airspaceClasses, unlimited, geometryDetail, validateGeometry, fixGeometry } = configuration;
 
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
         checkTypes.assert.integer(unlimited);
         checkTypes.assert.integer(geometryDetail);
-        checkTypes.assert.boolean(keepOriginal);
         checkTypes.assert.boolean(validateGeometry);
         checkTypes.assert.boolean(fixGeometry);
 
@@ -125,7 +122,6 @@ class Parser {
                     // build airspace from read tokens
                     const factory = new AirspaceFactory({
                         geometryDetail: this._config.geometryDetail,
-                        keepOriginal: this._config.keepOriginal,
                     });
                     const airspace = factory.createAirspace(this._airspaceTokens);
                     // push new airspace to list
