@@ -1,16 +1,16 @@
 const checkTypes = require('check-types');
 
 /**
- * @typedef typedefs.openaipOpenairParser.TokenConfig
+ * @typedef typedefs.openaip.OpenairParser.TokenConfig
  * @type Object
- * @property {typedefs.openaipOpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
+ * @property {typedefs.openaip.OpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
  */
 
 class BaseLineToken {
     static type = '';
 
     /**
-     * @param {typedefs.openaipOpenairParser.TokenConfig} config
+     * @param {typedefs.openaip.OpenairParser.TokenConfig} config
      */
     constructor(config) {
         const { tokenTypes } = config;

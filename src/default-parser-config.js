@@ -1,7 +1,7 @@
 /**
  * Default parser configuration.
  *
- * @type {typedefs.openaipOpenairParser.ParserConfig}
+ * @type {typedefs.openaip.OpenairParser.ParserConfig}
  */
 module.exports = {
     // defines allowed airspace classes used with the AC token

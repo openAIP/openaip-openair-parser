@@ -2,7 +2,8 @@
 
 A configurable [OpenAIR](http://www.winpilot.com/usersguide/userairspace.asp) format parser for Node.
 
-#Node
+Node
+=
 
 ```javascript
 const Parser = require('@openaip/openair-parser');
@@ -90,7 +91,8 @@ Parser result is a GeoJSON FeatureCollection:
 }
 ```
 
-#CLI
+CLI
+=
 
 ```bash
 node cli.js -h

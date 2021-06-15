@@ -2,10 +2,10 @@ const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 
 /**
- * @typedef typedefs.openaipOpenairParser.EofTokenConfig
+ * @typedef typedefs.openaip.OpenairParser.EofTokenConfig
  * @type Object
  * @property {number} lastLineNumber - Last line number of file.
- * @property {typedefs.openaipOpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
+ * @property {typedefs.openaip.OpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
 
  */
 
@@ -17,7 +17,7 @@ class EofToken extends BaseLineToken {
     static type = 'EOF';
 
     /**
-     * @param {typedefs.openaipOpenairParser.EofTokenConfig} config
+     * @param {typedefs.openaip.OpenairParser.EofTokenConfig} config
      */
     constructor(config) {
         const { tokenTypes, lastLineNumber } = config;

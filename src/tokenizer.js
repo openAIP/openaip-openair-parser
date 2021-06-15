@@ -19,7 +19,7 @@ const ParserError = require('./parser-error');
  * List of token types required for "isAllowedNextToken" type checks. Mainly to avoid directly requiring tokens in a token
  * and creating circular dependencies.
  *
- * @typedef typedefs.openaipOpenairParser.TokenTypes
+ * @typedef typedefs.openaip.OpenairParser.TokenTypes
  * @type {Object}
  * @property {string} COMMENT_TOKEN
  * @property {string} BLANK_TOKEN
@@ -50,7 +50,7 @@ const TOKEN_TYPES = {
 };
 
 /**
- * @typedef typedefs.openaipOpenairParser.TokenizerConfig
+ * @typedef typedefs.openaip.OpenairParser.TokenizerConfig
  * @type Object
  * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
  * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
@@ -64,7 +64,7 @@ const TOKEN_TYPES = {
  */
 class Tokenizer {
     /**
-     * @param {typedefs.openaipOpenairParser.TokenizerConfig} config
+     * @param {typedefs.openaip.OpenairParser.TokenizerConfig} config
      */
     constructor(config) {
         const { airspaceClasses, unlimited } = config;
@@ -72,7 +72,7 @@ class Tokenizer {
         checkTypes.assert.integer(unlimited);
 
         this._config = config;
-        /** @type {typedefs.openaipOpenairParser.Token[]} */
+        /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this._tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES }),
             new BlankToken({ tokenTypes: TOKEN_TYPES }),
@@ -86,7 +86,7 @@ class Tokenizer {
             new DcToken({ tokenTypes: TOKEN_TYPES }),
             new DbToken({ tokenTypes: TOKEN_TYPES }),
         ];
-        /** @type {typedefs.openaipOpenairParser.Token[]} */
+        /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this._tokens = [];
         // previous processed token, used to validate correct token order
         /** @type {BaseLineToken} */
@@ -100,7 +100,7 @@ class Tokenizer {
      * Tokenizes the openAIR file at given path and returns the list of created tokens.
      *
      * @param filepath
-     * @return {typedefs.openaipOpenairParser.Token[]}
+     * @return {typedefs.openaip.OpenairParser.Token[]}
      */
     tokenize(filepath) {
         this._reset();

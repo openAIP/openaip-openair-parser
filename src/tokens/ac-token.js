@@ -2,10 +2,10 @@ const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 
 /**
- * @typedef typedefs.openaipOpenairParser.AcTokenConfig
+ * @typedef typedefs.openaip.OpenairParser.AcTokenConfig
  * @type Object
  * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
- * @property {typedefs.openaipOpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
+ * @property {typedefs.openaip.OpenairParser.TokenTypes} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
  */
 
 /**
@@ -15,7 +15,7 @@ class AcToken extends BaseLineToken {
     static type = 'AC';
 
     /**
-     * @param {typedefs.openaipOpenairParser.AcTokenConfig} config
+     * @param {typedefs.openaip.OpenairParser.AcTokenConfig} config
      */
     constructor(config) {
         const { airspaceClasses, tokenTypes } = config;

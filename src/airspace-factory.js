@@ -21,14 +21,14 @@ const {
 const Airspace = require('./airspace');
 
 /**
- * @typedef typedefs.openaipOpenairParser.AirspaceFactoryConfig
+ * @typedef typedefs.openaip.OpenairParser.AirspaceFactoryConfig
  * @type Object
  * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
  */
 
 class AirspaceFactory {
     /**
-     * @param {typedefs.openaipOpenairParser.AirspaceFactoryConfig} config
+     * @param {typedefs.openaip.OpenairParser.AirspaceFactoryConfig} config
      */
     constructor(config) {
         const { geometryDetail } = config;

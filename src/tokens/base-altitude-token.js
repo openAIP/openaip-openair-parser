@@ -2,14 +2,14 @@ const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 
 /**
- * @typedef typedefs.openaipOpenairParser.BaseAltitudeTokenConfig
+ * @typedef typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig
  * @type Object
  * @property {BaseLineToken} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
  * @property {number} [unlimited] -  Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
  */
 
 /**
- * @typedef typedefs.openaipOpenairParser.AltitudeReader
+ * @typedef typedefs.openaip.OpenairParser.AltitudeReader
  * @type Object
  * @function canHandle
  * @function read
@@ -18,7 +18,7 @@ const checkTypes = require('check-types');
 /**
  * Reads a default airspace ceiling definition, e.g. "2700ft MSL".
  *
- * @type {typedefs.openaipOpenairParser.AltitudeReader}
+ * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeDefaultReader {
     constructor() {
@@ -97,7 +97,7 @@ class AltitudeDefaultReader {
 /**
  * Reads a flight level airspace ceiling definition, e.g. FL80.
  *
- * @type {typedefs.openaipOpenairParser.AltitudeReader}
+ * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeFlightLevelReader {
     constructor() {
@@ -132,7 +132,7 @@ class AltitudeFlightLevelReader {
 /**
  * Reads a surface airspace ceiling definition, e.g. GND.
  *
- * @type {typedefs.openaipOpenairParser.AltitudeReader}
+ * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeSurfaceReader {
     constructor() {
@@ -168,7 +168,7 @@ class AltitudeSurfaceReader {
 /**
  * Reads unlimited ceiling airspace definitions.
  *
- * @type {typedefs.openaipOpenairParser.AltitudeReader}
+ * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeUnlimitedReader {
     /**
@@ -203,11 +203,11 @@ class AltitudeUnlimitedReader {
 /**
  * Tokenizes "AH/AL" airspace ceiling definitions.
  *
- * @type {typedefs.openaipOpenairParser.AltitudeReader}
+ * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class BaseAltitudeToken extends BaseLineToken {
     /**
-     * @param {typedefs.openaipOpenairParser.BaseAltitudeTokenConfig} config
+     * @param {typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig} config
      */
     constructor(config) {
         const { unlimited, tokenTypes } = config;
@@ -216,7 +216,7 @@ class BaseAltitudeToken extends BaseLineToken {
 
         this._unlimited = unlimited;
 
-        /** @type {typedefs.openaipOpenairParser.AltitudeReader[]} */
+        /** @type {typedefs.openaip.OpenairParser.AltitudeReader[]} */
         this._readers = [
             new AltitudeDefaultReader(),
             new AltitudeFlightLevelReader(),

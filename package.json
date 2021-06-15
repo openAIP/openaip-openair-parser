@@ -11,7 +11,7 @@
         }
     ],
     "main": "index.js",
-    "license": "mit",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/openAIP/openaip-openair-parser.git"

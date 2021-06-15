@@ -21,7 +21,7 @@ const PARSER_STATE = {
 };
 
 /**
- * @typedef typedefs.openaipOpenairParser.ParserConfig
+ * @typedef typedefs.openaip.OpenairParser.ParserConfig
  * @type Object
  * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
  * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
@@ -31,7 +31,7 @@ const PARSER_STATE = {
  */
 
 /**
- * @typedef typedefs.openaipOpenairParser.ParserResult
+ * @typedef typedefs.openaip.OpenairParser.ParserResult
  * @type Object
  * @property {boolean} success - If true, parsing was successful, false if not.
  * @property {FeatureCollection} - [geojson] - On success, contains a GeoJson FeatureCollection representation of the parsed openAIR file.
@@ -45,7 +45,7 @@ const PARSER_STATE = {
  */
 class Parser {
     /**
-     * @param {typedefs.openaipOpenairParser.ParserConfig} [config] - The parser configuration
+     * @param {typedefs.openaip.OpenairParser.ParserConfig} [config] - The parser configuration
      */
     constructor(config) {
         const configuration = Object.assign(defaultConfig, config);
@@ -153,7 +153,7 @@ class Parser {
     }
 
     /**
-     * @return {typedefs.openaipOpenairParser.ParserResult}
+     * @return {typedefs.openaip.OpenairParser.ParserResult}
      */
     toGeojson() {
         const geojsonFeatures = this._airspaces.map((value) => {
