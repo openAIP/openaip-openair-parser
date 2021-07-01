@@ -72,7 +72,7 @@ class Tokenizer {
         checkTypes.assert.integer(unlimited);
 
         this._config = config;
-        /** @type {typedefs.openaip.OpenairParser.Token[]} */
+        /** @type {BaseLineToken[]} */
         this._tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES }),
             new BlankToken({ tokenTypes: TOKEN_TYPES }),

@@ -28,7 +28,19 @@ class Airspace {
             upperCeiling: this.upperCeiling,
             lowerCeiling: this.lowerCeiling,
         };
-        let polygon = cleanCoords(createPolygon([this.coordinates]));
+
+        // close geometry if "fix geometry" is set as option
+        if (fix) this._closeGeometry();
+
+        let polygon;
+        try {
+            polygon = cleanCoords(createPolygon([this.coordinates]));
+        } catch (e) {
+            const { lineNumber } = this.consumedTokens[0].getTokenized();
+            throw new Error(
+                `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid. ${e.message}`
+            );
+        }
 
         let isValid = this._isValid(polygon);
         let isSimple = this._isSimple(polygon);
@@ -56,6 +68,20 @@ class Airspace {
         }
 
         return createFeature(polygon.geometry, properties, { id: uuid.v4() });
+    }
+
+    /**
+     * Closes the airspace geometry, i.e. checks that start- and endpoint are the same.
+     *
+     * @private
+     */
+    _closeGeometry() {
+        const first = this.coordinates[0];
+        const last = this.coordinates[this.coordinates.length - 1];
+
+        if (JSON.stringify(first) != JSON.stringify(last)) {
+            this.coordinates.push(first);
+        }
     }
 
     /**
