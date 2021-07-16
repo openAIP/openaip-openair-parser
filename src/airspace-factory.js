@@ -9,6 +9,7 @@ const VdToken = require('./tokens/vd-token');
 const VxToken = require('./tokens/vx-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
+const DaToken = require('./tokens/da-token');
 const EofToken = require('./tokens/eof-token');
 const BaseLineToken = require('./tokens/base-line-token');
 const checkTypes = require('check-types');
@@ -102,6 +103,9 @@ class AirspaceFactory {
                 break;
             case DbToken.type:
                 this._handleDbToken(token);
+                break;
+            case DaToken.type:
+                this._handleDaToken(token);
                 break;
             case BlankToken.type:
                 this._handleBlankToken(token);
@@ -254,7 +258,7 @@ class AirspaceFactory {
      * @private
      */
     _handleDbToken(token) {
-        const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this._getBuildArcCoordinates(token);
+        const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this._getBuildDbArcCoordinates(token);
 
         // calculate line arc
 
@@ -273,10 +277,52 @@ class AirspaceFactory {
         // get required bearings
         const startBearing = calcBearing(centerCoord, startCoord);
         const endBearing = calcBearing(centerCoord, endCoord);
-        // get the radius in meters
-        const radiusM = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
+        // get the radius in kilometers
+        const radiusKm = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
         // calculate the line arc
-        const { geometry } = createArc(centerCoord, radiusM, startBearing, endBearing, {
+        const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
+            steps: this._geometryDetail,
+            // units can't be set => will result in error "options is invalid" => bug?
+        });
+
+        // if counter-clockwise, reverse coordinate list order
+        const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+    }
+
+    /**
+     * Creates an arc geometry from the last VToken coordinate and a DaToken that contains arc definition as
+     * radius, angleStart and angleEnd.
+     *
+     * @param {BaseLineToken} token
+     * @return {void}
+     * @private
+     */
+    _handleDaToken(token) {
+        const { metadata: metadataDaToken } = token.getTokenized();
+        const { radius, startBearing, endBearing } = metadataDaToken.arcDef;
+
+        // by default, arcs are defined clockwise and usually no VD token is present
+        let clockwise = true;
+        // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
+        const vdToken = this._getNextToken(token, VdToken.type, false);
+        if (vdToken) {
+            clockwise = vdToken.getTokenized().metadata.clockwise;
+        }
+
+        // get preceding VxToken => defines the arc center
+        const vxToken = this._getNextToken(token, VxToken.type, false);
+        if (vxToken === null) {
+            throw new Error(`Preceding VX token not found.`);
+        }
+        const { metadata: metadataVxToken } = vxToken.getTokenized();
+        const { coordinate: vxTokenCoordinate } = metadataVxToken;
+
+        const centerCoord = this._toArrayLike(vxTokenCoordinate);
+        // get the radius in kilometers
+        const radiusKm = radius * 1.852;
+        // calculate the line arc
+        const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
             steps: this._geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
@@ -291,7 +337,7 @@ class AirspaceFactory {
      * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array clockwise: boolean}}
      * @private
      */
-    _getBuildArcCoordinates(token) {
+    _getBuildDbArcCoordinates(token) {
         if (token.getType() !== DbToken.type) {
             throw new Error('Token must be a DB token');
         }

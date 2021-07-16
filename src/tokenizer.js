@@ -9,6 +9,7 @@ const VdToken = require('./tokens/vd-token');
 const VxToken = require('./tokens/vx-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
+const DaToken = require('./tokens/da-token');
 const EofToken = require('./tokens/eof-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
@@ -32,6 +33,7 @@ const ParserError = require('./parser-error');
  * @property {string} VX_TOKEN
  * @property {string} DC_TOKEN
  * @property {string} DB_TOKEN
+ * @property {string} DA_TOKEN
  * @property {string} EOF_TOKEN
  */
 const TOKEN_TYPES = {
@@ -46,6 +48,7 @@ const TOKEN_TYPES = {
     VX_TOKEN: VxToken.type,
     DC_TOKEN: DcToken.type,
     DB_TOKEN: DbToken.type,
+    DA_TOKEN: DaToken.type,
     EOF_TOKEN: EofToken.type,
 };
 
@@ -85,6 +88,7 @@ class Tokenizer {
             new VxToken({ tokenTypes: TOKEN_TYPES }),
             new DcToken({ tokenTypes: TOKEN_TYPES }),
             new DbToken({ tokenTypes: TOKEN_TYPES }),
+            new DaToken({ tokenTypes: TOKEN_TYPES }),
         ];
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this._tokens = [];
@@ -93,7 +97,6 @@ class Tokenizer {
         this._prevToken = null;
         this._currentLineString = null;
         this._currentLineNumber = 0;
-        this._errors = [];
     }
 
     /**
@@ -141,27 +144,13 @@ class Tokenizer {
                     lineNumber: this._currentLineNumber,
                     errorMessage: e.message,
                 });
-                this._errors.push(error);
+                throw new SyntaxError(error.toString());
             }
         }
         // finalize by adding EOF token
         this._tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this._currentLineNumber }));
 
         return this._tokens;
-    }
-
-    /**
-     * @return {boolean}
-     */
-    hasErrors() {
-        return this._errors.length > 0;
-    }
-
-    /**
-     * @return {{line: string, lineNumber: number, errorMessage: string}[]}
-     */
-    getErrors() {
-        return this._errors;
     }
 
     /**
@@ -188,7 +177,6 @@ class Tokenizer {
         this._prevToken = null;
         this._currentLine = null;
         this._currentLineNumber = 0;
-        this._errors = [];
     }
 }
 

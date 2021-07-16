@@ -22,7 +22,7 @@ const checkTypes = require('check-types');
  */
 class AltitudeDefaultReader {
     constructor() {
-        this.REGEX_ALTITUDE = /^(\d+)\s*(FT|M)?\s+(MSL|AMSL|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
+        this.REGEX_ALTITUDE = /^(\d+)\s*(FT|ft|M|m)\s+(MSL|AMSL|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
     }
 
     /**

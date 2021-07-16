@@ -41,7 +41,7 @@ const PARSER_STATE = {
 /**
  * Reads content of an openAIR formatted file and returns a GeoJSON representation.
  * Parser implements the openAIR specification according to http://www.winpilot.com/usersguide/userairspace.asp
- * except the following tokens: AT,TO,TC,SP,SB,DA,DY.
+ * except the following tokens: AT,TO,TC,SP,SB,DY.
  */
 class Parser {
     /**
@@ -90,13 +90,6 @@ class Parser {
             unlimited: this._config.unlimited,
         });
         const tokens = await tokenizer.tokenize(filepath);
-        // abort if tokenizer has syntax errors at this point
-        if (tokenizer.hasErrors()) {
-            const errors = tokenizer.getErrors();
-            const messages = errors.map((value) => value.toString());
-
-            throw new SyntaxError('\n' + messages.join('\n'));
-        }
 
         /*
         Iterate of tokens and create airspaces.
