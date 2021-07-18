@@ -62,8 +62,8 @@ const TOKEN_TYPES = {
 
 /**
  * Reads the contents of a give file and tokenizes it. Each line will result in a single token.
- * Each token holds a tokenized representation of the read line.
- * The tokenizer will return a list of all read and created tokens and a list of occurred errors if any.
+ * Each token holds a tokenized representation of the read line. The tokenizer will return a list of all read
+ * and created tokens. The tokenizer will throw a syntax error on the first error that is encountered.
  */
 class Tokenizer {
     /**
