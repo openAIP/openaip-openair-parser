@@ -92,7 +92,7 @@ class Parser {
         const tokens = await tokenizer.tokenize(filepath);
 
         /*
-        Iterate of tokens and create airspaces.
+        Iterate over tokens and create airspaces.
          */
         try {
             for (let i = 0; i < tokens.length; i++) {
@@ -106,7 +106,7 @@ class Parser {
                     continue;
                 }
 
-                // reached end of airspace definition block either =>  start building airspace instance from read tokens
+                // reached end of airspace definition block => start building airspace instance from read tokens
                 if (
                     this._currentState === PARSER_STATE.BUILD ||
                     (this._currentState === PARSER_STATE.EOF && this._airspaceTokens.length > 0)
