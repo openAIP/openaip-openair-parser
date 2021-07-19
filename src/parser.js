@@ -131,6 +131,8 @@ class Parser {
 
             throw new ParserError({ line, lineNumber, errorMessage: e.message });
         }
+
+        return this;
     }
 
     /**
