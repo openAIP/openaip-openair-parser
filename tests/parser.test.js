@@ -585,11 +585,19 @@ describe('test parse complete airspace definition blocks', () => {
 });
 
 describe('test parse invalid airspace definition blocks', () => {
+    test('airspace with invalid coordinates', async () => {
+        const openairParser = new Parser();
+
+        await expect(openairParser.parse('./tests/fixtures/invalid-coordinates-airspace.txt')).rejects.toThrow(
+            "Error found in 'DP 45:49:51 N 008:42:' at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:"
+        );
+    });
+
     test('airspace with invalid geometry with self intersection results in error', async () => {
         const openairParser = new Parser();
-        await openairParser.parse('./tests/fixtures/circular-invalid-airspace.txt');
 
-        expect(() => {
+        await openairParser.parse('./tests/fixtures/circular-invalid-airspace.txt');
+        await expect(() => {
             openairParser.toGeojson();
         }).toThrowError(
             "Geometry of airspace 'ED-R4 Wannsee H24' starting on line 1 is invalid due to a self intersection"
