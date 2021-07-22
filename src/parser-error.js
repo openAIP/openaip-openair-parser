@@ -19,11 +19,15 @@ class ParserError extends Error {
      * @private
      */
     constructor({ line, lineNumber, errorMessage }) {
-        checkTypes.assert.string(line);
-        checkTypes.assert.integer(lineNumber);
+        if (line != null) checkTypes.assert.string(line);
+        if (lineNumber != null) checkTypes.assert.integer(lineNumber);
         checkTypes.assert.nonEmptyString(errorMessage);
 
-        super(`Error found in '${line}' at line ${lineNumber}: ${errorMessage}`);
+        if (line != null && lineNumber != null) {
+            super(`Error found in '${line}' at line ${lineNumber}: ${errorMessage}`);
+        } else {
+            super(errorMessage);
+        }
 
         this.line = line;
         this.lineNumber = lineNumber;
