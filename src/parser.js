@@ -127,9 +127,13 @@ class Parser {
                 }
             }
         } catch (e) {
-            const { line, lineNumber } = this._currentToken.getTokenized();
+            if (e instanceof SyntaxError) {
+                const { line, lineNumber } = this._currentToken.getTokenized();
 
-            throw new ParserError({ line, lineNumber, errorMessage: e.message });
+                throw new ParserError({ line, lineNumber, errorMessage: e.message });
+            } else {
+                throw e;
+            }
         }
 
         return this;
@@ -143,7 +147,7 @@ class Parser {
             case 'geojson':
                 return this.toGeojson();
             default:
-                throw new Error(`Unknown format '${format}'`);
+                throw new SyntaxError(`Unknown format '${format}'`);
         }
     }
 
@@ -179,7 +183,7 @@ class Parser {
                 return PARSER_STATE.READ;
             }
 
-            throw new Error('Next parser state is unknown');
+            throw new SyntaxError('Next parser state is unknown');
         }
 
         // handle state changes when reading airspace
@@ -193,7 +197,7 @@ class Parser {
             return this._currentState;
         }
 
-        throw new Error('Next parser state is unknown');
+        throw new SyntaxError('Next parser state is unknown');
     }
 
     /**

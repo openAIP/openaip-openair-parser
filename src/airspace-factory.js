@@ -232,7 +232,7 @@ class AirspaceFactory {
 
         const precedingVxToken = this._getNextToken(token, VxToken.type, false);
         if (precedingVxToken === null) {
-            throw new Error(`Preceding VX token not found.`);
+            throw new SyntaxError(`Preceding VX token not found.`);
         }
         // to create a circle, the center point coordinate from the previous VToken is required
         const { metadata: vxTokenMetadata } = precedingVxToken.getTokenized();
@@ -313,7 +313,7 @@ class AirspaceFactory {
         // get preceding VxToken => defines the arc center
         const vxToken = this._getNextToken(token, VxToken.type, false);
         if (vxToken === null) {
-            throw new Error(`Preceding VX token not found.`);
+            throw new SyntaxError(`Preceding VX token not found.`);
         }
         const { metadata: metadataVxToken } = vxToken.getTokenized();
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
@@ -339,7 +339,7 @@ class AirspaceFactory {
      */
     _getBuildDbArcCoordinates(token) {
         if (token.getType() !== DbToken.type) {
-            throw new Error('Token must be a DB token');
+            throw new SyntaxError('Token must be a DB token');
         }
 
         // Current "token" is the DbToken => defines arc start/end coordinates
@@ -358,7 +358,7 @@ class AirspaceFactory {
         // get preceding VxToken => defines the arc center
         const vxToken = this._getNextToken(token, VxToken.type, false);
         if (vxToken === null) {
-            throw new Error(`Preceding VX token not found.`);
+            throw new SyntaxError(`Preceding VX token not found.`);
         }
         const { metadata: metadataVxToken } = vxToken.getTokenized();
         const { coordinate: vxTokenCoordinate } = metadataVxToken;

@@ -1,10 +1,20 @@
 const checkTypes = require('check-types');
 
-class ParserError {
+/**
+ * @namespace typedefs.openaip.OpenairParser.ParserError
+ */
+
+/**
+ * @typedef {typedefs.openaip.OpenairParser.ParserError.Config}
+ * @type {Object}
+ * @property {string} line
+ * @property {string} lineNumber
+ * @property {string} message
+ */
+
+class ParserError extends Error {
     /**
-     * @param {string} line
-     * @param {number} lineNumber
-     * @param {string} errorMessage
+     * @param {typedefs.openaip.OpenairParser.ParserError.Config}
      * @returns {void}
      * @private
      */
@@ -13,13 +23,11 @@ class ParserError {
         checkTypes.assert.integer(lineNumber);
         checkTypes.assert.nonEmptyString(errorMessage);
 
+        super(`Error found in '${line}' at line ${lineNumber}: ${errorMessage}`);
+
         this.line = line;
         this.lineNumber = lineNumber;
         this.errorMessage = errorMessage;
-    }
-
-    toString() {
-        return `Error found in '${this.line}' at line ${this.lineNumber}: ${this.errorMessage}`;
     }
 }
 
