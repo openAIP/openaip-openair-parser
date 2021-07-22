@@ -23,7 +23,7 @@ class ParserError extends Error {
         if (lineNumber != null) checkTypes.assert.integer(lineNumber);
         checkTypes.assert.nonEmptyString(errorMessage);
 
-        if (line != null && lineNumber != null) {
+        if (line != null && line?.length > 0 && lineNumber != null) {
             super(`Error found in '${line}' at line ${lineNumber}: ${errorMessage}`);
         } else {
             super(errorMessage);
