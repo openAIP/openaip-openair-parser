@@ -155,11 +155,21 @@ class Parser {
      * @return {typedefs.openaip.OpenairParser.ParserResult}
      */
     toGeojson() {
-        const geojsonFeatures = this._airspaces.map((value) => {
-            return value.asGeoJson({ validate: this._config.validateGeometry, fix: this._config.fixGeometry });
-        });
+        try {
+            const geojsonFeatures = this._airspaces.map((value) => {
+                return value.asGeoJson({ validate: this._config.validateGeometry, fix: this._config.fixGeometry });
+            });
 
-        return createFeatureCollection(geojsonFeatures);
+            return createFeatureCollection(geojsonFeatures);
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                const { line, lineNumber } = this._currentToken.getTokenized();
+
+                throw new ParserError({ line, lineNumber, errorMessage: e.message });
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
