@@ -16,11 +16,14 @@ class Airspace {
     }
 
     /**
-     * @param {{validate: boolean, fix: boolean}} config
+     * @param {{validate: boolean, fix: boolean, includeOpenair: boolean}} config
      * @return {Feature<*, {upperCeiling: null, lowerCeiling: null, name: null, class: null}>}
      */
     asGeoJson(config) {
-        const { validate, fix } = config || { validate: false, fix: false };
+        const { validate, fix, includeOpenair } = Object.assign(
+            { validate: false, fix: false, includeOpenair: false },
+            config
+        );
 
         const properties = {
             name: this.name,
@@ -28,6 +31,14 @@ class Airspace {
             upperCeiling: this.upperCeiling,
             lowerCeiling: this.lowerCeiling,
         };
+        // include original OpenAIR airspace definition block
+        if (includeOpenair) {
+            properties.openair = '';
+            for (const token of this.consumedTokens) {
+                const { line } = token.getTokenized();
+                properties.openair += line + '\n';
+            }
+        }
 
         // close geometry if "fix geometry" is set as option
         if (fix) this._closeGeometry();
@@ -62,7 +73,9 @@ class Airspace {
                     );
                 } else {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
-                    throw new SyntaxError(`Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`);
+                    throw new SyntaxError(
+                        `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`
+                    );
                 }
             }
         }

@@ -35,4 +35,6 @@ module.exports = {
     validateGeometry: true,
     // if true, uses "convexHull" to fix an invalid geometry - note that this potentially alters the original airspace geometry!
     fixGeometry: false,
+    // if true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size!
+    includeOpenair: false,
 };

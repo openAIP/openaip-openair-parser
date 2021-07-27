@@ -28,6 +28,7 @@ const PARSER_STATE = {
  * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
  * @property {boolean} [validateGeometry] - If true, the GeoJson features are validate. Parser will throw an error if an invalid geometry is found. Defaults to true.
  * @property {boolean} [fixGeometry] - If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
+ * @property {boolean} [includeOpenair] - If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size! Defaults to false.
  */
 
 /**
@@ -49,13 +50,15 @@ class Parser {
      */
     constructor(config) {
         const configuration = Object.assign(defaultConfig, config);
-        const { airspaceClasses, unlimited, geometryDetail, validateGeometry, fixGeometry } = configuration;
+        const { airspaceClasses, unlimited, geometryDetail, validateGeometry, fixGeometry, includeOpenair } =
+            configuration;
 
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
         checkTypes.assert.integer(unlimited);
         checkTypes.assert.integer(geometryDetail);
         checkTypes.assert.boolean(validateGeometry);
         checkTypes.assert.boolean(fixGeometry);
+        checkTypes.assert.boolean(includeOpenair);
 
         this._config = configuration;
         // custom formatters
