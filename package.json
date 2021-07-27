@@ -1,6 +1,6 @@
 {
     "name": "@openaip/openair-parser",
-    "version": "0.9.19",
+    "version": "0.9.20",
     "description": "OpenAIR format parser. Parses openAIR formatted string and outputs it in JSON or GeoJSON.",
     "authors": [
         {
