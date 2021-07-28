@@ -161,8 +161,8 @@ class Parser {
         try {
             const geojsonFeatures = this._airspaces.map((value) => {
                 return value.asGeoJson({
-                    validate: this._config.validateGeometry,
-                    fix: this._config.fixGeometry,
+                    validateGeometry: this._config.validateGeometry,
+                    fixGeometry: this._config.fixGeometry,
                     includeOpenair: this._config.includeOpenair,
                 });
             });

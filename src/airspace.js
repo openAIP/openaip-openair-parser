@@ -1,4 +1,9 @@
-const { polygon: createPolygon, feature: createFeature, cleanCoords } = require('@turf/turf');
+const {
+    polygon: createPolygon,
+    feature: createFeature,
+    explode: explodePolygon,
+    convex: createConvexHull,
+} = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
 
@@ -16,15 +21,16 @@ class Airspace {
     }
 
     /**
-     * @param {{validate: boolean, fix: boolean, includeOpenair: boolean}} config
+     * @param {{ validateGeometry: boolean, fixGeometry: boolean, includeOpenair: boolean}} config
      * @return {Feature<*, {upperCeiling: null, lowerCeiling: null, name: null, class: null}>}
      */
     asGeoJson(config) {
-        const { validate, fix, includeOpenair } = Object.assign(
-            { validate: false, fix: false, includeOpenair: false },
+        const { validateGeometry, fixGeometry, includeOpenair } = Object.assign(
+            { validateGeometry: false, fixGeometry: false, includeOpenair: false },
             config
         );
 
+        // set feature properties
         const properties = {
             name: this.name,
             class: this.class,
@@ -40,32 +46,24 @@ class Airspace {
             }
         }
 
-        // close geometry if "fix geometry" is set as option
-        if (fix) this._closeGeometry();
-
         let polygon;
-        try {
-            polygon = cleanCoords(createPolygon([this.coordinates]));
-        } catch (e) {
-            const { lineNumber } = this.consumedTokens[0].getTokenized();
-            throw new SyntaxError(
-                `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid. ${e.message}`
-            );
+        if (fixGeometry) {
+            // prepare "raw" coordinates first before creating a polygon feature
+            // IMPORTANT run before "_closeGeometry()" to not remove the last "closing" coordinate
+            this.coordinates = this._removeDuplicates(this.coordinates);
+            this.coordinates = this._closeGeometry(this.coordinates);
+            // create polygon and fix geometry
+            polygon = this._fixGeometry(createPolygon([this.coordinates]));
+        } else {
+            polygon = createPolygon([this.coordinates]);
         }
 
-        let isValid = this._isValid(polygon);
-        let isSimple = this._isSimple(polygon);
+        if (validateGeometry) {
+            let isValid = this._isValid(polygon);
+            let isSimple = this._isSimple(polygon);
+            const selfIntersect = this._getSelfIntersections(polygon);
 
-        if (fix && (!isValid || !isSimple)) {
-            polygon = createFeature(this._fixGeometry(polygon));
-            // IMPORTANT validate again to error out in validate step if something went wrong with fixing geometry
-            isValid = this._isValid(polygon);
-            isSimple = this._isSimple(polygon);
-        }
-
-        if (validate) {
-            if (!isValid || !isSimple) {
-                const selfIntersect = this._getSelfIntersections(polygon);
+            if (!isValid || !isSimple || selfIntersect) {
                 if (selfIntersect) {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
                     throw new SyntaxError(
@@ -86,29 +84,55 @@ class Airspace {
     /**
      * Closes the airspace geometry, i.e. checks that start- and endpoint are the same.
      *
+     * @params {Object[]} coordinates
+     * @returns {Object[]}
      * @private
      */
-    _closeGeometry() {
-        const first = this.coordinates[0];
-        const last = this.coordinates[this.coordinates.length - 1];
+    _closeGeometry(coordinates) {
+        const first = coordinates[0];
+        const last = coordinates[this.coordinates.length - 1];
 
         if (JSON.stringify(first) != JSON.stringify(last)) {
-            this.coordinates.push(first);
+            coordinates.push(first);
         }
+
+        return coordinates;
     }
 
     /**
+     * Removes duplicate coordinates.
+     *
+     * @params {Object[]} coordinates
+     * @returns {Object[]}
+     * @private
+     */
+    _removeDuplicates(coordinates) {
+        const processed = [];
+        for (const coord of coordinates) {
+            const exists = processed.find((value) => {
+                return JSON.stringify(value) == JSON.stringify(coord);
+            });
+
+            if (exists === undefined) {
+                processed.push(coord);
+            }
+        }
+
+        return processed;
+    }
+
+    /**
+     * Explodes a polygon feature into points and calculates a convex hull. This may alter the geometry but it also
+     * removes most self intersections.
+     *
      * @param polygonFeature
      * @return {*}
      * @private
      */
     _fixGeometry(polygonFeature) {
-        const reader = new jsts.io.GeoJSONReader();
-        const writer = new jsts.io.GeoJSONWriter();
-        const jstsGeometry = reader.read(polygonFeature.geometry);
-        const convexHull = jstsGeometry.convexHull();
+        const points = explodePolygon(polygonFeature);
 
-        return writer.write(convexHull);
+        return createConvexHull(points);
     }
 
     /**
