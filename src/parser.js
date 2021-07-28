@@ -88,16 +88,14 @@ class Parser {
 
         IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
          */
-        const tokenizer = new Tokenizer({
-            airspaceClasses: this._config.airspaceClasses,
-            unlimited: this._config.unlimited,
-        });
-        const tokens = await tokenizer.tokenize(filepath);
-
-        /*
-        Iterate over tokens and create airspaces.
-         */
         try {
+            const tokenizer = new Tokenizer({
+                airspaceClasses: this._config.airspaceClasses,
+                unlimited: this._config.unlimited,
+            });
+            const tokens = await tokenizer.tokenize(filepath);
+
+            // iterate over tokens and create airspaces
             for (let i = 0; i < tokens.length; i++) {
                 this._currentToken = tokens[i];
                 this._currentState = this._nextState(this._currentToken);
