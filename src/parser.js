@@ -69,6 +69,8 @@ class Parser {
         // Holds all processed tokens for a single airspace definition block when building airspaces. Will be reset
         // when one airspace is built.
         this._airspaceTokens = [];
+        // internally, airspaces are stored as geojson
+        this._geojson = null;
     }
 
     /**
@@ -109,10 +111,7 @@ class Parser {
 
             // AC tokens mark either start or end of airspace definition block
             if (this._currentToken instanceof AcToken) {
-                if (this._currentState === PARSER_STATE.START) {
-                    // beginning of file, first AC line that is processed
-                    this._airspaceTokens.push(this._currentToken);
-                } else if (this._currentState === PARSER_STATE.READ) {
+                if (this._currentState === PARSER_STATE.READ) {
                     // each new AC line will trigger an airspace build if parser is in READ state
                     // this is needed for files that do not have blanks between definition blocks but comments
                     this._buildAirspace();
@@ -134,6 +133,16 @@ class Parser {
             this._airspaceTokens.push(this._currentToken);
         }
 
+        // create airspaces as a GeoJSON feature collection and store them internally
+        const geojsonFeatures = this._airspaces.map((value) => {
+            return value.asGeoJson({
+                validateGeometry: this._config.validateGeometry,
+                fixGeometry: this._config.fixGeometry,
+                includeOpenair: this._config.includeOpenair,
+            });
+        });
+        this._geojson = createFeatureCollection(geojsonFeatures);
+
         return this;
     }
 
@@ -154,7 +163,7 @@ class Parser {
     toFormat(format) {
         switch (format) {
             case 'geojson':
-                return this.toGeojson();
+                return this._geojson;
             default:
                 throw new Error(`Unknown format '${format}'`);
         }
@@ -164,25 +173,18 @@ class Parser {
      * @return {typedefs.openaip.OpenairParser.ParserResult}
      */
     toGeojson() {
-        const geojsonFeatures = this._airspaces.map((value) => {
-            return value.asGeoJson({
-                validateGeometry: this._config.validateGeometry,
-                fixGeometry: this._config.fixGeometry,
-                includeOpenair: this._config.includeOpenair,
-            });
-        });
-
-        return createFeatureCollection(geojsonFeatures);
+        return this._geojson;
     }
 
     /**
      * Resets the state.
      */
     _reset() {
-        this._currentState = PARSER_STATE.TRANSITION;
+        this._currentState = PARSER_STATE.START;
         this._airspaces = [];
         this._currentToken = null;
         this._airspaceTokens = [];
+        this._geojson = null;
     }
 }
 

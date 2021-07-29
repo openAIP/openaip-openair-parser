@@ -33,7 +33,7 @@ class DbToken extends BaseLineToken {
             try {
                 coord.push(new Coordinates(coordinate));
             } catch (e) {
-                throw new ParserError({ line, lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
+                throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
             }
         }
 

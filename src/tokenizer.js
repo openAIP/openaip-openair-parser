@@ -148,7 +148,6 @@ class Tokenizer {
                 this._prevToken = token;
             } catch (e) {
                 throw new ParserError({
-                    line: this._currentLineString,
                     lineNumber: this._currentLineNumber,
                     errorMessage: e.message,
                 });

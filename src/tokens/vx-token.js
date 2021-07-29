@@ -28,7 +28,7 @@ class VxToken extends BaseLineToken {
         try {
             coordinate = new Coordinates(linePartCoordinate);
         } catch (e) {
-            throw new ParserError({ line, lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
+            throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
 
         token._tokenized = { line, lineNumber, metadata: { coordinate } };

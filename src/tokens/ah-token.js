@@ -27,7 +27,7 @@ class AhToken extends BaseAltitudeToken {
             altitude = this._getAltitude(linePartAltitude);
         } catch (e) {
             if (e instanceof SyntaxError) {
-                throw new ParserError({ line, lineNumber, errorMessage: e.message });
+                throw new ParserError({ lineNumber, errorMessage: e.message });
             } else {
                 throw e;
             }
