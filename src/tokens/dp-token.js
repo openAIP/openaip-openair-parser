@@ -1,6 +1,7 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 const Coordinates = require('coordinate-parser');
+const ParserError = require('../parser-error');
 
 /**
  * Tokenizes "DP" airspace polygon coordinate definition.
@@ -27,7 +28,7 @@ class DpToken extends BaseLineToken {
         try {
             coordinate = new Coordinates(linePartCoordinate);
         } catch (e) {
-            throw new SyntaxError(`Unknown coordinate definition '${line}'`);
+            throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
 
         token._tokenized = { line, lineNumber, metadata: { coordinate } };
@@ -36,9 +37,9 @@ class DpToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }
 }
 

@@ -1,11 +1,7 @@
-const {
-    polygon: createPolygon,
-    feature: createFeature,
-    explode: explodePolygon,
-    convex: createConvexHull,
-} = require('@turf/turf');
+const { polygon: createPolygon, feature: createFeature, simplify, distance } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
+const ParserError = require('./parser-error');
 
 /**
  * Result of a parsed airspace definition block. Can be output as GeoJSON.
@@ -66,14 +62,16 @@ class Airspace {
             if (!isValid || !isSimple || selfIntersect) {
                 if (selfIntersect) {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
-                    throw new SyntaxError(
-                        `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection`
-                    );
+                    throw new ParserError({
+                        lineNumber,
+                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection`,
+                    });
                 } else {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
-                    throw new SyntaxError(
-                        `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`
-                    );
+                    throw new ParserError({
+                        lineNumber,
+                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`,
+                    });
                 }
             }
         }
@@ -100,7 +98,7 @@ class Airspace {
     }
 
     /**
-     * Removes duplicate coordinates.
+     * Removes high proximity coordinates, i.e. removes coordinate if another coordinate is within 200 meters.
      *
      * @params {Object[]} coordinates
      * @returns {Object[]}
@@ -110,7 +108,7 @@ class Airspace {
         const processed = [];
         for (const coord of coordinates) {
             const exists = processed.find((value) => {
-                return JSON.stringify(value) == JSON.stringify(coord);
+                return distance(value, coord, { units: 'kilometers' }) < 0.2;
             });
 
             if (exists === undefined) {
@@ -122,17 +120,14 @@ class Airspace {
     }
 
     /**
-     * Explodes a polygon feature into points and calculates a convex hull. This may alter the geometry but it also
-     * removes most self intersections.
+     * This alters the geometry but it also removes most self intersections.
      *
      * @param polygonFeature
      * @return {*}
      * @private
      */
     _fixGeometry(polygonFeature) {
-        const points = explodePolygon(polygonFeature);
-
-        return createConvexHull(points);
+        return simplify(polygonFeature, { highQuality: true, tolerance: 0 });
     }
 
     /**

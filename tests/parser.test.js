@@ -587,7 +587,7 @@ describe('test parse invalid airspace definition blocks', () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/invalid-coordinates-airspace.txt')).rejects.toThrow(
-            "Error found in 'DP 45:49:51 N 008:42:' at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:"
+            "Error found at line 14: Error found at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:'"
         );
     });
 
@@ -612,8 +612,10 @@ describe('test parse invalid airspace definition blocks', () => {
     });
 
     test('airspace with invalid geometry with self intersection can be fixed', async () => {
-        const openairParser = new Parser({ fixGeometry: true });
+        const openairParser = new Parser({fixGeometry: true});
         await openairParser.parse('./tests/fixtures/circular-invalid-airspace.txt');
+
+        const json = openairParser.toGeojson();
 
         expect(() => {
             openairParser.toGeojson();

@@ -1,5 +1,6 @@
 const BaseAltitudeToken = require('./base-altitude-token');
 const checkTypes = require('check-types');
+const ParserError = require('../parser-error');
 
 /**
  * Tokenizes "AL" airspace lower ceiling definitions.
@@ -21,7 +22,16 @@ class AlToken extends BaseAltitudeToken {
         checkTypes.assert.integer(lineNumber);
 
         const linePartAltitude = line.replace(/^AL\s+/, '');
-        const altitude = this._getAltitude(linePartAltitude);
+        let altitude;
+        try {
+            altitude = this._getAltitude(linePartAltitude);
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                throw new ParserError({ line, lineNumber, errorMessage: e.message });
+            } else {
+                throw e;
+            }
+        }
 
         token._tokenized = { line, lineNumber, metadata: { altitude } };
 
@@ -29,9 +39,9 @@ class AlToken extends BaseAltitudeToken {
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VX_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VX_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }
 }
 

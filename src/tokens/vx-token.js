@@ -1,6 +1,7 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 const Coordinates = require('coordinate-parser');
+const ParserError = require('../parser-error');
 
 /**
  * Tokenizes "V" airspace circle center coordinate definition.
@@ -27,7 +28,7 @@ class VxToken extends BaseLineToken {
         try {
             coordinate = new Coordinates(linePartCoordinate);
         } catch (e) {
-            throw new SyntaxError(`Unknown coordinate definition '${line}'`);
+            throw new ParserError({ line, lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
 
         token._tokenized = { line, lineNumber, metadata: { coordinate } };
@@ -36,9 +37,9 @@ class VxToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN, VD_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN, VD_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }
 }
 

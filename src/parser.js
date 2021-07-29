@@ -1,6 +1,7 @@
 const Tokenizer = require('./tokenizer');
 const BlankToken = require('./tokens/blank-token');
 const CommentToken = require('./tokens/comment-token');
+const SkippedToken = require('./tokens/skipped-token');
 const AcToken = require('./tokens/ac-token');
 const EofToken = require('./tokens/eof-token');
 const AirspaceFactory = require('./airspace-factory');
@@ -10,12 +11,8 @@ const { featureCollection: createFeatureCollection } = require('@turf/turf');
 const ParserError = require('./parser-error');
 
 const PARSER_STATE = {
-    // parser is traversing down in the list of tokens (from beginning) until EOF is reached or AC token is found
-    TRANSITION: 'transition',
-    // parser is reading a complete airspace definition block
+    START: 'start',
     READ: 'read',
-    // parser has reached the end of an airspace definition block and can now build an airspace instance from read tokens
-    BUILD: 'build',
     // End of file
     EOF: 'eof',
 };
@@ -63,11 +60,14 @@ class Parser {
         this._config = configuration;
         // custom formatters
         this.formatter = [];
-        // default state of parser
-        this._currentState = PARSER_STATE.TRANSITION;
         /** @type {Airspace[]} */
         this._airspaces = [];
+        // default state of parser
+        this._currentState = PARSER_STATE.START;
+        // holds the current token when iterating over token list and building airspaces
         this._currentToken = null;
+        // Holds all processed tokens for a single airspace definition block when building airspaces. Will be reset
+        // when one airspace is built.
         this._airspaceTokens = [];
     }
 
@@ -88,56 +88,64 @@ class Parser {
 
         IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
          */
-        try {
-            const tokenizer = new Tokenizer({
-                airspaceClasses: this._config.airspaceClasses,
-                unlimited: this._config.unlimited,
-            });
-            const tokens = await tokenizer.tokenize(filepath);
+        const tokenizer = new Tokenizer({
+            airspaceClasses: this._config.airspaceClasses,
+            unlimited: this._config.unlimited,
+        });
+        const tokens = await tokenizer.tokenize(filepath);
 
-            // iterate over tokens and create airspaces
-            for (let i = 0; i < tokens.length; i++) {
-                this._currentToken = tokens[i];
-                this._currentState = this._nextState(this._currentToken);
+        // iterate over tokens and create airspaces
+        for (let i = 0; i < tokens.length; i++) {
+            this._currentToken = tokens[i];
 
-                // add new airspace tokens to airspace token list => in process if reading a single airspace definition block
-                if (this._currentState === PARSER_STATE.READ) {
+            // do not change state if reading a comment or skipped token regardless of current state
+            if (
+                this._currentToken instanceof CommentToken ||
+                this._currentToken instanceof SkippedToken ||
+                this._currentToken instanceof BlankToken
+            ) {
+                continue;
+            }
+
+            // AC tokens mark either start or end of airspace definition block
+            if (this._currentToken instanceof AcToken) {
+                if (this._currentState === PARSER_STATE.START) {
+                    // beginning of file, first AC line that is processed
                     this._airspaceTokens.push(this._currentToken);
+                } else if (this._currentState === PARSER_STATE.READ) {
+                    // each new AC line will trigger an airspace build if parser is in READ state
+                    // this is needed for files that do not have blanks between definition blocks but comments
+                    this._buildAirspace();
+                }
+            }
 
+            // handle EOF
+            if (this._currentToken instanceof EofToken) {
+                // if EOF is reached and parser is in READ state, check if we have any unprocessed airspace tokens
+                // and if so, build the airspace
+                if (this._currentState === PARSER_STATE.READ && this._airspaceTokens.length > 0) {
+                    this._buildAirspace();
                     continue;
                 }
-
-                // reached end of airspace definition block => start building airspace instance from read tokens
-                if (
-                    this._currentState === PARSER_STATE.BUILD ||
-                    (this._currentState === PARSER_STATE.EOF && this._airspaceTokens.length > 0)
-                ) {
-                    // do not push current token to airspace tokens list => token is either blank or eof
-                    // build airspace from read tokens
-                    const factory = new AirspaceFactory({
-                        geometryDetail: this._config.geometryDetail,
-                    });
-                    const airspace = factory.createAirspace(this._airspaceTokens);
-                    // push new airspace to list
-                    this._airspaces.push(airspace);
-                    // reset read airspace tokens
-                    this._airspaceTokens = [];
-
-                    // only change state to transition if if EOF is NOT reached yet
-                    if (this._currentState === PARSER_STATE.BUILD) this._currentState = PARSER_STATE.TRANSITION;
-                }
             }
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                const { line, lineNumber } = this._currentToken.getTokenized();
 
-                throw new ParserError({ line, lineNumber, errorMessage: e.message });
-            } else {
-                throw e;
-            }
+            this._currentState = PARSER_STATE.READ;
+            // in all other cases, push token to airspace tokens list and continue
+            this._airspaceTokens.push(this._currentToken);
         }
 
         return this;
+    }
+
+    _buildAirspace() {
+        const factory = new AirspaceFactory({
+            geometryDetail: this._config.geometryDetail,
+        });
+        const airspace = factory.createAirspace(this._airspaceTokens);
+        // push new airspace to list
+        this._airspaces.push(airspace);
+        // reset read airspace tokens
+        this._airspaceTokens = [];
     }
 
     /**
@@ -148,7 +156,7 @@ class Parser {
             case 'geojson':
                 return this.toGeojson();
             default:
-                throw new SyntaxError(`Unknown format '${format}'`);
+                throw new Error(`Unknown format '${format}'`);
         }
     }
 
@@ -156,63 +164,15 @@ class Parser {
      * @return {typedefs.openaip.OpenairParser.ParserResult}
      */
     toGeojson() {
-        try {
-            const geojsonFeatures = this._airspaces.map((value) => {
-                return value.asGeoJson({
-                    validateGeometry: this._config.validateGeometry,
-                    fixGeometry: this._config.fixGeometry,
-                    includeOpenair: this._config.includeOpenair,
-                });
+        const geojsonFeatures = this._airspaces.map((value) => {
+            return value.asGeoJson({
+                validateGeometry: this._config.validateGeometry,
+                fixGeometry: this._config.fixGeometry,
+                includeOpenair: this._config.includeOpenair,
             });
+        });
 
-            return createFeatureCollection(geojsonFeatures);
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                const { line, lineNumber } = this._currentToken.getTokenized();
-
-                throw new ParserError({ line, lineNumber, errorMessage: e.message });
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    /**
-     * @param {BaseAltitudeToken} token
-     * @return {string}
-     * @private
-     */
-    _nextState(token) {
-        // do not change state if reading a comment regardless of current state
-        if (token instanceof CommentToken) return this._currentState;
-
-        // state is set to EOF if end of file is reached regardless of current state
-        if (token instanceof EofToken) return PARSER_STATE.EOF;
-
-        if (this._currentState === PARSER_STATE.TRANSITION) {
-            // blank tokens are omitted when in transition
-            if (token instanceof BlankToken) return this._currentState;
-
-            // an AC token marks start of a new airspace definition block and sets the read state
-            if (token instanceof AcToken) {
-                return PARSER_STATE.READ;
-            }
-
-            throw new SyntaxError('Next parser state is unknown');
-        }
-
-        // handle state changes when reading airspace
-        if (this._currentState === PARSER_STATE.READ) {
-            // reached end of airspace definition block => start building an airspace from read tokens
-            if (token instanceof BlankToken) {
-                return PARSER_STATE.BUILD;
-            }
-
-            // all other tokens will not change the current read state
-            return this._currentState;
-        }
-
-        throw new SyntaxError('Next parser state is unknown');
+        return createFeatureCollection(geojsonFeatures);
     }
 
     /**

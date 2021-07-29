@@ -1,5 +1,6 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
+const ParserError = require('../parser-error');
 
 /**
  * Tokenizes "DC" airspace circle radius definition.
@@ -24,7 +25,7 @@ class DcToken extends BaseLineToken {
 
         const isRadius = /^\d+(\.\d+)?$/.test(linePartRadius);
         if (!isRadius) {
-            throw new SyntaxError(`Unknown circle radius definition '${line}'`);
+            throw new ParserError({ line, lineNumber, errorMessage: `Unknown circle radius definition '${line}'` });
         }
 
         token._tokenized = { line, lineNumber, metadata: { radius: parseFloat(linePartRadius) } };
@@ -33,9 +34,9 @@ class DcToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN].includes(token.constructor.type);
+        return [BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }
 }
 

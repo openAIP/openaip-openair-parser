@@ -1,5 +1,6 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
+const ParserError = require('../parser-error');
 
 /**
  * @typedef typedefs.openaip.OpenairParser.AcTokenConfig
@@ -44,7 +45,7 @@ class AcToken extends BaseLineToken {
 
         // check restricted classes
         if (!this._airspaceClasses.includes(linePartClass)) {
-            throw new SyntaxError(`Unknown airspace class '${line}'`);
+            throw new ParserError({ lineNumber, errorMessage: `Unknown airspace class '${line}'` });
         }
 
         token._tokenized = { line, lineNumber, metadata: { class: linePartClass } };
@@ -53,9 +54,9 @@ class AcToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, AN_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [COMMENT_TOKEN, AN_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }
 }
 

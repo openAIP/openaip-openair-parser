@@ -1,17 +1,17 @@
-const BaseLineToken = require('./base-line-token');
+const CommentToken = require('./comment-token');
 const checkTypes = require('check-types');
 
 /**
- * Handles comments, e.g. lines starting with "*".
+ * Handles skipped tokens.
  */
-class CommentToken extends BaseLineToken {
-    static type = 'COMMENT';
+class SkippedToken extends CommentToken {
+    static type = 'SKIPPED';
 
     canHandle(line) {
         checkTypes.assert.string(line);
 
-        // is comment line starting with "* this is a comment"
-        return /^\*.*$/.test(line);
+        // line contains a skipped token
+        return /^(AT|TO|TC|SP|SB|DY).*$/.test(line);
     }
 
     tokenize(line, lineNumber) {
@@ -60,4 +60,4 @@ class CommentToken extends BaseLineToken {
     }
 }
 
-module.exports = CommentToken;
+module.exports = SkippedToken;

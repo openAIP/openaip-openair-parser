@@ -25,9 +25,9 @@ class BlankToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN].includes(token.constructor.type);
+        return [BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }
 }
 

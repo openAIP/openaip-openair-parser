@@ -1,4 +1,5 @@
 const CommentToken = require('./tokens/comment-token');
+const SkippedToken = require('./tokens/skipped-token');
 const BlankToken = require('./tokens/blank-token');
 const AcToken = require('./tokens/ac-token');
 const AnToken = require('./tokens/an-token');
@@ -35,6 +36,7 @@ const ParserError = require('./parser-error');
  * @property {string} DB_TOKEN
  * @property {string} DA_TOKEN
  * @property {string} EOF_TOKEN
+ * @property {string} SKIPPED_TOKEN
  */
 const TOKEN_TYPES = {
     COMMENT_TOKEN: CommentToken.type,
@@ -50,6 +52,7 @@ const TOKEN_TYPES = {
     DB_TOKEN: DbToken.type,
     DA_TOKEN: DaToken.type,
     EOF_TOKEN: EofToken.type,
+    SKIPPED_TOKEN: SkippedToken.type,
 };
 
 /**
@@ -78,6 +81,7 @@ class Tokenizer {
         /** @type {BaseLineToken[]} */
         this._tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES }),
+            new SkippedToken({ tokenTypes: TOKEN_TYPES }),
             new BlankToken({ tokenTypes: TOKEN_TYPES }),
             new AcToken({ tokenTypes: TOKEN_TYPES, airspaceClasses }),
             new AnToken({ tokenTypes: TOKEN_TYPES }),
@@ -120,7 +124,10 @@ class Tokenizer {
             const lineToken = this._tokenizers.find((value) => value.canHandle(this._currentLineString));
             if (lineToken == null) {
                 // fail hard if unable to find a tokenizer for a specific line
-                throw new SyntaxError(`Failed to read line ${this._currentLineNumber}. Unknown syntax.`);
+                throw new ParserError({
+                    lineNumber: this._currentLineNumber,
+                    errorMessage: `Failed to read line ${this._currentLineNumber}. Unknown syntax.`,
+                });
             }
 
             // validate correct token order
@@ -128,9 +135,10 @@ class Tokenizer {
                 const { lineNumber: prevTokenLineNumber } = this._prevToken.getTokenized();
                 const { lineNumber: currentTokenLineNumber } = this._prevToken.getTokenized();
 
-                throw new SyntaxError(
-                    `Previous token '${this._prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${lineToken.getType()}' on line ${currentTokenLineNumber}`
-                );
+                throw new ParserError({
+                    lineNumber: this._currentLineNumber,
+                    errorMessage: `Previous token '${this._prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${lineToken.getType()}' on line ${currentTokenLineNumber}`,
+                });
             }
 
             try {
@@ -139,12 +147,11 @@ class Tokenizer {
                 // keep processed as "previous token" to check token order
                 this._prevToken = token;
             } catch (e) {
-                const error = new ParserError({
+                throw new ParserError({
                     line: this._currentLineString,
                     lineNumber: this._currentLineNumber,
                     errorMessage: e.message,
                 });
-                throw new SyntaxError(error.toString());
             }
         }
         // finalize by adding EOF token

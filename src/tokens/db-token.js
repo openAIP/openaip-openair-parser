@@ -1,6 +1,7 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 const Coordinates = require('coordinate-parser');
+const ParserError = require('../parser-error');
 
 /**
  * Tokenizes "DB" airspace arc endpoints definition.
@@ -32,7 +33,7 @@ class DbToken extends BaseLineToken {
             try {
                 coord.push(new Coordinates(coordinate));
             } catch (e) {
-                throw new SyntaxError(`Unknown coordinate definition '${line}'`);
+                throw new ParserError({ line, lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
             }
         }
 
@@ -42,9 +43,9 @@ class DbToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN].includes(token.constructor.type);
+        return [BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }
 }
 
