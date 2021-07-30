@@ -34,8 +34,10 @@
         "@turf/turf": "^5.1.6",
         "check-types": "^11.1.2",
         "coordinate-parser": "^1.0.7",
+        "geojson-polygon-self-intersections": "^1.2.1",
         "jsts": "^2.7.1",
         "n-readlines": "^1.0.1",
+        "simplepolygon": "^1.2.3",
         "uuid": "^8.3.2"
     },
     "devDependencies": {

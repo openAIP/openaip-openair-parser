@@ -8,7 +8,6 @@ const AirspaceFactory = require('./airspace-factory');
 const defaultConfig = require('./default-parser-config');
 const checkTypes = require('check-types');
 const { featureCollection: createFeatureCollection } = require('@turf/turf');
-const ParserError = require('./parser-error');
 
 const PARSER_STATE = {
     START: 'start',

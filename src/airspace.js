@@ -4,6 +4,7 @@ const {
     distance,
     unkinkPolygon,
     area: calculateArea,
+    simplify,
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -166,10 +167,10 @@ class Airspace {
         }
         const unkinkedPolygon = unkinkPolygon(polygon);
 
+        // TODO there seems to be room for improvement here but currently there is no better way I know of
         const { features } = unkinkedPolygon;
         let fixedGeometry;
         if (unkinkedPolygon.features.length > 1) {
-            // TODO there seems to be room for improvement here but currently there is no better way I know of
             // to get the "unkinked" valid geometry (without kinks), take the one with the biggest calculated area
             // in the list. This DOES NOT work for several edge cases which should not occur in normal OpenAIR files.
             let biggestArea = 0;
@@ -183,6 +184,7 @@ class Airspace {
         } else {
             fixedGeometry = features.shift();
         }
+        fixedGeometry = simplify(fixedGeometry, {highQuality: true, tolerance: 0.001});
 
         return fixedGeometry;
     }
