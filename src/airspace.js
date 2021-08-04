@@ -61,13 +61,15 @@ class Airspace {
         }
 
         let polygon;
+        let lineNumber;
         if (fixGeometry) {
             try {
                 polygon = this._createFixedPolygon(this.coordinates);
             } catch (e) {
                 if (e instanceof SyntaxError) {
                     const acToken = this.consumedTokens.shift();
-                    const { lineNumber } = acToken.getTokenized();
+                    const { lineNumber: lineNum } = acToken.getTokenized();
+                    lineNumber = lineNum;
 
                     throw new ParserError({ lineNumber, errorMessage: e.message });
                 } else {
@@ -75,7 +77,11 @@ class Airspace {
                 }
             }
         } else {
-            polygon = createPolygon([this.coordinates]);
+            try {
+                polygon = createPolygon([this.coordinates]);
+            } catch (e) {
+                throw new ParserError({ lineNumber, errorMessage: e.message });
+            }
         }
 
         if (validateGeometry) {
@@ -184,7 +190,7 @@ class Airspace {
         } else {
             fixedGeometry = features.shift();
         }
-        fixedGeometry = simplify(fixedGeometry, {highQuality: true, tolerance: 0.001});
+        fixedGeometry = simplify(fixedGeometry, { highQuality: true, tolerance: 0.001 });
 
         return fixedGeometry;
     }

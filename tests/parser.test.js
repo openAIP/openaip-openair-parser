@@ -1003,3 +1003,4 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
 });
+
