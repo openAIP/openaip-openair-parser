@@ -1,10 +1,11 @@
 const {
     polygon: createPolygon,
+    lineString: createLinestring,
     feature: createFeature,
     distance,
     unkinkPolygon,
     area: calculateArea,
-    simplify,
+    simplify, lineToPolygon,
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -78,7 +79,9 @@ class Airspace {
             }
         } else {
             try {
-                polygon = createPolygon([this.coordinates]);
+                // create a linestring first, then polygonize it => suppresses errors where first coordinate does not equal last coordinate when creating polygon
+                const linestring = createLinestring(this.coordinates);
+                polygon = lineToPolygon(linestring);
             } catch (e) {
                 throw new ParserError({ lineNumber, errorMessage: e.message });
             }
