@@ -113,24 +113,6 @@ class Airspace {
     }
 
     /**
-     * Closes the airspace geometry, i.e. checks that start- and endpoint are the same.
-     *
-     * @params {Array[]} coordinates
-     * @returns {Array[]}
-     * @private
-     */
-    _closeGeometry(coordinates) {
-        const first = coordinates[0];
-        const last = coordinates[this.coordinates.length - 1];
-
-        if (JSON.stringify(first) != JSON.stringify(last)) {
-            coordinates.push(first);
-        }
-
-        return coordinates;
-    }
-
-    /**
      * Removes high proximity coordinates, i.e. removes coordinate if another coordinate is within 200 meters.
      *
      * @params {Array[]} coordinates
@@ -163,17 +145,17 @@ class Airspace {
      */
     _createFixedPolygon(coordinates) {
         // prepare "raw" coordinates first before creating a polygon feature
-        // IMPORTANT run before "_closeGeometry()" to not remove the last "closing" coordinate
         coordinates = this._removeDuplicates(coordinates);
-        coordinates = this._closeGeometry(coordinates);
-        // remove self-intersections (unkink polygon)
+
         let polygon;
         try {
-            polygon = createPolygon([coordinates]);
+            const linestring = createLinestring(coordinates);
+            polygon = lineToPolygon(linestring);
         } catch (e) {
             // IMPORTANT handle errors on edge cases that cannot be fixed
             throw new SyntaxError(e.message);
         }
+        // remove self-intersections (unkink polygon)
         const unkinkedPolygon = unkinkPolygon(polygon);
 
         // TODO there seems to be room for improvement here but currently there is no better way I know of
@@ -193,7 +175,7 @@ class Airspace {
         } else {
             fixedGeometry = features.shift();
         }
-        fixedGeometry = simplify(fixedGeometry, { highQuality: true, tolerance: 0.001 });
+        fixedGeometry = simplify(fixedGeometry, { highQuality: true, tolerance: 0.00001 });
 
         return fixedGeometry;
     }
