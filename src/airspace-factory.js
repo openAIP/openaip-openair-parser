@@ -43,6 +43,7 @@ class AirspaceFactory {
         this._tokens = null;
         /** @type {Airspace} */
         this._airspace = null;
+        this._currentLineNumber = null;
     }
 
     /**
@@ -56,6 +57,9 @@ class AirspaceFactory {
         this._airspace = new Airspace();
 
         for (const token of tokens) {
+            const { lineNumber } = token.getTokenized();
+            this._currentLineNumber = lineNumber;
+
             this._consumeToken(token);
             this._airspace.consumedTokens.push(token);
         }
@@ -161,6 +165,9 @@ class AirspaceFactory {
         const { altitude } = metadata;
 
         this._airspace.upperCeiling = altitude;
+
+        // check that defined upper limit is actually higher than defined lower limit
+        this._enforceSaneLimits();
     }
 
     /**
@@ -176,6 +183,9 @@ class AirspaceFactory {
         const { altitude } = metadata;
 
         this._airspace.lowerCeiling = altitude;
+
+        // check that defined lower limit is actually lower than defined upper limit
+        this._enforceSaneLimits();
     }
 
     /**
@@ -435,6 +445,39 @@ class AirspaceFactory {
         }
 
         return null;
+    }
+
+    /**
+     * Helper that converts FL into FEET. Simplified value to be expected as return value, will not
+     * be sufficient for very few edge cases.
+     *
+     * @param ceiling
+     * @returns {{unit: string, value, referenceDatum: string}}
+     */
+    _flToFeet(ceiling) {
+        let { value, unit, referenceDatum } = ceiling;
+
+        if (unit === 'FL') {
+            value *= 100;
+            unit = 'FT';
+            referenceDatum = 'MSL';
+        }
+
+        return { value, unit, referenceDatum };
+    }
+
+    _enforceSaneLimits() {
+        if (this._airspace.lowerCeiling && this._airspace.upperCeiling) {
+            const compareUpper = this._flToFeet(this._airspace.upperCeiling);
+            const compareLower = this._flToFeet(this._airspace.lowerCeiling);
+
+            if (compareLower.value > compareUpper.value) {
+                throw new ParserError({
+                    lineNumber: this._currentLineNumber,
+                    errorMessage: 'Lower limit must be less than upper limit',
+                });
+            }
+        }
     }
 }
 

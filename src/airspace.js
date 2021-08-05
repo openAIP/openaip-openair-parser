@@ -1,5 +1,4 @@
 const {
-    polygon: createPolygon,
     lineString: createLinestring,
     feature: createFeature,
     distance,
