@@ -2,6 +2,12 @@
 
 A configurable [OpenAIR](http://www.winpilot.com/usersguide/userairspace.asp) format parser for Node.
 
+Install
+=
+```shell
+npm install @openaip/openair-parser
+```
+
 Node
 =
 
