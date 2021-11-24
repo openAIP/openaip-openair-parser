@@ -50,7 +50,7 @@ class Parser {
      * @param {typedefs.openaip.OpenairParser.ParserConfig} [config] - The parser configuration
      */
     constructor(config) {
-        const configuration = Object.assign(defaultConfig, config);
+        const configuration = { ...defaultConfig, ...config };
         const {
             airspaceClasses,
             unlimited,

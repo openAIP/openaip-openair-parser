@@ -29,10 +29,10 @@ class Airspace {
      * @return {Feature<*, {upperCeiling: null, lowerCeiling: null, name: null, class: null}>}
      */
     asGeoJson(config) {
-        const { validateGeometry, fixGeometry, includeOpenair } = Object.assign(
-            { validateGeometry: false, fixGeometry: false, includeOpenair: false },
-            config
-        );
+        const { validateGeometry, fixGeometry, includeOpenair } = {
+            ...{ validateGeometry: false, fixGeometry: false, includeOpenair: false },
+            ...config
+        };
 
         // handle edge case where 3 or less coordinates are defined
         if (this.coordinates.length <= 2) {

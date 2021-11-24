@@ -3,7 +3,7 @@
  *
  * @type {typedefs.openaip.OpenairParser.ParserConfig}
  */
-module.exports = {
+module.exports = Object.freeze({
     // defines allowed airspace classes used with the AC token
     airspaceClasses: [
         // default ICAO classes
@@ -43,4 +43,4 @@ module.exports = {
     targetAltUnit: 'ft',
     // round altitude values
     roundAltValues: false,
-};
+});
