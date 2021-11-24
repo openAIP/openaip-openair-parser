@@ -35,7 +35,7 @@
         "check-types": "^11.1.2",
         "coordinate-parser": "^1.0.7",
         "geojson-polygon-self-intersections": "^1.2.1",
-        "jsts": "^2.7.3",
+        "jsts": "2.6.1",
         "n-readlines": "^1.0.1",
         "node-notifier": "^10.0.0",
         "simplepolygon": "^1.2.3",

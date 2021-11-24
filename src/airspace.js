@@ -8,7 +8,7 @@ const {
     lineToPolygon,
 } = require('@turf/turf');
 const uuid = require('uuid');
-const jsts = require('jsts/dist/jsts');
+const jsts = require('jsts');
 const ParserError = require('./parser-error');
 
 /**
