@@ -62,6 +62,12 @@ Outputs GeoJSON FeatureCollection:
 }
 ```
 
+Install
+=
+```shell
+npm install @openaip/openair-parser
+```
+
 Node
 =
 
