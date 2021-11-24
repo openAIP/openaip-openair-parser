@@ -4,10 +4,11 @@ const {
     distance,
     unkinkPolygon,
     area: calculateArea,
-    simplify, lineToPolygon,
+    simplify,
+    lineToPolygon,
 } = require('@turf/turf');
 const uuid = require('uuid');
-const jsts = require('jsts');
+const jsts = require('jsts/dist/jsts');
 const ParserError = require('./parser-error');
 
 /**

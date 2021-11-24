@@ -39,7 +39,8 @@ class BaseLineToken {
     }
 
     /**
-     * Returns a new token that contains the tokenized representation of the parsed openair line.
+     * Factory methods that returns a new token of the corresponding type that contains the tokenized
+     * representation of the parsed OpenAIR line.
      *
      * @param {string} line
      * @param {number} lineNumber

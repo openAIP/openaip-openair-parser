@@ -1,12 +1,72 @@
 const BaseLineToken = require('./base-line-token');
+const altitudeUnit = require('../altitude-unit');
 const checkTypes = require('check-types');
 
 /**
  * @typedef typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig
  * @type Object
  * @property {BaseLineToken} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
- * @property {number} [unlimited] -  Defines the flight level to set if an airspace ceiling is defined with "unlimited". Defaults to 999;
+ * @property {number} unlimited - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
+ * @property {string} defaultAltUnit - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+ * @property {string} targetAltUnit - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+ * @property {boolean} roundAltValues - If true, rounds the altitude values. Defaults to false.
  */
+
+/**
+ * Tokenizes "AH/AL" airspace ceiling definitions.
+ *
+ * @type {typedefs.openaip.OpenairParser.AltitudeReader}
+ */
+class BaseAltitudeToken extends BaseLineToken {
+    /**
+     * @param {typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig} config
+     */
+    constructor(config) {
+        const { unlimited, tokenTypes, defaultAltUnit, targetAltUnit, roundAltValues } = config || {};
+
+        checkTypes.assert.integer(unlimited);
+        checkTypes.assert.string(defaultAltUnit);
+        checkTypes.assert.string(targetAltUnit);
+        checkTypes.assert.boolean(roundAltValues);
+
+        super({ tokenTypes });
+
+        this._unlimited = unlimited;
+        this._defaultAltUnit = defaultAltUnit.toUpperCase();
+        this._targetAltUnit = targetAltUnit.toUpperCase();
+        this._roundAltValues = roundAltValues;
+
+        /** @type {typedefs.openaip.OpenairParser.AltitudeReader[]} */
+        this._readers = [
+            new AltitudeDefaultReader({ unlimited, defaultAltUnit, targetAltUnit, roundAltValues }),
+            new AltitudeFlightLevelReader(),
+            new AltitudeSurfaceReader(),
+            new AltitudeUnlimitedReader({ unlimited }),
+        ];
+    }
+
+    /**
+     * Turns an altitude string into an altitude object literal.
+     *
+     * @param {string} altitudeString
+     * @return {{value: number, unit: string, referenceDatum: string}}
+     * @private
+     */
+    _getAltitude(altitudeString) {
+        checkTypes.assert.string(altitudeString);
+
+        // trim and convert to upper case
+        altitudeString = altitudeString.trim().toUpperCase();
+
+        for (const reader of this._readers) {
+            if (reader.canHandle(altitudeString)) {
+                return reader.read(altitudeString);
+            }
+        }
+
+        throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
+    }
+}
 
 /**
  * @typedef typedefs.openaip.OpenairParser.AltitudeReader
@@ -21,8 +81,20 @@ const checkTypes = require('check-types');
  * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeDefaultReader {
-    constructor() {
-        this.REGEX_ALTITUDE = /^(\d+)\s*(FT|ft|M|m)\s+(MSL|AMSL|ALT|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
+    /**
+     * @param {{defaultAltUnit: string, targetAltUnit: string, roundAltValues: boolean}} config
+     */
+    constructor(config) {
+        const { defaultAltUnit, targetAltUnit, roundAltValues } = config || {};
+
+        checkTypes.assert.string(defaultAltUnit);
+        checkTypes.assert.string(targetAltUnit);
+        checkTypes.assert.boolean(roundAltValues);
+
+        this._defaultAltUnit = defaultAltUnit.toUpperCase();
+        this._targetAltUnit = targetAltUnit.toUpperCase();
+        this._roundAltValues = roundAltValues;
+        this.REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s+(MSL|AMSL|ALT|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
     }
 
     /**
@@ -42,33 +114,70 @@ class AltitudeDefaultReader {
         // check for "default" altitude definition, e.g. 16500ft MSL or similar
         const altitudeParts = this.REGEX_ALTITUDE.exec(altitudeString);
         // get altitude parts
-        let value = parseInt(altitudeParts[1]);
-        let unit = altitudeParts[2];
-        const referenceDatum = this._harmonizeReference(altitudeParts[3]);
+        let value = parseFloat(altitudeParts[1]);
+        // use the unit defined in altitude definition or if not set, use the configured default unit
+        let unit = altitudeParts[3] ?? this._defaultAltUnit;
+        const referenceDatum = this._harmonizeReference(altitudeParts[4]);
 
         /*
+        Convert between altitude units if required.
+
         Although "ft" is mostly used as main unit in openAIR airspace definitions, sometimes "meters" (m) are used instead.
         In this case, the tokenizer will convert meters into feet BUT this comes at a downside. Unfortunately,
         the source used to generate the openAIR file will often define meter values that are "prettified" and when
         converted to feet, they will almost NEVER match the common rounded values like "2500" but rather something like "2478.123".
          */
-        if (unit === 'M') {
-            value = this._metersToFeet(value);
-            unit = 'FT';
+        value = this._convertUnits(value, unit, this._targetAltUnit);
+        // round value
+        value = this._roundAltValues ? parseInt(Math.round(value)) : value;
+
+        return { value, unit: this._targetAltUnit, referenceDatum };
+    }
+
+    /**
+     * @param {number} value
+     * @param {string} baseUnit
+     * @param {string} targetUnit
+     * @return {number}
+     * @private
+     */
+    _convertUnits(value, baseUnit, targetUnit) {
+        if (baseUnit === targetUnit) return value;
+
+        let convValue;
+        if (baseUnit === altitudeUnit.ft && targetUnit === altitudeUnit.m) {
+            convValue = this._metersToFeet(value);
+        } else if (baseUnit === altitudeUnit.m && targetUnit === altitudeUnit.ft) {
+            convValue = this._feetToMeters(value);
+        } else {
+            throw new Error(`Unit conversion between '${baseUnit}' and '${targetUnit}' not supported`);
         }
 
-        return { value, unit, referenceDatum };
+        return convValue;
     }
+
     /**
      * @param {number} meters
      * @return {number}
      * @private
      */
     _metersToFeet(meters) {
-        checkTypes.assert.integer(meters);
+        checkTypes.assert.number(meters);
 
-        return Math.round(meters * 3.28084);
+        return meters * 3.28084;
     }
+
+    /**
+     * @param {number} feet
+     * @return {number}
+     * @private
+     */
+    _feetToMeters(feet) {
+        checkTypes.assert.number(feet);
+
+        return feet / 3.28084;
+    }
+
     /**
      * @param {string} reference
      * @return {string}
@@ -198,54 +307,6 @@ class AltitudeUnlimitedReader {
      */
     read(altitudeString) {
         return { value: this._unlimited, unit: 'FL', referenceDatum: 'STD' };
-    }
-}
-
-/**
- * Tokenizes "AH/AL" airspace ceiling definitions.
- *
- * @type {typedefs.openaip.OpenairParser.AltitudeReader}
- */
-class BaseAltitudeToken extends BaseLineToken {
-    /**
-     * @param {typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig} config
-     */
-    constructor(config) {
-        const { unlimited, tokenTypes } = config;
-
-        super({ tokenTypes });
-
-        this._unlimited = unlimited;
-
-        /** @type {typedefs.openaip.OpenairParser.AltitudeReader[]} */
-        this._readers = [
-            new AltitudeDefaultReader(),
-            new AltitudeFlightLevelReader(),
-            new AltitudeSurfaceReader(),
-            new AltitudeUnlimitedReader({ unlimited }),
-        ];
-    }
-
-    /**
-     * Turns an altitude string into an altitude object literal.
-     *
-     * @param {string} altitudeString
-     * @return {{value: number, unit: string, referenceDatum: string}}
-     * @private
-     */
-    _getAltitude(altitudeString) {
-        checkTypes.assert.string(altitudeString);
-
-        // trim and convert to upper case
-        altitudeString = altitudeString.trim().toUpperCase();
-
-        for (const reader of this._readers) {
-            if (reader.canHandle(altitudeString)) {
-                return reader.read(altitudeString);
-            }
-        }
-
-        throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
     }
 }
 

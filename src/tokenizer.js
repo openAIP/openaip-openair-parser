@@ -58,9 +58,11 @@ const TOKEN_TYPES = {
 /**
  * @typedef typedefs.openaip.OpenairParser.TokenizerConfig
  * @type Object
- * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
- * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
-
+ * @property {string[]} airspaceClasses - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+ * @property {number} unlimited - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
+ * @property {string} defaultAltUnit - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+ * @property {string} targetAltUnit - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+ * @property {boolean} roundAltValues - If true, rounds the altitude values. Defaults to false.
  */
 
 /**
@@ -73,9 +75,13 @@ class Tokenizer {
      * @param {typedefs.openaip.OpenairParser.TokenizerConfig} config
      */
     constructor(config) {
-        const { airspaceClasses, unlimited } = config;
+        const { airspaceClasses, unlimited, defaultAltUnit, targetAltUnit, roundAltValues } = config;
+
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
         checkTypes.assert.integer(unlimited);
+        checkTypes.assert.string(defaultAltUnit);
+        checkTypes.assert.string(targetAltUnit);
+        checkTypes.assert.boolean(roundAltValues);
 
         this._config = config;
         /** @type {BaseLineToken[]} */
@@ -85,8 +91,8 @@ class Tokenizer {
             new BlankToken({ tokenTypes: TOKEN_TYPES }),
             new AcToken({ tokenTypes: TOKEN_TYPES, airspaceClasses }),
             new AnToken({ tokenTypes: TOKEN_TYPES }),
-            new AhToken({ tokenTypes: TOKEN_TYPES, unlimited }),
-            new AlToken({ tokenTypes: TOKEN_TYPES, unlimited }),
+            new AhToken({ tokenTypes: TOKEN_TYPES, unlimited, defaultAltUnit, targetAltUnit, roundAltValues }),
+            new AlToken({ tokenTypes: TOKEN_TYPES, unlimited, defaultAltUnit, targetAltUnit, roundAltValues }),
             new DpToken({ tokenTypes: TOKEN_TYPES }),
             new VdToken({ tokenTypes: TOKEN_TYPES }),
             new VxToken({ tokenTypes: TOKEN_TYPES }),

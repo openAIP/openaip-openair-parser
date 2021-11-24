@@ -5,10 +5,12 @@ const SkippedToken = require('./tokens/skipped-token');
 const AcToken = require('./tokens/ac-token');
 const EofToken = require('./tokens/eof-token');
 const AirspaceFactory = require('./airspace-factory');
+const altitudeUnit = require('./altitude-unit');
 const defaultConfig = require('./default-parser-config');
 const checkTypes = require('check-types');
 const { featureCollection: createFeatureCollection } = require('@turf/turf');
 
+const allowedAltUnits = Object.values(altitudeUnit);
 const PARSER_STATE = {
     START: 'start',
     READ: 'read',
@@ -25,6 +27,9 @@ const PARSER_STATE = {
  * @property {boolean} [validateGeometry] - If true, the GeoJson features are validate. Parser will throw an error if an invalid geometry is found. Defaults to true.
  * @property {boolean} [fixGeometry] - If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
  * @property {boolean} [includeOpenair] - If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size! Defaults to false.
+ * @property {string} [defaultAltUnit] - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+ * @property {string} [targetAltUnit] - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+ * @property {boolean} [roundAltValues] - If true, rounds the altitude values. Defaults to false.
  */
 
 /**
@@ -46,15 +51,45 @@ class Parser {
      */
     constructor(config) {
         const configuration = Object.assign(defaultConfig, config);
-        const { airspaceClasses, unlimited, geometryDetail, validateGeometry, fixGeometry, includeOpenair } =
-            configuration;
+        const {
+            airspaceClasses,
+            unlimited,
+            geometryDetail,
+            validateGeometry,
+            fixGeometry,
+            includeOpenair,
+            defaultAltUnit,
+            targetAltUnit,
+            roundAltValues,
+        } = configuration;
 
-        checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
-        checkTypes.assert.integer(unlimited);
-        checkTypes.assert.integer(geometryDetail);
-        checkTypes.assert.boolean(validateGeometry);
-        checkTypes.assert.boolean(fixGeometry);
-        checkTypes.assert.boolean(includeOpenair);
+        if (checkTypes.array.of.nonEmptyString(airspaceClasses) === false) {
+            throw new Error("Parameter 'airspaceClasses' must be an array of strings.");
+        }
+        if (checkTypes.integer(unlimited) === false) {
+            throw new Error("Parameter 'unlimited' must be an integer.");
+        }
+        if (checkTypes.integer(geometryDetail) === false) {
+            throw new Error("Parameter 'geometryDetail' must be an integer.");
+        }
+        if (checkTypes.boolean(validateGeometry) === false) {
+            throw new Error("Parameter 'validateGeometry' must be a boolean.");
+        }
+        if (checkTypes.boolean(fixGeometry) === false) {
+            throw new Error("Parameter 'fixGeometry' must be a boolean.");
+        }
+        if (checkTypes.boolean(includeOpenair) === false) {
+            throw new Error("Parameter 'includeOpenair' must be a boolean.");
+        }
+        if (allowedAltUnits.includes(defaultAltUnit.toUpperCase()) === false) {
+            throw new Error(`Unknown default altitude unit '${defaultAltUnit}'`);
+        }
+        if (allowedAltUnits.includes(targetAltUnit.toUpperCase()) === false) {
+            throw new Error(`Unknown target altitude unit '${targetAltUnit}'`);
+        }
+        if (checkTypes.boolean(roundAltValues) === false) {
+            throw new Error("Parameter 'roundAltValues' must be a boolean.");
+        }
 
         this._config = configuration;
         // custom formatters
@@ -82,16 +117,19 @@ class Parser {
         this._reset();
 
         /*
-        Tokenize the file contents and will result in a list of tokens and a list of syntax
-        errors encountered during tokenization. Each token represents a single line and hold a
-        "prepared value" if each line, e.g. "DP 52:24:33 N 013:11:02 E" will be converted into
-        a object that contains valid coordinate decimals.
+        Tokenizes the file contents into a list of tokens and a list of syntax
+        errors encountered during tokenization. Each token represents a single line and holds a
+        "prepared value" of each line, e.g. "DP 52:24:33 N 013:11:02 E" will be converted into
+        a prepared value, i.e. object, that contains valid coordinate decimals.
 
         IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
          */
         const tokenizer = new Tokenizer({
             airspaceClasses: this._config.airspaceClasses,
             unlimited: this._config.unlimited,
+            defaultAltUnit: this._config.defaultAltUnit,
+            targetAltUnit: this._config.targetAltUnit,
+            roundAltValues: this._config.roundAltValues,
         });
         const tokens = await tokenizer.tokenize(filepath);
 

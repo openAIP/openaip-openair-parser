@@ -39,7 +39,9 @@ class DpToken extends BaseLineToken {
     isAllowedNextToken(token) {
         const { COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
 
-        return [COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(
+            token.constructor.type
+        );
     }
 }
 

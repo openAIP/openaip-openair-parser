@@ -19,7 +19,7 @@ program
     try {
         await parser.parse(program.inputFilepath);
         const geojson = parser.toGeojson();
-        console.log(`Successfully parsed ${geojson.features.length} airspaces` );
+        console.log(`Successfully parsed ${geojson.features.length} airspaces`);
         await fs.writeFileSync(program.outputFilepath, Buffer.from(JSON.stringify(geojson, null, 2), 'utf-8'));
     } catch (e) {
         console.log(e.message);

@@ -16,7 +16,13 @@ class AlToken extends BaseAltitudeToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new AlToken({ tokenTypes: this._tokenTypes, unlimited: this._unlimited });
+        const token = new AlToken({
+            tokenTypes: this._tokenTypes,
+            unlimited: this._unlimited,
+            defaultAltUnit: this._defaultAltUnit,
+            targetAltUnit: this._targetAltUnit,
+            roundAltValues: this._roundAltValues,
+        });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);

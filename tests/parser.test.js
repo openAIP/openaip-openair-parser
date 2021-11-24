@@ -844,6 +844,141 @@ describe('test parse complete airspace definition blocks', () => {
     });
 });
 
+describe('test optional configuration parameters', () => {
+    test('do not round altitude value', async () => {
+        const openairParser = new Parser();
+        await openairParser.parse('./tests/fixtures/round-altitude-values.txt');
+        const geojson = openairParser.toGeojson();
+
+        const expectedJson = {
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: {
+                        name: '22 Nord',
+                        class: 'W',
+                        upperCeiling: {
+                            value: 90,
+                            unit: 'FL',
+                            referenceDatum: 'STD',
+                        },
+                        lowerCeiling: {
+                            value: 1607.611551,
+                            unit: 'FT',
+                            referenceDatum: 'MSL',
+                        },
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            [
+                                [16.25027777777778, 58.49305555555556],
+                                [16.42361111111111, 58.47805555555556],
+                                [16.504166666666666, 58.37388888888889],
+                                [16.2575, 58.35277777777778],
+                                [16.25027777777778, 58.49305555555556],
+                            ],
+                        ],
+                    },
+                },
+            ],
+        };
+        // remove feature id for comparison
+        geojson.features.map((value) => delete value.id);
+
+        expect(geojson).toEqual(expectedJson);
+    });
+    test('round altitude value', async () => {
+        const openairParser = new Parser({ roundAltValues: true });
+        await openairParser.parse('./tests/fixtures/round-altitude-values.txt');
+        const geojson = openairParser.toGeojson();
+
+        const expectedJson = {
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: {
+                        name: '22 Nord',
+                        class: 'W',
+                        upperCeiling: {
+                            value: 90,
+                            unit: 'FL',
+                            referenceDatum: 'STD',
+                        },
+                        lowerCeiling: {
+                            value: 1608,
+                            unit: 'FT',
+                            referenceDatum: 'MSL',
+                        },
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            [
+                                [16.25027777777778, 58.49305555555556],
+                                [16.42361111111111, 58.47805555555556],
+                                [16.504166666666666, 58.37388888888889],
+                                [16.2575, 58.35277777777778],
+                                [16.25027777777778, 58.49305555555556],
+                            ],
+                        ],
+                    },
+                },
+            ],
+        };
+        // remove feature id for comparison
+        geojson.features.map((value) => delete value.id);
+
+        expect(geojson).toEqual(expectedJson);
+    });
+    test('use default altitude unit', async () => {
+        const openairParser = new Parser({ defaultAltUnit: 'm', targetAltUnit: 'm' });
+        await openairParser.parse('./tests/fixtures/use-default-altitude-unit.txt');
+        const geojson = openairParser.toGeojson();
+
+        const expectedJson = {
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: {
+                        name: '22 Nord',
+                        class: 'W',
+                        upperCeiling: {
+                            value: 90,
+                            unit: 'FL',
+                            referenceDatum: 'STD',
+                        },
+                        lowerCeiling: {
+                            value: 1607.611551,
+                            unit: 'M',
+                            referenceDatum: 'MSL',
+                        },
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            [
+                                [16.25027777777778, 58.49305555555556],
+                                [16.42361111111111, 58.47805555555556],
+                                [16.504166666666666, 58.37388888888889],
+                                [16.2575, 58.35277777777778],
+                                [16.25027777777778, 58.49305555555556],
+                            ],
+                        ],
+                    },
+                },
+            ],
+        };
+        // remove feature id for comparison
+        geojson.features.map((value) => delete value.id);
+
+        expect(geojson).toEqual(expectedJson);
+    });
+});
+
 describe('test parse invalid airspace definition blocks', () => {
     test('airspace with invalid coordinates', async () => {
         const openairParser = new Parser();
@@ -1003,4 +1138,3 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
 });
-
