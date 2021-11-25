@@ -146,9 +146,9 @@ class AltitudeDefaultReader {
 
         let convValue;
         if (baseUnit === altitudeUnit.ft && targetUnit === altitudeUnit.m) {
-            convValue = this._metersToFeet(value);
-        } else if (baseUnit === altitudeUnit.m && targetUnit === altitudeUnit.ft) {
             convValue = this._feetToMeters(value);
+        } else if (baseUnit === altitudeUnit.m && targetUnit === altitudeUnit.ft) {
+            convValue = this._metersToFeet(value);
         } else {
             throw new Error(`Unit conversion between '${baseUnit}' and '${targetUnit}' not supported`);
         }
