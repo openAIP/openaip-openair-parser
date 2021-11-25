@@ -99,7 +99,7 @@ const config = {
         'GLIDING',
         'RMZ',
         'TMZ',
-        'CTR',__
+        'CTR',
     ],
     // flight level value to set for upper ceilings defined as "UNLIMITED"
     unlimited: 999,
@@ -109,6 +109,14 @@ const config = {
     validateGeometry: true,
     // if true, uses "convexHull" to fix an invalid geometry - note that this may change the original airspace geometry!
     fixGeometry: false,
+    // If true, the GeoJSON output will contain the original OpenAIR airspace definition block for each airspace. Note that this will considerably increase JSON object size!
+    includeOpenair: false,
+    // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'.
+    defaultAltUnit: 'ft',
+    // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'.
+    targetAltUnit: 'ft',
+    // round altitude values
+    roundAltValues: false,
 };
 
 const parser = new Parser(config);
