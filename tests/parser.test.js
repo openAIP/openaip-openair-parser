@@ -1137,4 +1137,12 @@ describe('test parse invalid airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
+
+    test('airspace with empty name', async () => {
+        const openairParser = new Parser();
+
+        await expect(openairParser.parse('./tests/fixtures/empty-name.txt')).rejects.toThrow(
+            "Error found at line 3: Previous token 'AC' on line 1 does not allow subsequent token 'AH' on line 1"
+        );
+    });
 });

@@ -150,8 +150,10 @@ class Tokenizer {
             try {
                 const token = lineToken.tokenize(this._currentLineString, this._currentLineNumber);
                 this._tokens.push(token);
-                // keep processed as "previous token" to check token order
-                this._prevToken = token;
+                // IMPORTANT only keep relevant (no comments...) as "previous token" to check token order
+                if (token.getType() !== 'COMMENT' && token.getType() !== 'SKIPPED') {
+                    this._prevToken = token;
+                }
             } catch (e) {
                 throw new ParserError({
                     lineNumber: this._currentLineNumber,
