@@ -17,7 +17,7 @@ class DbToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new DbToken({ tokenTypes: this._tokenTypes });
+        const token = new DbToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -37,13 +37,13 @@ class DbToken extends BaseLineToken {
             }
         }
 
-        token._tokenized = { line, lineNumber, metadata: { coordinates: coord } };
+        token.tokenized = { line, lineNumber, metadata: { coordinates: coord } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(
             token.constructor.type

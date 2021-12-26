@@ -26,7 +26,7 @@ class EofToken extends BaseLineToken {
 
         checkTypes.assert.number(lastLineNumber);
 
-        this._lastLineNumber = lastLineNumber;
+        this.lastLineNumber = lastLineNumber;
     }
 
     canHandle(line) {
@@ -42,7 +42,7 @@ class EofToken extends BaseLineToken {
     }
 
     getTokenized() {
-        return { line: '', lineNumber: this._lastLineNumber };
+        return { line: '', lineNumber: this.lastLineNumber };
     }
 }
 

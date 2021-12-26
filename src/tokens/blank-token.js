@@ -14,18 +14,18 @@ class BlankToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new BlankToken({ tokenTypes: this._tokenTypes });
+        const token = new BlankToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        token._tokenized = { line, lineNumber };
+        token.tokenized = { line, lineNumber };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [BLANK_TOKEN, AC_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }

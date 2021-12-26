@@ -31,13 +31,13 @@ class BaseAltitudeToken extends BaseLineToken {
 
         super({ tokenTypes });
 
-        this._unlimited = unlimited;
-        this._defaultAltUnit = defaultAltUnit.toUpperCase();
-        this._targetAltUnit = targetAltUnit.toUpperCase();
-        this._roundAltValues = roundAltValues;
+        this.unlimited = unlimited;
+        this.defaultAltUnit = defaultAltUnit.toUpperCase();
+        this.targetAltUnit = targetAltUnit.toUpperCase();
+        this.roundAltValues = roundAltValues;
 
         /** @type {typedefs.openaip.OpenairParser.AltitudeReader[]} */
-        this._readers = [
+        this.readers = [
             new AltitudeDefaultReader({ unlimited, defaultAltUnit, targetAltUnit, roundAltValues }),
             new AltitudeFlightLevelReader(),
             new AltitudeSurfaceReader(),
@@ -52,13 +52,13 @@ class BaseAltitudeToken extends BaseLineToken {
      * @return {{value: number, unit: string, referenceDatum: string}}
      * @private
      */
-    _getAltitude(altitudeString) {
+    getAltitude(altitudeString) {
         checkTypes.assert.string(altitudeString);
 
         // trim and convert to upper case
         altitudeString = altitudeString.trim().toUpperCase();
 
-        for (const reader of this._readers) {
+        for (const reader of this.readers) {
             if (reader.canHandle(altitudeString)) {
                 return reader.read(altitudeString);
             }
@@ -91,9 +91,9 @@ class AltitudeDefaultReader {
         checkTypes.assert.string(targetAltUnit);
         checkTypes.assert.boolean(roundAltValues);
 
-        this._defaultAltUnit = defaultAltUnit.toUpperCase();
-        this._targetAltUnit = targetAltUnit.toUpperCase();
-        this._roundAltValues = roundAltValues;
+        this.defaultAltUnit = defaultAltUnit.toUpperCase();
+        this.targetAltUnit = targetAltUnit.toUpperCase();
+        this.roundAltValues = roundAltValues;
         this.REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s+(MSL|AMSL|ALT|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
     }
 
@@ -116,8 +116,8 @@ class AltitudeDefaultReader {
         // get altitude parts
         let value = parseFloat(altitudeParts[1]);
         // use the unit defined in altitude definition or if not set, use the configured default unit
-        let unit = altitudeParts[3] ?? this._defaultAltUnit;
-        const referenceDatum = this._harmonizeReference(altitudeParts[4]);
+        let unit = altitudeParts[3] ?? this.defaultAltUnit;
+        const referenceDatum = this.harmonizeReference(altitudeParts[4]);
 
         /*
         Convert between altitude units if required.
@@ -127,11 +127,11 @@ class AltitudeDefaultReader {
         the source used to generate the openAIR file will often define meter values that are "prettified" and when
         converted to feet, they will almost NEVER match the common rounded values like "2500" but rather something like "2478.123".
          */
-        value = this._convertUnits(value, unit, this._targetAltUnit);
+        value = this.convertUnits(value, unit, this.targetAltUnit);
         // round value
-        value = this._roundAltValues ? parseInt(Math.round(value)) : value;
+        value = this.roundAltValues ? parseInt(Math.round(value)) : value;
 
-        return { value, unit: this._targetAltUnit, referenceDatum };
+        return { value, unit: this.targetAltUnit, referenceDatum };
     }
 
     /**
@@ -141,14 +141,14 @@ class AltitudeDefaultReader {
      * @return {number}
      * @private
      */
-    _convertUnits(value, baseUnit, targetUnit) {
+    convertUnits(value, baseUnit, targetUnit) {
         if (baseUnit === targetUnit) return value;
 
         let convValue;
         if (baseUnit === altitudeUnit.ft && targetUnit === altitudeUnit.m) {
-            convValue = this._feetToMeters(value);
+            convValue = this.feetToMeters(value);
         } else if (baseUnit === altitudeUnit.m && targetUnit === altitudeUnit.ft) {
-            convValue = this._metersToFeet(value);
+            convValue = this.metersToFeet(value);
         } else {
             throw new Error(`Unit conversion between '${baseUnit}' and '${targetUnit}' not supported`);
         }
@@ -161,7 +161,7 @@ class AltitudeDefaultReader {
      * @return {number}
      * @private
      */
-    _metersToFeet(meters) {
+    metersToFeet(meters) {
         checkTypes.assert.number(meters);
 
         return meters * 3.28084;
@@ -172,7 +172,7 @@ class AltitudeDefaultReader {
      * @return {number}
      * @private
      */
-    _feetToMeters(feet) {
+    feetToMeters(feet) {
         checkTypes.assert.number(feet);
 
         return feet / 3.28084;
@@ -183,7 +183,7 @@ class AltitudeDefaultReader {
      * @return {string}
      * @private
      */
-    _harmonizeReference(reference) {
+    harmonizeReference(reference) {
         checkTypes.assert.string(reference);
 
         switch (reference) {
@@ -287,7 +287,7 @@ class AltitudeUnlimitedReader {
     constructor({ unlimited }) {
         checkTypes.assert.integer(unlimited);
 
-        this._unlimited = unlimited;
+        this.unlimited = unlimited;
         // unlimited ceiling definition
         this.REGEX_ALTITUDE = /^(UNLIMITED|UNL|UNLTD)$/;
     }
@@ -306,7 +306,7 @@ class AltitudeUnlimitedReader {
      * @private
      */
     read(altitudeString) {
-        return { value: this._unlimited, unit: 'FL', referenceDatum: 'STD' };
+        return { value: this.unlimited, unit: 'FL', referenceDatum: 'STD' };
     }
 }
 

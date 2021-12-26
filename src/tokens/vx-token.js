@@ -17,7 +17,7 @@ class VxToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new VxToken({ tokenTypes: this._tokenTypes });
+        const token = new VxToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -31,13 +31,13 @@ class VxToken extends BaseLineToken {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
 
-        token._tokenized = { line, lineNumber, metadata: { coordinate } };
+        token.tokenized = { line, lineNumber, metadata: { coordinate } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN, VD_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN, VD_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN, VD_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }

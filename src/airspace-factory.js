@@ -37,13 +37,13 @@ class AirspaceFactory {
 
         checkTypes.assert.integer(geometryDetail);
 
-        this._geometryDetail = geometryDetail;
+        this.geometryDetail = geometryDetail;
 
         /** @type {BaseLineToken[]} */
-        this._tokens = null;
+        this.tokens = null;
         /** @type {Airspace} */
-        this._airspace = null;
-        this._currentLineNumber = null;
+        this.airspace = null;
+        this.currentLineNumber = null;
     }
 
     /**
@@ -53,20 +53,20 @@ class AirspaceFactory {
     createAirspace(tokens) {
         checkTypes.assert.array.of.instance(tokens, BaseLineToken);
 
-        this._tokens = tokens;
-        this._airspace = new Airspace();
+        this.tokens = tokens;
+        this.airspace = new Airspace();
 
         for (const token of tokens) {
             const { lineNumber } = token.getTokenized();
-            this._currentLineNumber = lineNumber;
+            this.currentLineNumber = lineNumber;
 
-            this._consumeToken(token);
-            this._airspace.consumedTokens.push(token);
+            this.consumeToken(token);
+            this.airspace.consumedTokens.push(token);
         }
-        const airspace = this._airspace;
+        const airspace = this.airspace;
 
-        this._tokens = null;
-        this._airspace = null;
+        this.tokens = null;
+        this.airspace = null;
 
         return airspace;
     }
@@ -74,46 +74,46 @@ class AirspaceFactory {
     /**
      * @param {BaseLineToken} token
      */
-    _consumeToken(token) {
+    consumeToken(token) {
         const type = token.getType();
         const { lineNumber } = token.getTokenized();
 
         switch (type) {
             case CommentToken.type:
-                this._handleCommentToken(token);
+                this.handleCommentToken(token);
                 break;
             case AcToken.type:
-                this._handleAcToken(token);
+                this.handleAcToken(token);
                 break;
             case AnToken.type:
-                this._handleAnToken(token);
+                this.handleAnToken(token);
                 break;
             case AhToken.type:
-                this._handleAhToken(token);
+                this.handleAhToken(token);
                 break;
             case AlToken.type:
-                this._handleAlToken(token);
+                this.handleAlToken(token);
                 break;
             case DpToken.type:
-                this._handleDpToken(token);
+                this.handleDpToken(token);
                 break;
             case VdToken.type:
-                this._handleVdToken(token);
+                this.handleVdToken(token);
                 break;
             case VxToken.type:
-                this._handleVxToken(token);
+                this.handleVxToken(token);
                 break;
             case DcToken.type:
-                this._handleDcToken(token);
+                this.handleDcToken(token);
                 break;
             case DbToken.type:
-                this._handleDbToken(token);
+                this.handleDbToken(token);
                 break;
             case DaToken.type:
-                this._handleDaToken(token);
+                this.handleDaToken(token);
                 break;
             case BlankToken.type:
-                this._handleBlankToken(token);
+                this.handleBlankToken(token);
                 break;
             case EofToken.type:
                 break;
@@ -128,13 +128,13 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleAnToken(token) {
+    handleAnToken(token) {
         checkTypes.assert.instance(token, AnToken);
 
         const { metadata } = token.getTokenized();
         const { name } = metadata;
 
-        this._airspace.name = name;
+        this.airspace.name = name;
     }
 
     /**
@@ -143,13 +143,13 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleAcToken(token) {
+    handleAcToken(token) {
         checkTypes.assert.instance(token, AcToken);
 
         const { metadata } = token.getTokenized();
         const { class: acClass } = metadata;
 
-        this._airspace.class = acClass;
+        this.airspace.class = acClass;
     }
 
     /**
@@ -158,16 +158,16 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleAhToken(token) {
+    handleAhToken(token) {
         checkTypes.assert.instance(token, AhToken);
 
         const { metadata } = token.getTokenized();
         const { altitude } = metadata;
 
-        this._airspace.upperCeiling = altitude;
+        this.airspace.upperCeiling = altitude;
 
         // check that defined upper limit is actually higher than defined lower limit
-        this._enforceSaneLimits();
+        this.enforceSaneLimits();
     }
 
     /**
@@ -176,16 +176,16 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleAlToken(token) {
+    handleAlToken(token) {
         checkTypes.assert.instance(token, AlToken);
 
         const { metadata } = token.getTokenized();
         const { altitude } = metadata;
 
-        this._airspace.lowerCeiling = altitude;
+        this.airspace.lowerCeiling = altitude;
 
         // check that defined lower limit is actually lower than defined upper limit
-        this._enforceSaneLimits();
+        this.enforceSaneLimits();
     }
 
     /**
@@ -194,7 +194,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleDpToken(token) {
+    handleDpToken(token) {
         checkTypes.assert.instance(token, DpToken);
 
         const { metadata } = token.getTokenized();
@@ -203,7 +203,7 @@ class AirspaceFactory {
         checkTypes.assert.nonEmptyObject(coordinate);
 
         // IMPORTANT subsequently push coordinates
-        this._airspace.coordinates.push(this._toArrayLike(coordinate));
+        this.airspace.coordinates.push(this.toArrayLike(coordinate));
     }
 
     /**
@@ -213,7 +213,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleVdToken(token) {
+    handleVdToken(token) {
         checkTypes.assert.instance(token, VdToken);
     }
 
@@ -224,7 +224,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleVxToken(token) {
+    handleVxToken(token) {
         checkTypes.assert.instance(token, VxToken);
     }
 
@@ -235,13 +235,13 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleDcToken(token) {
+    handleDcToken(token) {
         checkTypes.assert.instance(token, DcToken);
 
         const { lineNumber, metadata } = token.getTokenized();
         const { radius } = metadata;
 
-        const precedingVxToken = this._getNextToken(token, VxToken.type, false);
+        const precedingVxToken = this.getNextToken(token, VxToken.type, false);
         if (precedingVxToken === null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
@@ -252,13 +252,13 @@ class AirspaceFactory {
         // convert radius in NM to meters
         const radiusM = radius * 1852;
 
-        const { geometry } = createCircle(this._toArrayLike(coordinate), radiusM, {
-            steps: this._geometryDetail,
+        const { geometry } = createCircle(this.toArrayLike(coordinate), radiusM, {
+            steps: this.geometryDetail,
             units: 'meters',
         });
         const [coordinates] = geometry.coordinates;
         // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
-        this._airspace.coordinates = coordinates;
+        this.airspace.coordinates = coordinates;
     }
 
     /**
@@ -268,23 +268,23 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleDbToken(token) {
+    handleDbToken(token) {
         checkTypes.assert.instance(token, DbToken);
 
-        const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this._getBuildDbArcCoordinates(token);
+        const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDbArcCoordinates(token);
 
         // calculate line arc
 
-        const centerCoord = this._toArrayLike(centerCoordinate);
+        const centerCoord = this.toArrayLike(centerCoordinate);
         let startCoord;
         let endCoord;
         if (clockwise) {
-            startCoord = this._toArrayLike(startCoordinate);
-            endCoord = this._toArrayLike(endCoordinate);
+            startCoord = this.toArrayLike(startCoordinate);
+            endCoord = this.toArrayLike(endCoordinate);
         } else {
             // flip coordinates
-            endCoord = this._toArrayLike(startCoordinate);
-            startCoord = this._toArrayLike(endCoordinate);
+            endCoord = this.toArrayLike(startCoordinate);
+            startCoord = this.toArrayLike(endCoordinate);
         }
 
         // get required bearings
@@ -294,13 +294,13 @@ class AirspaceFactory {
         const radiusKm = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
         // calculate the line arc
         const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
-            steps: this._geometryDetail,
+            steps: this.geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
 
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        this.airspace.coordinates = this.airspace.coordinates.concat(arcCoordinates);
     }
 
     /**
@@ -311,7 +311,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleDaToken(token) {
+    handleDaToken(token) {
         checkTypes.assert.instance(token, DaToken);
 
         const { lineNumber, metadata: metadataDaToken } = token.getTokenized();
@@ -320,31 +320,31 @@ class AirspaceFactory {
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken = this._getNextToken(token, VdToken.type, false);
+        const vdToken = this.getNextToken(token, VdToken.type, false);
         if (vdToken) {
             clockwise = vdToken.getTokenized().metadata.clockwise;
         }
 
         // get preceding VxToken => defines the arc center
-        const vxToken = this._getNextToken(token, VxToken.type, false);
+        const vxToken = this.getNextToken(token, VxToken.type, false);
         if (vxToken === null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
         const { metadata: metadataVxToken } = vxToken.getTokenized();
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
-        const centerCoord = this._toArrayLike(vxTokenCoordinate);
+        const centerCoord = this.toArrayLike(vxTokenCoordinate);
         // get the radius in kilometers
         const radiusKm = radius * 1.852;
         // calculate the line arc
         const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
-            steps: this._geometryDetail,
+            steps: this.geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
 
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        this.airspace.coordinates = this.airspace.coordinates.concat(arcCoordinates);
     }
 
     /**
@@ -352,7 +352,7 @@ class AirspaceFactory {
      * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array clockwise: boolean}}
      * @private
      */
-    _getBuildDbArcCoordinates(token) {
+    getBuildDbArcCoordinates(token) {
         checkTypes.assert.instance(token, DbToken);
 
         // Current "token" is the DbToken => defines arc start/end coordinates
@@ -363,13 +363,13 @@ class AirspaceFactory {
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken = this._getNextToken(token, VdToken.type, false);
+        const vdToken = this.getNextToken(token, VdToken.type, false);
         if (vdToken) {
             clockwise = vdToken.getTokenized().metadata.clockwise;
         }
 
         // get preceding VxToken => defines the arc center
-        const vxToken = this._getNextToken(token, VxToken.type, false);
+        const vxToken = this.getNextToken(token, VxToken.type, false);
         if (vxToken === null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
@@ -390,7 +390,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleCommentToken(token) {
+    handleCommentToken(token) {
         checkTypes.assert.instance(token, CommentToken);
     }
 
@@ -400,7 +400,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    _handleBlankToken(token) {
+    handleBlankToken(token) {
         checkTypes.assert.instance(token, BlankToken);
     }
 
@@ -409,7 +409,7 @@ class AirspaceFactory {
      * @return {number[]}
      * @private
      */
-    _toArrayLike(coordinate) {
+    toArrayLike(coordinate) {
         return [coordinate.getLongitude(), coordinate.getLatitude()];
     }
 
@@ -422,13 +422,13 @@ class AirspaceFactory {
      * @return {BaseLineToken|null}
      * @private
      */
-    _getNextToken(token, tokenType, lookAhead = true) {
+    getNextToken(token, tokenType, lookAhead = true) {
         // get index of current token in tokens list
-        let currentIndex = this._tokens.findIndex((value) => value === token);
+        let currentIndex = this.tokens.findIndex((value) => value === token);
 
         if (lookAhead) {
-            for (currentIndex; currentIndex <= this._tokens.length - 1; currentIndex++) {
-                const nextToken = this._tokens[currentIndex];
+            for (currentIndex; currentIndex <= this.tokens.length - 1; currentIndex++) {
+                const nextToken = this.tokens[currentIndex];
 
                 if (nextToken.getType() === tokenType) {
                     return nextToken;
@@ -436,7 +436,7 @@ class AirspaceFactory {
             }
         } else {
             for (currentIndex; currentIndex >= 0; currentIndex--) {
-                const nextToken = this._tokens[currentIndex];
+                const nextToken = this.tokens[currentIndex];
 
                 if (nextToken.getType() === tokenType) {
                     return nextToken;
@@ -454,7 +454,7 @@ class AirspaceFactory {
      * @param ceiling
      * @returns {{unit: string, value, referenceDatum: string}}
      */
-    _flToFeet(ceiling) {
+    flToFeet(ceiling) {
         let { value, unit, referenceDatum } = ceiling;
 
         if (unit === 'FL') {
@@ -466,14 +466,14 @@ class AirspaceFactory {
         return { value, unit, referenceDatum };
     }
 
-    _enforceSaneLimits() {
-        if (this._airspace.lowerCeiling && this._airspace.upperCeiling) {
-            const compareUpper = this._flToFeet(this._airspace.upperCeiling);
-            const compareLower = this._flToFeet(this._airspace.lowerCeiling);
+    enforceSaneLimits() {
+        if (this.airspace.lowerCeiling && this.airspace.upperCeiling) {
+            const compareUpper = this.flToFeet(this.airspace.upperCeiling);
+            const compareLower = this.flToFeet(this.airspace.lowerCeiling);
 
             if (compareLower.value > compareUpper.value) {
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
+                    lineNumber: this.currentLineNumber,
                     errorMessage: 'Lower limit must be less than upper limit',
                 });
             }

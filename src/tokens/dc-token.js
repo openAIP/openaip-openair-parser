@@ -16,7 +16,7 @@ class DcToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new DcToken({ tokenTypes: this._tokenTypes });
+        const token = new DcToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -28,13 +28,13 @@ class DcToken extends BaseLineToken {
             throw new ParserError({ lineNumber, errorMessage: `Unknown circle radius definition '${line}'` });
         }
 
-        token._tokenized = { line, lineNumber, metadata: { radius: parseFloat(linePartRadius) } };
+        token.tokenized = { line, lineNumber, metadata: { radius: parseFloat(linePartRadius) } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }

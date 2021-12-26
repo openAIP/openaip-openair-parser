@@ -65,7 +65,7 @@ class Airspace {
         let lineNumber;
         if (fixGeometry) {
             try {
-                polygon = this._createFixedPolygon(this.coordinates);
+                polygon = this.createFixedPolygon(this.coordinates);
             } catch (e) {
                 if (e instanceof SyntaxError) {
                     const acToken = this.consumedTokens.shift();
@@ -88,9 +88,9 @@ class Airspace {
         }
 
         if (validateGeometry) {
-            let isValid = this._isValid(polygon);
-            let isSimple = this._isSimple(polygon);
-            const selfIntersect = this._getSelfIntersections(polygon);
+            let isValid = this.isValid(polygon);
+            let isSimple = this.isSimple(polygon);
+            const selfIntersect = this.getSelfIntersections(polygon);
 
             if (!isValid || !isSimple || selfIntersect) {
                 if (selfIntersect) {
@@ -119,7 +119,7 @@ class Airspace {
      * @returns {Array[]}
      * @private
      */
-    _removeDuplicates(coordinates) {
+    removeDuplicates(coordinates) {
         const processed = [];
         for (const coord of coordinates) {
             const exists = processed.find((value) => {
@@ -143,9 +143,9 @@ class Airspace {
      * @return {*}
      * @private
      */
-    _createFixedPolygon(coordinates) {
+    createFixedPolygon(coordinates) {
         // prepare "raw" coordinates first before creating a polygon feature
-        coordinates = this._removeDuplicates(coordinates);
+        coordinates = this.removeDuplicates(coordinates);
 
         let polygon;
         try {
@@ -185,7 +185,7 @@ class Airspace {
      * @return {boolean}
      * @private
      */
-    _isValid(polygonFeature) {
+    isValid(polygonFeature) {
         const reader = new jsts.io.GeoJSONReader();
         const jstsGeometry = reader.read(polygonFeature.geometry);
         const isValidValidator = new jsts.operation.valid.IsValidOp(jstsGeometry);
@@ -198,7 +198,7 @@ class Airspace {
      * @return {boolean}
      * @private
      */
-    _isSimple(polygonFeature) {
+    isSimple(polygonFeature) {
         const reader = new jsts.io.GeoJSONReader();
         const jstsGeometry = reader.read(polygonFeature.geometry);
         const isSimpleValidator = new jsts.operation.IsSimpleOp(jstsGeometry);
@@ -211,7 +211,7 @@ class Airspace {
      * @return {Object|null}
      * @private
      */
-    _getSelfIntersections(polygonFeature) {
+    getSelfIntersections(polygonFeature) {
         const reader = new jsts.io.GeoJSONReader();
         const jstsGeometry = reader.read(polygonFeature.geometry);
 

@@ -83,9 +83,9 @@ class Tokenizer {
         checkTypes.assert.string(targetAltUnit);
         checkTypes.assert.boolean(roundAltValues);
 
-        this._config = config;
+        this.config = config;
         /** @type {BaseLineToken[]} */
-        this._tokenizers = [
+        this.tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES }),
             new SkippedToken({ tokenTypes: TOKEN_TYPES }),
             new BlankToken({ tokenTypes: TOKEN_TYPES }),
@@ -101,12 +101,12 @@ class Tokenizer {
             new DaToken({ tokenTypes: TOKEN_TYPES }),
         ];
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
-        this._tokens = [];
+        this.tokens = [];
         // previous processed token, used to validate correct token order
         /** @type {BaseLineToken} */
-        this._prevToken = null;
-        this._currentLineString = null;
-        this._currentLineNumber = 0;
+        this.prevToken = null;
+        this.currentLineString = null;
+        this.currentLineNumber = 0;
     }
 
     /**
@@ -116,55 +116,55 @@ class Tokenizer {
      * @return {typedefs.openaip.OpenairParser.Token[]}
      */
     tokenize(filepath) {
-        this._reset();
+        this.reset();
 
         const liner = new LineByLine(filepath);
         let line;
 
         while ((line = liner.next())) {
-            this._currentLineNumber++;
+            this.currentLineNumber++;
             // call trim to also remove newlines
-            this._currentLineString = line.toString().trim();
+            this.currentLineString = line.toString().trim();
 
             // find the tokenizer that can handle the current line
-            const lineToken = this._tokenizers.find((value) => value.canHandle(this._currentLineString));
+            const lineToken = this.tokenizers.find((value) => value.canHandle(this.currentLineString));
             if (lineToken == null) {
                 // fail hard if unable to find a tokenizer for a specific line
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
-                    errorMessage: `Failed to read line ${this._currentLineNumber}. Unknown syntax.`,
+                    lineNumber: this.currentLineNumber,
+                    errorMessage: `Failed to read line ${this.currentLineNumber}. Unknown syntax.`,
                 });
             }
 
             // validate correct token order
-            if (this._prevToken && this._prevToken.isAllowedNextToken(lineToken) === false) {
-                const { lineNumber: prevTokenLineNumber } = this._prevToken.getTokenized();
-                const { lineNumber: currentTokenLineNumber } = this._prevToken.getTokenized();
+            if (this.prevToken && this.prevToken.isAllowedNextToken(lineToken) === false) {
+                const { lineNumber: prevTokenLineNumber } = this.prevToken.getTokenized();
+                const { lineNumber: currentTokenLineNumber } = lineToken.getTokenized();
 
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
-                    errorMessage: `Previous token '${this._prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${lineToken.getType()}' on line ${currentTokenLineNumber}`,
+                    lineNumber: this.currentLineNumber,
+                    errorMessage: `Previous token '${this.prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${lineToken.getType()}' on line ${currentTokenLineNumber}`,
                 });
             }
 
             try {
-                const token = lineToken.tokenize(this._currentLineString, this._currentLineNumber);
-                this._tokens.push(token);
+                const token = lineToken.tokenize(this.currentLineString, this.currentLineNumber);
+                this.tokens.push(token);
                 // IMPORTANT only keep relevant (no comments...) as "previous token" to check token order
                 if (token.getType() !== 'COMMENT' && token.getType() !== 'SKIPPED') {
-                    this._prevToken = token;
+                    this.prevToken = token;
                 }
             } catch (e) {
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
+                    lineNumber: this.currentLineNumber,
                     errorMessage: e.message,
                 });
             }
         }
         // finalize by adding EOF token
-        this._tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this._currentLineNumber }));
+        this.tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this.currentLineNumber }));
 
-        return this._tokens;
+        return this.tokens;
     }
 
     /**
@@ -174,7 +174,7 @@ class Tokenizer {
      * @return {Promise<void>}
      * @private
      */
-    async _enforceFileExists(filepath) {
+    async enforceFileExists(filepath) {
         const exists = await fs.existsSync(filepath);
         if (!exists) {
             throw new Error(`Failed to read file ${filepath}`);
@@ -186,11 +186,11 @@ class Tokenizer {
      *
      * @returns {void}
      */
-    _reset() {
-        this._tokens = [];
-        this._prevToken = null;
-        this._currentLine = null;
-        this._currentLineNumber = 0;
+    reset() {
+        this.tokens = [];
+        this.prevToken = null;
+        this.currentLine = null;
+        this.currentLineNumber = 0;
     }
 }
 

@@ -91,20 +91,20 @@ class Parser {
             throw new Error("Parameter 'roundAltValues' must be a boolean.");
         }
 
-        this._config = configuration;
+        this.config = configuration;
         // custom formatters
         this.formatter = [];
         /** @type {Airspace[]} */
-        this._airspaces = [];
+        this.airspaces = [];
         // default state of parser
-        this._currentState = PARSER_STATE.START;
+        this.currentState = PARSER_STATE.START;
         // holds the current token when iterating over token list and building airspaces
-        this._currentToken = null;
+        this.currentToken = null;
         // Holds all processed tokens for a single airspace definition block when building airspaces. Will be reset
         // when one airspace is built.
-        this._airspaceTokens = [];
+        this.airspaceTokens = [];
         // internally, airspaces are stored as geojson
-        this._geojson = null;
+        this.geojson = null;
     }
 
     /**
@@ -114,7 +114,7 @@ class Parser {
      * @return {Promise<Parser>}
      */
     async parse(filepath) {
-        this._reset();
+        this.reset();
 
         /*
         Tokenizes the file contents into a list of tokens and a list of syntax
@@ -125,73 +125,73 @@ class Parser {
         IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
          */
         const tokenizer = new Tokenizer({
-            airspaceClasses: this._config.airspaceClasses,
-            unlimited: this._config.unlimited,
-            defaultAltUnit: this._config.defaultAltUnit,
-            targetAltUnit: this._config.targetAltUnit,
-            roundAltValues: this._config.roundAltValues,
+            airspaceClasses: this.config.airspaceClasses,
+            unlimited: this.config.unlimited,
+            defaultAltUnit: this.config.defaultAltUnit,
+            targetAltUnit: this.config.targetAltUnit,
+            roundAltValues: this.config.roundAltValues,
         });
         const tokens = await tokenizer.tokenize(filepath);
 
         // iterate over tokens and create airspaces
         for (let i = 0; i < tokens.length; i++) {
-            this._currentToken = tokens[i];
+            this.currentToken = tokens[i];
 
             // do not change state if reading a comment or skipped token regardless of current state
             if (
-                this._currentToken instanceof CommentToken ||
-                this._currentToken instanceof SkippedToken ||
-                this._currentToken instanceof BlankToken
+                this.currentToken instanceof CommentToken ||
+                this.currentToken instanceof SkippedToken ||
+                this.currentToken instanceof BlankToken
             ) {
                 continue;
             }
 
             // AC tokens mark either start or end of airspace definition block
-            if (this._currentToken instanceof AcToken) {
-                if (this._currentState === PARSER_STATE.READ) {
+            if (this.currentToken instanceof AcToken) {
+                if (this.currentState === PARSER_STATE.READ) {
                     // each new AC line will trigger an airspace build if parser is in READ state
                     // this is needed for files that do not have blanks between definition blocks but comments
-                    this._buildAirspace();
+                    this.buildAirspace();
                 }
             }
 
             // handle EOF
-            if (this._currentToken instanceof EofToken) {
+            if (this.currentToken instanceof EofToken) {
                 // if EOF is reached and parser is in READ state, check if we have any unprocessed airspace tokens
                 // and if so, build the airspace
-                if (this._currentState === PARSER_STATE.READ && this._airspaceTokens.length > 0) {
-                    this._buildAirspace();
+                if (this.currentState === PARSER_STATE.READ && this.airspaceTokens.length > 0) {
+                    this.buildAirspace();
                     continue;
                 }
             }
 
-            this._currentState = PARSER_STATE.READ;
+            this.currentState = PARSER_STATE.READ;
             // in all other cases, push token to airspace tokens list and continue
-            this._airspaceTokens.push(this._currentToken);
+            this.airspaceTokens.push(this.currentToken);
         }
 
         // create airspaces as a GeoJSON feature collection and store them internally
-        const geojsonFeatures = this._airspaces.map((value) => {
+        const geojsonFeatures = this.airspaces.map((value) => {
             return value.asGeoJson({
-                validateGeometry: this._config.validateGeometry,
-                fixGeometry: this._config.fixGeometry,
-                includeOpenair: this._config.includeOpenair,
+                validateGeometry: this.config.validateGeometry,
+                fixGeometry: this.config.fixGeometry,
+                includeOpenair: this.config.includeOpenair,
             });
         });
-        this._geojson = createFeatureCollection(geojsonFeatures);
+        this.geojson = createFeatureCollection(geojsonFeatures);
 
         return this;
     }
 
-    _buildAirspace() {
+    buildAirspace() {
         const factory = new AirspaceFactory({
-            geometryDetail: this._config.geometryDetail,
+            geometryDetail: this.config.geometryDetail,
         });
-        const airspace = factory.createAirspace(this._airspaceTokens);
+        const airspace = factory.createAirspace(this.airspaceTokens);
         // push new airspace to list
-        this._airspaces.push(airspace);
+        this.airspaces.push(airspace);
         // reset read airspace tokens
-        this._airspaceTokens = [];
+        this.airspaceTokens = [];
     }
 
     /**
@@ -200,7 +200,7 @@ class Parser {
     toFormat(format) {
         switch (format) {
             case 'geojson':
-                return this._geojson;
+                return this.geojson;
             default:
                 throw new Error(`Unknown format '${format}'`);
         }
@@ -210,18 +210,18 @@ class Parser {
      * @return {typedefs.openaip.OpenairParser.ParserResult}
      */
     toGeojson() {
-        return this._geojson;
+        return this.geojson;
     }
 
     /**
      * Resets the state.
      */
-    _reset() {
-        this._currentState = PARSER_STATE.START;
-        this._airspaces = [];
-        this._currentToken = null;
-        this._airspaceTokens = [];
-        this._geojson = null;
+    reset() {
+        this.currentState = PARSER_STATE.START;
+        this.airspaces = [];
+        this.currentToken = null;
+        this.airspaceTokens = [];
+        this.geojson = null;
     }
 }
 

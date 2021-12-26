@@ -16,7 +16,7 @@ class VdToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new VdToken({ tokenTypes: this._tokenTypes });
+        const token = new VdToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -24,13 +24,13 @@ class VdToken extends BaseLineToken {
         // canHandle function already validated correct clockwise/counter-clockwise definition => only get +/-
         const linePartClockwise = line.replace(/^V\s+D=/, '');
 
-        token._tokenized = { line, lineNumber, metadata: { clockwise: linePartClockwise === '+' } };
+        token.tokenized = { line, lineNumber, metadata: { clockwise: linePartClockwise === '+' } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, VX_TOKEN, DB_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, VX_TOKEN, DB_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [COMMENT_TOKEN, VX_TOKEN, DB_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }

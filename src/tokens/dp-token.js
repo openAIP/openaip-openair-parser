@@ -17,7 +17,7 @@ class DpToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new DpToken({ tokenTypes: this._tokenTypes });
+        const token = new DpToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -31,13 +31,13 @@ class DpToken extends BaseLineToken {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
 
-        token._tokenized = { line, lineNumber, metadata: { coordinate } };
+        token.tokenized = { line, lineNumber, metadata: { coordinate } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [COMMENT_TOKEN, DP_TOKEN, BLANK_TOKEN, EOF_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(
             token.constructor.type

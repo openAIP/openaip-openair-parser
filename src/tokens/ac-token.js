@@ -25,7 +25,7 @@ class AcToken extends BaseLineToken {
 
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
 
-        this._airspaceClasses = airspaceClasses;
+        this.airspaceClasses = airspaceClasses;
     }
 
     canHandle(line) {
@@ -36,7 +36,7 @@ class AcToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new AcToken({ airspaceClasses: this._airspaceClasses, tokenTypes: this._tokenTypes });
+        const token = new AcToken({ airspaceClasses: this.airspaceClasses, tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -44,17 +44,17 @@ class AcToken extends BaseLineToken {
         const linePartClass = line.replace(/^AC\s+/, '');
 
         // check restricted classes
-        if (!this._airspaceClasses.includes(linePartClass)) {
+        if (!this.airspaceClasses.includes(linePartClass)) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown airspace class '${line}'` });
         }
 
-        token._tokenized = { line, lineNumber, metadata: { class: linePartClass } };
+        token.tokenized = { line, lineNumber, metadata: { class: linePartClass } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
     }

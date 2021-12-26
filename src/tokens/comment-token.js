@@ -15,12 +15,12 @@ class CommentToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new CommentToken({ tokenTypes: this._tokenTypes });
+        const token = new CommentToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
-        token._tokenized = { line, lineNumber };
+        token.tokenized = { line, lineNumber };
 
         return token;
     }
@@ -40,7 +40,7 @@ class CommentToken extends BaseLineToken {
             DC_TOKEN,
             EOF_TOKEN,
             SKIPPED_TOKEN,
-        } = this._tokenTypes;
+        } = this.tokenTypes;
 
         return [
             COMMENT_TOKEN,

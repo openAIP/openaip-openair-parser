@@ -17,8 +17,8 @@ class BaseLineToken {
 
         checkTypes.assert.nonEmptyObject(tokenTypes);
 
-        this._tokenTypes = tokenTypes;
-        this._tokenized = null;
+        this.tokenTypes = tokenTypes;
+        this.tokenized = null;
     }
 
     /**
@@ -56,7 +56,7 @@ class BaseLineToken {
      * @return {{line: string, lineNumber: number, [metadata]: Object}}
      */
     getTokenized() {
-        return this._tokenized;
+        return this.tokenized;
     }
 
     /**

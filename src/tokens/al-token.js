@@ -17,11 +17,11 @@ class AlToken extends BaseAltitudeToken {
 
     tokenize(line, lineNumber) {
         const token = new AlToken({
-            tokenTypes: this._tokenTypes,
-            unlimited: this._unlimited,
-            defaultAltUnit: this._defaultAltUnit,
-            targetAltUnit: this._targetAltUnit,
-            roundAltValues: this._roundAltValues,
+            tokenTypes: this.tokenTypes,
+            unlimited: this.unlimited,
+            defaultAltUnit: this.defaultAltUnit,
+            targetAltUnit: this.targetAltUnit,
+            roundAltValues: this.roundAltValues,
         });
 
         checkTypes.assert.string(line);
@@ -30,7 +30,7 @@ class AlToken extends BaseAltitudeToken {
         const linePartAltitude = line.replace(/^AL\s+/, '');
         let altitude;
         try {
-            altitude = this._getAltitude(linePartAltitude);
+            altitude = this.getAltitude(linePartAltitude);
         } catch (e) {
             if (e instanceof SyntaxError) {
                 throw new ParserError({ lineNumber, errorMessage: e.message });
@@ -39,13 +39,13 @@ class AlToken extends BaseAltitudeToken {
             }
         }
 
-        token._tokenized = { line, lineNumber, metadata: { altitude } };
+        token.tokenized = { line, lineNumber, metadata: { altitude } };
 
         return token;
     }
 
     isAllowedNextToken(token) {
-        const { COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VX_TOKEN, SKIPPED_TOKEN, VD_TOKEN } = this._tokenTypes;
+        const { COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VX_TOKEN, SKIPPED_TOKEN, VD_TOKEN } = this.tokenTypes;
 
         return [COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VX_TOKEN, SKIPPED_TOKEN, VD_TOKEN].includes(token.constructor.type);
     }

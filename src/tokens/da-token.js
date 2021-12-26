@@ -15,7 +15,7 @@ class DaToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new DaToken({ tokenTypes: this._tokenTypes });
+        const token = new DaToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -29,11 +29,11 @@ class DaToken extends BaseLineToken {
         const ae = parseFloat(angleEnd);
 
         // angle to bearing
-        const startBearing = this._toBearing(as);
-        const endBearing = this._toBearing(ae);
+        const startBearing = this.toBearing(as);
+        const endBearing = this.toBearing(ae);
 
         // convert angles to bearings
-        token._tokenized = {
+        token.tokenized = {
             line,
             lineNumber,
             metadata: {
@@ -49,7 +49,7 @@ class DaToken extends BaseLineToken {
     }
 
     isAllowedNextToken(token) {
-        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this._tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
         return [BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN].includes(
             token.constructor.type
@@ -61,7 +61,7 @@ class DaToken extends BaseLineToken {
      * @return {number}
      * @private
      */
-    _toBearing(angle) {
+    toBearing(angle) {
         checkTypes.assert.number(angle);
 
         angle = parseFloat(angle);
