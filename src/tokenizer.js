@@ -127,8 +127,8 @@ class Tokenizer {
             this.currentLineString = line.toString().trim();
 
             // find the tokenizer that can handle the current line
-            const lineToken = this.tokenizers.find((value) => value.canHandle(this.currentLineString));
-            if (lineToken == null) {
+            const lineTokenizer = this.tokenizers.find((value) => value.canHandle(this.currentLineString));
+            if (lineTokenizer == null) {
                 // fail hard if unable to find a tokenizer for a specific line
                 throw new ParserError({
                     lineNumber: this.currentLineNumber,
@@ -136,29 +136,31 @@ class Tokenizer {
                 });
             }
 
-            // validate correct token order
-            if (this.prevToken && this.prevToken.isAllowedNextToken(lineToken) === false) {
-                const { lineNumber: prevTokenLineNumber } = this.prevToken.getTokenized();
-                const { lineNumber: currentTokenLineNumber } = lineToken.getTokenized();
-
-                throw new ParserError({
-                    lineNumber: this.currentLineNumber,
-                    errorMessage: `Previous token '${this.prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${lineToken.getType()}' on line ${currentTokenLineNumber}`,
-                });
-            }
-
+            let token;
             try {
-                const token = lineToken.tokenize(this.currentLineString, this.currentLineNumber);
-                this.tokens.push(token);
-                // IMPORTANT only keep relevant (no comments...) as "previous token" to check token order
-                if (token.getType() !== 'COMMENT' && token.getType() !== 'SKIPPED') {
-                    this.prevToken = token;
-                }
+                token = lineTokenizer.tokenize(this.currentLineString, this.currentLineNumber);
             } catch (e) {
                 throw new ParserError({
                     lineNumber: this.currentLineNumber,
                     errorMessage: e.message,
                 });
+            }
+
+            // validate correct token order
+            if (this.prevToken && this.prevToken.isAllowedNextToken(lineTokenizer) === false) {
+                const { lineNumber: prevTokenLineNumber } = this.prevToken.getTokenized();
+                const { lineNumber: currentTokenLineNumber } = token.getTokenized();
+
+                throw new ParserError({
+                    lineNumber: this.currentLineNumber,
+                    errorMessage: `Previous token '${this.prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${token.getType()}' on line ${currentTokenLineNumber}`,
+                });
+            }
+
+            this.tokens.push(token);
+            // IMPORTANT only keep relevant (no comments...) as "previous token" to check token order
+            if (token.getType() !== 'COMMENT' && token.getType() !== 'SKIPPED') {
+                this.prevToken = token;
             }
         }
         // finalize by adding EOF token
