@@ -137,14 +137,15 @@ class Parser {
         for (let i = 0; i < tokens.length; i++) {
             this.currentToken = tokens[i];
 
-            // do not change state if reading a comment or skipped token regardless of current state
-            if (
-                this.currentToken instanceof CommentToken ||
-                this.currentToken instanceof SkippedToken ||
-                this.currentToken instanceof BlankToken
-            ) {
-                continue;
-            }
+            // TODO add to read airspace definition list => requried to check token orders
+            // // do not change state if reading a comment or skipped token regardless of current state
+            // if (
+            //     this.currentToken instanceof CommentToken ||
+            //     this.currentToken instanceof SkippedToken ||
+            //     this.currentToken instanceof BlankToken
+            // ) {
+            //     continue;
+            // }
 
             // AC tokens mark either start or end of airspace definition block
             if (this.currentToken instanceof AcToken) {

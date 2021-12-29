@@ -5,7 +5,7 @@ const checkTypes = require('check-types');
 /**
  * @typedef typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig
  * @type Object
- * @property {BaseLineToken} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
+ * @property {typedefs.openaip.OpenairParser.Token} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
  * @property {number} unlimited - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
  * @property {string} defaultAltUnit - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
  * @property {string} targetAltUnit - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.

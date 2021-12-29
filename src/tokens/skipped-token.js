@@ -25,7 +25,7 @@ class SkippedToken extends CommentToken {
         return token;
     }
 
-    isAllowedNextToken(token) {
+    getAllowedNextTokens() {
         const {
             COMMENT_TOKEN,
             BLANK_TOKEN,
@@ -56,7 +56,7 @@ class SkippedToken extends CommentToken {
             DC_TOKEN,
             EOF_TOKEN,
             SKIPPED_TOKEN,
-        ].includes(token.constructor.type);
+        ];
     }
 }
 

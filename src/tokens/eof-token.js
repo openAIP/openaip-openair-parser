@@ -36,7 +36,7 @@ class EofToken extends BaseLineToken {
         return false;
     }
 
-    isAllowedNextToken(token) {
+    getAllowedNextTokens() {
         // no token after EOL
         return false;
     }

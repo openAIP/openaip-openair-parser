@@ -33,10 +33,10 @@ class DcToken extends BaseLineToken {
         return token;
     }
 
-    isAllowedNextToken(token) {
+    getAllowedNextTokens() {
         const { BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
-        return [BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
+        return [BLANK_TOKEN, COMMENT_TOKEN, EOF_TOKEN, SKIPPED_TOKEN];
     }
 }
 

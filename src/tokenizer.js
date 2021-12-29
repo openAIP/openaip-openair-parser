@@ -66,6 +66,16 @@ const TOKEN_TYPES = {
  */
 
 /**
+ * @typedef typedefs.openaip.OpenairParser.Token
+ * @type Object
+ * @property {function} tokenize
+ * @property {function} getTokenized
+ * @property {function} getType
+ * @property {function} canHandle
+ * @property {function} isAllowedNextToken
+ */
+
+/**
  * Reads the contents of a give file and tokenizes it. Each line will result in a single token.
  * Each token holds a tokenized representation of the read line. The tokenizer will return a list of all read
  * and created tokens. The tokenizer will throw a syntax error on the first error that is encountered.
@@ -84,7 +94,7 @@ class Tokenizer {
         checkTypes.assert.boolean(roundAltValues);
 
         this.config = config;
-        /** @type {BaseLineToken[]} */
+        /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES }),
             new SkippedToken({ tokenTypes: TOKEN_TYPES }),
@@ -103,7 +113,7 @@ class Tokenizer {
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokens = [];
         // previous processed token, used to validate correct token order
-        /** @type {BaseLineToken} */
+        /** @type {typedefs.openaip.OpenairParser.Token} */
         this.prevToken = null;
         this.currentLineString = null;
         this.currentLineNumber = 0;
@@ -145,28 +155,44 @@ class Tokenizer {
                     errorMessage: e.message,
                 });
             }
-
-            // validate correct token order
-            if (this.prevToken && this.prevToken.isAllowedNextToken(lineTokenizer) === false) {
-                const { lineNumber: prevTokenLineNumber } = this.prevToken.getTokenized();
-                const { lineNumber: currentTokenLineNumber } = token.getTokenized();
-
-                throw new ParserError({
-                    lineNumber: this.currentLineNumber,
-                    errorMessage: `Previous token '${this.prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${token.getType()}' on line ${currentTokenLineNumber}`,
-                });
-            }
-
             this.tokens.push(token);
-            // IMPORTANT only keep relevant (no comments...) as "previous token" to check token order
-            if (token.getType() !== 'COMMENT' && token.getType() !== 'SKIPPED') {
-                this.prevToken = token;
-            }
         }
         // finalize by adding EOF token
         this.tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this.currentLineNumber }));
 
+        // validate correct token ordering
+        this.validateTokenOrder();
+
         return this.tokens;
+    }
+
+    /**
+     * Validates that tokenized lines have correct order.
+     *
+     * @return {void}
+     */
+    validateTokenOrder() {
+        let prevToken;
+        for (let index = 0; index < this.tokens.length - 1; index++) {
+            const token = this.tokens[index];
+            if (prevToken == null) prevToken = token;
+
+            const isAllowedNextToken = token.isAllowedNextToken(1, index, this.tokens, [
+                CommentToken,
+                BlankToken,
+                SkippedToken,
+            ]);
+            if (isAllowedNextToken === false) {
+                const { lineNumber: prevTokenLineNumber } = prevToken.getTokenized();
+                const { lineNumber: currentTokenLineNumber } = token.getTokenized();
+
+                throw new ParserError({
+                    lineNumber: this.currentLineNumber,
+                    errorMessage: `Previous token '${prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${token.getType()}' on line ${currentTokenLineNumber}`,
+                });
+            }
+            prevToken = token;
+        }
     }
 
     /**

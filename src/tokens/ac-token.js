@@ -53,10 +53,10 @@ class AcToken extends BaseLineToken {
         return token;
     }
 
-    isAllowedNextToken(token) {
+    getAllowedNextTokens() {
         const { COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
-        return [COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN];
     }
 }
 

@@ -27,10 +27,10 @@ class AnToken extends BaseLineToken {
         return token;
     }
 
-    isAllowedNextToken(token) {
+    getAllowedNextTokens() {
         const { COMMENT_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
-        return [COMMENT_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN].includes(token.constructor.type);
+        return [COMMENT_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN];
     }
 }
 

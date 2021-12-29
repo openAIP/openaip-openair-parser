@@ -39,7 +39,7 @@ class AirspaceFactory {
 
         this.geometryDetail = geometryDetail;
 
-        /** @type {BaseLineToken[]} */
+        /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokens = null;
         /** @type {Airspace} */
         this.airspace = null;
@@ -47,7 +47,7 @@ class AirspaceFactory {
     }
 
     /**
-     * @param {BaseLineToken[]} tokens - Complete list of tokens
+     * @param {typedefs.openaip.OpenairParser.Token[]} tokens - Complete list of tokens
      * @return {Airspace}
      */
     createAirspace(tokens) {
@@ -72,7 +72,7 @@ class AirspaceFactory {
     }
 
     /**
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      */
     consumeToken(token) {
         const type = token.getType();
@@ -124,7 +124,7 @@ class AirspaceFactory {
 
     /**
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -139,7 +139,7 @@ class AirspaceFactory {
 
     /**
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -154,7 +154,7 @@ class AirspaceFactory {
 
     /**
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -172,7 +172,7 @@ class AirspaceFactory {
 
     /**
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -190,7 +190,7 @@ class AirspaceFactory {
 
     /**
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -209,7 +209,7 @@ class AirspaceFactory {
     /**
      * Does nothing but required to create an arc.
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -220,7 +220,7 @@ class AirspaceFactory {
     /**
      * Does nothing but required to create an arc.
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -231,7 +231,7 @@ class AirspaceFactory {
     /**
      * Creates a circle geometry from the last VToken coordinate and a DcToken radius.
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -264,7 +264,7 @@ class AirspaceFactory {
     /**
      * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -307,7 +307,7 @@ class AirspaceFactory {
      * Creates an arc geometry from the last VToken coordinate and a DaToken that contains arc definition as
      * radius, angleStart and angleEnd.
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -348,7 +348,7 @@ class AirspaceFactory {
     }
 
     /**
-     * @param {BaseLineToken} token - Must be a DbToken!
+     * @param {typedefs.openaip.OpenairParser.Token} token - Must be a DbToken!
      * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array clockwise: boolean}}
      * @private
      */
@@ -386,7 +386,7 @@ class AirspaceFactory {
 
     /**
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -396,7 +396,7 @@ class AirspaceFactory {
 
     /**
      *
-     * @param {BaseLineToken} token
+     * @param {typedefs.openaip.OpenairParser.Token} token
      * @return {void}
      * @private
      */
@@ -416,10 +416,10 @@ class AirspaceFactory {
     /**
      * Traverses up the list of "consumed tokens" from the token until a token with the specified type is found.
      *
-     * @param {BaseLineToken} token - Currently consumed token
+     * @param {typedefs.openaip.OpenairParser.Token} token - Currently consumed token
      * @param {string} tokenType - Token type to search for
      * @param {boolean} [lookAhead] - If true, searches for NEXT token in list with specified type. If false, searches preceding token.
-     * @return {BaseLineToken|null}
+     * @return {typedefs.openaip.OpenairParser.Token|null}
      * @private
      */
     getNextToken(token, tokenType, lookAhead = true) {
