@@ -7,6 +7,10 @@ const checkTypes = require('check-types');
 class BlankToken extends BaseLineToken {
     static type = 'BLANK';
 
+    isIgnoredToken() {
+        return true;
+    }
+
     canHandle(line) {
         checkTypes.assert.string(line);
 

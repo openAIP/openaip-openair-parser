@@ -38,17 +38,18 @@ class AirspaceFactory {
         checkTypes.assert.integer(geometryDetail);
 
         this.geometryDetail = geometryDetail;
-
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokens = null;
         /** @type {Airspace} */
         this.airspace = null;
         this.currentLineNumber = null;
+        // set to true if airspace contains tokens other than "skipped, blanks or comment"
+        this.hasBuildTokens = false;
     }
 
     /**
      * @param {typedefs.openaip.OpenairParser.Token[]} tokens - Complete list of tokens
-     * @return {Airspace}
+     * @return {Airspace|null}
      */
     createAirspace(tokens) {
         checkTypes.assert.array.of.instance(tokens, BaseLineToken);
@@ -61,14 +62,20 @@ class AirspaceFactory {
             this.currentLineNumber = lineNumber;
 
             this.consumeToken(token);
+            if (token.isIgnoredToken() === false) {
+                this.hasBuildTokens = true;
+            }
             this.airspace.consumedTokens.push(token);
         }
+        // validate correct token ordering
+        this.validateTokenOrder();
+
         const airspace = this.airspace;
 
         this.tokens = null;
         this.airspace = null;
 
-        return airspace;
+        return this.hasBuildTokens ? airspace : null;
     }
 
     /**
@@ -119,6 +126,41 @@ class AirspaceFactory {
                 break;
             default:
                 throw new ParserError({ lineNumber, errorMessage: `Unknown token '${type}'` });
+        }
+    }
+
+    /**
+     * Validates that tokenized lines have correct order.
+     *
+     * @return {void}
+     */
+    validateTokenOrder() {
+        for (let index = 0; index < this.tokens.length - 1; index++) {
+            const currentToken = this.tokens[index];
+            const maxLookAheadIndex = this.tokens.length - 1;
+
+            // get "next" token index and consider max look ahead
+            let lookAheadIndex = index + 1;
+            lookAheadIndex = lookAheadIndex > maxLookAheadIndex ? maxLookAheadIndex : lookAheadIndex;
+
+            // get next token, skip ignored tokens
+            let lookAheadToken = this.tokens[lookAheadIndex];
+            while (lookAheadToken.isIgnoredToken() && lookAheadIndex <= maxLookAheadIndex) {
+                lookAheadIndex++;
+                lookAheadToken = this.tokens[lookAheadIndex];
+            }
+
+            const isAllowedNextToken = currentToken.isAllowedNextToken(lookAheadToken);
+            if (isAllowedNextToken === false) {
+                const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
+                const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.getTokenized();
+
+                throw new ParserError({
+                    lineNumber: lookAheadTokenLineNumber,
+                    errorMessage: `Token '${currentToken.getType()}' on line ${currentTokenLineNumber} does not allow subsequent token '${lookAheadToken.getType()}' on line ${lookAheadTokenLineNumber}`,
+                });
+            }
+            index = lookAheadIndex + 1;
         }
     }
 

@@ -7,6 +7,10 @@ const checkTypes = require('check-types');
 class CommentToken extends BaseLineToken {
     static type = 'COMMENT';
 
+    isIgnoredToken() {
+        return true;
+    }
+
     canHandle(line) {
         checkTypes.assert.string(line);
 

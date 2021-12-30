@@ -7,6 +7,10 @@ const checkTypes = require('check-types');
 class SkippedToken extends CommentToken {
     static type = 'SKIPPED';
 
+    isIgnoredToken() {
+        return true;
+    }
+
     canHandle(line) {
         checkTypes.assert.string(line);
 

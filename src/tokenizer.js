@@ -68,6 +68,7 @@ const TOKEN_TYPES = {
 /**
  * @typedef typedefs.openaip.OpenairParser.Token
  * @type Object
+ * @property {function} isIgnoredToken
  * @property {function} tokenize
  * @property {function} getTokenized
  * @property {function} getType
@@ -160,39 +161,7 @@ class Tokenizer {
         // finalize by adding EOF token
         this.tokens.push(new EofToken({ tokenTypes: TOKEN_TYPES, lastLineNumber: this.currentLineNumber }));
 
-        // validate correct token ordering
-        this.validateTokenOrder();
-
         return this.tokens;
-    }
-
-    /**
-     * Validates that tokenized lines have correct order.
-     *
-     * @return {void}
-     */
-    validateTokenOrder() {
-        let prevToken;
-        for (let index = 0; index < this.tokens.length - 1; index++) {
-            const token = this.tokens[index];
-            if (prevToken == null) prevToken = token;
-
-            const isAllowedNextToken = token.isAllowedNextToken(1, index, this.tokens, [
-                CommentToken,
-                BlankToken,
-                SkippedToken,
-            ]);
-            if (isAllowedNextToken === false) {
-                const { lineNumber: prevTokenLineNumber } = prevToken.getTokenized();
-                const { lineNumber: currentTokenLineNumber } = token.getTokenized();
-
-                throw new ParserError({
-                    lineNumber: this.currentLineNumber,
-                    errorMessage: `Previous token '${prevToken.getType()}' on line ${prevTokenLineNumber} does not allow subsequent token '${token.getType()}' on line ${currentTokenLineNumber}`,
-                });
-            }
-            prevToken = token;
-        }
     }
 
     /**

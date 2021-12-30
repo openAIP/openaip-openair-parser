@@ -1295,7 +1295,7 @@ describe('test parse invalid airspace definition blocks', () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/empty-name.txt')).rejects.toThrow(
-            "Error found at line 3: Previous token 'AC' on line 1 does not allow subsequent token 'AH' on line 1"
+            "Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3"
         );
     });
 });

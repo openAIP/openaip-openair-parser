@@ -1,5 +1,4 @@
 const checkTypes = require('check-types');
-const { all } = require('check-types');
 
 /**
  * @typedef typedefs.openaip.OpenairParser.TokenConfig
@@ -20,6 +19,16 @@ class BaseLineToken {
 
         this.tokenTypes = tokenTypes;
         this.tokenized = null;
+    }
+
+    /**
+     * Most tokens are considered to be not ignored tokens. Blank, comment and other
+     * specific tokens that are not handled are considered to be "ignored" tokens.
+     *
+     * @return {boolean}
+     */
+    isIgnoredToken() {
+        return false;
     }
 
     /**
@@ -61,37 +70,11 @@ class BaseLineToken {
     }
 
     /**
-     * @param {number} lookAhead - Number of tokens to lookahead. Either positive or negative integers are allowed.
-     * @param {number} index - Current index in tokens list.
-     * @param {typedefs.openaip.OpenairParser.Token[]} tokens - The complete parsed list of tokens.
-     * @param {Function[]} [skipTokens] - A list of tokens to skip when doing a look ahead.
+     * @param {typedefs.openaip.OpenairParser.Token[]} token
      * @returns {boolean}
      */
-    isAllowedNextToken(lookAhead, index, tokens, skipTokens) {
-        checkTypes.assert.integer(lookAhead);
-        checkTypes.assert.integer(index);
-        checkTypes.assert.array.of.object(tokens);
-        checkTypes.assert.array.of.function(skipTokens);
-
-        const maxLookAhead = tokens.length - 1;
-        const allowedTokens = this.getAllowedNextTokens();
-        // maximum possible look ahead index
-        // get the actual look ahead index
-        let lookIndex = index + lookAhead;
-        lookIndex = lookIndex < 0 ? 0 : lookIndex;
-        let lookAheadToken = tokens[lookIndex];
-
-        if (lookAheadToken === undefined) {
-            throw new Error('Index out of bounds.');
-        }
-
-        // advance in list and get "next next" token if first "next" token should be skipped, stop at end of list
-        while (skipTokens.includes(lookAheadToken.constructor.type) && lookIndex <= maxLookAhead) {
-            lookIndex++;
-            lookAheadToken = tokens[lookIndex];
-        }
-
-        return allowedTokens.includes(lookAheadToken.constructor.type);
+    isAllowedNextToken(token) {
+        return this.getAllowedNextTokens().includes(token.constructor.type);
     }
 
     /**

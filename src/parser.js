@@ -1,7 +1,4 @@
 const Tokenizer = require('./tokenizer');
-const BlankToken = require('./tokens/blank-token');
-const CommentToken = require('./tokens/comment-token');
-const SkippedToken = require('./tokens/skipped-token');
 const AcToken = require('./tokens/ac-token');
 const EofToken = require('./tokens/eof-token');
 const AirspaceFactory = require('./airspace-factory');
@@ -137,15 +134,8 @@ class Parser {
         for (let i = 0; i < tokens.length; i++) {
             this.currentToken = tokens[i];
 
-            // TODO add to read airspace definition list => requried to check token orders
-            // // do not change state if reading a comment or skipped token regardless of current state
-            // if (
-            //     this.currentToken instanceof CommentToken ||
-            //     this.currentToken instanceof SkippedToken ||
-            //     this.currentToken instanceof BlankToken
-            // ) {
-            //     continue;
-            // }
+            // do not change state if reading a comment or skipped token regardless of current state
+            if (this.currentToken.isIgnoredToken()) continue;
 
             // AC tokens mark either start or end of airspace definition block
             if (this.currentToken instanceof AcToken) {
@@ -189,8 +179,10 @@ class Parser {
             geometryDetail: this.config.geometryDetail,
         });
         const airspace = factory.createAirspace(this.airspaceTokens);
-        // push new airspace to list
-        this.airspaces.push(airspace);
+        if (airspace != null) {
+            // push new airspace to list
+            this.airspaces.push(airspace);
+        }
         // reset read airspace tokens
         this.airspaceTokens = [];
     }
