@@ -988,6 +988,70 @@ describe('test parse complete airspace definition blocks', () => {
                         ],
                     },
                 },
+                {
+                    type: 'Feature',
+                    properties: {
+                        name: 'Shizuhama TMP Training Area',
+                        class: 'R',
+                        upperCeiling: {
+                            value: 11000,
+                            unit: 'FT',
+                            referenceDatum: 'MSL',
+                        },
+                        lowerCeiling: {
+                            value: 6000,
+                            unit: 'FT',
+                            referenceDatum: 'MSL',
+                        },
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            [
+                                [138.69194444444446, 35.14111111111111],
+                                [138.58027777777778, 35.13666666666666],
+                                [138.23722222222221, 35.05166666666666],
+                                [138.26527777777778, 34.93111111111111],
+                                [138.38111111111112, 34.868611111111115],
+                                [138.7802777777778, 34.84166666666667],
+                                [138.7802777777778, 34.876666666666665],
+                                [138.69194444444446, 35.14111111111111],
+                            ],
+                        ],
+                    },
+                },
+                {
+                    type: 'Feature',
+                    properties: {
+                        name: 'Shizuhama TMP Training Area',
+                        class: 'R',
+                        upperCeiling: {
+                            value: 11000,
+                            unit: 'FT',
+                            referenceDatum: 'MSL',
+                        },
+                        lowerCeiling: {
+                            value: 6000,
+                            unit: 'FT',
+                            referenceDatum: 'MSL',
+                        },
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            [
+                                [138.69194444444446, 35.14111111111111],
+                                [138.58027777777778, 35.13666666666666],
+                                [138.23722222222221, 35.05166666666666],
+                                [138.26527777777778, 34.93111111111111],
+                                [138.38111111111112, 34.868611111111115],
+                                [138.7802777777778, 34.84166666666667],
+                                [138.7802777777778, 34.876666666666665],
+                                [138.69194444444446, 35.14111111111111],
+                            ],
+                        ],
+                    },
+                },
             ],
         };
         // remove feature id for comparison

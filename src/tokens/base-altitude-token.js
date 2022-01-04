@@ -94,7 +94,7 @@ class AltitudeDefaultReader {
         this.defaultAltUnit = defaultAltUnit.toUpperCase();
         this.targetAltUnit = targetAltUnit.toUpperCase();
         this.roundAltValues = roundAltValues;
-        this.REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s+(MSL|AMSL|ALT|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
+        this.REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s*(MSL|AMSL|ALT|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
     }
 
     /**
@@ -179,18 +179,15 @@ class AltitudeDefaultReader {
     }
 
     /**
-     * @param {string} reference
+     * Harmonizes various Openair related reference datum definitions and returns internally used reference datum.
+     * If NO reference datum is given, default is to use "MSL"!
+     *
+     * @param {string|null} reference
      * @return {string}
      * @private
      */
     harmonizeReference(reference) {
-        checkTypes.assert.string(reference);
-
         switch (reference) {
-            case 'MSL':
-            case 'AMSL':
-            case 'ALT':
-                return 'MSL';
             case 'GND':
             case 'GROUND':
             case 'AGL':
@@ -198,8 +195,12 @@ class AltitudeDefaultReader {
             case 'SFC':
             case 'SRFC':
                 return 'GND';
+            // if no reference datum is defined, always use MSL
+            case 'MSL':
+            case 'AMSL':
+            case 'ALT':
             default:
-                throw new SyntaxError(`Unknown reference datum ${reference}`);
+                return 'MSL';
         }
     }
 }
