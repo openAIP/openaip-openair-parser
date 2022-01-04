@@ -10,8 +10,8 @@ class DaToken extends BaseLineToken {
     canHandle(line) {
         checkTypes.assert.string(line);
 
-        // is DA line e.g. "DA 0.25,-57,123"
-        return /^DA\s+([+-]?\d*(\.\d+)?),\s*([+-]?\d*),\s*([+-]?\d*)$/.test(line);
+        // is DA line e.g. "DA 0.25,-57,123" as well as "DA 0.25,57.56,270.5"
+        return /^DA\s+([+-]?\d*(\.\d+)?),\s*([+-]?\d*(\.\d+)?),\s*([+-]?\d*(\.\d+)?)$/.test(line);
     }
 
     tokenize(line, lineNumber) {
