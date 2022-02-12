@@ -313,6 +313,7 @@ class AirspaceFactory {
     handleDbToken(token) {
         checkTypes.assert.instance(token, DbToken);
 
+        const { lineNumber } = token.getTokenized();
         const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDbArcCoordinates(token);
 
         // calculate line arc
@@ -334,6 +335,9 @@ class AirspaceFactory {
         const endBearing = calcBearing(centerCoord, endCoord);
         // get the radius in kilometers
         const radiusKm = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
+        if (radiusKm == null || radiusKm === 0) {
+            throw new ParserError({ lineNumber, errorMessage: 'Arc definition is invalid. Calculated arc radius is 0.' });
+        }
         // calculate the line arc
         const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
             steps: this.geometryDetail,
