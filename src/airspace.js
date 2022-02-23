@@ -2,10 +2,11 @@ const {
     lineString: createLinestring,
     feature: createFeature,
     distance,
-    unkinkPolygon,
-    area: calculateArea,
-    simplify,
     lineToPolygon,
+    buffer,
+    envelope,
+    point: createPoint,
+    featureCollection: createFeatureCollection,
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -31,7 +32,7 @@ class Airspace {
     asGeoJson(config) {
         const { validateGeometry, fixGeometry, includeOpenair } = {
             ...{ validateGeometry: false, fixGeometry: false, includeOpenair: false },
-            ...config
+            ...config,
         };
 
         // handle edge case where 3 or less coordinates are defined
@@ -151,33 +152,24 @@ class Airspace {
         try {
             const linestring = createLinestring(coordinates);
             polygon = lineToPolygon(linestring);
+
+            return buffer(polygon, 0.1, { units: 'meters' });
         } catch (e) {
-            // IMPORTANT handle errors on edge cases that cannot be fixed
-            throw new SyntaxError(e.message);
-        }
-        // remove self-intersections (unkink polygon)
-        const unkinkedPolygon = unkinkPolygon(polygon);
-
-        // TODO there seems to be room for improvement here but currently there is no better way I know of
-        const { features } = unkinkedPolygon;
-        let fixedGeometry;
-        if (unkinkedPolygon.features.length > 1) {
-            // to get the "unkinked" valid geometry (without kinks), take the one with the biggest calculated area
-            // in the list. This DOES NOT work for several edge cases which should not occur in normal OpenAIR files.
-            let biggestArea = 0;
-            for (const feature of features) {
-                const area = calculateArea(feature);
-                if (area >= biggestArea) {
-                    biggestArea = area;
-                    fixedGeometry = feature;
+            /*
+            Use "envelope" on edge cases that cannot be fixed with above logic. Resulting geometry will be
+            completely changed but area enclosed by original airspace will be enclosed also. In case of single, dual point
+            invalid polygons, this will at least return a valid geometry though it will differ the most from the original one.
+             */
+            try {
+                const pointFeatures = [];
+                for (const coord of coordinates) {
+                    pointFeatures.push(createPoint(coord));
                 }
+                return envelope(createFeatureCollection(pointFeatures));
+            } catch (e) {
+                throw new Error(e.message);
             }
-        } else {
-            fixedGeometry = features.shift();
         }
-        fixedGeometry = simplify(fixedGeometry, { highQuality: true, tolerance: 0.00001 });
-
-        return fixedGeometry;
     }
 
     /**
