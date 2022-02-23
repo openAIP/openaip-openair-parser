@@ -23,7 +23,7 @@ class DbToken extends BaseLineToken {
         checkTypes.assert.integer(lineNumber);
 
         // remove inline comments
-        line = line.replace(/\s+\*.*/, '');
+        line = line.replace(/\s?\*.*/, '');
         const linePartEndpoints = line.replace(/^DB\s+/, '');
         // endpoints are defined as comma separated coordinate pairs
         const endpoints = linePartEndpoints.split(',');

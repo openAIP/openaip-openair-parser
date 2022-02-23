@@ -22,7 +22,7 @@ class DcToken extends BaseLineToken {
         checkTypes.assert.integer(lineNumber);
 
         // remove inline comments
-        line = line.replace(/\s+\*.*/, '');
+        line = line.replace(/\s?\*.*/, '');
         const linePartRadius = line.replace(/^DC\s+/, '');
 
         const isRadius = /^\d+(\.\d+)?$/.test(linePartRadius);

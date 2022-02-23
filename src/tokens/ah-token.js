@@ -28,7 +28,7 @@ class AhToken extends BaseAltitudeToken {
         checkTypes.assert.integer(lineNumber);
 
         // remove inline comments
-        line = line.replace(/\s+\*.*/, '');
+        line = line.replace(/\s?\*.*/, '');
         const linePartAltitude = line.replace(/^AH\s+/, '');
         let altitude;
         try {
