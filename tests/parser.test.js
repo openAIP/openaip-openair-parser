@@ -1341,7 +1341,7 @@ describe('test parse invalid airspace definition blocks', () => {
         const openairParser = new Parser({ fixGeometry: true });
 
         await expect(openairParser.parse('./tests/fixtures/insufficient-coordinates-airspace.txt')).rejects.toThrow(
-            'Error found at line 1: Each LinearRing of a Polygon must have 4 or more Positions.'
+            "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 is invalid"
         );
     });
 
