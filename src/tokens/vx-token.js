@@ -22,6 +22,8 @@ class VxToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
+        // remove inline comments
+        line = line.replace(/\s+\*.*/, '');
         const linePartCoordinate = line.replace(/^V\s+X=/, '');
 
         let coordinate;

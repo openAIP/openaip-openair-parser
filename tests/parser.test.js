@@ -9,6 +9,52 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson.features.length).toEqual(0);
     });
 
+    test('handle inline comments', async () => {
+        const openairParser = new Parser();
+        await openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
+        const geojson = openairParser.toGeojson();
+
+        const expectedJson = {
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: {
+                        name: 'TMP JSDF X-12-2 till 31Mar22 Height by NOTAM',
+                        class: 'R',
+                        upperCeiling: {
+                            value: 240,
+                            unit: 'FL',
+                            referenceDatum: 'STD',
+                        },
+                        lowerCeiling: {
+                            value: 0,
+                            unit: 'FT',
+                            referenceDatum: 'GND',
+                        },
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            [
+                                [133.6638888888889, 36.38444444444444],
+                                [133.6638888888889, 36.20666666666667],
+                                [132.83944444444447, 35.87972222222222],
+                                [132.76333333333332, 36.265],
+                                [132.67749999999998, 36.52055555555555],
+                                [133.6638888888889, 36.38444444444444],
+                            ],
+                        ],
+                    },
+                },
+            ],
+        };
+        // remove feature id for comparison
+        geojson.features.map((value) => delete value.id);
+
+        expect(geojson).toEqual(expectedJson);
+    });
+
     test('parse airspace with simple polygon geometry', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/polygon-airspace.txt');

@@ -22,6 +22,9 @@ class DpToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
+        // remove inline comments
+        line = line.replace(/\s+\*.*/, '');
+        // extract coordinate pair
         const linePartCoordinate = line.replace(/^DP\s+/, '');
 
         let coordinate;
