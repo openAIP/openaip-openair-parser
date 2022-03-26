@@ -73,6 +73,7 @@ AC R
 AN Shizuhama TMP Training Area
 AL 6000ft
 AH 11000 ft
+* Test block breaking comment
 DP 35:08:28 N 138:41:31 E
 DP 35:08:12 N 138:34:49 E
 DP 35:03:06 N 138:14:14 E
@@ -92,6 +93,7 @@ AL 6000ALT
 AH 11000 ALT
 DP 35:08:28 N 138:41:31 E
 DP 35:08:12 N 138:34:49 E
+* Test block breaking comment
 DP 35:03:06 N 138:14:14 E
 DP 34:55:52 N 138:15:55 E
 DP 34:52:07 N 138:22:52 E
