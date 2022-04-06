@@ -1354,6 +1354,15 @@ describe('test parse invalid airspace definition blocks', () => {
         }).not.toThrow();
     });
 
+    test('airspace with invalid geometry with self intersection can be fixed and is not Multipolygon', async () => {
+        const openairParser = new Parser({ fixGeometry: true });
+        await openairParser.parse('./tests/fixtures/do-not-split-into-multipolygon.txt');
+        const { features } = openairParser.toGeojson();
+        const { geometry } = features[0];
+
+        expect(geometry.type).toEqual('Polygon');
+    });
+
     test('airspace with invalid geometry with self intersection passes if not validated', async () => {
         const openairParser = new Parser({ fixGeometry: false, validateGeometry: false });
         await openairParser.parse('./tests/fixtures/circular-invalid-airspace.txt');

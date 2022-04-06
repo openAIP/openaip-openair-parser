@@ -1,12 +1,14 @@
 const {
     lineString: createLinestring,
     feature: createFeature,
+    area: getArea,
     distance,
     lineToPolygon,
     buffer,
     envelope,
     point: createPoint,
     featureCollection: createFeatureCollection,
+    unkinkPolygon,
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -136,8 +138,8 @@ class Airspace {
     }
 
     /**
-     * Tries to create a valid geometry without any self-intersections and holes from the input coordinates.
-     * This does ALTER the geometry and will return a valid geometry instead. Depending on the size of self-intersections,
+     * Tries to create a valid Polygon geometry without any self-intersections and holes from the input coordinates.
+     * This does ALTER the geometry and will return a new and valid geometry instead. Depending on the size of self-intersections,
      * holes and other errors, the returned geometry may differ A LOT from the original one!
      *
      * @param {Array[]} coordinates
@@ -152,6 +154,24 @@ class Airspace {
         try {
             const linestring = createLinestring(coordinates);
             polygon = lineToPolygon(linestring);
+            polygon = unkinkPolygon(polygon);
+            // use the largest polygon in collection as the main polygon - assumed is that all kinks are smaller in size
+            // and neglectable
+            const getPolygon = function (features) {
+                let polygon = null;
+                let polygonArea = null;
+                for (const feature of features) {
+                    const area = getArea(feature);
+
+                    if (area >= polygonArea) {
+                        polygonArea = area;
+                        polygon = feature;
+                    }
+                }
+
+                return polygon;
+            };
+            polygon = getPolygon(polygon.features);
 
             return buffer(polygon, 0.1, { units: 'meters' });
         } catch (e) {
