@@ -28,33 +28,35 @@
         "test-watch": "TZ='UTC' NODE_ENV=test jest --forceExit -c jest.config.js tests/** --watch",
         "lint": "eslint -c .eslintrc.js .",
         "run-security-audit": "npm audit --production",
-        "bump-version": "bump -c 'version bump to ' -tp"
+        "bump-version": "bump -c 'version bump to ' -tp",
+        "update-packages": "ncu --target minor --upgrade && npm install"
     },
     "dependencies": {
         "@turf/turf": "^5.1.6",
         "check-types": "^11.1.2",
         "coordinate-parser": "^1.0.7",
         "geojson-polygon-self-intersections": "^1.2.1",
-        "jsts": "2.6.1",
-        "n-readlines": "^1.0.1",
-        "node-notifier": "^10.0.0",
+        "jsts": "<=2.6.1",
+        "n-readlines": "^1.0.3",
+        "node-notifier": "^10.0.1",
         "simplepolygon": "^1.2.3",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.16.3",
+        "@babel/eslint-parser": "^7.17.0",
         "@types/check-types": "^7.3.3",
-        "@types/jest": "^27.0.3",
-        "@types/uuid": "^8.3.3",
+        "@types/jest": "^27.4.1",
+        "@types/uuid": "^8.3.4",
         "commander": "^2.20.3",
-        "eslint": "^8.3.0",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-import": "^2.25.3",
+        "eslint": "^8.13.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-only-warn": "^1.0.3",
         "eslint-plugin-prettier": "^4.0.0",
-        "jest": "^27.3.1",
+        "jest": "^27.5.1",
         "nodemon": "^2.0.15",
-        "prettier": "^2.4.1",
+        "npm-check-updates": "^12.5.9",
+        "prettier": "^2.6.2",
         "version-bump-prompt": "^6.1.0"
     }
 }
