@@ -1318,6 +1318,53 @@ describe('test optional configuration parameters', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
+    test('correct limit validation when converting from ft to m', async () => {
+        const openairParser = new Parser({ defaultAltUnit: 'ft', targetAltUnit: 'm' });
+        await openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
+        const geojson = openairParser.toGeojson();
+        // remove feature id for comparison
+        geojson.features.map((value) => delete value.id);
+
+        expect(geojson).toEqual({
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: {
+                        name: 'R3804C BY NOTAM',
+                        class: 'R',
+                        upperCeiling: {
+                            value: 10667.99965862401,
+                            unit: 'M',
+                            referenceDatum: 'MSL',
+                        },
+                        lowerCeiling: {
+                            value: 180,
+                            unit: 'FL',
+                            referenceDatum: 'STD',
+                        },
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            [
+                                [-93.13666666666667, 31.014722222222222],
+                                [-92.94805555555556, 31.014722222222222],
+                                [-92.93722222222223, 31.005555555555556],
+                                [-92.9063888888889, 31.005555555555556],
+                                [-92.85944444444443, 31.06527777777778],
+                                [-92.97361111111111, 31.15972222222222],
+                                [-93.01555555555555, 31.15972222222222],
+                                [-93.03194444444445, 31.14527777777778],
+                                [-93.13666666666667, 31.14527777777778],
+                                [-93.13666666666667, 31.014722222222222],
+                            ],
+                        ],
+                    },
+                },
+            ],
+        });
+    });
 });
 
 describe('test parse invalid airspace definition blocks', () => {

@@ -1,6 +1,7 @@
 const BaseLineToken = require('./base-line-token');
 const altitudeUnit = require('../altitude-unit');
 const checkTypes = require('check-types');
+const unitConversion = require('../unit-conversion');
 
 /**
  * @typedef typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig
@@ -146,36 +147,14 @@ class AltitudeDefaultReader {
 
         let convValue;
         if (baseUnit === altitudeUnit.ft && targetUnit === altitudeUnit.m) {
-            convValue = this.feetToMeters(value);
+            convValue = unitConversion.feetToMeters(value);
         } else if (baseUnit === altitudeUnit.m && targetUnit === altitudeUnit.ft) {
-            convValue = this.metersToFeet(value);
+            convValue = unitConversion.metersToFeet(value);
         } else {
             throw new Error(`Unit conversion between '${baseUnit}' and '${targetUnit}' not supported`);
         }
 
         return convValue;
-    }
-
-    /**
-     * @param {number} meters
-     * @return {number}
-     * @private
-     */
-    metersToFeet(meters) {
-        checkTypes.assert.number(meters);
-
-        return meters * 3.28084;
-    }
-
-    /**
-     * @param {number} feet
-     * @return {number}
-     * @private
-     */
-    feetToMeters(feet) {
-        checkTypes.assert.number(feet);
-
-        return feet / 3.28084;
     }
 
     /**

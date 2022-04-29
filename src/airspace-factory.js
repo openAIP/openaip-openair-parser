@@ -21,6 +21,8 @@ const {
 } = require('@turf/turf');
 const Airspace = require('./airspace');
 const ParserError = require('./parser-error');
+const altitudeUnit = require('./altitude-unit');
+const unitConversion = require('./unit-conversion');
 
 /**
  * @typedef typedefs.openaip.OpenairParser.AirspaceFactoryConfig
@@ -336,7 +338,10 @@ class AirspaceFactory {
         // get the radius in kilometers
         const radiusKm = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
         if (radiusKm == null || radiusKm === 0) {
-            throw new ParserError({ lineNumber, errorMessage: 'Arc definition is invalid. Calculated arc radius is 0.' });
+            throw new ParserError({
+                lineNumber,
+                errorMessage: 'Arc definition is invalid. Calculated arc radius is 0.',
+            });
         }
         // calculate the line arc
         const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
@@ -514,8 +519,25 @@ class AirspaceFactory {
 
     enforceSaneLimits() {
         if (this.airspace.lowerCeiling && this.airspace.upperCeiling) {
-            const compareUpper = this.flToFeet(this.airspace.upperCeiling);
-            const compareLower = this.flToFeet(this.airspace.lowerCeiling);
+            // IMPORTANT "feeted" flight level ceilings must be converted to configured target unit before comparing if specified
+            const feeted = function (ceiling) {
+                const feeted = ceiling;
+                const { unit, value } = ceiling;
+
+                switch (unit) {
+                    case altitudeUnit.m:
+                        feeted.value = unitConversion.metersToFeet(value);
+                        feeted.unit = altitudeUnit.ft;
+                        break;
+                    case altitudeUnit.ft:
+                    default:
+                    // nothing to do
+                }
+
+                return feeted;
+            };
+            const compareUpper = feeted(this.flToFeet(this.airspace.upperCeiling));
+            const compareLower = feeted(this.flToFeet(this.airspace.lowerCeiling));
 
             if (compareLower.value > compareUpper.value) {
                 throw new ParserError({
