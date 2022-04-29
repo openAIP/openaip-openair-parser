@@ -290,7 +290,7 @@ class AltitudeUnlimitedReader {
 
         this.unlimited = unlimited;
         // unlimited ceiling definition
-        this.REGEX_ALTITUDE = /^(UNLIMITED|UNL|UNLTD)$/;
+        this.REGEX_ALTITUDE = /^(UNLIMITED|UNLIM|UNL|UNLTD)$/;
     }
 
     /**
