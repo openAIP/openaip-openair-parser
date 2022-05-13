@@ -29,10 +29,10 @@
         "lint": "eslint -c .eslintrc.js .",
         "run-security-audit": "npm audit --production",
         "bump-version": "bump -c 'version bump to ' -tp",
-        "update-packages": "ncu --target minor --upgrade && npm install"
+        "update-packages": "ncu --target minor --upgrade --reject jsts && npm install"
     },
     "dependencies": {
-        "@turf/turf": "^5.1.6",
+        "@turf/turf": "^6.5.0",
         "check-types": "^11.1.2",
         "coordinate-parser": "^1.0.7",
         "geojson-polygon-self-intersections": "^1.2.1",
@@ -45,17 +45,17 @@
     "devDependencies": {
         "@babel/eslint-parser": "^7.17.0",
         "@types/check-types": "^7.3.3",
-        "@types/jest": "^27.4.1",
+        "@types/jest": "^27.5.1",
         "@types/uuid": "^8.3.4",
         "commander": "^2.20.3",
-        "eslint": "^8.13.0",
+        "eslint": "^8.15.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-only-warn": "^1.0.3",
         "eslint-plugin-prettier": "^4.0.0",
         "jest": "^27.5.1",
-        "nodemon": "^2.0.15",
-        "npm-check-updates": "^12.5.9",
+        "nodemon": "^2.0.16",
+        "npm-check-updates": "^12.5.11",
         "prettier": "^2.6.2",
         "version-bump-prompt": "^6.1.0"
     }
