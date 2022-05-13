@@ -59,6 +59,9 @@ class AirspaceFactory {
         this.tokens = tokens;
         this.airspace = new Airspace();
 
+        // validate correct token ordering
+        this.validateTokenOrder();
+
         for (const token of tokens) {
             const { lineNumber } = token.getTokenized();
             this.currentLineNumber = lineNumber;
@@ -69,9 +72,6 @@ class AirspaceFactory {
             }
             this.airspace.consumedTokens.push(token);
         }
-        // validate correct token ordering
-        this.validateTokenOrder();
-
         const airspace = this.airspace;
 
         this.tokens = null;
@@ -137,32 +137,33 @@ class AirspaceFactory {
      * @return {void}
      */
     validateTokenOrder() {
-        for (let index = 0; index < this.tokens.length - 1; index++) {
-            const currentToken = this.tokens[index];
+        for (const [index, currentToken] of this.tokens.entries()) {
             const maxLookAheadIndex = this.tokens.length - 1;
 
             // get "next" token index and consider max look ahead
             let lookAheadIndex = index + 1;
             lookAheadIndex = lookAheadIndex > maxLookAheadIndex ? maxLookAheadIndex : lookAheadIndex;
 
-            // get next token, skip ignored tokens
-            let lookAheadToken = this.tokens[lookAheadIndex];
-            while (lookAheadToken.isIgnoredToken() && lookAheadIndex <= maxLookAheadIndex) {
-                lookAheadIndex++;
-                lookAheadToken = this.tokens[lookAheadIndex];
-            }
+            // dont check last token
+            if (index < maxLookAheadIndex) {
+                // get next token, skip ignored tokens
+                let lookAheadToken = this.tokens[lookAheadIndex];
+                while (lookAheadToken.isIgnoredToken() && lookAheadIndex <= maxLookAheadIndex) {
+                    lookAheadIndex++;
+                    lookAheadToken = this.tokens[lookAheadIndex];
+                }
 
-            const isAllowedNextToken = currentToken.isAllowedNextToken(lookAheadToken);
-            if (isAllowedNextToken === false) {
-                const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
-                const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.getTokenized();
+                const isAllowedNextToken = currentToken.isAllowedNextToken(lookAheadToken);
+                if (isAllowedNextToken === false) {
+                    const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
+                    const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.getTokenized();
 
-                throw new ParserError({
-                    lineNumber: lookAheadTokenLineNumber,
-                    errorMessage: `Token '${currentToken.getType()}' on line ${currentTokenLineNumber} does not allow subsequent token '${lookAheadToken.getType()}' on line ${lookAheadTokenLineNumber}`,
-                });
+                    throw new ParserError({
+                        lineNumber: lookAheadTokenLineNumber,
+                        errorMessage: `Token '${currentToken.getType()}' on line ${currentTokenLineNumber} does not allow subsequent token '${lookAheadToken.getType()}' on line ${lookAheadTokenLineNumber}`,
+                    });
+                }
             }
-            index = lookAheadIndex + 1;
         }
     }
 

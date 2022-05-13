@@ -1542,4 +1542,12 @@ describe('test parse invalid airspace definition blocks', () => {
             "Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3"
         );
     });
+
+    test('airspace with duplicate ceiling definitions are rejected', async () => {
+        const openairParser = new Parser();
+
+        await expect(openairParser.parse('./tests/fixtures/duplicate-ceiling-definitions.txt')).rejects.toThrow(
+            "Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4"
+        );
+    });
 });
