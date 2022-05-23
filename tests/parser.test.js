@@ -1388,7 +1388,7 @@ describe('test parse invalid airspace definition blocks', () => {
         const openairParser = new Parser({ fixGeometry: true });
 
         await expect(openairParser.parse('./tests/fixtures/insufficient-coordinates-airspace.txt')).rejects.toThrow(
-            "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 is invalid"
+            "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 has insufficient number of coordinates: 3"
         );
     });
 
