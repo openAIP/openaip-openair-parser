@@ -6,9 +6,10 @@ const {
     lineToPolygon,
     buffer,
     envelope,
+    polygon: createPolygon,
     point: createPoint,
     featureCollection: createFeatureCollection,
-    unkinkPolygon,
+    unkinkPolygon
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -34,7 +35,7 @@ class Airspace {
     asGeoJson(config) {
         const { validateGeometry, fixGeometry, includeOpenair } = {
             ...{ validateGeometry: false, fixGeometry: false, includeOpenair: false },
-            ...config,
+            ...config
         };
 
         // handle edge case where 3 or less coordinates are defined
@@ -44,7 +45,7 @@ class Airspace {
 
             throw new ParserError({
                 lineNumber,
-                errorMessage: `Airspace definition on line ${lineNumber} has insufficient number of coordinates: ${this.coordinates.length}`,
+                errorMessage: `Airspace definition on line ${lineNumber} has insufficient number of coordinates: ${this.coordinates.length}`
             });
         }
 
@@ -53,7 +54,7 @@ class Airspace {
             name: this.name,
             class: this.class,
             upperCeiling: this.upperCeiling,
-            lowerCeiling: this.lowerCeiling,
+            lowerCeiling: this.lowerCeiling
         };
         // include original OpenAIR airspace definition block
         if (includeOpenair) {
@@ -64,55 +65,81 @@ class Airspace {
             }
         }
 
-        let polygon;
         let lineNumber;
-        if (fixGeometry) {
-            try {
-                polygon = this.createFixedPolygon(this.coordinates);
-            } catch (e) {
-                if (e instanceof SyntaxError) {
-                    const acToken = this.consumedTokens.shift();
-                    const { lineNumber: lineNum } = acToken.getTokenized();
-                    lineNumber = lineNum;
+        // build airspace from current coordinates => this variable may be updated with an updated/fixed geoemtry if required
+        let airspacePolygon = this.getPolygonFeature();
 
-                    throw new ParserError({ lineNumber, errorMessage: e.message });
-                } else {
-                    throw e;
+        // only try to fix if not valid, not simple or has self-intersection
+        if (fixGeometry) {
+            const { isValid, isSimple, selfIntersect } = this.validateAirspaceFeature(airspacePolygon);
+            // IMPORTANT only run if required since process will slightly change the original airspace by creating a buffer
+            //  which will lead to an increase of polygon coordinates
+            if (!isValid || !isSimple || selfIntersect) {
+                try {
+                    airspacePolygon = this.createFixedPolygon(this.coordinates);
+                } catch (e) {
+                    if (e instanceof SyntaxError) {
+                        const acToken = this.consumedTokens.shift();
+                        const { lineNumber: lineNum } = acToken.getTokenized();
+                        lineNumber = lineNum;
+
+                        throw new ParserError({ lineNumber, errorMessage: e.message });
+                    } else {
+                        throw e;
+                    }
                 }
             }
         } else {
             try {
                 // create a linestring first, then polygonize it => suppresses errors where first coordinate does not equal last coordinate when creating polygon
                 const linestring = createLinestring(this.coordinates);
-                polygon = lineToPolygon(linestring);
+                airspacePolygon = lineToPolygon(linestring);
             } catch (e) {
                 throw new ParserError({ lineNumber, errorMessage: e.message });
             }
         }
 
         if (validateGeometry) {
-            let isValid = this.isValid(polygon);
-            let isSimple = this.isSimple(polygon);
-            const selfIntersect = this.getSelfIntersections(polygon);
-
+            // IMPORTANT work on "airspacePolygon" variable as it may contain either the original or fixed geometry
+            const { isValid, isSimple, selfIntersect } = this.validateAirspaceFeature(airspacePolygon);
             if (!isValid || !isSimple || selfIntersect) {
                 if (selfIntersect) {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
                     throw new ParserError({
                         lineNumber,
-                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection`,
+                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection`
                     });
                 } else {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
                     throw new ParserError({
                         lineNumber,
-                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`,
+                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`
                     });
                 }
             }
         }
 
-        return createFeature(polygon.geometry, properties, { id: uuid.v4() });
+        return createFeature(airspacePolygon.geometry, properties, { id: uuid.v4() });
+    }
+
+    /**
+     * @param {Feature<Polygon, Properties>} airspaceFeature
+     * @return {{isValid: boolean, isSimple: boolean, selfIntersect: (Object|null)}}
+     */
+    validateAirspaceFeature(airspaceFeature) {
+        // validate airspace geometry
+        let isValid = this.isValid(airspaceFeature);
+        let isSimple = this.isSimple(airspaceFeature);
+        const selfIntersect = this.getSelfIntersections(airspaceFeature);
+
+        return { isValid, isSimple, selfIntersect };
+    }
+
+    /**
+     * @return {Feature<Polygon, Properties>}
+     */
+    getPolygonFeature() {
+        return createPolygon([this.coordinates]);
     }
 
     /**
@@ -157,7 +184,7 @@ class Airspace {
             polygon = unkinkPolygon(polygon);
             // use the largest polygon in collection as the main polygon - assumed is that all kinks are smaller in size
             // and neglectable
-            const getPolygon = function (features) {
+            const getPolygon = function(features) {
                 let polygon = null;
                 let polygonArea = null;
                 for (const feature of features) {
