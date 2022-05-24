@@ -38,8 +38,13 @@ class Airspace {
             ...config,
         };
 
-        // handle edge case where 3 or less coordinates are defined
-        if (this.coordinates.length < 3) {
+        if (
+            // directly error out on definitions with only 2 points or less
+            this.coordinates.length <= 2 ||
+            // if 3 points are given and the last point does NOT equal first point, a polygon geometry could be
+            // created if "fix geometry" is true, otherwise error out
+            (this.coordinates.length === 3 && this.coordinates[0].join(', ') === this.coordinates[2].join(', '))
+        ) {
             const acToken = this.consumedTokens.shift();
             const { lineNumber } = acToken.getTokenized();
 
@@ -172,7 +177,7 @@ class Airspace {
     }
 
     /**
-     * Removes high proximity coordinates, i.e. removes coordinate if another coordinate is within 200 meters.
+     * Removes high proximity coordinates, i.e. removes coordinate if another coordinate is within 10 meters.
      *
      * @params {Array[]} coordinates
      * @returns {Array[]}
