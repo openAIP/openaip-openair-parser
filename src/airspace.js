@@ -39,7 +39,7 @@ class Airspace {
         };
 
         // handle edge case where 3 or less coordinates are defined
-        if (this.coordinates.length < 4) {
+        if (this.coordinates.length < 3) {
             const acToken = this.consumedTokens.shift();
             const { lineNumber } = acToken.getTokenized();
 
