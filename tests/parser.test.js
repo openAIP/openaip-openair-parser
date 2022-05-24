@@ -8,7 +8,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson.features.length).toEqual(0);
     });
-
     test('handle inline comments', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
@@ -54,7 +53,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse airspace with simple polygon geometry', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/polygon-airspace.txt');
@@ -102,7 +100,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse airspace with circular geometry', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/circular-airspace.txt');
@@ -245,7 +242,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse laser beam airspace with very small circular geometry', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
@@ -386,7 +382,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse airspace with clockwise arc geometry', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/arc-clockwise-airspace.txt');
@@ -536,7 +531,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse airspace with counter-clockwise arc geometry', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/arc-counterclockwise-airspace.txt');
@@ -622,7 +616,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse airspace with arc/angle geometry', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/arc-angle-airspace.txt');
@@ -843,7 +836,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse airspace starting with arc definition', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/arc-first-airspace.txt');
@@ -964,7 +956,6 @@ describe('test parse complete airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('parse multiple airspace definition blocks', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
@@ -1375,7 +1366,6 @@ describe('test parse invalid airspace definition blocks', () => {
             "Error found at line 14: Error found at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:'"
         );
     });
-
     test('airspace with intersection', async () => {
         const openairParser = new Parser();
 
@@ -1383,7 +1373,6 @@ describe('test parse invalid airspace definition blocks', () => {
             "Error found at line 1: Geometry of airspace 'TMA MILANO SWISS SEC1' starting on line 1 is invalid due to a self intersection"
         );
     });
-
     test('airspace with insufficient coordinates fails even if fix geometry is set', async () => {
         const openairParser = new Parser({ fixGeometry: true });
 
@@ -1391,7 +1380,6 @@ describe('test parse invalid airspace definition blocks', () => {
             "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 has insufficient number of coordinates: 3"
         );
     });
-
     test('airspace with invalid geometry with self intersection can be fixed', async () => {
         const openairParser = new Parser({ fixGeometry: true });
         await openairParser.parse('./tests/fixtures/self-intersecting-airspace.txt');
@@ -1400,16 +1388,6 @@ describe('test parse invalid airspace definition blocks', () => {
             openairParser.toGeojson();
         }).not.toThrow();
     });
-
-    test('airspace with invalid geometry with self intersection can be fixed and is not Multipolygon', async () => {
-        const openairParser = new Parser({ fixGeometry: true });
-        await openairParser.parse('./tests/fixtures/do-not-split-into-multipolygon.txt');
-        const { features } = openairParser.toGeojson();
-        const { geometry } = features[0];
-
-        expect(geometry.type).toEqual('Polygon');
-    });
-
     test('airspace with invalid geometry with self intersection passes if not validated', async () => {
         const openairParser = new Parser({ fixGeometry: false, validateGeometry: false });
         await openairParser.parse('./tests/fixtures/circular-invalid-airspace.txt');
@@ -1534,7 +1512,6 @@ describe('test parse invalid airspace definition blocks', () => {
 
         expect(geojson).toEqual(expectedJson);
     });
-
     test('airspace with empty name', async () => {
         const openairParser = new Parser();
 
@@ -1542,12 +1519,39 @@ describe('test parse invalid airspace definition blocks', () => {
             "Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3"
         );
     });
-
     test('airspace with duplicate ceiling definitions are rejected', async () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/duplicate-ceiling-definitions.txt')).rejects.toThrow(
             "Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4"
         );
+    });
+    test('airspace start and end coordinates are not equal', async () => {
+        const openairParser = new Parser();
+
+        await expect(
+            openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt')
+        ).rejects.toThrow(
+            "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent."
+        );
+    });
+});
+
+describe('test parse invalid airspace definition blocks and fix geometry', () => {
+    test('airspace with invalid geometry with self intersection can be fixed and is not Multipolygon', async () => {
+        const openairParser = new Parser({ fixGeometry: true });
+        await openairParser.parse('./tests/fixtures/do-not-split-into-multipolygon.txt');
+        const { features } = openairParser.toGeojson();
+        const { geometry } = features[0];
+
+        expect(geometry.type).toEqual('Polygon');
+    });
+    test('airspace fix start and end coordinates if not equal', async () => {
+        const openairParser = new Parser({ fixGeometry: true });
+        await openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
+        const { features } = openairParser.toGeojson();
+        const { geometry } = features[0];
+
+        expect(geometry.type).toEqual('Polygon');
     });
 });

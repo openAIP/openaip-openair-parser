@@ -71,11 +71,31 @@ class Airspace {
         try {
             airspacePolygon = this.getPolygonFeature();
         } catch (e) {
-            const { lineNumber } = this.consumedTokens[0].getTokenized();
-            throw new ParserError({
-                lineNumber,
-                errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid. ${e.message}`,
-            });
+            // Geometry creation errors may happen here already as it is NOT possible to create certain invalid
+            //  polygon geometries, i.e. too few points, start and end points do not match - if "fix geoemtry" flag
+            // is active catch build errors and directly create a fixed polygon. In the main "fix" step below, the
+            // geometry is checked for other issues like self-intersections etc and other fixes are applied.
+            if (fixGeometry) {
+                try {
+                    airspacePolygon = this.createFixedPolygon(this.coordinates);
+                } catch (e) {
+                    if (e instanceof SyntaxError) {
+                        const acToken = this.consumedTokens.shift();
+                        const { lineNumber: lineNum } = acToken.getTokenized();
+                        lineNumber = lineNum;
+
+                        throw new ParserError({ lineNumber, errorMessage: e.message });
+                    } else {
+                        throw e;
+                    }
+                }
+            } else {
+                const { lineNumber } = this.consumedTokens[0].getTokenized();
+                throw new ParserError({
+                    lineNumber,
+                    errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid. ${e.message}`,
+                });
+            }
         }
 
         // only try to fix if not valid, not simple or has self-intersection
