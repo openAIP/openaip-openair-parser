@@ -83,6 +83,15 @@ DP 34:50:30 N 138:46:49 E
 DP 34:52:36 N 138:46:49 E
 DP 35:08:28 N 138:41:31 E
 
+* Airway definition
+AC P
+AN Axe 1
+AL FL090
+AH FL140
+V W=2.5
+DY 44:17:00 N 004:59:00 E
+DY 44:19:30 N 005:05:00 E
+
 *
 * AIP SUP 140/20
 * Temporary Training Area (Shizuhama)

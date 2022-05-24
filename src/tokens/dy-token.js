@@ -4,27 +4,28 @@ const Coordinates = require('coordinate-parser');
 const ParserError = require('../parser-error');
 
 /**
- * Tokenizes "V X=" airspace circle center coordinate definition.
+ * Tokenizes "DY" airway segment coordinate definition.
  */
-class VxToken extends BaseLineToken {
-    static type = 'VX';
+class DyToken extends BaseLineToken {
+    static type = 'DY';
 
     canHandle(line) {
         checkTypes.assert.string(line);
 
-        // is V line e.g. "V X=53:24:25 N 010:25:10 E"
-        return /^V\s+X=.*$/.test(line);
+        // is DP line e.g. "DY 54:25:00 N 010:40:00 E"
+        return /^DY\s+.*$/.test(line);
     }
 
     tokenize(line, lineNumber) {
-        const token = new VxToken({ tokenTypes: this.tokenTypes });
+        const token = new DyToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
-        const linePartCoordinate = line.replace(/^V\s+[X]=/, '');
+        // extract coordinate pair
+        const linePartCoordinate = line.replace(/^DY\s+/, '');
 
         let coordinate;
         try {
@@ -39,10 +40,10 @@ class VxToken extends BaseLineToken {
     }
 
     getAllowedNextTokens() {
-        const { COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN, VD_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
+        const { COMMENT_TOKEN, DY_TOKEN, BLANK_TOKEN, EOF_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
-        return [COMMENT_TOKEN, DC_TOKEN, DB_TOKEN, DA_TOKEN, VD_TOKEN, SKIPPED_TOKEN];
+        return [COMMENT_TOKEN, DY_TOKEN, BLANK_TOKEN, EOF_TOKEN, SKIPPED_TOKEN];
     }
 }
 
-module.exports = VxToken;
+module.exports = DyToken;

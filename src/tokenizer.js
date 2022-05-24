@@ -8,9 +8,11 @@ const AlToken = require('./tokens/al-token');
 const DpToken = require('./tokens/dp-token');
 const VdToken = require('./tokens/vd-token');
 const VxToken = require('./tokens/vx-token');
+const VwToken = require('./tokens/vw-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
 const DaToken = require('./tokens/da-token');
+const DyToken = require('./tokens/dy-token');
 const EofToken = require('./tokens/eof-token');
 const LineByLine = require('n-readlines');
 const fs = require('fs');
@@ -48,9 +50,11 @@ const TOKEN_TYPES = {
     DP_TOKEN: DpToken.type,
     VD_TOKEN: VdToken.type,
     VX_TOKEN: VxToken.type,
+    VW_TOKEN: VwToken.type,
     DC_TOKEN: DcToken.type,
     DB_TOKEN: DbToken.type,
     DA_TOKEN: DaToken.type,
+    DY_TOKEN: DyToken.type,
     EOF_TOKEN: EofToken.type,
     SKIPPED_TOKEN: SkippedToken.type,
 };
@@ -107,9 +111,11 @@ class Tokenizer {
             new DpToken({ tokenTypes: TOKEN_TYPES }),
             new VdToken({ tokenTypes: TOKEN_TYPES }),
             new VxToken({ tokenTypes: TOKEN_TYPES }),
+            new VwToken({ tokenTypes: TOKEN_TYPES }),
             new DcToken({ tokenTypes: TOKEN_TYPES }),
             new DbToken({ tokenTypes: TOKEN_TYPES }),
             new DaToken({ tokenTypes: TOKEN_TYPES }),
+            new DyToken({ tokenTypes: TOKEN_TYPES }),
         ];
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokens = [];

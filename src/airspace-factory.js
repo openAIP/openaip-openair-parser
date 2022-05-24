@@ -7,9 +7,11 @@ const AlToken = require('./tokens/al-token');
 const DpToken = require('./tokens/dp-token');
 const VdToken = require('./tokens/vd-token');
 const VxToken = require('./tokens/vx-token');
+const VwToken = require('./tokens/vw-token');
 const DcToken = require('./tokens/dc-token');
 const DbToken = require('./tokens/db-token');
 const DaToken = require('./tokens/da-token');
+const DyToken = require('./tokens/dy-token');
 const EofToken = require('./tokens/eof-token');
 const BaseLineToken = require('./tokens/base-line-token');
 const checkTypes = require('check-types');
@@ -18,6 +20,8 @@ const {
     lineArc: createArc,
     bearing: calcBearing,
     distance: calcDistance,
+    buffer: createBuffer,
+    lineString: createLineString,
 } = require('@turf/turf');
 const Airspace = require('./airspace');
 const ParserError = require('./parser-error');
@@ -47,6 +51,14 @@ class AirspaceFactory {
         this.currentLineNumber = null;
         // set to true if airspace contains tokens other than "skipped, blanks or comment"
         this.hasBuildTokens = false;
+        this.isAirway = false;
+        // metadata required to build an airspace from a width and airways segment coordinates
+        this._airway = {
+            // width in nautical miles as read from VW token
+            width: null,
+            // airway segment coordinates read from DY tokens
+            segments: [],
+        };
     }
 
     /**
@@ -72,12 +84,33 @@ class AirspaceFactory {
             }
             this.airspace.consumedTokens.push(token);
         }
+        // if airspace is build from airway definitions, an additional step is required that creates the actual
+        // airspace's polygon geometry
+        if (this.isAirway) {
+            this.airspace.coordinates = this.buildCoordinatesFromAirway({
+                width: this._airway.width,
+                segments: this._airway.segments,
+            });
+        }
         const airspace = this.airspace;
 
         this.tokens = null;
         this.airspace = null;
 
         return this.hasBuildTokens ? airspace : null;
+    }
+
+    /**
+     * @param {{width: number, segments: Array}} options
+     * @returns {Array}
+     */
+    buildCoordinatesFromAirway({ width, segments }) {
+        const airwayPathFeature = createLineString(segments);
+        const bufferKm = width * 1.852;
+        const airwayPolygonFeature = createBuffer(airwayPathFeature, bufferKm, { units: 'kilometers' });
+        const [coordinates] = airwayPolygonFeature.geometry.coordinates;
+
+        return coordinates;
     }
 
     /**
@@ -106,11 +139,17 @@ class AirspaceFactory {
             case DpToken.type:
                 this.handleDpToken(token);
                 break;
+            case DyToken.type:
+                this.handleDyToken(token);
+                break;
             case VdToken.type:
                 this.handleVdToken(token);
                 break;
             case VxToken.type:
                 this.handleVxToken(token);
+                break;
+            case VwToken.type:
+                this.handleVwToken(token);
                 break;
             case DcToken.type:
                 this.handleDcToken(token);
@@ -271,6 +310,43 @@ class AirspaceFactory {
      */
     handleVxToken(token) {
         checkTypes.assert.instance(token, VxToken);
+    }
+
+    /**
+     * Sets airway width in nautical miles.
+     *
+     * @param {typedefs.openaip.OpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    handleVwToken(token) {
+        checkTypes.assert.instance(token, VwToken);
+
+        const { metadata } = token.getTokenized();
+        const { width } = metadata;
+
+        // IMPORTANT indicate that we are building an airspace from airway definition
+        this.isAirway = true;
+        this._airway.width = width;
+    }
+
+    /**
+     * Sets airway segment.
+     *
+     * @param {typedefs.openaip.OpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    handleDyToken(token) {
+        checkTypes.assert.instance(token, DyToken);
+
+        const { metadata } = token.getTokenized();
+        const { coordinate } = metadata;
+
+        checkTypes.assert.nonEmptyObject(coordinate);
+
+        // IMPORTANT subsequently push airway segment coordinates
+        this._airway.segments.push(this.toArrayLike(coordinate));
     }
 
     /**
