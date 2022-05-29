@@ -51,6 +51,7 @@ class Airspace {
             throw new ParserError({
                 lineNumber,
                 errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} has insufficient number of coordinates: ${this.coordinates.length}`,
+                geometry: this.getGeometryAsLineString(),
             });
         }
 
@@ -89,7 +90,11 @@ class Airspace {
                         const { lineNumber: lineNum } = acToken.getTokenized();
                         lineNumber = lineNum;
 
-                        throw new ParserError({ lineNumber, errorMessage: e.message });
+                        throw new ParserError({
+                            lineNumber,
+                            errorMessage: e.message,
+                            geometry: this.getGeometryAsLineString(),
+                        });
                     } else {
                         throw e;
                     }
@@ -99,6 +104,7 @@ class Airspace {
                 throw new ParserError({
                     lineNumber,
                     errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid. ${e.message}`,
+                    geometry: this.getGeometryAsLineString(),
                 });
             }
         }
@@ -117,7 +123,11 @@ class Airspace {
                         const { lineNumber: lineNum } = acToken.getTokenized();
                         lineNumber = lineNum;
 
-                        throw new ParserError({ lineNumber, errorMessage: e.message });
+                        throw new ParserError({
+                            lineNumber,
+                            errorMessage: e.message,
+                            geometry: this.getGeometryAsLineString(),
+                        });
                     } else {
                         throw e;
                     }
@@ -129,7 +139,11 @@ class Airspace {
                 const linestring = createLinestring(this.coordinates);
                 airspacePolygon = lineToPolygon(linestring);
             } catch (e) {
-                throw new ParserError({ lineNumber, errorMessage: e.message });
+                throw new ParserError({
+                    lineNumber,
+                    errorMessage: e.message,
+                    geometry: this.getGeometryAsLineString(),
+                });
             }
         }
 
@@ -142,12 +156,14 @@ class Airspace {
                     throw new ParserError({
                         lineNumber,
                         errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection`,
+                        geometry: this.getGeometryAsLineString(),
                     });
                 } else {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
                     throw new ParserError({
                         lineNumber,
                         errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid`,
+                        geometry: this.getGeometryAsLineString(),
                     });
                 }
             }
@@ -167,6 +183,18 @@ class Airspace {
         const selfIntersect = this.getSelfIntersections(airspaceFeature);
 
         return { isValid, isSimple, selfIntersect };
+    }
+
+    /**
+     * This will return the current airspace geometry (after being built) "as is" including ALL errors!
+     * This method is mainly intended as utility method that returns the airpace geometry to be included
+     * in a parser error object.
+     *
+     * @returns {Object}
+     */
+    getGeometryAsLineString() {
+        // return as GeoJSON line feature (possible that polygon cannot be created due to too few points)
+        return createLinestring(this.coordinates);
     }
 
     /**

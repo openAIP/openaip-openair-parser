@@ -2,11 +2,11 @@ const checkTypes = require('check-types');
 
 class ParserError extends Error {
     /**
-     * @param {{lineNumber: number, errorMessage: string}} config
+     * @param {{lineNumber: number, errorMessage: string, [geometry]: Object}} config
      * @returns {void}
      * @private
      */
-    constructor({ lineNumber, errorMessage }) {
+    constructor({ lineNumber, errorMessage, geometry }) {
         if (lineNumber != null) checkTypes.assert.integer(lineNumber);
         checkTypes.assert.nonEmptyString(errorMessage);
 
@@ -18,6 +18,7 @@ class ParserError extends Error {
 
         this.lineNumber = lineNumber;
         this.errorMessage = errorMessage;
+        this.geometry = geometry;
     }
 }
 
