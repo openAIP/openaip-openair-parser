@@ -426,6 +426,12 @@ class AirspaceFactory {
             // units can't be set => will result in error "options is invalid" => bug?
         });
 
+        // IMPORTANT if center point is not correctly defined, arcs will almost always self-intersect because the
+        //  DP endpoint will NOT match the calculated arc endpoint. To avoid self-intersections, replace last arc end point
+        //  with the originally defined endpoint. This could be done better but currently I have no idea how...
+        geometry.coordinates.pop();
+        geometry.coordinates.push(endCoord);
+
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
         this.airspace.coordinates = this.airspace.coordinates.concat(arcCoordinates);
