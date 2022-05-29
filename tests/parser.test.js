@@ -49,6 +49,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -96,6 +97,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -238,6 +240,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -378,6 +381,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -392,6 +396,7 @@ describe('test parse complete airspace definition blocks', () => {
             features: [
                 {
                     type: 'Feature',
+                    id: '668fd670-9bea-46d0-a5cb-a0652f53345c',
                     properties: {
                         name: 'ED-R56 Kummersdorf MON-FRI',
                         class: 'R',
@@ -412,7 +417,7 @@ describe('test parse complete airspace definition blocks', () => {
                             [
                                 [13.392777777777777, 52.126666666666665],
                                 [13.418888888888889, 52.1325],
-                                [13.41888888888889, 52.1325],
+                                [13.418888888888889, 52.1325],
                                 [13.42130306051576, 52.1329895361755],
                                 [13.42376259017737, 52.13338500635156],
                                 [13.426257756627397, 52.13368484726553],
@@ -465,7 +470,7 @@ describe('test parse complete airspace definition blocks', () => {
                                 [13.446666666666667, 52.08583333333333],
                                 [13.446666666666667, 52.08583333333333],
                                 [13.420555555555556, 52.080000000000005],
-                                [13.420555555555556, 52.08],
+                                [13.420555555555556, 52.080000000000005],
                                 [13.418144107101925, 52.079510347728736],
                                 [13.41568743484834, 52.07911466594883],
                                 [13.413195219601796, 52.07881451371908],
@@ -525,6 +530,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -539,6 +545,7 @@ describe('test parse complete airspace definition blocks', () => {
             features: [
                 {
                     type: 'Feature',
+                    id: '590a89ff-dab1-4060-a14d-cdc79767504b',
                     properties: {
                         name: 'ED-R37B_2 Nordhorn NOTAM',
                         class: 'R',
@@ -598,7 +605,7 @@ describe('test parse complete airspace definition blocks', () => {
                                 [7.066276616127524, 52.44888447662137],
                                 [7.064946351876799, 52.443734686250004],
                                 [7.06414945685398, 52.438544140007096],
-                                [7.06388888888889, 52.43333333333333],
+                                [7.063888888888889, 52.43333333333333],
                                 [7.063888888888889, 52.43333333333333],
                                 [7.060833333333333, 52.43333333333333],
                                 [7.057777777777778, 52.653055555555554],
@@ -610,6 +617,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -830,12 +838,13 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with clockwise and counter-clockwise arc definition', async () => {
-        const openairParser = new Parser({ validateGeometry: false });
+        const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
 
@@ -844,6 +853,7 @@ describe('test parse complete airspace definition blocks', () => {
             features: [
                 {
                     type: 'Feature',
+                    id: '0d8d84f1-2aa1-4756-ad7a-bc91f185184e',
                     properties: {
                         name: 'TMA NICE partie 3',
                         class: 'D',
@@ -864,7 +874,7 @@ describe('test parse complete airspace definition blocks', () => {
                             [
                                 [8.030555555555557, 43.64972222222222],
                                 [8.408055555555556, 43.54666666666667],
-                                [8.408055555555555, 43.546666666666674],
+                                [8.408055555555556, 43.54666666666667],
                                 [8.385911159545799, 43.49481412925771],
                                 [8.359363938804737, 43.44406639247571],
                                 [8.328527944000017, 43.39462066751006],
@@ -891,7 +901,7 @@ describe('test parse complete airspace definition blocks', () => {
                                 [8.01298958150596, 43.54067404950761],
                                 [8.021988498119338, 43.57673323196749],
                                 [8.02785341163859, 43.61313033802685],
-                                [8.030555555555557, 43.64972222222221],
+                                [8.030555555555557, 43.64972222222222],
                                 [8.030555555555557, 43.64972222222222],
                             ],
                         ],
@@ -900,6 +910,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -1020,6 +1031,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -1034,6 +1046,7 @@ describe('test parse complete airspace definition blocks', () => {
             features: [
                 {
                     type: 'Feature',
+                    id: '05169428-e0ae-445b-9957-7766032c47a8',
                     properties: {
                         name: 'TMP JSDF X-12-2 till 31Mar22 Height by NOTAM',
                         class: 'R',
@@ -1064,6 +1077,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     type: 'Feature',
+                    id: 'bc0bdd89-edbc-46fd-abbd-138efb43cbc0',
                     properties: {
                         name: 'TMP JSDF X-16 till 31Mar22 Height by NOTAM',
                         class: 'R',
@@ -1094,6 +1108,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     type: 'Feature',
+                    id: '57d4abc4-2e01-44b9-9c1e-740fd5a1854e',
                     properties: {
                         name: 'TMP Iwakuni ITRA-N2 and ITRA-N3 till 31Mar2022',
                         class: 'R',
@@ -1127,7 +1142,7 @@ describe('test parse complete airspace definition blocks', () => {
                                 [131.5245957258126, 34.84593607506588],
                                 [131.47224120697464, 34.807749475181076],
                                 [131.42295935814894, 34.766919515655985],
-                                [131.37694444444443, 34.72361111111112],
+                                [131.37694444444446, 34.72361111111111],
                                 [130.88083333333333, 34.686388888888885],
                                 [130.86694444444444, 34.72527777777778],
                                 [130.585, 34.85305555555556],
@@ -1141,6 +1156,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     type: 'Feature',
+                    id: '04c0ba87-f7f9-47ae-857a-71416b5593d3',
                     properties: {
                         name: 'Shizuhama TMP Training Area',
                         class: 'R',
@@ -1173,6 +1189,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     type: 'Feature',
+                    id: 'efad91d5-1ada-42e8-9b2f-4aeee5f371cb',
                     properties: {
                         name: 'Shizuhama TMP Training Area',
                         class: 'R',
@@ -1205,6 +1222,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     type: 'Feature',
+                    id: 'e9ffa031-ccac-4ae6-9ab0-8cf666fbcb60',
                     properties: {
                         name: 'Axe 1',
                         class: 'P',
@@ -1264,6 +1282,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     type: 'Feature',
+                    id: '7cdcf2b3-ef90-4f0d-98d5-72b90d717b3d',
                     properties: {
                         name: 'Shizuhama TMP Training Area',
                         class: 'R',
@@ -1297,6 +1316,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -1371,6 +1391,7 @@ describe('test parse complete airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -1418,6 +1439,7 @@ describe('test optional configuration parameters', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -1462,6 +1484,7 @@ describe('test optional configuration parameters', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -1506,6 +1529,7 @@ describe('test optional configuration parameters', () => {
             ],
         };
         // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
         expect(geojson).toEqual(expectedJson);
@@ -1514,14 +1538,13 @@ describe('test optional configuration parameters', () => {
         const openairParser = new Parser({ defaultAltUnit: 'ft', targetAltUnit: 'm' });
         await openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
-        geojson.features.map((value) => delete value.id);
 
-        expect(geojson).toEqual({
+        const expectedGeojson = {
             type: 'FeatureCollection',
             features: [
                 {
                     type: 'Feature',
+                    id: 'f59d4fc4-8e22-4d16-86a5-fba5a5590556',
                     properties: {
                         name: 'R3804C BY NOTAM',
                         class: 'R',
@@ -1555,7 +1578,13 @@ describe('test optional configuration parameters', () => {
                     },
                 },
             ],
-        });
+        };
+
+        // remove feature id for comparison
+        expectedGeojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.id);
+
+        expect(geojson).toEqual(expectedGeojson);
     });
 });
 
@@ -1594,11 +1623,12 @@ describe('test parse invalid airspace definition blocks', () => {
         await openairParser.parse('./tests/fixtures/circular-invalid-airspace.txt');
         const geojson = openairParser.toGeojson();
 
-        const expectedJson = {
+        const expectedGeojson = {
             type: 'FeatureCollection',
             features: [
                 {
                     type: 'Feature',
+                    id: '9ea34dea-0df0-452d-9b53-f7bc1918498f',
                     properties: {
                         name: 'ED-R4 Wannsee H24',
                         class: 'R',
@@ -1618,7 +1648,7 @@ describe('test parse invalid airspace definition blocks', () => {
                         coordinates: [
                             [
                                 [13.1375, 52.3775],
-                                [13.137500000000003, 52.377500000000005],
+                                [13.1375, 52.3775],
                                 [13.134084067230118, 52.37725663365221],
                                 [13.130649865341088, 52.377144584266844],
                                 [13.127210916986305, 52.37716429305167],
@@ -1709,9 +1739,10 @@ describe('test parse invalid airspace definition blocks', () => {
             ],
         };
         // remove feature id for comparison
+        expectedGeojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(geojson).toEqual(expectedGeojson);
     });
     test('airspace with empty name', async () => {
         const openairParser = new Parser();

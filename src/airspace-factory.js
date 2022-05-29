@@ -427,10 +427,11 @@ class AirspaceFactory {
         });
 
         // IMPORTANT if center point is not correctly defined, arcs will almost always self-intersect because the
-        //  DP endpoint will NOT match the calculated arc endpoint. To avoid self-intersections, replace last arc end point
-        //  with the originally defined endpoint. This could be done better but currently I have no idea how...
+        //  DP start-/endpoint will NOT match the calculated arc start-/endpoint. To avoid self-intersections, replace last arc start-/endpoint
+        //  with the originally defined start-/endpoint. This could be done better but currently I have no idea how...
+        geometry.coordinates.shift();
         geometry.coordinates.pop();
-        geometry.coordinates.push(endCoord);
+        geometry.coordinates = [startCoord, ...geometry.coordinates, endCoord];
 
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
