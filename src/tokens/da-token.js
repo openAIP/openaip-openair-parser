@@ -21,7 +21,7 @@ class DaToken extends BaseLineToken {
         checkTypes.assert.integer(lineNumber);
 
         // keep original line
-        this.line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const arcPartsDefinition = line.replace(/^DA\s+/, '');

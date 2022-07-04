@@ -25,7 +25,7 @@ class CommentToken extends BaseLineToken {
         checkTypes.assert.integer(lineNumber);
 
         // keep original line
-        this.line = line;
+        token.line = line;
         token.tokenized = { line, lineNumber };
 
         return token;

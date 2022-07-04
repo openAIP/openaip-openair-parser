@@ -23,7 +23,7 @@ class DpToken extends BaseLineToken {
         checkTypes.assert.integer(lineNumber);
 
         // keep original line
-        this.line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         // extract coordinate pair
