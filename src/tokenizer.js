@@ -15,7 +15,7 @@ const DaToken = require('./tokens/da-token');
 const DyToken = require('./tokens/dy-token');
 const EofToken = require('./tokens/eof-token');
 const LineByLine = require('n-readlines');
-const fs = require('fs');
+const fs = require('node:fs');
 const checkTypes = require('check-types');
 const ParserError = require('./parser-error');
 

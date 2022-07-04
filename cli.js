@@ -2,7 +2,7 @@
 
 const Parser = require('./src/parser');
 const program = require('commander');
-const fs = require('fs');
+const fs = require('node:fs');
 
 program
     .option('-f, --input-filepath <inFilepath>', 'The input file path to the openAIR file')
