@@ -19,6 +19,16 @@ class BaseLineToken {
 
         this.tokenTypes = tokenTypes;
         this.tokenized = null;
+        this.line = null;
+    }
+
+    /**
+     * Returns the original tokenized line.
+     *
+     * @return {string}
+     */
+    getLine() {
+        return this.line;
     }
 
     /**

@@ -24,6 +24,8 @@ class SkippedToken extends CommentToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
+        // keep original line
+        this.line = line;
         token.tokenized = { line, lineNumber };
 
         return token;

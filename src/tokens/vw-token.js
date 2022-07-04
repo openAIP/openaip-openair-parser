@@ -21,6 +21,8 @@ class VwToken extends BaseLineToken {
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
 
+        // keep original line
+        this.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartWidth = line.replace(/^V\s+[W]=/, '');
