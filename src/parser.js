@@ -6,6 +6,7 @@ const altitudeUnit = require('./altitude-unit');
 const defaultConfig = require('./default-parser-config');
 const checkTypes = require('check-types');
 const { featureCollection: createFeatureCollection } = require('@turf/turf');
+const { geojsonToOpenair } = require('./geojson-to-openair');
 
 const allowedAltUnits = Object.values(altitudeUnit);
 const PARSER_STATE = {
@@ -189,11 +190,15 @@ class Parser {
 
     /**
      * @param {string} format
+     *
+     * @return {string}
      */
     toFormat(format) {
         switch (format) {
             case 'geojson':
-                return this.geojson;
+                return JSON.stringify(this.geojson);
+            case 'openair':
+                return this.toOpenair().join('\n');
             default:
                 throw new Error(`Unknown format '${format}'`);
         }
@@ -204,6 +209,13 @@ class Parser {
      */
     toGeojson() {
         return this.geojson;
+    }
+
+    /**
+     * @return {string[]}
+     */
+    toOpenair() {
+        return geojsonToOpenair(this.geojson);
     }
 
     /**

@@ -47,6 +47,7 @@
         "n-readlines": "^1.0.3",
         "node-notifier": "^10.0.1",
         "simplepolygon": "^1.2.3",
+        "sprintf-js": "^1.1.2",
         "uuid": "^8.3.2"
     },
     "devDependencies": {

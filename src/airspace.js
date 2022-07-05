@@ -10,6 +10,7 @@ const {
     point: createPoint,
     featureCollection: createFeatureCollection,
     unkinkPolygon,
+    simplify,
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -78,7 +79,7 @@ class Airspace {
             airspacePolygon = this.getPolygonFeature();
         } catch (e) {
             // Geometry creation errors may happen here already as it is NOT possible to create certain invalid
-            //  polygon geometries, i.e. too few points, start and end points do not match - if "fix geoemtry" flag
+            //  polygon geometries, i.e. too few points, start and end points do not match - if "fix geometry" flag
             // is active catch build errors and directly create a fixed polygon. In the main "fix" step below, the
             // geometry is checked for other issues like self-intersections etc and other fixes are applied.
             if (fixGeometry) {
@@ -261,8 +262,13 @@ class Airspace {
                 return polygon;
             };
             polygon = getPolygon(polygon.features);
+            // use a buffer around polygon to remove self-intersections and holes
+            const bufferedPolygon = buffer(polygon, 0.1, { units: 'meters' });
+            // simplify the buffer polygon since the "resolution" of points that define the buffered polygon are too high for
+            // the default OpenAIR coordinate DMS => this would result in "duplicate" points and resulting self-intersections
+            const simplifiedPolygon = simplify(bufferedPolygon, { tolerance: 0.001, highQuality: true });
 
-            return buffer(polygon, 0.1, { units: 'meters' });
+            return simplifiedPolygon;
         } catch (e) {
             /*
             Use "envelope" on edge cases that cannot be fixed with above logic. Resulting geometry will be

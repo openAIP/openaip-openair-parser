@@ -1,4 +1,5 @@
 const Parser = require('../src/parser');
+const fs = require('node:fs');
 
 describe('test parse complete airspace definition blocks', () => {
     test('handle ignored lines', async () => {
@@ -1787,3 +1788,37 @@ describe('test parse invalid airspace definition blocks and fix geometry', () =>
         expect(geometry.type).toEqual('Polygon');
     });
 });
+
+describe('test formats', () => {
+    test('check correct openair output', async () => {
+        // read from expected file and remove last "blank line" in file (automatically added by IDE)
+        const expected = await fs
+            .readFileSync('./tests/fixtures/formats/expected-output-openair.txt', 'utf-8')
+            .split('\n');
+
+        const openairParser = new Parser({ fixGeometry: true });
+        await openairParser.parse('./tests/fixtures/formats/in-output-openair.txt');
+        const openair = openairParser.toOpenair();
+
+        const out = openairParser.toFormat('openair');
+
+        // make sure to also take "last blank line added by IDE" into account
+        expect(removeBlanksAtEof(openair).join('\n')).toEqual(removeBlanksAtEof(expected).join('\n'));
+    });
+});
+
+/**
+ * Takes a list of string and removes all blank lines at the end of the list.
+ *
+ * @param {string[]} lines
+ * @return {string[]}
+ */
+function removeBlanksAtEof(lines) {
+    let lastLine = lines[lines.length - 1];
+    if (lastLine.trim() === '') {
+        lines.pop();
+        lastLine = lines[lines.length - 1];
+    }
+
+    return lines;
+}
