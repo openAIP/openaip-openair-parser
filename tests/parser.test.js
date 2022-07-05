@@ -1800,8 +1800,6 @@ describe('test formats', () => {
         await openairParser.parse('./tests/fixtures/formats/in-output-openair.txt');
         const openair = openairParser.toOpenair();
 
-        const out = openairParser.toFormat('openair');
-
         // make sure to also take "last blank line added by IDE" into account
         expect(removeBlanksAtEof(openair).join('\n')).toEqual(removeBlanksAtEof(expected).join('\n'));
     });

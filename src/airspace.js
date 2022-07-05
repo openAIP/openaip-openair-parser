@@ -262,13 +262,8 @@ class Airspace {
                 return polygon;
             };
             polygon = getPolygon(polygon.features);
-            // use a buffer around polygon to remove self-intersections and holes
-            const bufferedPolygon = buffer(polygon, 0.1, { units: 'meters' });
-            // simplify the buffer polygon since the "resolution" of points that define the buffered polygon are too high for
-            // the default OpenAIR coordinate DMS => this would result in "duplicate" points and resulting self-intersections
-            const simplifiedPolygon = simplify(bufferedPolygon, { tolerance: 0.001, highQuality: true });
 
-            return simplifiedPolygon;
+            return polygon;
         } catch (e) {
             /*
             Use "envelope" on edge cases that cannot be fixed with above logic. Resulting geometry will be
