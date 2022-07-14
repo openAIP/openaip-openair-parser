@@ -187,15 +187,19 @@ class Airspace {
     }
 
     /**
-     * This will return the current airspace geometry (after being built) "as is" including ALL errors!
-     * This method is mainly intended as utility method that returns the airpace geometry to be included
+     * This method is mainly intended as utility method that returns the airspace geometry to be included
      * in a parser error object.
      *
-     * @returns {Object}
+     * @returns {Object|null}
      */
     getGeometryAsLineString() {
-        // return as GeoJSON line feature (possible that polygon cannot be created due to too few points)
-        return createLinestring(this.coordinates);
+        try {
+            // return as GeoJSON line feature
+            return createLinestring(this.coordinates);
+        } catch (e) {
+            // possible that polygon cannot be created due to too few points => return null
+            return null;
+        }
     }
 
     /**
