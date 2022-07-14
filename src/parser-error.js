@@ -16,6 +16,7 @@ class ParserError extends Error {
             super(`Error found at line ${lineNumber}: ${errorMessage}`);
         }
 
+        this.name = 'ParserError';
         this.lineNumber = lineNumber;
         this.errorMessage = errorMessage;
         this.geometry = geometry;
