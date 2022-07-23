@@ -39,8 +39,8 @@ module.exports = Object.freeze({
     includeOpenair: false,
     // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'.
     defaultAltUnit: 'ft',
-    // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'.
-    targetAltUnit: 'ft',
+    // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, parser will not convert units.
+    targetAltUnit: null,
     // round altitude values
     roundAltValues: false,
 });

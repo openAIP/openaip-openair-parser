@@ -20,6 +20,17 @@ const checkTypes = require('check-types');
 const ParserError = require('./parser-error');
 
 /**
+ * @typedef typedefs.openaip.OpenairParser.Token
+ * @type Object
+ * @property {function} isIgnoredToken
+ * @property {function} tokenize
+ * @property {function} getTokenized
+ * @property {function} getType
+ * @property {function} canHandle
+ * @property {function} isAllowedNextToken
+ */
+
+/**
  * List of token types required for "isAllowedNextToken" type checks. Mainly to avoid directly requiring tokens in a token
  * and creating circular dependencies.
  *
@@ -60,34 +71,18 @@ const TOKEN_TYPES = {
 };
 
 /**
- * @typedef typedefs.openaip.OpenairParser.TokenizerConfig
- * @type Object
- * @property {string[]} airspaceClasses - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
- * @property {number} unlimited - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
- * @property {string} defaultAltUnit - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
- * @property {string} targetAltUnit - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
- * @property {boolean} roundAltValues - If true, rounds the altitude values. Defaults to false.
- */
-
-/**
- * @typedef typedefs.openaip.OpenairParser.Token
- * @type Object
- * @property {function} isIgnoredToken
- * @property {function} tokenize
- * @property {function} getTokenized
- * @property {function} getType
- * @property {function} canHandle
- * @property {function} isAllowedNextToken
- */
-
-/**
  * Reads the contents of a give file and tokenizes it. Each line will result in a single token.
  * Each token holds a tokenized representation of the read line. The tokenizer will return a list of all read
  * and created tokens. The tokenizer will throw a syntax error on the first error that is encountered.
  */
 class Tokenizer {
     /**
-     * @param {typedefs.openaip.OpenairParser.TokenizerConfig} config
+     * @param {Object} config
+     * @param {string[]} config.airspaceClasses - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+     * @param {number} config.unlimited - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
+     * @param {string} config.defaultAltUnit - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+     * @param {string} config.targetAltUnit - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+     * @param {boolean} config.roundAltValues - If true, rounds the altitude values. Defaults to false.
      */
     constructor(config) {
         const { airspaceClasses, unlimited, defaultAltUnit, targetAltUnit, roundAltValues } = config;
@@ -95,7 +90,7 @@ class Tokenizer {
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
         checkTypes.assert.integer(unlimited);
         checkTypes.assert.string(defaultAltUnit);
-        checkTypes.assert.string(targetAltUnit);
+        if (targetAltUnit) checkTypes.assert.string(targetAltUnit);
         checkTypes.assert.boolean(roundAltValues);
 
         this.config = config;

@@ -4,13 +4,11 @@ const {
     area: getArea,
     distance,
     lineToPolygon,
-    buffer,
     envelope,
     polygon: createPolygon,
     point: createPoint,
     featureCollection: createFeatureCollection,
     unkinkPolygon,
-    simplify,
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -30,7 +28,10 @@ class Airspace {
     }
 
     /**
-     * @param {{ validateGeometry: boolean, fixGeometry: boolean, includeOpenair: boolean}} config
+     * @param {Object} config
+     * @param {boolean} config.validateGeometry
+     * @param {boolean} config.fixGeometry
+     * @param {boolean} config.includeOpenair
      * @return {Feature<*, {upperCeiling: null, lowerCeiling: null, name: null, class: null}>}
      */
     asGeoJson(config) {

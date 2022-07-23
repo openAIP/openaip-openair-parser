@@ -28,15 +28,11 @@ const ParserError = require('./parser-error');
 const altitudeUnit = require('./altitude-unit');
 const unitConversion = require('./unit-conversion');
 
-/**
- * @typedef typedefs.openaip.OpenairParser.AirspaceFactoryConfig
- * @type Object
- * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
- */
-
 class AirspaceFactory {
     /**
-     * @param {typedefs.openaip.OpenairParser.AirspaceFactoryConfig} config
+     * @param {Object} config
+     * @param {number} [config.geometryDetail] - Defines the steps that are used to calculate arcs and circles.
+     * Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
      */
     constructor(config) {
         const { geometryDetail } = config;
@@ -48,6 +44,7 @@ class AirspaceFactory {
         this.tokens = null;
         /** @type {Airspace} */
         this.airspace = null;
+        /** @type {number|null} */
         this.currentLineNumber = null;
         // set to true if airspace contains tokens other than "skipped, blanks or comment"
         this.hasBuildTokens = false;
@@ -484,7 +481,7 @@ class AirspaceFactory {
 
     /**
      * @param {typedefs.openaip.OpenairParser.Token} token - Must be a DbToken!
-     * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array clockwise: boolean}}
+     * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array, clockwise: boolean}}
      * @private
      */
     getBuildDbArcCoordinates(token) {

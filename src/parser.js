@@ -17,20 +17,6 @@ const PARSER_STATE = {
 };
 
 /**
- * @typedef typedefs.openaip.OpenairParser.ParserConfig
- * @type Object
- * @property {string[]} [airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
- * @property {number} [unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
- * @property {number} [geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
- * @property {boolean} [validateGeometry] - If true, the GeoJson features are validated. Parser will throw an error if an invalid geometry is found. Defaults to true.
- * @property {boolean} [fixGeometry] - If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
- * @property {boolean} [includeOpenair] - If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size! Defaults to false.
- * @property {string} [defaultAltUnit] - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
- * @property {string} [targetAltUnit] - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
- * @property {boolean} [roundAltValues] - If true, rounds the altitude values. Defaults to false.
- */
-
-/**
  * @typedef typedefs.openaip.OpenairParser.ParserResult
  * @type Object
  * @property {boolean} success - If true, parsing was successful, false if not.
@@ -45,7 +31,16 @@ const PARSER_STATE = {
  */
 class Parser {
     /**
-     * @param {typedefs.openaip.OpenairParser.ParserConfig} [config] - The parser configuration
+     * @param {Object} config
+     * @param {string[]} [config.airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+     * @param {number} [config.unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
+     * @param {number} [config.geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
+     * @param {boolean} [config.validateGeometry] - If true, the GeoJson features are validated. Parser will throw an error if an invalid geometry is found. Defaults to true.
+     * @param {boolean} [config.fixGeometry] - If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
+     * @param {boolean} [config.includeOpenair] - If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size! Defaults to false.
+     * @param {string} [config.defaultAltUnit] - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+     * @param {string} [config.targetAltUnit] - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, keeps defined unit.
+     * @param {boolean} [config.roundAltValues] - If true, rounds the altitude values. Defaults to false.
      */
     constructor(config) {
         const configuration = { ...defaultConfig, ...config };
@@ -82,7 +77,7 @@ class Parser {
         if (allowedAltUnits.includes(defaultAltUnit.toUpperCase()) === false) {
             throw new Error(`Unknown default altitude unit '${defaultAltUnit}'`);
         }
-        if (allowedAltUnits.includes(targetAltUnit.toUpperCase()) === false) {
+        if (targetAltUnit && allowedAltUnits.includes(targetAltUnit.toUpperCase()) === false) {
             throw new Error(`Unknown target altitude unit '${targetAltUnit}'`);
         }
         if (checkTypes.boolean(roundAltValues) === false) {

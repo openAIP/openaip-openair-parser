@@ -4,37 +4,30 @@ const checkTypes = require('check-types');
 const unitConversion = require('../unit-conversion');
 
 /**
- * @typedef typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig
- * @type Object
- * @property {typedefs.openaip.OpenairParser.Token} tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
- * @property {number} unlimited - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
- * @property {string} defaultAltUnit - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
- * @property {string} targetAltUnit - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
- * @property {boolean} roundAltValues - If true, rounds the altitude values. Defaults to false.
- */
-
-/**
  * Tokenizes "AH/AL" airspace ceiling definitions.
- *
- * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class BaseAltitudeToken extends BaseLineToken {
     /**
-     * @param {typedefs.openaip.OpenairParser.BaseAltitudeTokenConfig} config
+     * @param {Object} config
+     * @param {typedefs.openaip.OpenairParser.TokenTypes} config.tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
+     * @param {number} [config.unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
+     * @param {string} [config.defaultAltUnit] - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
+     * @param {string} [config.targetAltUnit] - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not set, does not convert units.
+     * @param {boolean} [config.roundAltValues] - If true, rounds the altitude values. Defaults to false. This parameter is most useful when used with unit conversion, e.g. m -> feet.
      */
     constructor(config) {
         const { unlimited, tokenTypes, defaultAltUnit, targetAltUnit, roundAltValues } = config || {};
 
         checkTypes.assert.integer(unlimited);
         checkTypes.assert.string(defaultAltUnit);
-        checkTypes.assert.string(targetAltUnit);
+        if (targetAltUnit) checkTypes.assert.string(targetAltUnit);
         checkTypes.assert.boolean(roundAltValues);
 
         super({ tokenTypes });
 
         this.unlimited = unlimited;
         this.defaultAltUnit = defaultAltUnit.toUpperCase();
-        this.targetAltUnit = targetAltUnit.toUpperCase();
+        this.targetAltUnit = targetAltUnit ? targetAltUnit.toUpperCase() : null;
         this.roundAltValues = roundAltValues;
 
         /** @type {typedefs.openaip.OpenairParser.AltitudeReader[]} */
@@ -83,17 +76,17 @@ class BaseAltitudeToken extends BaseLineToken {
  */
 class AltitudeDefaultReader {
     /**
-     * @param {{defaultAltUnit: string, targetAltUnit: string, roundAltValues: boolean}} config
+     * @param {{defaultAltUnit: string, [targetAltUnit]: string|null, roundAltValues: boolean}} config
      */
     constructor(config) {
         const { defaultAltUnit, targetAltUnit, roundAltValues } = config || {};
 
         checkTypes.assert.string(defaultAltUnit);
-        checkTypes.assert.string(targetAltUnit);
+        if (targetAltUnit) checkTypes.assert.string(targetAltUnit);
         checkTypes.assert.boolean(roundAltValues);
 
         this.defaultAltUnit = defaultAltUnit.toUpperCase();
-        this.targetAltUnit = targetAltUnit.toUpperCase();
+        this.targetAltUnit = targetAltUnit ? targetAltUnit.toUpperCase() : null;
         this.roundAltValues = roundAltValues;
         this.REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s*(MSL|AMSL|ALT|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
     }
@@ -121,18 +114,23 @@ class AltitudeDefaultReader {
         const referenceDatum = this.harmonizeReference(altitudeParts[4]);
 
         /*
-        Convert between altitude units if required.
+        Convert between altitude units if required. This only happens if a target unit is explicitly specified!
 
         Although "ft" is mostly used as main unit in openAIR airspace definitions, sometimes "meters" (m) are used instead.
-        In this case, the tokenizer will convert meters into feet BUT this comes at a downside. Unfortunately,
+        In this case, the tokenizer can convert meters into feet BUT this comes at a downside. Unfortunately,
         the source used to generate the openAIR file will often define meter values that are "prettified" and when
         converted to feet, they will almost NEVER match the common rounded values like "2500" but rather something like "2478.123".
          */
-        value = this.convertUnits(value, unit, this.targetAltUnit);
+        if (this.targetAltUnit != null) {
+            value = this.convertUnits(value, unit, this.targetAltUnit);
+            // switch to new target unit
+            unit = this.targetAltUnit;
+        }
+        // round values if requested
         // round value
         value = this.roundAltValues ? parseInt(Math.round(value)) : value;
 
-        return { value, unit: this.targetAltUnit, referenceDatum };
+        return { value, unit, referenceDatum };
     }
 
     /**

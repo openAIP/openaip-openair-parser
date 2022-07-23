@@ -2,7 +2,10 @@ const checkTypes = require('check-types');
 
 class ParserError extends Error {
     /**
-     * @param {{lineNumber: number, errorMessage: string, [geometry]: Object}} config
+     * @param {Object} config
+     * @param {string} config.errorMessage
+     * @param {number|null} [config.lineNumber]
+     * @param {Object} [config.geometry]
      * @returns {void}
      * @private
      */
