@@ -31,7 +31,7 @@ const PARSER_STATE = {
  */
 class Parser {
     /**
-     * @param {Object} config
+     * @param {Object} [config] - if not specified, will use default parameters
      * @param {string[]} [config.airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
      * @param {number} [config.unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
      * @param {number} [config.geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.

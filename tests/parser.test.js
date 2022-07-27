@@ -2,6 +2,14 @@ const Parser = require('../src/parser');
 const fs = require('node:fs');
 
 describe('test parse complete airspace definition blocks', () => {
+    test('handle skipped tokens', async () => {
+        const openairParser = new Parser();
+        await openairParser.parse('./tests/fixtures/skipped-tokens.txt');
+
+        expect(() => {
+            openairParser.toGeojson();
+        }).not.toThrow();
+    });
     test('handle ignored lines', async () => {
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/ignored-only.txt');
