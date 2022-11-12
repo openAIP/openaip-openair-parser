@@ -39,6 +39,7 @@
         "update-packages": "ncu --target minor --upgrade --reject jsts && npm install"
     },
     "dependencies": {
+        "@mapbox/geojson-rewind": "^0.5.2",
         "@turf/turf": "^6.5.0",
         "check-types": "^11.1.2",
         "coordinate-parser": "^1.0.7",

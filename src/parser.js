@@ -7,6 +7,7 @@ const defaultConfig = require('./default-parser-config');
 const checkTypes = require('check-types');
 const { featureCollection: createFeatureCollection } = require('@turf/turf');
 const { geojsonToOpenair } = require('./geojson-to-openair');
+const rewind = require('@mapbox/geojson-rewind');
 
 const allowedAltUnits = Object.values(altitudeUnit);
 const PARSER_STATE = {
@@ -165,7 +166,9 @@ class Parser {
                 includeOpenair: this.config.includeOpenair,
             });
         });
-        this.geojson = createFeatureCollection(geojsonFeatures);
+
+        // IMPORTANT make sure that GeoJSON polygons follow the right-hand rule
+        this.geojson = rewind(createFeatureCollection(geojsonFeatures), false);
 
         return this;
     }
