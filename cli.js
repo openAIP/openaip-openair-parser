@@ -7,21 +7,30 @@ const fs = require('node:fs');
 program
     .option('-f, --input-filepath <inFilepath>', 'The input file path to the openAIR file')
     .option('-o, --output-filepath <outFilepath>', 'The output filename of the generated geojson file')
-    .option('-V, --validate', 'If set to true, validates geometries. Defaults to true.')
-    .option('-F, --fix-geometry', 'If set to true, tries to fix geometries. Defaults to false.')
+    .option('-V, --validate', 'If specified, parser will validate geometries.')
+    .option('-F, --fix-geometry', 'If specified, parser will try to fix geometries.')
+    .option(
+        '-D, --debug',
+        'If specified, returns a parser error if airspace file cannot be parsed. If not specified, simply returns 1 if parsing fails and 0 if parsing was successful.'
+    )
     .parse(process.argv);
 
 (async () => {
-    const validateGeometry = program.validateGeometry || true;
+    const validateGeometry = program.validate || false;
     const fixGeometry = program.fixGeometry || false;
+    const debug = program.debug || false;
 
     const parser = new Parser({ validateGeometry, fixGeometry });
     try {
         await parser.parse(program.inputFilepath);
         const geojson = parser.toGeojson();
-        console.log(`Successfully parsed ${geojson.features.length} airspaces`);
         await fs.writeFileSync(program.outputFilepath, Buffer.from(JSON.stringify(geojson, null, 2), 'utf-8'));
+        if (debug) console.log(`Successfully parsed ${geojson.features.length} airspaces`);
     } catch (e) {
-        console.log(e.message);
+        if (debug) console.log(e.message);
+
+        return process.exit(1);
     }
+
+    return process.exit(0);
 })();
