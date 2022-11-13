@@ -1129,7 +1129,7 @@ describe('test parse complete airspace definition blocks', () => {
             "features": [
                 {
                     "type": "Feature",
-                    "id": "5470d9e7-6400-4266-a01d-79237ba46e53",
+                    "id": "0d7ff61c-5361-42d6-a3e2-56889a45d3fc",
                     "properties": {
                         "name": "San Rocco al Porto Corridor(ULM)",
                         "class": "R",
@@ -1566,7 +1566,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     "type": "Feature",
-                    "id": "20eb99a4-39c4-4ba4-8e75-f1e3e7622e87",
+                    "id": "ab0594ad-8fc6-4121-b9a5-ac4b00b74f11",
                     "properties": {
                         "name": "TH-3-1",
                         "class": "G",
@@ -1803,7 +1803,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     "type": "Feature",
-                    "id": "53c9ec61-9984-41b1-8e55-2ed2993b2f23",
+                    "id": "ce943a19-1beb-4a2d-a27b-881f6883ad1e",
                     "properties": {
                         "name": "R-2903A STEVENS LAKE, FL",
                         "class": "R",
@@ -2056,7 +2056,7 @@ describe('test parse complete airspace definition blocks', () => {
                 },
                 {
                     "type": "Feature",
-                    "id": "4494ce59-c320-43b4-b8fb-ec7d85ad292f",
+                    "id": "6fde793d-b84c-467f-8485-b95536133e44",
                     "properties": {
                         "name": "R-5701 BOARDMAN, OR",
                         "class": "R",
@@ -2162,6 +2162,63 @@ describe('test parse complete airspace definition blocks', () => {
                             ]
                         ]
                     }
+                },
+                {
+                    "type": "Feature",
+                    "id": "966c6d09-c3e1-402b-bf1d-f9ce53f630f3",
+                    "properties": {
+                        "name": "R-5601F FORT SILL, OK",
+                        "class": "R",
+                        "upperCeiling": {
+                            "value": 40000,
+                            "unit": "FT",
+                            "referenceDatum": "MSL"
+                        },
+                        "lowerCeiling": {
+                            "value": 500,
+                            "unit": "FT",
+                            "referenceDatum": "MSL"
+                        }
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    -98.83361666666667,
+                                    34.704166666666666
+                                ],
+                                [
+                                    -98.78221666666667,
+                                    34.719166666666666
+                                ],
+                                [
+                                    -98.77147212298813,
+                                    34.73921014010484
+                                ],
+                                [
+                                    -98.77532854319897,
+                                    34.73858096043885
+                                ],
+                                [
+                                    -98.83235332711457,
+                                    34.72761725181772
+                                ],
+                                [
+                                    -98.84863571150669,
+                                    34.77576141777211
+                                ],
+                                [
+                                    -98.86725532824954,
+                                    34.77149443692826
+                                ],
+                                [
+                                    -98.83361666666667,
+                                    34.704166666666666
+                                ]
+                            ]
+                        ]
+                    }
                 }
             ]
         };
@@ -2172,7 +2229,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with clockwise and counter-clockwise arc definition', async () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({validateGeometry: false, fixGeometry: false});
         await openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
 

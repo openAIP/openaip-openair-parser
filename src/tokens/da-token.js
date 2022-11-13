@@ -53,9 +53,9 @@ class DaToken extends BaseLineToken {
     }
 
     getAllowedNextTokens() {
-        const { BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
+        const { BLANK_TOKEN, COMMENT_TOKEN, DA_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
-        return [BLANK_TOKEN, COMMENT_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN];
+        return [BLANK_TOKEN, COMMENT_TOKEN, DA_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN];
     }
 
     /**
