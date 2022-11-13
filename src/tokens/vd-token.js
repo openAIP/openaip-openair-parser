@@ -34,9 +34,9 @@ class VdToken extends BaseLineToken {
     }
 
     getAllowedNextTokens() {
-        const { COMMENT_TOKEN, VX_TOKEN, DB_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
+        const { COMMENT_TOKEN, VX_TOKEN, DA_TOKEN, DB_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
 
-        return [COMMENT_TOKEN, VX_TOKEN, DB_TOKEN, SKIPPED_TOKEN];
+        return [COMMENT_TOKEN, VX_TOKEN, DA_TOKEN, DB_TOKEN, SKIPPED_TOKEN];
     }
 }
 

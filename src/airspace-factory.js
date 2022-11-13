@@ -448,6 +448,8 @@ class AirspaceFactory {
 
         const { lineNumber, metadata: metadataDaToken } = token.getTokenized();
         const { radius, startBearing, endBearing } = metadataDaToken.arcDef;
+        let angleStart = startBearing;
+        let angleEnd = endBearing;
 
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
@@ -455,6 +457,12 @@ class AirspaceFactory {
         const vdToken = this.getNextToken(token, VdToken.type, false);
         if (vdToken) {
             clockwise = vdToken.getTokenized().metadata.clockwise;
+        }
+
+        // if counter-clockwise, flip start/end bearing
+        if (clockwise === false) {
+            angleStart = endBearing;
+            angleEnd = startBearing;
         }
 
         // get preceding VxToken => defines the arc center
@@ -469,7 +477,7 @@ class AirspaceFactory {
         // get the radius in kilometers
         const radiusKm = radius * 1.852;
         // calculate the line arc
-        const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
+        const { geometry } = createArc(centerCoord, radiusKm, angleStart, angleEnd, {
             steps: this.geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
