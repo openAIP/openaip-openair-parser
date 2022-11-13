@@ -23,3 +23,20 @@ V D=-
 V X=39:26:00 N 141:08:01 E
 DA 15.00,90.0,270.5
 DP 39:26:00 N 141:08:01 E
+
+
+*
+*
+AC R
+AN R-2903A STEVENS LAKE, FL
+AL 0 ft
+AH 22999 ft
+DP 29:58.917 N 081:59.533 W
+DP 29:58.917 N 081:56.067 W
+DP 29:56.500 N 081:52.983 W
+* center point is only set once -> requires parser to "keep" latest center point definition during airspace building
+V X=29:53.067 N 081:59.133 W
+DA 5.0,60.7,157.7689978
+DP 29:52.583 N 082:01.650 W
+DA 5.0,277.9,359.83507529999997
+DP 29:58.917 N 081:59.533 W
