@@ -3712,8 +3712,8 @@ describe('test parse invalid airspace definition blocks', () => {
     test('airspace with intersection', async () => {
         const openairParser = new Parser();
 
-        await expect(openairParser.parse('./tests/fixtures/self-intersecting-airspace.txt')).rejects.toThrow(
-            "Error found at line 1: Geometry of airspace 'TMA MILANO SWISS SEC1' starting on line 1 is invalid due to a self intersection"
+        await expect(openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt')).rejects.toThrow(
+            "Error found at line 1: Geometry of airspace 'CHARLO, NB CAE' starting on line 1 is invalid due to a self intersection at '46.13311111111111,-67.78122222222223'"
         );
     });
     test('airspace with insufficient coordinates fails even if fix geometry is set', async () => {
@@ -3725,7 +3725,7 @@ describe('test parse invalid airspace definition blocks', () => {
     });
     test('airspace with invalid geometry with self intersection can be fixed', async () => {
         const openairParser = new Parser({ fixGeometry: true });
-        await openairParser.parse('./tests/fixtures/self-intersecting-airspace.txt');
+        await openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
 
         expect(() => {
             openairParser.toGeojson();

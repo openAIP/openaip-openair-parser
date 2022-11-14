@@ -9,6 +9,7 @@ const {
     point: createPoint,
     featureCollection: createFeatureCollection,
     unkinkPolygon,
+    bearing: calcBearing,
 } = require('@turf/turf');
 const uuid = require('uuid');
 const jsts = require('jsts');
@@ -157,7 +158,7 @@ class Airspace {
                     const { lineNumber } = this.consumedTokens[0].getTokenized();
                     throw new ParserError({
                         lineNumber,
-                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection`,
+                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to a self intersection at '${selfIntersect.y},${selfIntersect.x}'`,
                         geometry: this.getGeometryAsLineString(),
                     });
                 } else {
@@ -247,6 +248,7 @@ class Airspace {
 
         let polygon;
         try {
+            coordinates = this.removeOverlapPoints(coordinates);
             const linestring = createLinestring(coordinates);
             polygon = lineToPolygon(linestring);
             polygon = unkinkPolygon(polygon);
@@ -339,6 +341,43 @@ class Airspace {
             }
             return res;
         }
+    }
+
+    /**
+     * Takes a list of coordinates and moves along all points and checks whether the traversed
+     * path would form an overlapping line.
+     *
+     * @param {Array[]} coordinates
+     * @return {Array[]}
+     */
+    removeOverlapPoints(coordinates) {
+        const fixedPoints = [];
+        let lastBearing = null;
+
+        coordinates.forEach((coord, index) => {
+            // get bearing to next point
+            const nextPoint = coordinates[index + 1];
+            let nextBearing = null;
+            // calc bearing to next point if any, otherwise add last point and exit
+            if (nextPoint) {
+                nextBearing = parseInt(calcBearing(coord, nextPoint));
+            } else {
+                fixedPoints.push(coord);
+                return;
+            }
+            // always use 360 instead of 0
+            nextBearing = nextBearing === 0 ? 360 : nextBearing;
+            // if next bearing is exactly the opposite direction, we found an overlapping part of the line string
+            const oppBearing = parseInt(nextBearing > 360 && nextBearing < 180 ? nextBearing + 180 : nextBearing - 180);
+            if (lastBearing == null || oppBearing !== lastBearing) {
+                fixedPoints.push(coord);
+                lastBearing = nextBearing;
+            } else {
+                const stop = null;
+            }
+        });
+
+        return fixedPoints;
     }
 }
 

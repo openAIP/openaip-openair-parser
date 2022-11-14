@@ -43,11 +43,9 @@
         "@turf/turf": "^6.5.0",
         "check-types": "^11.1.2",
         "coordinate-parser": "^1.0.7",
-        "geojson-polygon-self-intersections": "^1.2.1",
         "jsts": "<=2.6.1",
         "n-readlines": "^1.0.3",
         "node-notifier": "^10.0.1",
-        "simplepolygon": "^1.2.3",
         "sprintf-js": "^1.1.2",
         "uuid": "^8.3.2"
     },
