@@ -8,6 +8,7 @@ const checkTypes = require('check-types');
 const { featureCollection: createFeatureCollection } = require('@turf/turf');
 const { geojsonToOpenair } = require('./geojson-to-openair');
 const rewind = require('@mapbox/geojson-rewind');
+const outputGeometries = require('./output-geometry');
 
 const allowedAltUnits = Object.values(altitudeUnit);
 const PARSER_STATE = {
@@ -37,6 +38,8 @@ class Parser {
      * @param {number} [config.unlimited] - Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
      * @param {number} [config.geometryDetail] - Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
      * @param {boolean} [config.validateGeometry] - If true, the GeoJson features are validated. Parser will throw an error if an invalid geometry is found. Defaults to true.
+     * @param {string} [config.outputGeometry] - Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used to visualize invalid geometry definitions.
+     * Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
      * @param {boolean} [config.fixGeometry] - If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
      * @param {boolean} [config.includeOpenair] - If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size! Defaults to false.
      * @param {string} [config.defaultAltUnit] - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
@@ -50,6 +53,7 @@ class Parser {
             unlimited,
             geometryDetail,
             validateGeometry,
+            outputGeometry,
             fixGeometry,
             includeOpenair,
             defaultAltUnit,
@@ -68,6 +72,13 @@ class Parser {
         }
         if (checkTypes.boolean(validateGeometry) === false) {
             throw new Error("Parameter 'validateGeometry' must be a boolean.");
+        }
+        if ([outputGeometries.POLYGON, outputGeometries.LINESTRING].includes(outputGeometry) === false) {
+            throw new Error(
+                `Parameter 'outputGeometry' must be one of the allowed output geometries '${Object.values(
+                    outputGeometries
+                ).join(', ')}.`
+            );
         }
         if (checkTypes.boolean(fixGeometry) === false) {
             throw new Error("Parameter 'fixGeometry' must be a boolean.");
@@ -164,6 +175,7 @@ class Parser {
                 validateGeometry: this.config.validateGeometry,
                 fixGeometry: this.config.fixGeometry,
                 includeOpenair: this.config.includeOpenair,
+                outputGeometry: this.config.outputGeometry,
             });
         });
 

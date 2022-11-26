@@ -14,6 +14,7 @@ const {
 const uuid = require('uuid');
 const jsts = require('jsts');
 const ParserError = require('./parser-error');
+const outputGeometries = require('./output-geometry');
 
 /**
  * Result of a parsed airspace definition block. Can be output as GeoJSON.
@@ -33,11 +34,12 @@ class Airspace {
      * @param {boolean} config.validateGeometry
      * @param {boolean} config.fixGeometry
      * @param {boolean} config.includeOpenair
+     * @param {string} config.outputGeometry
      * @return {Feature<*, {upperCeiling: null, lowerCeiling: null, name: null, class: null}>}
      */
     asGeoJson(config) {
-        const { validateGeometry, fixGeometry, includeOpenair } = {
-            ...{ validateGeometry: false, fixGeometry: false, includeOpenair: false },
+        const { validateGeometry, fixGeometry, includeOpenair, outputGeometry } = {
+            ...{ validateGeometry: false, fixGeometry: false, includeOpenair: false, outputGeometry: 'POLYGON' },
             ...config,
         };
 
@@ -73,6 +75,32 @@ class Airspace {
                 properties.openair += line + '\n';
             }
         }
+
+        let airspaceGeometry =
+            outputGeometry === outputGeometries.POLYGON
+                ? this.createPolygonGeometry({ validateGeometry, fixGeometry, outputGeometry })
+                : this.createLinestringGeometry();
+
+        return createFeature(airspaceGeometry, properties, { id: uuid.v4() });
+    }
+
+    /**
+     * @return {Object}
+     * @private
+     */
+    createLinestringGeometry() {
+        return createLinestring(this.coordinates).geometry;
+    }
+
+    /**
+     * @param {Object} config
+     * @param {boolean} config.validateGeometry
+     * @param {boolean} config.fixGeometry
+     * @return {Object}
+     * @private
+     */
+    createPolygonGeometry(config) {
+        const { validateGeometry, fixGeometry } = config;
 
         let lineNumber;
         let airspacePolygon;
@@ -172,7 +200,7 @@ class Airspace {
             }
         }
 
-        return createFeature(airspacePolygon.geometry, properties, { id: uuid.v4() });
+        return airspacePolygon.geometry;
     }
 
     /**

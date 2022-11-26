@@ -35,6 +35,9 @@ module.exports = Object.freeze({
     validateGeometry: true,
     // If true, uses "convexHull" to fix an invalid geometry - note that this potentially alters the original airspace geometry!
     fixGeometry: false,
+    // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used
+    // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
+    outputGeometry: 'POLYGON',
     // If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size!
     includeOpenair: false,
     // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'.
