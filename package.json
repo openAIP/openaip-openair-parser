@@ -41,7 +41,7 @@
     "dependencies": {
         "@mapbox/geojson-rewind": "^0.5.2",
         "@turf/turf": "^6.5.0",
-        "check-types": "^11.1.2",
+        "check-types": "^11.2.2",
         "coordinate-parser": "^1.0.7",
         "jsts": "<=2.6.1",
         "n-readlines": "^1.0.3",
@@ -50,20 +50,20 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.18.2",
-        "@types/check-types": "^7.3.3",
+        "@babel/eslint-parser": "^7.19.1",
+        "@types/check-types": "^7.3.4",
         "@types/jest": "^27.5.2",
         "@types/uuid": "^8.3.4",
         "commander": "^2.20.3",
-        "eslint": "^8.19.0",
+        "eslint": "^8.28.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-only-warn": "^1.0.3",
         "eslint-plugin-prettier": "^4.2.1",
         "jest": "^27.5.1",
-        "nodemon": "^2.0.18",
+        "nodemon": "^2.0.20",
         "npm-check-updates": "^12.5.12",
-        "prettier": "^2.7.1",
+        "prettier": "^2.8.0",
         "version-bump-prompt": "^6.1.0"
     }
 }
