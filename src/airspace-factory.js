@@ -173,8 +173,26 @@ class AirspaceFactory {
      * @return {void}
      */
     validateTokenOrder() {
+        let startingAcTagFound = false;
         for (const [index, currentToken] of this.tokens.entries()) {
             const maxLookAheadIndex = this.tokens.length - 1;
+            const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
+
+            // Make sure the first relevant token is an AC tag. Starting from this AC tag, the token order can be validated
+            // only using "look ahead" logic. Otherwise, additional "look behind" must be implemented that would
+            // increase processing time.
+            if (startingAcTagFound === false && currentToken.isIgnoredToken() === false) {
+                if (currentToken.getType() === AcToken.type) {
+                    startingAcTagFound = true;
+                } else {
+                    throw new ParserError({
+                        lineNumber: currentTokenLineNumber,
+                        errorMessage: `The first token must be of tpye '${
+                            AcToken.type
+                        }'. Token '${currentToken.getType()}' found on line ${currentTokenLineNumber}.`,
+                    });
+                }
+            }
 
             // get "next" token index and consider max look ahead
             let lookAheadIndex = index + 1;
@@ -191,7 +209,6 @@ class AirspaceFactory {
 
                 const isAllowedNextToken = currentToken.isAllowedNextToken(lookAheadToken);
                 if (isAllowedNextToken === false) {
-                    const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
                     const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.getTokenized();
 
                     throw new ParserError({

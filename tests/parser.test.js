@@ -3702,6 +3702,13 @@ describe('test optional configuration parameters', () => {
 });
 
 describe('test parse invalid airspace definition blocks', () => {
+    test('single airspace with missing AC tag', async () => {
+        const openairParser = new Parser();
+
+        await expect(openairParser.parse('./tests/fixtures/single-airspace-without-ac-tag.txt')).rejects.toThrow(
+            "Error found at line 3: The first token must be of tpye 'AC'. Token 'AN' found on line 3."
+        );
+    });
     test('airspace with invalid coordinates', async () => {
         const openairParser = new Parser();
 
