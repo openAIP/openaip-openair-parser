@@ -400,8 +400,6 @@ class Airspace {
             if (lastBearing == null || oppBearing !== lastBearing) {
                 fixedPoints.push(coord);
                 lastBearing = nextBearing;
-            } else {
-                const stop = null;
             }
         });
 
