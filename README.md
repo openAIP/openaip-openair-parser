@@ -1,9 +1,9 @@
 # OpenAIR Format Parser
 
 A highly configurable [OpenAIR](http://www.winpilot.com/usersguide/userairspace.asp) parser for Node. The parser can also
-be configured to validate and fix defined geometry.
+be configured to validate and fix defined geometry. The parser can be configured to read **original** or **extended** OpenAIR formatted files.
 
-Reads OpenAIR airspace definitions:
+### Reads **original OpenAIR** airspace definitions with `extendedFormat: false`:
 
 ```text
 AC R
@@ -62,6 +62,99 @@ Outputs GeoJSON FeatureCollection:
 }
 ```
 
+### Reads **extended OpenAIR** airspace definitions with `extendedFormat: true`:
+
+```text
+AI b3836bab-6bc3-48c1-b918-01c2559e26fa
+AC D
+AY TMA
+AN TMA Todendorf-Putlos
+AF 123.505
+AG Todendorf Information
+AH 40000ft MSL
+AL GND
+DP 54:25:00 N 010:40:00 E
+DP 54:25:00 N 010:50:00 E
+DP 54:26:00 N 010:53:00 E
+DP 54:19:30 N 010:53:00 E
+DP 54:15:00 N 010:41:00 E
+DP 54:15:19 N 010:40:00 E
+DP 54:20:00 N 010:40:00 E
+DP 54:25:00 N 010:40:00 E
+```
+
+Outputs GeoJSON FeatureCollection:
+
+```json
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+                "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "value": "123.505",
+                    "name": "Todendorf Information"
+                },
+                "upperCeiling": {
+                    "value": 40000,
+                    "unit": "FT",
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
+                }
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            10.666666666666666,
+                            54.416666666666664
+                        ],
+                        [
+                            10.833333333333334,
+                            54.416666666666664
+                        ],
+                        [
+                            10.883333333333333,
+                            54.43333333333333
+                        ],
+                        [
+                            10.883333333333333,
+                            54.325
+                        ],
+                        [
+                            10.683333333333334,
+                            54.25
+                        ],
+                        [
+                            10.666666666666666,
+                            54.25527777777778
+                        ],
+                        [
+                            10.666666666666666,
+                            54.333333333333336
+                        ],
+                        [
+                            10.666666666666666,
+                            54.416666666666664
+                        ]
+                    ]
+                ]
+            }
+        }
+    ]
+}
+```
+
 Install
 =
 ```shell
@@ -78,7 +171,8 @@ const Parser = require('@openaip/openair-parser');
  The default parser configuration for reference.
  */
 const config = {
-    // accepted airspace classes for the AC token
+    // Defines allowed airspace classes used with the AC token. This configuration option only applies if the
+    // standard "non-extended" format is used, i.e. with the config parameter "extendedFormat: false".
     airspaceClasses: [
         // default ICAO classes
         'A',
@@ -91,7 +185,6 @@ const config = {
         // classes commonly found in openair files
         'R',
         'Q',
-        'D',
         'P',
         'GP',
         'WAVE',
@@ -101,6 +194,14 @@ const config = {
         'TMZ',
         'CTR',
     ],
+    // If "true" the parser will try to parse the extended OpenAIR-Format that contains additional tags
+    // "AY", "AF", "AG" and "AI". If true, config parameters "allowedClassValues" and "allowedTypeValues" are
+    // mandatory.
+    extendedFormat: false,
+    // defines a set of allowed values if the extended format is used -  default ICAO classes.
+    extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    // defines a set of allowed values if the extended format is used.
+    extendedFormatTypes: ['R', 'Q', 'P', 'GP', 'WAVE', 'W', 'GLIDING', 'RMZ', 'TMZ', 'CTR'],
     // flight level value to set for upper ceilings defined as "UNLIMITED"
     unlimited: 999,
     // defines the level of detail (smoothness) of arc/circular geometries
@@ -127,6 +228,23 @@ await parser.parse('./path/to/openair-file.txt');
 const geojson = parser.toGeoJson();
 ```
 
+Extended OpenAIR Format
+=
+The **original** OpenAIR format specification has multiple shortcomings to meet today's demand to reflect the various types of existing airspaces
+and provide additional metadata. To overcome these shortcomings, an **extended** OpenAIR format is introduced that has several new tags.
+
+### Extended Format Tags:
+
+#### AI
+A unique identifier string for this airspace, e.g. a [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier). The _AI_ value must stay the same for each airspace throughout different versions if the file.
+#### AY
+The optional _AY_ tag specifies the airspace type, e.g. "TMA", "CTR" or "TMZ". Unlike in the original format, the _AC_ tag must now only be used to specify the airspace _ICAO class_. If airspace has no type, i.e. is only ICAO class, the _AY_ tag can be omitted.
+#### AF 
+An optional tag that specifies the frequency of a ground station that provides information on the defined airspace.
+#### AG
+If _AF_ is present, defines the ground station name. May not be used without the _AF_ tag. 
+
+
 CLI
 =
 
@@ -140,6 +258,7 @@ Options:
   -o, --output-filepath <outFilepath>  The output filename of the generated geojson file
   -V, --validate                       If set to true, validates geometries. Defaults to true.
   -F, --fix-geometry                   If set to true, tries to fix geometries. Note that this may change the original airspace geometry! Defaults to false.
+  -E, --extended-format           If set to true, parser expects the extended OpenAIR format. Defaults to false.
   -h, --help                           output usage information
 ```
 

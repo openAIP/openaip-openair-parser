@@ -4,7 +4,8 @@
  * @type {typedefs.openaip.OpenairParser.ParserConfig}
  */
 module.exports = Object.freeze({
-    // defines allowed airspace classes used with the AC token
+    // defines allowed airspace classes used with the AC token. This configuration option only applies if the
+    // standard "non-extended" format is used, i.e. with the config parameter "extendedFormat: false".
     airspaceClasses: [
         // default ICAO classes
         'A',
@@ -17,7 +18,6 @@ module.exports = Object.freeze({
         // classes commonly found in openair files
         'R',
         'Q',
-        'D',
         'P',
         'GP',
         'WAVE',
@@ -27,6 +27,14 @@ module.exports = Object.freeze({
         'TMZ',
         'CTR',
     ],
+    // If "true" the parser will be able to parse the extended OpenAIR-Format that contains additional tags
+    // "AY", "AF", "AG" and "AI". If true, config parameters "allowedClassValues" and "allowedTypeValues" are
+    // mandatory.
+    extendedFormat: false,
+    // defines a set of allowed values if the extended format is used -  default ICAO classes.
+    extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    // defines a set of allowed values if the extended format is used.
+    extendedFormatTypes: ['R', 'Q', 'P', 'GP', 'WAVE', 'W', 'GLIDING', 'RMZ', 'TMZ', 'CTR'],
     // flight level value to set for upper ceilings defined as "UNLIMITED"
     unlimited: 999,
     // defines the level of detail (smoothness) of arc/circular geometries
