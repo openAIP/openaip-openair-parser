@@ -6,13 +6,17 @@ class BaseLineToken {
     /**
      * @param {Object} config
      * @param {typedefs.openaip.OpenairParser.TokenTypes} config.tokenTypes - List of all known token types. Required
+     * @param {Object} [config.extendedFormat] - If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
      * to do "isAllowedNextToken" type checks.
      */
     constructor(config) {
-        const { tokenTypes } = config;
+        const defaultConfig = { extendedFormat: false };
+        const { tokenTypes, extendedFormat } = Object.assign(defaultConfig, config);
 
         checkTypes.assert.nonEmptyObject(tokenTypes);
+        checkTypes.assert.boolean(extendedFormat);
 
+        this.extendedFormat = extendedFormat;
         this.tokenTypes = tokenTypes;
         this.tokenized = null;
         this.line = null;

@@ -15,7 +15,7 @@ class SkippedToken extends CommentToken {
         checkTypes.assert.string(line);
 
         // line contains a skipped token
-        return /^(AT|TO|TC|SP|SB|V Z=\d|AF|AG|AY).*$/.test(line);
+        return /^(AT|TO|TC|SP|SB|V Z=\d).*$/.test(line);
     }
 
     tokenize(line, lineNumber) {
@@ -46,6 +46,10 @@ class SkippedToken extends CommentToken {
             DC_TOKEN,
             EOF_TOKEN,
             SKIPPED_TOKEN,
+            AI_TOKEN,
+            AY_TOKEN,
+            AF_TOKEN,
+            AG_TOKEN,
         } = this.tokenTypes;
 
         return [
@@ -62,6 +66,10 @@ class SkippedToken extends CommentToken {
             DC_TOKEN,
             EOF_TOKEN,
             SKIPPED_TOKEN,
+            AI_TOKEN,
+            AY_TOKEN,
+            AF_TOKEN,
+            AG_TOKEN,
         ];
     }
 }

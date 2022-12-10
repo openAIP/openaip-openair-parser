@@ -14,6 +14,10 @@ const DbToken = require('./tokens/db-token');
 const DaToken = require('./tokens/da-token');
 const DyToken = require('./tokens/dy-token');
 const EofToken = require('./tokens/eof-token');
+const AiToken = require('./tokens/ai-token');
+const AyToken = require('./tokens/ay-token');
+const AfToken = require('./tokens/af-token');
+const AgToken = require('./tokens/ag-token');
 const LineByLine = require('n-readlines');
 const fs = require('node:fs');
 const checkTypes = require('check-types');
@@ -50,6 +54,10 @@ const ParserError = require('./parser-error');
  * @property {string} DA_TOKEN
  * @property {string} EOF_TOKEN
  * @property {string} SKIPPED_TOKEN
+ * @property {string} AI_TOKEN
+ * @property {string} AY_TOKEN
+ * @property {string} AF_TOKEN
+ * @property {string} AG_TOKEN
  */
 const TOKEN_TYPES = {
     COMMENT_TOKEN: CommentToken.type,
@@ -68,6 +76,11 @@ const TOKEN_TYPES = {
     DY_TOKEN: DyToken.type,
     EOF_TOKEN: EofToken.type,
     SKIPPED_TOKEN: SkippedToken.type,
+    // extended format tokens
+    AI_TOKEN: AiToken.type,
+    AY_TOKEN: AyToken.type,
+    AF_TOKEN: AfToken.type,
+    AG_TOKEN: AgToken.type,
 };
 
 /**
@@ -83,34 +96,73 @@ class Tokenizer {
      * @param {string} config.defaultAltUnit - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
      * @param {string} config.targetAltUnit - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
      * @param {boolean} config.roundAltValues - If true, rounds the altitude values. Defaults to false.
+     * @param {boolean} [config.extendedFormat] - If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
+     * @param {string[]} [config.extendedFormatClasses] - Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
+     * @param {string[]} [config.extendedFormatTypes] - Defines a set of allowed "AY" values if the extended format is used.
      */
     constructor(config) {
-        const { airspaceClasses, unlimited, defaultAltUnit, targetAltUnit, roundAltValues } = config;
+        const {
+            airspaceClasses,
+            unlimited,
+            defaultAltUnit,
+            targetAltUnit,
+            roundAltValues,
+            extendedFormat,
+            extendedFormatClasses,
+            extendedFormatTypes,
+        } = config;
 
         checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
         checkTypes.assert.integer(unlimited);
         checkTypes.assert.string(defaultAltUnit);
         if (targetAltUnit) checkTypes.assert.string(targetAltUnit);
         checkTypes.assert.boolean(roundAltValues);
+        checkTypes.assert.boolean(extendedFormat);
+        checkTypes.assert.array.of.nonEmptyString(extendedFormatClasses);
+        checkTypes.assert.array.of.nonEmptyString(extendedFormatTypes);
 
         this.config = config;
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokenizers = [
-            new CommentToken({ tokenTypes: TOKEN_TYPES }),
-            new SkippedToken({ tokenTypes: TOKEN_TYPES }),
-            new BlankToken({ tokenTypes: TOKEN_TYPES }),
-            new AcToken({ tokenTypes: TOKEN_TYPES, airspaceClasses }),
-            new AnToken({ tokenTypes: TOKEN_TYPES }),
-            new AhToken({ tokenTypes: TOKEN_TYPES, unlimited, defaultAltUnit, targetAltUnit, roundAltValues }),
-            new AlToken({ tokenTypes: TOKEN_TYPES, unlimited, defaultAltUnit, targetAltUnit, roundAltValues }),
-            new DpToken({ tokenTypes: TOKEN_TYPES }),
-            new VdToken({ tokenTypes: TOKEN_TYPES }),
-            new VxToken({ tokenTypes: TOKEN_TYPES }),
-            new VwToken({ tokenTypes: TOKEN_TYPES }),
-            new DcToken({ tokenTypes: TOKEN_TYPES }),
-            new DbToken({ tokenTypes: TOKEN_TYPES }),
-            new DaToken({ tokenTypes: TOKEN_TYPES }),
-            new DyToken({ tokenTypes: TOKEN_TYPES }),
+            new CommentToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new SkippedToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new BlankToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new AcToken({
+                tokenTypes: TOKEN_TYPES,
+                airspaceClasses,
+                extendedFormat,
+                extendedFormatClasses,
+            }),
+            new AnToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new AhToken({
+                tokenTypes: TOKEN_TYPES,
+                unlimited,
+                defaultAltUnit,
+                targetAltUnit,
+                roundAltValues,
+                extendedFormat,
+            }),
+            new AlToken({
+                tokenTypes: TOKEN_TYPES,
+                unlimited,
+                defaultAltUnit,
+                targetAltUnit,
+                roundAltValues,
+                extendedFormat,
+            }),
+            new DpToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new VdToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new VxToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new VwToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new DcToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new DbToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new DaToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new DyToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            // extended format tokens
+            new AiToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new AyToken({ tokenTypes: TOKEN_TYPES, extendedFormat, extendedFormatTypes }),
+            new AfToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new AgToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
         ];
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokens = [];

@@ -14,6 +14,10 @@ const DaToken = require('./tokens/da-token');
 const DyToken = require('./tokens/dy-token');
 const EofToken = require('./tokens/eof-token');
 const BaseLineToken = require('./tokens/base-line-token');
+const AiToken = require('./tokens/ai-token');
+const AyToken = require('./tokens/ay-token');
+const AfToken = require('./tokens/af-token');
+const AgToken = require('./tokens/ag-token');
 const checkTypes = require('check-types');
 const {
     circle: createCircle,
@@ -32,14 +36,17 @@ class AirspaceFactory {
     /**
      * @param {Object} config
      * @param {number} [config.geometryDetail] - Defines the steps that are used to calculate arcs and circles.
+     * @param {number} [config.extendedFormat] - If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
      * Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
      */
     constructor(config) {
-        const { geometryDetail } = config;
+        const { geometryDetail, extendedFormat } = config;
 
         checkTypes.assert.integer(geometryDetail);
+        checkTypes.assert.boolean(extendedFormat);
 
         this.geometryDetail = geometryDetail;
+        this.extendedFormat = extendedFormat;
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokens = null;
         /** @type {Airspace} */
@@ -162,6 +169,19 @@ class AirspaceFactory {
                 break;
             case EofToken.type:
                 break;
+            // extended format tokens
+            case AiToken.type:
+                this.handleAiToken(token);
+                break;
+            case AyToken.type:
+                this.handleAyToken(token);
+                break;
+            case AfToken.type:
+                this.handleAfToken(token);
+                break;
+            case AgToken.type:
+                this.handleAgToken(token);
+                break;
             default:
                 throw new ParserError({ lineNumber, errorMessage: `Unknown token '${type}'` });
         }
@@ -187,7 +207,7 @@ class AirspaceFactory {
                 } else {
                     throw new ParserError({
                         lineNumber: currentTokenLineNumber,
-                        errorMessage: `The first token must be of tpye '${
+                        errorMessage: `The first token must be of type '${
                             AcToken.type
                         }'. Token '${currentToken.getType()}' found on line ${currentTokenLineNumber}.`,
                     });
@@ -559,6 +579,72 @@ class AirspaceFactory {
      */
     handleBlankToken(token) {
         checkTypes.assert.instance(token, BlankToken);
+    }
+
+    /**
+     *
+     * @param {typedefs.openaip.OpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    handleAiToken(token) {
+        checkTypes.assert.instance(token, AiToken);
+
+        const { metadata } = token.getTokenized();
+        const { identifier } = metadata;
+
+        this.airspace.identifier = identifier;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaip.OpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    handleAyToken(token) {
+        checkTypes.assert.instance(token, AyToken);
+
+        const { metadata } = token.getTokenized();
+        const { type } = metadata;
+
+        this.airspace.type = type;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaip.OpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    handleAfToken(token) {
+        checkTypes.assert.instance(token, AfToken);
+
+        const { metadata } = token.getTokenized();
+        const { frequency } = metadata;
+
+        if (this.airspace.frequency == null) {
+            this.airspace.frequency = {};
+        }
+        this.airspace.frequency.value = frequency;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaip.OpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    handleAgToken(token) {
+        checkTypes.assert.instance(token, AgToken);
+
+        const { metadata } = token.getTokenized();
+        const { name } = metadata;
+
+        if (this.airspace.frequency == null) {
+            this.airspace.frequency = {};
+        }
+        this.airspace.frequency.name = name;
     }
 
     /**

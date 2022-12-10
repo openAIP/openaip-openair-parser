@@ -15,6 +15,7 @@ const uuid = require('uuid');
 const jsts = require('jsts');
 const ParserError = require('./parser-error');
 const outputGeometries = require('./output-geometry');
+const cleanDeep = require('clean-deep');
 
 /**
  * Result of a parsed airspace definition block. Can be output as GeoJSON.
@@ -24,9 +25,15 @@ class Airspace {
         this.consumedTokens = [];
         this.name = null;
         this.class = null;
+
         this.upperCeiling = null;
         this.lowerCeiling = null;
         this.coordinates = [];
+        // required if extended format is used
+        this.identifier = null;
+        this.type = null;
+        this.frequency = null;
+        this.frequencyName = null;
     }
 
     /**
@@ -61,12 +68,18 @@ class Airspace {
         }
 
         // set feature properties
-        const properties = {
+        const properties = cleanDeep({
+            id: this.identifier,
             name: this.name,
             class: this.class,
+            type: this.type,
+            frequency: {
+                value: this.frequency,
+                name: this.frequencyName,
+            },
             upperCeiling: this.upperCeiling,
             lowerCeiling: this.lowerCeiling,
-        };
+        });
         // include original OpenAIR airspace definition block
         if (includeOpenair) {
             properties.openair = '';

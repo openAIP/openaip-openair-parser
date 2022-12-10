@@ -1,7 +1,7 @@
 # OpenAIR Format Parser
 
 A highly configurable [OpenAIR](http://www.winpilot.com/usersguide/userairspace.asp) parser for Node. The parser can also
-be configured to validate and fix defined geometry. The parser can be configured to read **original** or **extended** OpenAIR formatted files.
+be configured to validate and fix defined geometries. The parser supports the **original** and the **extended** OpenAIR format.
 
 ### Reads **original OpenAIR** airspace definitions with `extendedFormat: false`:
 
@@ -65,10 +65,10 @@ Outputs GeoJSON FeatureCollection:
 ### Reads **extended OpenAIR** airspace definitions with `extendedFormat: true`:
 
 ```text
-AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AC D
 AY TMA
 AN TMA Todendorf-Putlos
+AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AF 123.505
 AG Todendorf Information
 AH 40000ft MSL
@@ -200,8 +200,8 @@ const config = {
     extendedFormat: false,
     // defines a set of allowed values if the extended format is used -  default ICAO classes.
     extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-    // defines a set of allowed values if the extended format is used.
-    extendedFormatTypes: ['R', 'Q', 'P', 'GP', 'WAVE', 'W', 'GLIDING', 'RMZ', 'TMZ', 'CTR'],
+    // Defines a set of allowed "AY" values if the extended format is used. Otherwise, allows all used types.
+    extendedFormatTypes: [],
     // flight level value to set for upper ceilings defined as "UNLIMITED"
     unlimited: 999,
     // defines the level of detail (smoothness) of arc/circular geometries
@@ -236,14 +236,18 @@ and provide additional metadata. To overcome these shortcomings, an **extended**
 ### Extended Format Tags:
 
 #### AI
-A unique identifier string for this airspace, e.g. a [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier). The _AI_ value must stay the same for each airspace throughout different versions if the file.
+A required unique identifier string for each airspace, e.g. a [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier). The _AI_ value must stay the same for each airspace throughout different versions if the file. The _AI_ tag must be placed either before or directly after the _AN_ tag.
 #### AY
-The optional _AY_ tag specifies the airspace type, e.g. "TMA", "CTR" or "TMZ". Unlike in the original format, the _AC_ tag must now only be used to specify the airspace _ICAO class_. If airspace has no type, i.e. is only ICAO class, the _AY_ tag can be omitted.
+The optional _AY_ tag specifies the airspace type, e.g. "TMA", "CTR" or "TMZ". Unlike in the original format, the _AC_ tag must now only be used to specify the airspace _ICAO class_. If airspace has no type, i.e. is only ICAO class, the _AY_ tag can be omitted. The _AY_ tag must be placed directly after the _AC_ tag.
 #### AF 
-An optional tag that specifies the frequency of a ground station that provides information on the defined airspace.
+An optional tag that specifies the frequency of a ground station that provides information on the defined airspace. The _AF_ must be placed directly after either the _AI_ tag or the _AG_ tag. If placed after the _AG_ tag, the _AG_ tag must directly be placed after the _AI_ tag. The proposed best order is _AF_, then _AG_.
 #### AG
-If _AF_ is present, defines the ground station name. May not be used without the _AF_ tag. 
+If _AF_ is present, defines the ground station name. May not be used without the _AF_ tag. The _AG_ must be placed directly after either the _AF_ tag or the _AF_ tag. If placed after the _AG_ tag, the _AF_ tag must directly be placed after the _AI_ tag. The proposed best order is _AF_, then _AG_.
 
+### Original To Extended Format Conversion
+
+To easily convert original OpenAIR to the extended format you can use our [OpenAIR Fixer Tool](https://github.com/openAIP/openaip-openair-fix-format). The tool will
+inject the required _AI_ token for each airspace definition block that does not have it already. Additionally the tools takes care of tag order.
 
 CLI
 =

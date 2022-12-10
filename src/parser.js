@@ -45,6 +45,9 @@ class Parser {
      * @param {string} [config.defaultAltUnit] - By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
      * @param {string} [config.targetAltUnit] - Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, keeps defined unit.
      * @param {boolean} [config.roundAltValues] - If true, rounds the altitude values. Defaults to false.
+     * @param {boolean} [config.extendedFormat] - If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
+     * @param {string[]} [config.extendedFormatClasses] - Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
+     * @param {string[]} [config.extendedFormatTypes] - Defines a set of allowed "AY" values if the extended format is used.
      */
     constructor(config) {
         const configuration = { ...defaultConfig, ...config };
@@ -59,6 +62,9 @@ class Parser {
             defaultAltUnit,
             targetAltUnit,
             roundAltValues,
+            extendedFormat,
+            extendedFormatClasses,
+            extendedFormatTypes,
         } = configuration;
 
         if (checkTypes.array.of.nonEmptyString(airspaceClasses) === false) {
@@ -94,6 +100,15 @@ class Parser {
         }
         if (checkTypes.boolean(roundAltValues) === false) {
             throw new Error("Parameter 'roundAltValues' must be a boolean.");
+        }
+        if (checkTypes.boolean(extendedFormat) === false) {
+            throw new Error("Parameter 'extendedFormat' must be a boolean.");
+        }
+        if (checkTypes.array.of.nonEmptyString(extendedFormatClasses) === false) {
+            throw new Error("Parameter 'extendedFormatClasses' must be an array of strings.");
+        }
+        if (checkTypes.array.of.nonEmptyString(extendedFormatTypes) === false) {
+            throw new Error("Parameter 'extendedFormatTypes' must be an array of strings.");
         }
 
         this.config = configuration;
@@ -135,6 +150,9 @@ class Parser {
             defaultAltUnit: this.config.defaultAltUnit,
             targetAltUnit: this.config.targetAltUnit,
             roundAltValues: this.config.roundAltValues,
+            extendedFormat: this.config.extendedFormat,
+            extendedFormatClasses: this.config.extendedFormatClasses,
+            extendedFormatTypes: this.config.extendedFormatTypes,
         });
         const tokens = await tokenizer.tokenize(filepath);
 
@@ -188,6 +206,7 @@ class Parser {
     buildAirspace() {
         const factory = new AirspaceFactory({
             geometryDetail: this.config.geometryDetail,
+            extendedFormat: this.config.extendedFormat,
         });
         const airspace = factory.createAirspace(this.airspaceTokens);
         if (airspace != null) {

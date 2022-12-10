@@ -15,7 +15,7 @@ class AnToken extends BaseLineToken {
     }
 
     tokenize(line, lineNumber) {
-        const token = new AnToken({ tokenTypes: this.tokenTypes });
+        const token = new AnToken({ tokenTypes: this.tokenTypes, extendedFormat: this.extendedFormat });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -33,8 +33,15 @@ class AnToken extends BaseLineToken {
 
     getAllowedNextTokens() {
         const { COMMENT_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
+        // defines allowed tokens in the original format
+        let allowedNextTokens = [COMMENT_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN];
+        // inject extended format tokens if required
+        if (this.extendedFormat) {
+            const { AI_TOKEN, AF_TOKEN, AG_TOKEN } = this.tokenTypes;
+            allowedNextTokens = allowedNextTokens.concat([AI_TOKEN, AF_TOKEN, AG_TOKEN]);
+        }
 
-        return [COMMENT_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN];
+        return allowedNextTokens;
     }
 }
 
