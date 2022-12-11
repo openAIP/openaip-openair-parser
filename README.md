@@ -258,12 +258,12 @@ node cli.js -h
 Usage: cli [options]
 
 Options:
-  -f, --input-filepath <inFilepath>    The input file path to the openAIR file
-  -o, --output-filepath <outFilepath>  The output filename of the generated geojson file
+  -f, --input-filepath <inFilepath>    The input file path to the openAIR file.
+  -o, --output-filepath <outFilepath>  The output filename of the generated geojson file.
   -V, --validate                       If set to true, validates geometries. Defaults to true.
   -F, --fix-geometry                   If set to true, tries to fix geometries. Note that this may change the original airspace geometry! Defaults to false.
   -E, --extended-format                If set to true, parser expects the extended OpenAIR format. Defaults to false.
-  -h, --help                           output usage information
+  -h, --help                           Output usage information.
 ```
 
 Simple command line usage:
