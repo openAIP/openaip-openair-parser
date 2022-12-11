@@ -32,7 +32,7 @@ module.exports = Object.freeze({
     // mandatory and "airspaceClasses" parameter is ignored.
     extendedFormat: false,
     // Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
-    extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'UNCLASSIFIED'],
     // Defines a set of allowed "AY" values if the extended format is used. Otherwise, allows all used types.
     extendedFormatTypes: [],
     // Flight level value to set for upper ceilings defined as "UNLIMITED".
