@@ -13,6 +13,7 @@ program
         '-D, --debug',
         'If specified, returns a parser error if airspace file cannot be parsed. If not specified, simply returns 1 if parsing fails and 0 if parsing was successful.'
     )
+    .option('-E, --extended-format', 'If set to true, parser expects the extended OpenAIR format. Defaults to false.')
     .parse(process.argv);
 
 (async () => {

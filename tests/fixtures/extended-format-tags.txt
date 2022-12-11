@@ -99,8 +99,8 @@ DP 54:25:00 N 010:40:00 E
 
 AC D
 AY TMA
-AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AN TMA Todendorf-Putlos
+AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AF 123.505
 AG Todendorf Information
 AH 40000ft MSL

@@ -236,7 +236,7 @@ and provide additional metadata. To overcome these shortcomings, an **extended**
 ### Extended Format Tags:
 
 #### AI
-A required unique identifier string for each airspace, e.g. a [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier). The _AI_ value must stay the same for each airspace throughout different versions if the file. The _AI_ tag must be placed either before or directly after the _AN_ tag.
+A required unique identifier string for each airspace, e.g. a [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier). The _AI_ value must stay the same for each airspace throughout different versions if the file. The _AI_ tag must be placed either before or directly after the _AN_ tag. Placing the _AI_ tag before the _AN_ tag is preferred
 #### AY
 The optional _AY_ tag specifies the airspace type, e.g. "TMA", "CTR" or "TMZ". Unlike in the original format, the _AC_ tag must now only be used to specify the airspace _ICAO class_. If airspace has no type, i.e. is only ICAO class, the _AY_ tag can be omitted. The _AY_ tag must be placed directly after the _AC_ tag.
 #### AF 
@@ -262,7 +262,7 @@ Options:
   -o, --output-filepath <outFilepath>  The output filename of the generated geojson file
   -V, --validate                       If set to true, validates geometries. Defaults to true.
   -F, --fix-geometry                   If set to true, tries to fix geometries. Note that this may change the original airspace geometry! Defaults to false.
-  -E, --extended-format           If set to true, parser expects the extended OpenAIR format. Defaults to false.
+  -E, --extended-format                If set to true, parser expects the extended OpenAIR format. Defaults to false.
   -h, --help                           output usage information
 ```
 
