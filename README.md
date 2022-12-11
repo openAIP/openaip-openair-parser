@@ -158,7 +158,7 @@ Outputs GeoJSON FeatureCollection:
 Install
 =
 ```shell
-npm install @openaip/openair-parser
+npm install -g @openaip/openair-parser
 ```
 
 Node
@@ -245,7 +245,6 @@ An optional tag that specifies the frequency of a ground station that provides i
 If _AF_ is present, defines the ground station name. May not be used without the _AF_ tag. The _AG_ must be placed directly after either the _AF_ tag or the _AF_ tag. If placed after the _AG_ tag, the _AF_ tag must directly be placed after the _AI_ tag. The proposed best order is _AF_, then _AG_.
 
 ### Original To Extended Format Conversion
-
 To easily convert original OpenAIR to the extended format you can use our [OpenAIR Fixer Tool](https://github.com/openAIP/openaip-openair-fix-format). The tool will
 inject the required _AI_ token for each airspace definition block that does not have it already. Additionally the tools takes care of tag order.
 
