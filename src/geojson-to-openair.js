@@ -1,26 +1,47 @@
 const checkTypes = require('check-types');
 const { sprintf } = require('sprintf-js');
+const { randomUUID } = require('node:crypto');
 
 /**
  * Converts a GeoJSON FeatureCollection created by parser instance to OpenAir format.
  *
  * @param {Object} featureCollection
+ * @param {Object} [options]
+ * @param {Object} [options.extendedFormat] - If true, exports to extended format. If read from original format, it will only add the "AI" tag.
  * @return {string[]}
  */
-function geojsonToOpenair(featureCollection) {
+function geojsonToOpenair(featureCollection, options) {
+    const defaultOptions = { extendedFormat: false };
+
+    const { extendedFormat } = Object.assign(defaultOptions, options);
+
     checkTypes.assert.nonEmptyObject(featureCollection);
+    checkTypes.assert.boolean(extendedFormat);
 
     const openair = [];
     for (const geojson of featureCollection.features) {
-        const { name, class: aspcClass, lowerCeiling, upperCeiling } = geojson.properties;
+        const { name, class: aspcClass, lowerCeiling, upperCeiling, identifier, type, frequency } = geojson.properties;
+        const { value: frequencyValue, name: frequencyName } = frequency || {};
+
+        // if extended format is set as output format, at least inject an AI token if not exists
+        const aiValue = identifier ?? randomUUID();
+
         const { coordinates: polyCoordinates } = geojson.geometry;
         // polygon coordinates are wrapped in array
         const [coordinates] = polyCoordinates;
 
         // AC
         openair.push(`AC ${aspcClass}`);
+        // AY (extended format) - optional tag
+        if (extendedFormat && type != null) openair.push(`AY ${type}`);
         // AN
         openair.push(`AN ${name.toUpperCase()}`);
+        // AI (extended format) - required tag
+        if (extendedFormat) openair.push(`AI ${aiValue}`);
+        // AF (extended format) - optional tag
+        if (extendedFormat && frequencyValue != null) openair.push(`AF ${frequencyValue}`);
+        // AG (extended format) - optional tag
+        if (extendedFormat && frequencyName != null) openair.push(`AG ${frequencyName}`);
         // AL
         openair.push(`AL ${toAltLimit(lowerCeiling)}`);
         // AH

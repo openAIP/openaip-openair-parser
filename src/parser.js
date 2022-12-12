@@ -244,7 +244,7 @@ class Parser {
      * @return {string[]}
      */
     toOpenair() {
-        return geojsonToOpenair(this.geojson);
+        return geojsonToOpenair(this.geojson, { extendedFormat: this.config.extendedFormat });
     }
 
     /**
