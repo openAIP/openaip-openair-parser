@@ -112,9 +112,7 @@ module.exports = {
                 name: 'TMA Todendorf-Putlos',
                 class: 'D',
                 frequency: {
-                    value: {
-                        value: '123.505',
-                    },
+                    value: '123.505',
                 },
                 upperCeiling: {
                     value: 40000,
@@ -151,10 +149,8 @@ module.exports = {
                 name: 'TMA Todendorf-Putlos',
                 class: 'D',
                 frequency: {
-                    value: {
-                        value: '123.505',
-                        name: 'Ground Station Name',
-                    },
+                    value: '123.505',
+                    name: 'Ground Station Name',
                 },
                 upperCeiling: {
                     value: 40000,
@@ -191,10 +187,8 @@ module.exports = {
                 name: 'TMA Todendorf-Putlos',
                 class: 'D',
                 frequency: {
-                    value: {
-                        name: 'Ground Station Name',
-                        value: '123.505',
-                    },
+                    value: '123.505',
+                    name: 'Ground Station Name',
                 },
                 upperCeiling: {
                     value: 40000,
@@ -232,10 +226,8 @@ module.exports = {
                 class: 'D',
                 type: 'TMA',
                 frequency: {
-                    value: {
-                        value: '123.505',
-                        name: 'Todendorf Information',
-                    },
+                    value: '123.505',
+                    name: 'Todendorf Information',
                 },
                 upperCeiling: {
                     value: 40000,

@@ -33,7 +33,6 @@ class Airspace {
         this.identifier = null;
         this.type = null;
         this.frequency = null;
-        this.frequencyName = null;
     }
 
     /**
@@ -73,10 +72,7 @@ class Airspace {
             name: this.name,
             class: this.class,
             type: this.type,
-            frequency: {
-                value: this.frequency,
-                name: this.frequencyName,
-            },
+            frequency: this.frequency,
             upperCeiling: this.upperCeiling,
             lowerCeiling: this.lowerCeiling,
         });
