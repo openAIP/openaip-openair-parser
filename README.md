@@ -199,7 +199,7 @@ const config = {
     // mandatory.
     extendedFormat: false,
     // defines a set of allowed values if the extended format is used -  default ICAO classes.
-    extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'UNCLASSIFIED'],
     // Defines a set of allowed "AY" values if the extended format is used. Otherwise, allows all used types.
     extendedFormatTypes: [],
     // flight level value to set for upper ceilings defined as "UNLIMITED"
