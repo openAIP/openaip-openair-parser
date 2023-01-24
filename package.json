@@ -34,7 +34,7 @@
         "test": "TZ='UTC' NODE_ENV=test jest --forceExit -c jest.config.js tests/**",
         "test-watch": "TZ='UTC' NODE_ENV=test jest --forceExit -c jest.config.js tests/** --watch",
         "lint": "eslint -c .eslintrc.js .",
-        "run-security-audit": "npm audit --production",
+        "run-security-audit": "npm audit --omit=dev",
         "bump-version": "bump -c 'version bump to ' -tp",
         "update-packages": "ncu --target minor --upgrade --reject jsts && npm install"
     },
