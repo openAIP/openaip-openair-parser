@@ -41,7 +41,7 @@ module.exports = Object.freeze({
     geometryDetail: 100,
     // If true, validates each built airspace geometry to be valid/simple geometry - also checks for self intersections.
     validateGeometry: true,
-    // If true, uses "convexHull" to fix an invalid geometry - note that this potentially alters the original airspace geometry!
+    // If true, tries to fix an invalid geometry - note that this potentially alters the original airspace geometry!
     fixGeometry: false,
     // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used
     // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
