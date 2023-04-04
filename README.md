@@ -225,7 +225,7 @@ const config = {
 
 const parser = new Parser(config);
 await parser.parse('./path/to/openair-file.txt');
-const geojson = parser.toGeoJson();
+const geojson = parser.toGeojson();
 ```
 
 Extended OpenAIR Format
