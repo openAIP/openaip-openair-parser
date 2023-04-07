@@ -49,9 +49,9 @@ class AlToken extends BaseAltitudeToken {
     }
 
     getAllowedNextTokens() {
-        const { COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VW_TOKEN, VX_TOKEN, SKIPPED_TOKEN, VD_TOKEN } = this.tokenTypes;
+        const { COMMENT_TOKEN, AG_TOKEN, AF_TOKEN, AH_TOKEN, DP_TOKEN, VW_TOKEN, VX_TOKEN, SKIPPED_TOKEN, VD_TOKEN } = this.tokenTypes;
 
-        return [COMMENT_TOKEN, AH_TOKEN, DP_TOKEN, VW_TOKEN, VX_TOKEN, SKIPPED_TOKEN, VD_TOKEN];
+        return [COMMENT_TOKEN, AG_TOKEN, AF_TOKEN, AH_TOKEN, DP_TOKEN, VW_TOKEN, VX_TOKEN, SKIPPED_TOKEN, VD_TOKEN];
     }
 }
 
