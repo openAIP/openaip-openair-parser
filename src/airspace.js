@@ -382,7 +382,12 @@ class Airspace {
 
     /**
      * Takes a list of coordinates and moves along all points and checks whether the traversed
-     * path would form an overlapping line.
+     * path would form an overlapping line, e.g:
+     *
+     * -------1-------3-------2-------4-------
+     *
+     * In this case, the line would overlap itself at point 3 and 2. This method will remove
+     * all points that are overlapping with the next point, e.g. in this case, point 3 would be removed.
      *
      * @param {Array[]} coordinates
      * @return {Array[]}

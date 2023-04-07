@@ -39,9 +39,10 @@ class AfToken extends BaseLineToken {
 
     getAllowedNextTokens() {
         // no extended format option handling, AG token only in extended format
-        const { COMMENT_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
+        const { COMMENT_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN, DP_TOKEN, VW_TOKEN, VX_TOKEN, VD_TOKEN } =
+            this.tokenTypes;
 
-        return [COMMENT_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN];
+        return [COMMENT_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN, DP_TOKEN, VW_TOKEN, VX_TOKEN, VD_TOKEN];
     }
 }
 
