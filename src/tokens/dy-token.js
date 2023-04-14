@@ -12,7 +12,7 @@ class DyToken extends BaseLineToken {
     canHandle(line) {
         checkTypes.assert.string(line);
 
-        // is DP line e.g. "DY 54:25:00 N 010:40:00 E"
+        // is DY line e.g. "DY 54:25:00 N 010:40:00 E"
         return /^DY\s+.*$/.test(line);
     }
 
