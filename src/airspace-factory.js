@@ -75,8 +75,8 @@ class AirspaceFactory {
         this.tokens = tokens;
         this.airspace = new Airspace();
 
-        // validate correct token ordering
-        this.validateTokenOrder();
+        // validate all tokens are correct and that we are able to build an airspace from them
+        this.validateTokens();
 
         for (const token of tokens) {
             const { lineNumber } = token.getTokenized();
@@ -188,7 +188,16 @@ class AirspaceFactory {
     }
 
     /**
-     * Validates that tokenized lines have correct order.
+     * Runs all required validations on the tokenized lines. Should be run before starting to build
+     * an airspace from tokens.
+     */
+    validateTokens() {
+        this.validateTokenOrder();
+        this.validateTokenInventory();
+    }
+
+    /**
+     * Validates that tokenized lines have correct order. Should be run before "validateTokenInventory".
      *
      * @return {void}
      */
@@ -237,6 +246,56 @@ class AirspaceFactory {
                     });
                 }
             }
+        }
+    }
+
+    /**
+     * Validates that all required tokens are present. The logic relies on the fact that the token order
+     * has already been checked with "validateTokenOrder". The "validateTokenOrder" method will ensure
+     * that the most basic ordering is correct and that there is a geometry section present (which is NOT
+     * validated with this method).
+     *
+     * @return {void}
+     */
+    validateTokenInventory() {
+        // tokens that are always required, no matter if "standard" or "extended" format is used
+        const requiredTokens = [AcToken.type, AnToken.type, AlToken.type, AhToken.type];
+        // if the extended format is used, add the extended format tokens to the required tokens list
+        if (this.extendedFormat === true) {
+            // AY token is required, all others are optional
+            requiredTokens.push(AyToken.type);
+        }
+        const requiredTokensInventory = [];
+        let definitionBlockStart = null;
+
+        for (const [index, currentToken] of this.tokens.entries()) {
+            const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
+            if (index === 0) {
+                // store the airspace definition block start line number for error messages
+                definitionBlockStart = currentTokenLineNumber;
+            }
+            // if current token type is in the list of required tokens, add it to the inventory
+            if (requiredTokens.includes(currentToken.getType())) {
+                requiredTokensInventory.push(currentToken.getType());
+            }
+        }
+        // check if all required tokens are present
+        const missingTokens = requiredTokens.filter((token) => !requiredTokensInventory.includes(token));
+        if (missingTokens.length > 0) {
+            throw new ParserError({
+                lineNumber: definitionBlockStart,
+                errorMessage: `Airspace definition block is missing required tokens: ${missingTokens.join(', ')}`,
+            });
+        }
+        // handle optional extended format tokens AF, AG (if present)
+        const afToken = this.tokens.find((token) => token.getType() === AfToken.type);
+        const agToken = this.tokens.find((token) => token.getType() === AgToken.type);
+        // AG is optional and requires AF to be present
+        if (!afToken && agToken) {
+            throw new ParserError({
+                lineNumber: agToken.getTokenized().lineNumber,
+                errorMessage: `Token '${AgToken.type}' is present but token '${AfToken.type}' is missing.`,
+            });
         }
     }
 

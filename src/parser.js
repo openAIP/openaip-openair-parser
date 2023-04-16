@@ -188,6 +188,7 @@ class Parser {
         }
 
         // create airspaces as a GeoJSON feature collection and store them internally
+        /** @type {Object[]} geojsonFeatures */
         const geojsonFeatures = this.airspaces.map((value) => {
             return value.asGeoJson({
                 validateGeometry: this.config.validateGeometry,
@@ -203,6 +204,11 @@ class Parser {
         return this;
     }
 
+    /**
+     * Builds airspace from the current list of airspace tokens.
+     *
+     * @return {void}
+     */
     buildAirspace() {
         const factory = new AirspaceFactory({
             geometryDetail: this.config.geometryDetail,

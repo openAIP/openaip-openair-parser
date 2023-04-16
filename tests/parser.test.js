@@ -231,7 +231,6 @@ describe('test optional configuration parameters', () => {
         await openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
         const geojson = openairParser.toGeojson();
 
-
         // remove feature id for comparison
         expectedGeojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
@@ -321,6 +320,27 @@ describe('test parse invalid airspace definition blocks', () => {
             openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt')
         ).rejects.toThrow(
             "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent."
+        );
+    });
+    test('single airspace with AG and missing AF tag', async () => {
+        const openairParser = new Parser({ extendedFormat: true });
+
+        await expect(openairParser.parse('./tests/fixtures/single-airspace-ag-but-missing-af.txt')).rejects.toThrow(
+            "Error found at line 5: Token 'AG' is present but token 'AF' is missing."
+        );
+    });
+    test('single airspace with missing AL and AH tags', async () => {
+        const openairParser = new Parser({ extendedFormat: true });
+
+        await expect(openairParser.parse('./tests/fixtures/single-airspace-missing-ah-al-tag.txt')).rejects.toThrow(
+            "Error found at line 3: Airspace definition block is missing required tokens: AL, AH"
+        );
+    });
+    test('single airspace in extended format with missing AY tag', async () => {
+        const openairParser = new Parser({ extendedFormat: true });
+
+        await expect(openairParser.parse('./tests/fixtures/single-airspace-extended-format-missing-AY-tag.txt')).rejects.toThrow(
+            "Error found at line 1: Airspace definition block is missing required tokens: AY"
         );
     });
 });

@@ -1,6 +1,7 @@
 *** AI tag
 
 AC D
+AY TMA
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AN TMA Todendorf-Putlos
 AH 40000ft MSL
@@ -15,6 +16,7 @@ DP 54:20:00 N 010:40:00 E
 DP 54:25:00 N 010:40:00 E
 
 AC D
+AY TMA
 AN TMA Todendorf-Putlos
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AH 40000ft MSL
@@ -49,6 +51,7 @@ DP 54:25:00 N 010:40:00 E
 *** AF, AG
 
 AC D
+AY TMA
 AN TMA Todendorf-Putlos
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AF 123.505
@@ -64,6 +67,7 @@ DP 54:20:00 N 010:40:00 E
 DP 54:25:00 N 010:40:00 E
 
 AC D
+AY TMA
 AN TMA Todendorf-Putlos
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AF 123.505
@@ -80,6 +84,7 @@ DP 54:20:00 N 010:40:00 E
 DP 54:25:00 N 010:40:00 E
 
 AC D
+AY TMA
 AN TMA Todendorf-Putlos
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AG Ground Station Name
@@ -96,6 +101,7 @@ DP 54:20:00 N 010:40:00 E
 DP 54:25:00 N 010:40:00 E
 
 AC D
+AY TMA
 AN TMA Todendorf-Putlos
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AH 40000ft MSL
@@ -112,6 +118,7 @@ DP 54:20:00 N 010:40:00 E
 DP 54:25:00 N 010:40:00 E
 
 AC D
+AY TMA
 AN TMA Todendorf-Putlos
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AH 40000ft MSL
