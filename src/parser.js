@@ -82,8 +82,8 @@ class Parser {
         if ([outputGeometries.POLYGON, outputGeometries.LINESTRING].includes(outputGeometry) === false) {
             throw new Error(
                 `Parameter 'outputGeometry' must be one of the allowed output geometries '${Object.values(
-                    outputGeometries
-                ).join(', ')}.`
+                    outputGeometries,
+                ).join(', ')}.`,
             );
         }
         if (checkTypes.boolean(fixGeometry) === false) {

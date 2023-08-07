@@ -244,21 +244,21 @@ describe('test parse invalid airspace definition blocks', () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/single-airspace-without-ac-tag.txt')).rejects.toThrow(
-            "Error found at line 3: The first token must be of type 'AC'. Token 'AN' found on line 3."
+            "Error found at line 3: The first token must be of type 'AC'. Token 'AN' found on line 3.",
         );
     });
     test('airspace with invalid coordinates', async () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/invalid-coordinates-airspace.txt')).rejects.toThrow(
-            "Error found at line 14: Error found at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:'"
+            "Error found at line 14: Error found at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:'",
         );
     });
     test('airspace with intersection', async () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt')).rejects.toThrow(
-            "Error found at line 1: Geometry of airspace 'CHARLO, NB CAE' starting on line 1 is invalid due to a self intersection at '46.13311111111111,-67.78122222222223'"
+            "Error found at line 1: Geometry of airspace 'CHARLO, NB CAE' starting on line 1 is invalid due to a self intersection at '46.13311111111111,-67.78122222222223'",
         );
     });
     test('airspace with intersection into LINESTRING geometry return geometry', async () => {
@@ -276,7 +276,7 @@ describe('test parse invalid airspace definition blocks', () => {
         const openairParser = new Parser({ fixGeometry: true });
 
         await expect(openairParser.parse('./tests/fixtures/insufficient-coordinates-airspace.txt')).rejects.toThrow(
-            "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 has insufficient number of coordinates: 3"
+            "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 has insufficient number of coordinates: 3",
         );
     });
     test('airspace with invalid geometry with self intersection can be fixed', async () => {
@@ -303,45 +303,45 @@ describe('test parse invalid airspace definition blocks', () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/empty-name.txt')).rejects.toThrow(
-            "Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3"
+            "Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3",
         );
     });
     test('airspace with duplicate ceiling definitions are rejected', async () => {
         const openairParser = new Parser();
 
         await expect(openairParser.parse('./tests/fixtures/duplicate-ceiling-definitions.txt')).rejects.toThrow(
-            "Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4"
+            "Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4",
         );
     });
     test('airspace start and end coordinates are not equal', async () => {
         const openairParser = new Parser();
 
         await expect(
-            openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt')
+            openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt'),
         ).rejects.toThrow(
-            "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent."
+            "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent.",
         );
     });
     test('single airspace with AG and missing AF tag', async () => {
         const openairParser = new Parser({ extendedFormat: true });
 
         await expect(openairParser.parse('./tests/fixtures/single-airspace-ag-but-missing-af.txt')).rejects.toThrow(
-            "Error found at line 5: Token 'AG' is present but token 'AF' is missing."
+            "Error found at line 5: Token 'AG' is present but token 'AF' is missing.",
         );
     });
     test('single airspace with missing AL and AH tags', async () => {
         const openairParser = new Parser({ extendedFormat: true });
 
         await expect(openairParser.parse('./tests/fixtures/single-airspace-missing-ah-al-tag.txt')).rejects.toThrow(
-            "Error found at line 3: Airspace definition block is missing required tokens: AL, AH"
+            'Error found at line 3: Airspace definition block is missing required tokens: AL, AH',
         );
     });
     test('single airspace in extended format with missing AY tag', async () => {
         const openairParser = new Parser({ extendedFormat: true });
 
-        await expect(openairParser.parse('./tests/fixtures/single-airspace-extended-format-missing-AY-tag.txt')).rejects.toThrow(
-            "Error found at line 1: Airspace definition block is missing required tokens: AY"
-        );
+        await expect(
+            openairParser.parse('./tests/fixtures/single-airspace-extended-format-missing-AY-tag.txt'),
+        ).rejects.toThrow('Error found at line 1: Airspace definition block is missing required tokens: AY');
     });
 });
 

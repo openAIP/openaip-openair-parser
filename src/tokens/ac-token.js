@@ -87,8 +87,6 @@ class AcToken extends BaseLineToken {
 
         return allowedNextTokens;
     }
-
-
 }
 
 module.exports = AcToken;

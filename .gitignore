@@ -1,6 +1,6 @@
 .DS_Store
 .idea/
-_coverage/
+.coverage/
 node_modules/
 .env*
 secrets/
