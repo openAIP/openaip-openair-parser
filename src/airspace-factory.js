@@ -787,14 +787,20 @@ class AirspaceFactory {
 
                 return feeted;
             };
-            const compareUpper = feeted(this.flToFeet(this.airspace.upperCeiling));
-            const compareLower = feeted(this.flToFeet(this.airspace.lowerCeiling));
+            /*
+            Only compare if both lower and upper limit have the same reference datum. If they have different reference datums,
+            e.g GND and MSL, the comparison cannot be done.
+             */
+            if (this.airspace.lowerCeiling.referenceDatum === this.airspace.upperCeiling.referenceDatum) {
+                const compareUpper = feeted(this.flToFeet(this.airspace.upperCeiling));
+                const compareLower = feeted(this.flToFeet(this.airspace.lowerCeiling));
 
-            if (compareLower.value > compareUpper.value) {
-                throw new ParserError({
-                    lineNumber: this.currentLineNumber,
-                    errorMessage: 'Lower limit must be less than upper limit',
-                });
+                if (compareLower.value > compareUpper.value) {
+                    throw new ParserError({
+                        lineNumber: this.currentLineNumber,
+                        errorMessage: 'Lower limit must be less than upper limit',
+                    });
+                }
             }
         }
     }
