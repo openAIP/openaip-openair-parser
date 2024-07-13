@@ -36,7 +36,7 @@
         "lint": "eslint -c .eslintrc.js .",
         "run-security-audit": "npm audit --omit=dev",
         "format": "prettier --plugin-search-dir . --write .",
-        "update-packages": "ncu --target minor --upgrade --reject jsts && npm install",
+        "update-packages": "ncu --target minor --upgrade --reject jsts && npm install && npm audit fix",
         "bump-version": "bump -c 'version bump to ' -tp"
     },
     "dependencies": {
@@ -51,7 +51,7 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.24.7",
+        "@babel/eslint-parser": "^7.24.8",
         "@types/check-types": "^7.3.7",
         "@types/jest": "^29.5.12",
         "@types/uuid": "^8.3.4",
@@ -64,7 +64,7 @@
         "jest": "^29.7.0",
         "nodemon": "^3.1.4",
         "npm-check-updates": "^16.14.20",
-        "prettier": "^3.3.2",
+        "prettier": "^3.3.3",
         "version-bump-prompt": "^6.1.0"
     }
 }
