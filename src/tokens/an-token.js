@@ -37,8 +37,8 @@ class AnToken extends BaseLineToken {
         let allowedNextTokens = [COMMENT_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN];
         // inject extended format tokens if required
         if (this.extendedFormat) {
-            const { AI_TOKEN, AF_TOKEN, AG_TOKEN } = this.tokenTypes;
-            allowedNextTokens = allowedNextTokens.concat([AI_TOKEN, AF_TOKEN, AG_TOKEN]);
+            const { AI_TOKEN, AF_TOKEN, AG_TOKEN, TP_TOKEN } = this.tokenTypes;
+            allowedNextTokens = allowedNextTokens.concat([AI_TOKEN, AF_TOKEN, AG_TOKEN, TP_TOKEN]);
         }
 
         return allowedNextTokens;

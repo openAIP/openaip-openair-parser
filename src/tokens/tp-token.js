@@ -3,20 +3,20 @@ const checkTypes = require('check-types');
 const ParserError = require('../parser-error');
 
 /**
- * Tokenizes "AF" token value which is a frequency string "123.456"
+ * Tokenizes "TP" token value which is a transponder code string "7000"
  */
-class AfToken extends BaseLineToken {
-    static type = 'AF';
+class TpToken extends BaseLineToken {
+    static type = 'TP';
 
     canHandle(line) {
         checkTypes.assert.string(line);
 
-        // is AF line e.g. "AF 123.456"
-        return /^AF\s+.*$/.test(line);
+        // is TP line e.g. "TP 7000"
+        return /^TP\s+.*$/.test(line);
     }
 
     tokenize(line, lineNumber) {
-        const token = new AfToken({ tokenTypes: this.tokenTypes });
+        const token = new TpToken({ tokenTypes: this.tokenTypes });
 
         checkTypes.assert.string(line);
         checkTypes.assert.integer(lineNumber);
@@ -25,20 +25,20 @@ class AfToken extends BaseLineToken {
         token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
-        const linePartFrequency = line.replace(/^AF\s+/, '');
-        // validate frequency string
-        const isValidFrequency = /^\d{3}\.\d{3}$/.test(linePartFrequency);
-        if (isValidFrequency === false) {
-            throw new ParserError({ lineNumber, errorMessage: `Invalid frequency string '${line}'` });
+        const linePartCode = line.replace(/^TP\s+/, '');
+        // validate transponder code string
+        const isValidCode = /^[0-7]{4}$/.test(linePartCode);
+        if (isValidCode === false) {
+            throw new ParserError({ lineNumber, errorMessage: `Invalid transponder code string '${line}'` });
         }
 
-        token.tokenized = { line, lineNumber, metadata: { frequency: linePartFrequency } };
+        token.tokenized = { line, lineNumber, metadata: { code: linePartCode } };
 
         return token;
     }
 
     getAllowedNextTokens() {
-        // no extended format option handling, AG token only in extended format
+        // no extended format option handling, TP token only in extended format
         const {
             COMMENT_TOKEN,
             AG_TOKEN,
@@ -49,7 +49,8 @@ class AfToken extends BaseLineToken {
             VW_TOKEN,
             VX_TOKEN,
             VD_TOKEN,
-            TP_TOKEN,
+            AN_TOKEN,
+            AF_TOKEN,
         } = this.tokenTypes;
 
         return [
@@ -62,9 +63,10 @@ class AfToken extends BaseLineToken {
             VW_TOKEN,
             VX_TOKEN,
             VD_TOKEN,
-            TP_TOKEN,
+            AN_TOKEN,
+            AF_TOKEN,
         ];
     }
 }
 
-module.exports = AfToken;
+module.exports = TpToken;

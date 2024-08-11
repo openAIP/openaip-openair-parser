@@ -18,6 +18,7 @@ const AiToken = require('./tokens/ai-token');
 const AyToken = require('./tokens/ay-token');
 const AfToken = require('./tokens/af-token');
 const AgToken = require('./tokens/ag-token');
+const TpToken = require('./tokens/tp-token');
 const LineByLine = require('n-readlines');
 const fs = require('node:fs');
 const checkTypes = require('check-types');
@@ -58,6 +59,7 @@ const ParserError = require('./parser-error');
  * @property {string} AY_TOKEN
  * @property {string} AF_TOKEN
  * @property {string} AG_TOKEN
+ * @property {string} TP_TOKEN
  */
 const TOKEN_TYPES = {
     COMMENT_TOKEN: CommentToken.type,
@@ -81,6 +83,7 @@ const TOKEN_TYPES = {
     AY_TOKEN: AyToken.type,
     AF_TOKEN: AfToken.type,
     AG_TOKEN: AgToken.type,
+    TP_TOKEN: TpToken.type,
 };
 
 /**
@@ -163,6 +166,7 @@ class Tokenizer {
             new AyToken({ tokenTypes: TOKEN_TYPES, extendedFormat, extendedFormatTypes }),
             new AfToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
             new AgToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new TpToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
         ];
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokens = [];

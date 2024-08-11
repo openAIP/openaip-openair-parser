@@ -18,6 +18,7 @@ const AiToken = require('./tokens/ai-token');
 const AyToken = require('./tokens/ay-token');
 const AfToken = require('./tokens/af-token');
 const AgToken = require('./tokens/ag-token');
+const TpToken = require('./tokens/tp-token');
 const checkTypes = require('check-types');
 const {
     circle: createCircle,
@@ -181,6 +182,9 @@ class AirspaceFactory {
                 break;
             case AgToken.type:
                 this.handleAgToken(token);
+                break;
+            case TpToken.type:
+                this.handleTpToken(token);
                 break;
             default:
                 throw new ParserError({ lineNumber, errorMessage: `Unknown token '${type}'` });
@@ -704,6 +708,21 @@ class AirspaceFactory {
             this.airspace.frequency = {};
         }
         this.airspace.frequency.name = name;
+    }
+
+    /**
+     *
+     * @param {typedefs.openaip.OpenairParser.Token} token
+     * @return {void}
+     * @private
+     */
+    handleTpToken(token) {
+        checkTypes.assert.instance(token, TpToken);
+
+        const { metadata } = token.getTokenized();
+        const { code } = metadata;
+
+        this.airspace.transponderCode = code;
     }
 
     /**

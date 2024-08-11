@@ -33,6 +33,7 @@ class Airspace {
         this.identifier = null;
         this.type = null;
         this.frequency = null;
+        this.transponderCode = null;
     }
 
     /**
@@ -73,6 +74,7 @@ class Airspace {
             class: this.class,
             type: this.type,
             frequency: this.frequency,
+            transponderCode: this.transponderCode,
             upperCeiling: this.upperCeiling,
             lowerCeiling: this.lowerCeiling,
         });

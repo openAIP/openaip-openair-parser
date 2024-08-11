@@ -33,10 +33,10 @@ class AiToken extends BaseLineToken {
 
     getAllowedNextTokens() {
         // no extended format option handling, AG token only in extended format
-        const { COMMENT_TOKEN, AN_TOKEN, AY_TOKEN, AF_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN } =
+        const { COMMENT_TOKEN, AN_TOKEN, AY_TOKEN, AF_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN, TP_TOKEN } =
             this.tokenTypes;
 
-        return [COMMENT_TOKEN, AN_TOKEN, AY_TOKEN, AF_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN];
+        return [COMMENT_TOKEN, AN_TOKEN, AY_TOKEN, AF_TOKEN, AG_TOKEN, AL_TOKEN, AH_TOKEN, SKIPPED_TOKEN, TP_TOKEN];
     }
 }
 
