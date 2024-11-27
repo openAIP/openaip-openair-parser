@@ -252,3 +252,4 @@ Simple command line usage:
 ```bash
 node cli.js -f ./tests/fixtures/full-airspaces.txt -o test.json
 ```
+
