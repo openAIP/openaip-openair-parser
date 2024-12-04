@@ -1,6 +1,6 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const Coordinates = require('coordinate-parser');
+const { Parser } = require('@openaip/coordinate-parser');
 const ParserError = require('../parser-error');
 
 /**
@@ -31,7 +31,8 @@ class DyToken extends BaseLineToken {
 
         let coordinate;
         try {
-            coordinate = new Coordinates(linePartCoordinate);
+            const parser = new Parser();
+            coordinate = parser.parse(linePartCoordinate);
         } catch (e) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }

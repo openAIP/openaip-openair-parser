@@ -731,7 +731,7 @@ class AirspaceFactory {
      * @private
      */
     toArrayLike(coordinate) {
-        return [coordinate.getLongitude(), coordinate.getLatitude()];
+        return [coordinate.longitude, coordinate.latitude];
     }
 
     /**
