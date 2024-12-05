@@ -35,12 +35,11 @@
         "lint": "eslint -c .eslintrc.js .",
         "run-security-audit": "npm audit --omit=dev",
         "format": "prettier --plugin-search-dir . --write .",
-        "update-packages": "ncu --target minor --upgrade --reject jsts && npm install && npm audit fix",
-        "bump-version": "bump -c 'version bump to ' -tp"
+        "update-packages": "ncu --target minor --upgrade --reject jsts && npm install && npm audit fix"
     },
     "dependencies": {
         "@mapbox/geojson-rewind": "^0.5.2",
-        "@openaip/coordinate-parser": "^0.9.3",
+        "@openaip/coordinate-parser": "^0.9.4",
         "@turf/turf": "^6.5.0",
         "check-types": "^11.2.3",
         "clean-deep": "^3.4.0",

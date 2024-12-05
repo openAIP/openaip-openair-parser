@@ -1,6 +1,7 @@
-*
-!src/
-!typedefs/
+**/*
+
+!src/**
+!typedefs/**
 !cli.js
 !index.js
 !license.txt
