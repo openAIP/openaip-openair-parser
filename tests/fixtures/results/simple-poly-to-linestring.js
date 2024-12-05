@@ -1,60 +1,59 @@
 module.exports = {
-    "type": "FeatureCollection",
-    "features": [
-        {
-            "type": "Feature",
-            "id": "83bc2f23-364e-4b69-8934-a80ccb65e57e",
-            "properties": {
-                "name": "ED-R10B Todendorf-Putlos MON-SAT+",
-                "class": "R",
-                "upperCeiling": {
-                    "value": 40000,
-                    "unit": "FT",
-                    "referenceDatum": "MSL"
-                },
-                "lowerCeiling": {
-                    "value": 0,
-                    "unit": "FT",
-                    "referenceDatum": "GND"
-                }
-            },
-            "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                    [
-                        10.666666666666666,
-                        54.416666666666664
-                    ],
-                    [
-                        10.833333333333334,
-                        54.416666666666664
-                    ],
-                    [
-                        10.883333333333333,
-                        54.43333333333333
-                    ],
-                    [
-                        10.883333333333333,
-                        54.325
-                    ],
-                    [
-                        10.683333333333334,
-                        54.25
-                    ],
-                    [
-                        10.666666666666666,
-                        54.25527777777778
-                    ],
-                    [
-                        10.666666666666666,
-                        54.333333333333336
-                    ],
-                    [
-                        10.666666666666666,
-                        54.416666666666664
-                    ]
-                ]
-            }
-        }
-    ]
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      properties: {
+        name: "ED-R10B Todendorf-Putlos MON-SAT+",
+        class: "R",
+        upperCeiling: {
+          value: 40000,
+          unit: "FT",
+          referenceDatum: "MSL",
+        },
+        lowerCeiling: {
+          value: 0,
+          unit: "FT",
+          referenceDatum: "GND",
+        },
+      },
+      geometry: {
+        type: "LineString",
+        coordinates: [
+          [
+            10.66667,
+            54.41667,
+          ],
+          [
+            10.83333,
+            54.41667,
+          ],
+          [
+            10.88333,
+            54.43333,
+          ],
+          [
+            10.88333,
+            54.325,
+          ],
+          [
+            10.68333,
+            54.25,
+          ],
+          [
+            10.66667,
+            54.25528,
+          ],
+          [
+            10.66667,
+            54.33333,
+          ],
+          [
+            10.66667,
+            54.41667,
+          ],
+        ],
+      },
+    },
+  ],
 }
