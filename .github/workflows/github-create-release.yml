@@ -31,6 +31,9 @@ jobs:
         runs-on: ubuntu-22.04
         steps:
             - uses: actions/checkout@v4
+              # this is important to make sure that tokens are not reused in subsequent steps
+              # -> removeing this will cause the "GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}" to
+              # reuse the token from the previous step although defined otherwise
               with:
                   persist-credentials: false
             - uses: actions/setup-node@v3
