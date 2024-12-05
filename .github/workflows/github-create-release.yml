@@ -38,7 +38,7 @@ jobs:
               uses: phips28/gh-action-bump-version@master
               name: Bump package version
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
               with:
                   major-wording: "#build-major"
                   minor-wording: "#build-minor"
@@ -49,7 +49,7 @@ jobs:
             - uses: actions/create-release@v1
               name: Create release
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+                  GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
               with:
                   tag_name: ${{steps.bump-version.outputs.newTag}}
                   release_name: Release ${{steps.bump-version.outputs.newTag}}
