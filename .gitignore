@@ -7,4 +7,3 @@ secrets/
 .npmrc
 nohup.out
 var/
-.redeployapp
