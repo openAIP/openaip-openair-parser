@@ -34,9 +34,6 @@ jobs:
             - run: npm install
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
-            - run: npm run build
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
             - id: bump-version
               uses: phips28/gh-action-bump-version@master
               name: Bump package version
