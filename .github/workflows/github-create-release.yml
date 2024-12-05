@@ -23,7 +23,7 @@ jobs:
             - run: npm install
               name: Install packages
               env:
-                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
+                  NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_DEVOPS_PAT}}
             - run: npm run test
     publish:
         name: "Build and publish package"
@@ -40,7 +40,7 @@ jobs:
                   scope: '@openaip'
             - run: npm install
               env:
-                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
+                  NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_DEVOPS_PAT}}
             - id: bump-version
               uses: phips28/gh-action-bump-version@master
               name: Bump package version
@@ -73,7 +73,7 @@ jobs:
             - run: npm publish
               name: Publish to GitHub Package Registry
               env:
-                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
+                  NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_DEVOPS_PAT}}
             # publish to NPM for public access
             - uses: actions/setup-node@v3
               with:
