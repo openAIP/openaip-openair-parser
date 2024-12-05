@@ -1,84 +1,84 @@
+name: Create NPM package
 on:
     push:
-        # Sequence of patterns matched against refs/tags
-        tags:
-            - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-
-name: Create Release
 
 jobs:
     run-tests:
-        name: Run tests
-        runs-on: ubuntu-latest
+        # only run if specific '#build' tag is found in commit message
+        if: contains(github.event.head_commit.message, '#build')
+        name: "Run tests"
+        runs-on: ubuntu-22.04
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: actions/setup-node@v3
               with:
                   node-version: 22
                   registry-url: https://npm.pkg.github.com/
-                  scope: '@openaip'
+                  scope: "@openaip"
             - run: npm install
+              name: Install packages
               env:
-                  #NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-                  NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_PAT_PACKAGE_TOKEN}}
+                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
             - run: npm run test
-              env:
-                  #NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-                  NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_PAT_PACKAGE_TOKEN}}
-            - run: npm run lint
-
-    create-release:
-        name: Create Release
+    publish:
+        name: "Build and publish package"
         needs: run-tests
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-            - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-              with:
-                  tag_name: ${{ github.ref }}
-                  release_name: Release ${{ github.ref }}
-                  body: |
-                      Changes in this Release
-
-                      Various fixes and improvements.
-                      ${{ github.event.head_commit.message }}
-                  draft: false
-                  prerelease: false
-
-    publish-package-github:
-        needs: run-tests
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: 22
-                  registry-url: https://npm.pkg.github.com/
-                  scope: '@openaip'
-            - run: npm ci --only=prod
-              env:
-                  #NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-                  NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_PAT_PACKAGE_TOKEN}}
-            - run: npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-    publish-package-npm:
-        needs: run-tests
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - uses: actions/setup-node@v3
               with:
                   node-version: 22
                   registry-url: https://registry.npmjs.org
                   scope: '@openaip'
-            - run: npm ci --only=prod
-            - run: npm publish --access public
+            - run: npm install
               env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
+            - run: npm run build
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
+            - id: bump-version
+              uses: phips28/gh-action-bump-version@master
+              name: Bump package version
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  major-wording: "#build-major"
+                  minor-wording: "#build-minor"
+                  patch-wording: "#build-patch"
+                  # use "patch" as default bump strategy
+                  default: patch
+                  tag-prefix: "v"
+            - uses: actions/create-release@v1
+              name: Create release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+              with:
+                  tag_name: ${{steps.bump-version.outputs.newTag}}
+                  release_name: Release ${{steps.bump-version.outputs.newTag}}
+                  body: |
+                      Various fixes and performance improvements.
+                  draft: false
+                  prerelease: false
+            # publish to GitHub Package Registry for internal use with @openaip namespace
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 22
+                  registry-url: https://npm.pkg.github.com/
+                  scope: '@openaip'
+            - run: npm publish --access public
+              name: Publish to GitHub Package Registry
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GHPR_NPM_TOKEN}}
+            # publish to NPM for public access
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 22
+                  registry-url: https://registry.npmjs.org
+                  scope: '@openaip'
+            - run: npm publish --access public
+              name: Publish to NPM Package Registry
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        permissions:
+            contents: write
