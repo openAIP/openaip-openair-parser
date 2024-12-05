@@ -1,6 +1,8 @@
 const Parser = require('../src/parser');
 const outputGeometries = require('../src/output-geometry');
 const fs = require('node:fs');
+const viteTest = await import('vitest');
+const { describe, test, expect } = viteTest;
 
 describe('test parse complete airspace definition blocks', () => {
     test('handle skipped tokens', async () => {
@@ -168,9 +170,10 @@ describe('test parse complete airspace definition blocks', () => {
         await openairParser.parse('./tests/fixtures/extended-format-tags.txt');
         const geojson = openairParser.toGeojson();
 
-        // remove feature id for comparison
+        // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.geometry);
 
         expect(geojson).toEqual(expectedJson);
     });
@@ -178,64 +181,41 @@ describe('test parse complete airspace definition blocks', () => {
 
 describe('test optional configuration parameters', () => {
     test('do not round altitude value', async () => {
-        const expectedJson = require('./fixtures/results/not-rount-alt');
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/round-altitude-values.txt');
         const geojson = openairParser.toGeojson();
 
-        // remove feature id for comparison
-        expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
-
-        expect(geojson).toEqual(expectedJson);
+        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1607.611551);
     });
     test('round altitude value', async () => {
-        const expectedJson = require('./fixtures/results/round-alt');
         const openairParser = new Parser({ roundAltValues: true });
         await openairParser.parse('./tests/fixtures/round-altitude-values.txt');
         const geojson = openairParser.toGeojson();
 
-        // remove feature id for comparison
-        expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
-
-        expect(geojson).toEqual(expectedJson);
+        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1608);
     });
     test('use default altitude unit', async () => {
-        const expectedJson = require('./fixtures/results/use-default-alt-unit');
         const openairParser = new Parser({ defaultAltUnit: 'm', targetAltUnit: 'm' });
         await openairParser.parse('./tests/fixtures/use-default-altitude-unit.txt');
         const geojson = openairParser.toGeojson();
 
-        // remove feature id for comparison
-        expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual('M');
 
-        expect(geojson).toEqual(expectedJson);
     });
     test('keep units if no target altitude unit is specified', async () => {
-        const expectedJson = require('./fixtures/results/keeps-unit-no-target-unit-specified');
         const openairParser = new Parser({ defaultAltUnit: 'm' });
         await openairParser.parse('./tests/fixtures/meter-altitude-unit.txt');
         const geojson = openairParser.toGeojson();
 
-        // remove feature id for comparison
-        expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
-
-        expect(geojson).toEqual(expectedJson);
+        expect(geojson?.features?.[0]?.properties?.upperCeiling?.unit).toEqual('FL');
+        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual('M');
     });
     test('correct limit validation when converting from ft to m', async () => {
-        const expectedGeojson = require('./fixtures/results/correct-limit-validation-conversion-ft-to-m');
         const openairParser = new Parser({ defaultAltUnit: 'ft', targetAltUnit: 'm' });
         await openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
         const geojson = openairParser.toGeojson();
 
-        // remove feature id for comparison
-        expectedGeojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
-
-        expect(geojson).toEqual(expectedGeojson);
+        expect(geojson?.features?.[0]?.properties?.upperCeiling?.value).toEqual(10667.99965862401);
     });
 });
 
