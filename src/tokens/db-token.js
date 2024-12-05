@@ -1,7 +1,7 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 const ParserError = require('../parser-error');
-const { Parser } = require('@openaip/coordinate-parser');
+const { Parser: CoordinateParser } = require('@openaip/coordinate-parser');
 
 /**
  * Tokenizes "DB" airspace arc endpoints definition.
@@ -35,8 +35,8 @@ class DbToken extends BaseLineToken {
         let coord = [];
         for (const coordinate of endpoints) {
             try {
-                const parser = new Parser();
-                const parsedCoordinate = parser.parse(coordinate);
+                const parser = new CoordinateParser();
+                const parsedCoordinate = parser.parse(coordinate.trim());
                 coord.push(parsedCoordinate);
             } catch (e) {
                 throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });

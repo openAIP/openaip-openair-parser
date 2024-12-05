@@ -1,6 +1,6 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
-const { Parser } = require('@openaip/coordinate-parser');
+const { Parser: CoordinateParser } = require('@openaip/coordinate-parser');
 const ParserError = require('../parser-error');
 
 /**
@@ -30,8 +30,8 @@ class VxToken extends BaseLineToken {
 
         let coordinate;
         try {
-            const parser = new Parser();
-            coordinate = parser.parse(linePartCoordinate);
+            const parser = new CoordinateParser();
+            coordinate = parser.parse(linePartCoordinate.trim());
         } catch (e) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }

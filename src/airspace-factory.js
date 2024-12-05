@@ -231,7 +231,7 @@ class AirspaceFactory {
             let lookAheadIndex = index + 1;
             lookAheadIndex = lookAheadIndex > maxLookAheadIndex ? maxLookAheadIndex : lookAheadIndex;
 
-            // dont check last token
+            // don't check last token
             if (index < maxLookAheadIndex) {
                 // get next token, skip ignored tokens
                 let lookAheadToken = this.tokens[lookAheadIndex];

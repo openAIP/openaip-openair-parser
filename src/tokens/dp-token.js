@@ -1,7 +1,7 @@
 const BaseLineToken = require('./base-line-token');
 const checkTypes = require('check-types');
 const ParserError = require('../parser-error');
-const { Parser } = require('@openaip/coordinate-parser');
+const { Parser: CoordinateParser } = require('@openaip/coordinate-parser');
 
 /**
  * Tokenizes "DP" airspace polygon coordinate definition.
@@ -31,8 +31,8 @@ class DpToken extends BaseLineToken {
 
         let coordinate;
         try {
-            const parser = new Parser();
-            coordinate = parser.parse(linePartCoordinate);
+            const parser = new CoordinateParser();
+            coordinate = parser.parse(linePartCoordinate.trim());
         } catch (e) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
