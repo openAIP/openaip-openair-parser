@@ -11,7 +11,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               # this is important to make sure that tokens are not reused in subsequent steps
-              # -> removeing this will cause the "GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}" to
+              # -> removing this will cause the "GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}" to
               # reuse the token from the previous step although defined otherwise
               with:
                   persist-credentials: false
@@ -32,7 +32,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               # this is important to make sure that tokens are not reused in subsequent steps
-              # -> removeing this will cause the "GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}" to
+              # -> removing this will cause the "GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}" to
               # reuse the token from the previous step although defined otherwise
               with:
                   persist-credentials: false
@@ -48,7 +48,7 @@ jobs:
               uses: phips28/gh-action-bump-version@master
               name: Bump package version
               env:
-                  GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   major-wording: "#build-major"
                   minor-wording: "#build-minor"
