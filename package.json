@@ -39,7 +39,7 @@
     },
     "dependencies": {
         "@mapbox/geojson-rewind": "^0.5.2",
-        "@openaip/coordinate-parser": "^0.9.4",
+        "@openaip/coordinate-parser": "^0.11.0",
         "@turf/turf": "^6.5.0",
         "check-types": "^11.2.3",
         "clean-deep": "^3.4.0",
@@ -60,7 +60,7 @@
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-only-warn": "^1.1.0",
         "eslint-plugin-prettier": "^5.2.1",
-        "nodemon": "^3.1.7",
+        "nodemon": "^3.1.9",
         "npm-check-updates": "^16.14.20",
         "prettier": "^3.4.2",
         "version-bump-prompt": "^6.1.0",
