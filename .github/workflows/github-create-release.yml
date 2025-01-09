@@ -90,7 +90,7 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
             - name: Publish to GitHub Package Registry
-              run: npm publish
+              run: npm publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_DEVOPS_PAT}}
             - name: Setup Node for publishing to NPM registry
