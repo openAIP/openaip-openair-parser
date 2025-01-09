@@ -71,6 +71,7 @@ AN TMA Todendorf-Putlos
 AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AF 123.505
 AG Todendorf Information
+TP 7000
 AH 40000ft MSL
 AL GND
 DP 54:25:00 N 010:40:00 E
@@ -100,6 +101,7 @@ Outputs GeoJSON FeatureCollection:
                     "value": "123.505",
                     "name": "Todendorf Information"
                 },
+                "transponderCode": "7000",
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
@@ -170,7 +172,7 @@ const config = {
         'CTR',
     ],
     // If "true" the parser will try to parse the extended OpenAIR-Format that contains additional tags
-    // "AY", "AF", "AG" and "AI". If true, config parameters "allowedClassValues" and "allowedTypeValues" are
+    // "AY", "AF", "AG", "TP" and "AI". If true, config parameters "allowedClassValues" and "allowedTypeValues" are
     // mandatory.
     extendedFormat: false,
     // defines a set of allowed values if the extended format is used -  default ICAO classes.
@@ -225,6 +227,10 @@ An optional tag that specifies the frequency of a ground station that provides i
 #### AG
 
 An optional tag that specifies the ground station name. **May not be used without the _AF_ tag**. The _AG_ must be placed directly before or after the _AF_ tag. The proposed best order is _AF_, then _AG_.
+
+#### TP
+
+An optional tag that specifies the required/recommended transponder setting for this airspace.
 
 ### Original To Extended Format Conversion
 
