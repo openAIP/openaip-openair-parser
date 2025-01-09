@@ -39,7 +39,7 @@
     },
     "dependencies": {
         "@mapbox/geojson-rewind": "^0.5.2",
-        "@openaip/coordinate-parser": "^0.11.0",
+        "@openaip/coordinate-parser": "^0.11.2",
         "@turf/turf": "^6.5.0",
         "check-types": "^11.2.3",
         "clean-deep": "^3.4.0",
