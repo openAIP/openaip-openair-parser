@@ -4,8 +4,8 @@ on:
 
 jobs:
     run-tests:
-        # only run if specific '#build' tag is found in commit message
-        if: contains(github.event.head_commit.message, '#build')
+        # only run if specific '#publish' tag is found in commit message
+        if: contains(github.event.head_commit.message, '#publish')
         name: "Run tests"
         runs-on: ubuntu-22.04
         steps:
@@ -64,9 +64,9 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
               with:
-                  major-wording: "#build-major"
-                  minor-wording: "#build-minor"
-                  patch-wording: "#build-patch"
+                  major-wording: "#publish-major"
+                  minor-wording: "#publish-minor"
+                  patch-wording: "#publish-patch"
                   # use "patch" as default bump strategy
                   default: patch
                   tag-prefix: "v"
