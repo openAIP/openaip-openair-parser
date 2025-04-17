@@ -1,24 +1,30 @@
-const checkTypes = require('check-types');
-const { sprintf } = require('sprintf-js');
-const { randomUUID } = require('node:crypto');
+import { z } from 'zod';
+import { validateSchema } from './validate-schema.js';
+import { sprintf } from 'sprintf-js';
+import { randomUUID } from 'node:crypto';
+
+export type Options = { extendedFormat?: boolean }
+export const OptionsSchema = z.object({
+    // if true, exports to extended format. If read from original format, it will only add the "AI" tag.
+    extendedFormat: z.boolean().optional(),
+})
 
 /**
  * Converts a GeoJSON FeatureCollection created by parser instance to OpenAir format.
- *
- * @param {Object} featureCollection
- * @param {Object} [options]
- * @param {Object} [options.extendedFormat] - If true, exports to extended format. If read from original format, it will only add the "AI" tag.
- * @return {string[]}
  */
-function geojsonToOpenair(featureCollection, options) {
+export function geojsonToOpenair(featureCollection: GeoJSON.FeatureCollection, options?: Options): string[] {
+    validateSchema(featureCollection, z.object({
+            type: z.literal('FeatureCollection'),
+            features: z.array(z.record(z.any()))
+        }),
+        { assert: true, name: 'featureCollection'}
+    );
+    validateSchema(options, OptionsSchema, {assert: true, name: 'options'});
+
     const defaultOptions = { extendedFormat: false };
-
     const { extendedFormat } = Object.assign(defaultOptions, options);
-
-    checkTypes.assert.nonEmptyObject(featureCollection);
-    checkTypes.assert.boolean(extendedFormat);
-
     const openair = [];
+
     for (const geojson of featureCollection.features) {
         const { name, class: aspcClass, lowerCeiling, upperCeiling, identifier, type, frequency } = geojson.properties;
         const { value: frequencyValue, name: frequencyName } = frequency || {};
@@ -57,12 +63,7 @@ function geojsonToOpenair(featureCollection, options) {
     return openair;
 }
 
-/**
- * @param {number[]} value
- * @return {string}
- * @private
- */
-function toCoordinate(value) {
+function toCoordinate(value: number[]): string {
     const [x, y] = value;
     const lon = convertDecToDms(x, 'lon');
     const lat = convertDecToDms(y, 'lat');
@@ -70,13 +71,7 @@ function toCoordinate(value) {
     return `${lat} ${lon}`;
 }
 
-/**
- * @param {number} decimal
- * @param {string} axis
- * @return {string}
- * @private
- */
-function convertDecToDms(decimal, axis) {
+function convertDecToDms(decimal: number, axis: string): string {
     const degFormat = axis === 'lon' ? '%03d' : '%02d';
     //we only handle positive values
     const posDegs = Math.abs(decimal);
@@ -98,12 +93,7 @@ function convertDecToDms(decimal, axis) {
     return `${deg}:${min}:${sec} ${suffix}`;
 }
 
-/**
- * @param {Object} value
- * @return {string}
- * @private
- */
-function toAltLimit(value) {
+function toAltLimit(value: { value: number, unit: string, referenceDatum: string }): string {
     const { value: altValue, unit, referenceDatum } = value;
 
     let altLimit;
@@ -120,5 +110,3 @@ function toAltLimit(value) {
 
     return altLimit;
 }
-
-module.exports = { geojsonToOpenair };

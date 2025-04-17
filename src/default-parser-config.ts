@@ -1,9 +1,6 @@
-/**
- * Default parser configuration.
- *
- * @type {typedefs.openaip.OpenairParser.ParserConfig}
- */
-module.exports = Object.freeze({
+import type { Config } from './parser.js';
+
+export const defaultParserConfig: Config = {
     // defines allowed airspace classes used with the AC token. This configuration option only applies if the
     // standard "non-extended" format is used, i.e. with the config parameter "extendedFormat: false".
     airspaceClasses: [
@@ -54,4 +51,4 @@ module.exports = Object.freeze({
     targetAltUnit: null,
     // Round altitude values.
     roundAltValues: false,
-});
+} as const;

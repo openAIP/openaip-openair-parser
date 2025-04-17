@@ -1,14 +1,13 @@
-const Tokenizer = require('./tokenizer');
-const AcToken = require('./tokens/ac-token');
-const EofToken = require('./tokens/eof-token');
-const AirspaceFactory = require('./airspace-factory');
-const altitudeUnit = require('./altitude-unit');
-const defaultConfig = require('./default-parser-config');
-const checkTypes = require('check-types');
-const { featureCollection: createFeatureCollection } = require('@turf/turf');
-const { geojsonToOpenair } = require('./geojson-to-openair');
-const rewind = require('@mapbox/geojson-rewind');
-const outputGeometries = require('./output-geometry');
+import Tokenizer from './tokenizer.js';
+import AcToken from './tokens/ac-token.js';
+import EofToken from './tokens/eof-token.js';
+import AirspaceFactory from './airspace-factory.js';
+import altitudeUnit from './altitude-unit.enum.js';
+import defaultConfig from './default-parser-config.js';
+import { featureCollection as createFeatureCollection } from '@turf/turf';
+import { geojsonToOpenair } from './geojson-to-openair.js';
+import rewind from '@mapbox/geojson-rewind';
+import { outputGeometry, type OutputGeometry } from './output-geometry.enum.js';
 
 const allowedAltUnits = Object.values(altitudeUnit);
 const PARSER_STATE = {
@@ -17,6 +16,22 @@ const PARSER_STATE = {
     // End of file
     EOF: 'eof',
 };
+
+export type Config = {
+    airspaceClasses: string[];
+    extendedFormat: boolean;
+    extendedFormatClasses: string[];
+    extendedFormatTypes: string[];
+    unlimited: number;
+    geometryDetail: number;
+    validateGeometry: boolean;
+    fixGeometry: boolean;
+    outputGeometry: OutputGeometry;
+    includeOpenair: boolean;
+    defaultAltUnit: 'ft' | 'm';
+    targetAltUnit: 'ft' | 'm' | null;
+    roundAltValues: boolean;
+}
 
 /**
  * @typedef typedefs.openaip.OpenairParser.ParserResult
@@ -31,7 +46,7 @@ const PARSER_STATE = {
  * Parser implements the openAIR specification according to http://www.winpilot.com/usersguide/userairspace.asp
  * except the following tokens: AT,TO,TC,SP,SB,DY.
  */
-class Parser {
+export class Parser {
     /**
      * @param {Object} [config] - if not specified, will use default parameters
      * @param {string[]} [config.airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
@@ -79,10 +94,10 @@ class Parser {
         if (checkTypes.boolean(validateGeometry) === false) {
             throw new Error("Parameter 'validateGeometry' must be a boolean.");
         }
-        if ([outputGeometries.POLYGON, outputGeometries.LINESTRING].includes(outputGeometry) === false) {
+        if ([outputGeometry.POLYGON, outputGeometry.LINESTRING].includes(outputGeometry) === false) {
             throw new Error(
                 `Parameter 'outputGeometry' must be one of the allowed output geometries '${Object.values(
-                    outputGeometries,
+                    outputGeometry,
                 ).join(', ')}.`,
             );
         }
@@ -264,5 +279,3 @@ class Parser {
         this.geojson = null;
     }
 }
-
-module.exports = Parser;
