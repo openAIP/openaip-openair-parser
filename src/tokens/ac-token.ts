@@ -1,6 +1,5 @@
-const BaseLineToken = require('./base-line-token');
-const checkTypes = require('check-types');
-const ParserError = require('../parser-error');
+import {ParserError} from '../parser-error.js';
+import { BaseLineToken } from './base-line-token.js';
 
 /**
  * Tokenizes "AC" airspace class definitions.
