@@ -44,20 +44,32 @@
     },
     "homepage": "https://github.com/openAIP/openaip-openair-parser#readme",
     "scripts": {
+        "build:cjs": "tsc -p tsconfig.cjs.json",
+        "build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm",
+        "build": "npm run clean && npm run build:cjs && npm run build:esm",
+        "clean": "rimraf dist",
+        "rename:esm": "/bin/bash ./prepare-esm.sh",
+        "prepack": "npm run clean && npm run build",
+        "sca:watch:types": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run tsc:run'",
+        "sca:watch:lint": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run lint'",
         "test": "vitest run --coverage",
-        "lint": "eslint -c .eslintrc.js .",
+        "tsc:run": "tsc --noEmit",
+        "lint": "eslint src --cache",
+        "format": "prettier --write .",
         "run-security-audit": "npm audit --omit=dev",
-        "format": "prettier --plugin-search-dir . --write .",
-        "update-packages": "ncu --target minor --upgrade --reject jsts && npm install && npm audit fix"
+        "update-packages": "ncu --target minor --upgrade && npm install && npm audit fix",
+        "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
     },
     "dependencies": {
         "@mapbox/geojson-rewind": "^0.5.2",
         "@openaip/coordinate-parser": "^0.14.0",
         "@turf/turf": "^7.2.0",
+        "@types/sprintf-js": "^1.1.4",
+        "commander": "^13.1.0",
         "n-readlines": "^1.0.3",
         "sprintf-js": "^1.1.3",
         "uuid": "^11.1.0",
-        "commander": "^13.1.0"
+        "zod": "^3.24.3"
     },
     "devDependencies": {
         "@eslint/js": "^9.24.0",
