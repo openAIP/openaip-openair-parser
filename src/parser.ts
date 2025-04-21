@@ -17,6 +17,11 @@ export interface IParser {
     parse(filepath: string): Promise<Parser>;
 }
 
+
+// TODO defined better interface for parser -> where to put the ParserResult!?!?
+export type ParserResult = {
+}
+
 const ParserStateEnum = {
     START: 'start',
     READ: 'read',
@@ -204,7 +209,8 @@ export class Parser implements IParser {
         }
     }
 
-    toGeojson(): GeoJSON.Polygon | GeoJSON.LineString {
+    // TODO refine this -> why is the result HERE?!
+    toGeojson(): ParserResult {
         if (this._geojson == null) {
             throw new Error('Failed to export to GeoJSON. Parsed GeoJSON is empty.');
         }
