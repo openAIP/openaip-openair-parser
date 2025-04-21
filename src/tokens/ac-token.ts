@@ -1,91 +1,100 @@
-import {ParserError} from '../parser-error.js';
-import { BaseLineToken } from './base-line-token.js';
+import { z } from 'zod';
+import { ParserError } from '../parser-error.js';
+import type { TokenType } from '../types.js';
+import { validateSchema } from '../validate-schema.js';
+import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
+
+export type Config = BaseLineConfig & {
+    // A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
+    airspaceClasses?: string[];
+    // Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
+    extendedFormatClasses?: string[];
+};
+
+export const ConfigSchema = z
+    .object({
+        tokenTypes: z.array(z.string().nonempty()),
+        extendedFormat: z.boolean().optional(),
+        airspaceClasses: z.array(z.string().nonempty()).optional(),
+        extendedFormatClasses: z.array(z.string().nonempty()).optional(),
+    })
+    .strict()
+    // enforce that both extended classes and types are defined if extended format should be parsed
+    .refine((data) => {
+        if (data.extendedFormat && data.extendedFormatClasses == null) {
+            throw new Error('Extended format requires accepted classes to be defined.');
+        }
+        return true;
+    })
+    .describe('ConfigSchema');
 
 /**
  * Tokenizes "AC" airspace class definitions.
  */
-class AcToken extends BaseLineToken {
-    static type = 'AC';
+export class AcToken extends AbstractLineToken {
+    static type: TokenType = 'AC';
+    protected _airspaceClasses: string[] = [];
+    protected _extendedFormatClasses: string[] = [];
 
-    /**
-     * @param {Object} config
-     * @param {boolean} config.extendedFormat - If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
-     * @param {string[]} [config.airspaceClasses] - A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
-     * @param {string[]} [config.extendedFormatClasses] - Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
-     * @param {typedefs.openaip.OpenairParser.TokenTypes} config.tokenTypes - List of all known token types. Required to do "isAllowedNextToken" type checks.
-     */
-    constructor(config) {
+    constructor(config: Config) {
+        validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
+
         const { airspaceClasses, tokenTypes, extendedFormat, extendedFormatClasses } = config;
 
-        super({ tokenTypes });
+        super({ tokenTypes, extendedFormat });
 
-        checkTypes.assert.boolean(extendedFormat);
-        checkTypes.assert.array.of.nonEmptyString(airspaceClasses);
-        if (extendedFormatClasses) checkTypes.assert.array.of.nonEmptyString(extendedFormatClasses);
-
-        // enforce that both extended classes and types are defined if extended format should be parsed
-        if (extendedFormat && extendedFormatClasses == null) {
-            throw new Error('Extended format requires accepted classes to be defined.');
-        }
-
-        this.airspaceClasses = airspaceClasses;
-        this.extendedFormat = extendedFormat;
-        this.extendedFormatClasses = extendedFormatClasses;
+        this._airspaceClasses = airspaceClasses || [];
+        this._extendedFormatClasses = extendedFormatClasses || [];
     }
 
-    canHandle(line) {
-        checkTypes.assert.string(line);
+    canHandle(line: string): boolean {
+        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
 
         // is AC line e.g. "AC D"
         return /^AC\s+.*$/.test(line);
     }
 
-    tokenize(line, lineNumber) {
+    tokenize(line: string, lineNumber: number): IToken {
+        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
+
         const token = new AcToken({
-            airspaceClasses: this.airspaceClasses,
-            extendedFormatClasses: this.extendedFormatClasses,
-            extendedFormat: this.extendedFormat,
-            tokenTypes: this.tokenTypes,
+            airspaceClasses: this._airspaceClasses,
+            extendedFormatClasses: this._extendedFormatClasses,
+            extendedFormat: this._extendedFormat,
+            tokenTypes: this._tokenTypes,
         });
 
-        checkTypes.assert.string(line);
-        checkTypes.assert.integer(lineNumber);
-
         // keep original line
-        token.line = line;
+        token._line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartClass = line.replace(/^AC\s+/, '');
 
-        if (this.extendedFormat) {
+        if (this._extendedFormat === true) {
             // check restricted classes if using original format
-            if (this.extendedFormatClasses.includes(linePartClass) === false) {
+            if (this._extendedFormatClasses.includes(linePartClass) === false) {
                 throw new ParserError({ lineNumber, errorMessage: `Unknown extended airspace class '${line}'` });
             }
         } else {
             // check restricted classes if using original format
-            if (this.airspaceClasses.includes(linePartClass) === false) {
+            if (this._airspaceClasses.includes(linePartClass) === false) {
                 throw new ParserError({ lineNumber, errorMessage: `Unknown airspace class '${line}'` });
             }
         }
-
-        token.tokenized = { line, lineNumber, metadata: { class: linePartClass } };
+        token._tokenized = { line, lineNumber, metadata: { class: linePartClass } };
 
         return token;
     }
 
-    getAllowedNextTokens() {
-        const { COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
+    getAllowedNextTokens(): TokenType[] {
         // defines allowed tokens in the original format
-        let allowedNextTokens = [COMMENT_TOKEN, AN_TOKEN, SKIPPED_TOKEN];
+        let allowedNextTokens: TokenType[] = ['COMMENT', 'AN', 'SKIPPED'];
         // inject extended format tokens if required
-        if (this.extendedFormat) {
-            const { AI_TOKEN, AY_TOKEN } = this.tokenTypes;
-            allowedNextTokens = allowedNextTokens.concat([AI_TOKEN, AY_TOKEN]);
+        if (this._extendedFormat === true) {
+            allowedNextTokens = allowedNextTokens.concat(['AI', 'AY'] as TokenType[]);
         }
 
         return allowedNextTokens;
     }
 }
-
-module.exports = AcToken;

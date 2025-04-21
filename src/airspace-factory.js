@@ -13,7 +13,7 @@ const DbToken = require('./tokens/db-token');
 const DaToken = require('./tokens/da-token');
 const DyToken = require('./tokens/dy-token');
 const EofToken = require('./tokens/eof-token');
-const BaseLineToken = require('./tokens/base-line-token');
+const AbstractLineToken = require('./tokens/abstract-line-token');
 const AiToken = require('./tokens/ai-token');
 const AyToken = require('./tokens/ay-token');
 const AfToken = require('./tokens/af-token');
@@ -71,7 +71,7 @@ class AirspaceFactory {
      * @return {Airspace|null}
      */
     createAirspace(tokens) {
-        checkTypes.assert.array.of.instance(tokens, BaseLineToken);
+        checkTypes.assert.array.of.instance(tokens, AbstractLineToken);
 
         this.tokens = tokens;
         this.airspace = new Airspace();

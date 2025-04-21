@@ -1,9 +1,20 @@
 import { z } from 'zod';
 import { validateSchema } from '../validate-schema.js';
+import type { TokenType } from '../types.js';
+
+export interface IToken {
+    type: TokenType;
+    line: string | undefined;
+    tokenized: Tokenized | undefined;
+    canHandle(line: string): boolean;
+    tokenize(line: string, lineNumber: number): IToken;
+    isIgnoredToken(): boolean;
+    isAllowedNextToken(token: any): boolean;
+}
 
 export type Config = {
     // list of all known token types
-    tokenTypes: string[],
+    tokenTypes: TokenType[],
     // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
     extendedFormat?: boolean,
 }
@@ -11,14 +22,20 @@ export type Config = {
 export const ConfigSchema = z.object({
     tokenTypes: z.array(z.string().nonempty()),
     extendedFormat: z.boolean().optional(),
-})
+}).strict().describe('ConfigSchema')
 
-export abstract class BaseLineToken {
-    static type = '';
-    protected _tokenTypes: string[];
+export type Tokenized = {
+    line: string,
+    lineNumber: number,
+    [metadata: string]: any
+}
+
+export abstract class AbstractLineToken implements IToken {
+    static type: TokenType = 'BASE_LINE';
+    protected _tokenTypes: TokenType[];
     protected _extendedFormat: boolean;
-    protected _tokenized: { line: string, lineNumber: number, [metadata: string]: any } | null;
-    protected _line: string | null;
+    protected _tokenized: Tokenized | undefined;
+    protected _line: string | undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -28,8 +45,8 @@ export abstract class BaseLineToken {
 
         this._tokenTypes = tokenTypes;
         this._extendedFormat = extendedFormat;
-        this._tokenized = null;
-        this._line = null;
+        this._tokenized = undefined;
+        this._line = undefined;
     }
 
     /**
@@ -40,14 +57,18 @@ export abstract class BaseLineToken {
      * Factory methods that returns a new token of the corresponding type that contains the tokenized
      * representation of the parsed OpenAIR line.
      */
-    abstract tokenize(line: string, lineNumber: number): { line: string, lineNumber: number, [metadata: string]: any };
-    abstract getAllowedNextTokens(): string[];
+    abstract tokenize(line: string, lineNumber: number): IToken;
+    abstract getAllowedNextTokens(): TokenType[];
 
-    get line(): string | null {
+    get type() : TokenType {
+        return AbstractLineToken.type;
+    }
+
+    get line(): string | undefined {
         return this._line;
     }
 
-    get tokenized(): { line: string, lineNumber: number, [metadata: string]: any } | null {
+    get tokenized():Tokenized | undefined {
         return this._tokenized;
     }
 
@@ -59,8 +80,7 @@ export abstract class BaseLineToken {
         return false;
     }
 
-    // TODO add explicit type
-    isAllowedNextToken(token: any): boolean {
-        return this.getAllowedNextTokens().includes(token.constructor.type);
+    isAllowedNextToken(token: IToken): boolean {
+        return this.getAllowedNextTokens().includes(token.type);
     }
 }

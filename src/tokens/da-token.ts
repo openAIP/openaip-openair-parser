@@ -1,27 +1,28 @@
-const BaseLineToken = require('./base-line-token');
-const checkTypes = require('check-types');
+import { z } from 'zod';
+import type { TokenType } from '../types.js';
+import { validateSchema } from '../validate-schema.js';
+import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 
 /**
  * Tokenizes "DA" airspace arc definition token.
  */
-class DaToken extends BaseLineToken {
-    static type = 'DA';
+class DaToken extends AbstractLineToken {
+    static type: TokenType = 'DA';
 
-    canHandle(line) {
-        checkTypes.assert.string(line);
+    canHandle(line: string): boolean {
+        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
 
         // is DA line e.g. "DA 0.25,-57,123" as well as "DA 0.25,57.56,270.5"
         return /^DA\s+([+-]?\d*(\.\d+)?),\s*([+-]?\d*(\.\d+)?),\s*([+-]?\d*(\.\d+)?)$/.test(line);
     }
 
-    tokenize(line, lineNumber) {
-        const token = new DaToken({ tokenTypes: this.tokenTypes });
+    tokenize(line: string, lineNumber: number): IToken {
+        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        checkTypes.assert.string(line);
-        checkTypes.assert.integer(lineNumber);
-
+        const token = new DaToken({ tokenTypes: this._tokenTypes });
         // keep original line
-        token.line = line;
+        token._line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const arcPartsDefinition = line.replace(/^DA\s+/, '');
@@ -31,13 +32,11 @@ class DaToken extends BaseLineToken {
         const [radius, angleStart, angleEnd] = arcParts;
         const as = parseFloat(angleStart);
         const ae = parseFloat(angleEnd);
-
         // angle to bearing
         const startBearing = this.toBearing(as);
         const endBearing = this.toBearing(ae);
-
         // convert angles to bearings
-        token.tokenized = {
+        token._tokenized = {
             line,
             lineNumber,
             metadata: {
@@ -52,21 +51,12 @@ class DaToken extends BaseLineToken {
         return token;
     }
 
-    getAllowedNextTokens() {
-        const { BLANK_TOKEN, COMMENT_TOKEN, DA_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN } = this.tokenTypes;
-
-        return [BLANK_TOKEN, COMMENT_TOKEN, DA_TOKEN, DP_TOKEN, VD_TOKEN, VX_TOKEN, SKIPPED_TOKEN];
+    getAllowedNextTokens(): TokenType[] {
+        return ['BLANK', 'COMMENT', 'DA', 'DP', 'VD', 'VX', 'SKIPPED'];
     }
 
-    /**
-     * @param {number} angle
-     * @return {number}
-     * @private
-     */
-    toBearing(angle) {
-        checkTypes.assert.number(angle);
-
-        angle = parseFloat(angle);
+    private toBearing(angle: number): number {
+        angle = parseFloat(angle.toString());
 
         let bearing = angle % 360;
         if (bearing < 0) bearing += 360;
@@ -74,5 +64,3 @@ class DaToken extends BaseLineToken {
         return bearing;
     }
 }
-
-module.exports = DaToken;

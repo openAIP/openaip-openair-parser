@@ -29,7 +29,7 @@ export type Config = {
     outputGeometry: OutputGeometry;
     includeOpenair: boolean;
     defaultAltUnit: 'ft' | 'm';
-    targetAltUnit: 'ft' | 'm' | null;
+    targetAltUnit: 'ft' | 'm' | undefined;
     roundAltValues: boolean;
 }
 

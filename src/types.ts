@@ -1,9 +1,36 @@
-import type { z } from 'zod'
+import type { z } from 'zod';
 
-export declare namespace Geometry {
-    export type Point = {}
+/* eslint-disable @typescript-eslint/no-namespace */
 
-    export type Polygon = {}
+export namespace Geometry {
+    export type Point = {};
 
-    export const PolygonSchema = z.object ({});
+    export type Polygon = {};
+
+    export const PolygonSchema = z.object({});
 }
+
+export type TokenType =
+    | 'BASE_LINE'
+    | 'BASE_ALTITUDE'
+    | 'BLANK'
+    | 'COMMENT'
+    | 'SKIPPED'
+    | 'EOF'
+    | 'AC'
+    | 'AY'
+    | 'AN'
+    | 'AI'
+    | 'AF'
+    | 'AG'
+    | 'AL'
+    | 'AH'
+    | 'DA'
+    | 'DB'
+    | 'DC'
+    | 'DP'
+    | 'DY'
+    | 'TP'
+    | 'VD'
+    | 'VW'
+    | 'VX'

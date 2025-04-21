@@ -1,6 +1,6 @@
 import type { Config } from './parser.js';
 
-export const defaultParserConfig: Config = {
+export const DefaultParserConfig: Config = {
     // defines allowed airspace classes used with the AC token. This configuration option only applies if the
     // standard "non-extended" format is used, i.e. with the config parameter "extendedFormat: false".
     airspaceClasses: [
@@ -48,7 +48,7 @@ export const defaultParserConfig: Config = {
     // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'.
     defaultAltUnit: 'ft',
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, parser will not convert units.
-    targetAltUnit: null,
+    targetAltUnit: undefined,
     // Round altitude values.
     roundAltValues: false,
 } as const;
