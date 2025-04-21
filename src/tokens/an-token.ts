@@ -1,14 +1,14 @@
 import { z } from 'zod';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import type { IToken } from './abstract-line-token.js';
 import { AbstractLineToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "AN" airspace name definitions.
  */
 export class AnToken extends AbstractLineToken {
-    static type: TokenType = 'AN';
+    static type: TokenType = TokenTypeEnum.AN;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -34,10 +34,20 @@ export class AnToken extends AbstractLineToken {
 
     getAllowedNextTokens(): TokenType[] {
         // defines allowed tokens in the original format
-        let allowedNextTokens: TokenType[] = ['COMMENT', 'AL', 'AH', 'SKIPPED'];
+        let allowedNextTokens: TokenType[] = [
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.AL,
+            TokenTypeEnum.AH,
+            TokenTypeEnum.SKIPPED,
+        ];
         // inject extended format tokens if required
         if (this._extendedFormat === true) {
-            allowedNextTokens = allowedNextTokens.concat(['AI', 'AF', 'AG', 'TP'] as TokenType[]);
+            allowedNextTokens = allowedNextTokens.concat([
+                TokenTypeEnum.AI,
+                TokenTypeEnum.AF,
+                TokenTypeEnum.AG,
+                TokenTypeEnum.TP,
+            ] as TokenType[]);
         }
 
         return allowedNextTokens;

@@ -1,28 +1,30 @@
 import { z } from 'zod';
 import { AltitudeUnitEnum, type AltitudeUnit } from '../altitude-unit.enum.js';
-import { DefaultParserConfig } from '../default-parser-config.js';
-import type { TokenType } from '../types.js';
 import { feetToMeters, metersToFeet } from '../unit-conversion.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
+import { type TokenType } from './token-type.enum.js';
 
 export type Config = BaseLineConfig & {
-    unlimited?: number;
+    unlimited: number;
     // Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
-    defaultAltUnit?: AltitudeUnit;
+    defaultAltUnit: AltitudeUnit;
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not set, does not convert units.
-    targetAltUnit?: AltitudeUnit;
+    targetAltUnit: AltitudeUnit;
     // If true, rounds the altitude values. Defaults to false. This parameter is most useful when used with unit conversion, e.g. m -> feet.
-    roundAltValues?: boolean;
+    roundAltValues: boolean;
+    // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
+    extendedFormat: boolean;
 };
 
 export const ConfigSchema = z
     .object({
         tokenTypes: z.array(z.string().nonempty()),
-        unlimited: z.number().optional(),
-        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
-        roundAltValues: z.boolean().optional(),
+        unlimited: z.number(),
+        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
+        targetAltUnit: z.nativeEnum(AltitudeUnitEnum),
+        roundAltValues: z.boolean(),
+        extendedFormat: z.boolean(),
     })
     .strict()
     .describe('ConfigSchema');
@@ -37,7 +39,7 @@ interface IAltitudeReader {
 type AbstractAltitudeReaderConfig = {
     unlimited: number;
     defaultAltUnit: AltitudeUnit;
-    targetAltUnit: AltitudeUnit | undefined;
+    targetAltUnit: AltitudeUnit;
     roundAltValues: boolean;
 };
 
@@ -58,25 +60,15 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken {
     static type: TokenType = 'BASE_ALTITUDE';
     protected _unlimited: number;
     protected _defaultAltUnit: AltitudeUnit;
-    protected _targetAltUnit: AltitudeUnit | undefined;
+    protected _targetAltUnit: AltitudeUnit;
     protected _roundAltValues: boolean;
     protected _readers: IAltitudeReader[] = [];
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const defaultConfig = {
-            unlimited: DefaultParserConfig.unlimited,
-            defaultAltUnit: DefaultParserConfig.defaultAltUnit,
-            targetAltUnit: DefaultParserConfig.targetAltUnit,
-            roundAltValues: DefaultParserConfig.roundAltValues,
-        };
-        const { unlimited, tokenTypes, defaultAltUnit, targetAltUnit, roundAltValues } = {
-            ...defaultConfig,
-            ...config,
-        };
-
-        super({ tokenTypes });
+        const { unlimited, tokenTypes, defaultAltUnit, targetAltUnit, roundAltValues, extendedFormat } = config;
+        super({ tokenTypes, extendedFormat });
 
         this._unlimited = unlimited;
         this._defaultAltUnit = defaultAltUnit.toUpperCase() as AltitudeUnit;

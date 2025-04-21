@@ -19,6 +19,7 @@ export default tseslint.config(
             'security/detect-unsafe-regex': 'off',
             'security/detect-possible-timing-attacks': 'off',
             'security/detect-non-literal-regexp': 'off',
+            'security/detect-non-literal-fs-filename': 'off',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/ban-ts-comment': 'off',
             '@typescript-eslint/no-empty-object-type': 'off',

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { validateSchema } from '../validate-schema.js';
-import type { TokenType } from '../types.js';
+import { type TokenType } from './token-type.enum.js';
 
 export interface IToken {
     type: TokenType;
@@ -9,26 +9,29 @@ export interface IToken {
     canHandle(line: string): boolean;
     tokenize(line: string, lineNumber: number): IToken;
     isIgnoredToken(): boolean;
-    isAllowedNextToken(token: any): boolean;
+    isAllowedNextToken(token: IToken): boolean;
 }
 
 export type Config = {
     // list of all known token types
-    tokenTypes: TokenType[],
+    tokenTypes: TokenType[];
     // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
-    extendedFormat?: boolean,
-}
+    extendedFormat: boolean;
+};
 
-export const ConfigSchema = z.object({
-    tokenTypes: z.array(z.string().nonempty()),
-    extendedFormat: z.boolean().optional(),
-}).strict().describe('ConfigSchema')
+export const ConfigSchema = z
+    .object({
+        tokenTypes: z.array(z.string().nonempty()),
+        extendedFormat: z.boolean(),
+    })
+    .strict()
+    .describe('ConfigSchema');
 
 export type Tokenized = {
-    line: string,
-    lineNumber: number,
-    [metadata: string]: any
-}
+    line: string;
+    lineNumber: number;
+    [metadata: string]: any;
+};
 
 export abstract class AbstractLineToken implements IToken {
     static type: TokenType = 'BASE_LINE';
@@ -40,8 +43,7 @@ export abstract class AbstractLineToken implements IToken {
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const defaultConfig = { extendedFormat: false };
-        const { tokenTypes, extendedFormat } = Object.assign(defaultConfig, config);
+        const { tokenTypes, extendedFormat } = config;
 
         this._tokenTypes = tokenTypes;
         this._extendedFormat = extendedFormat;
@@ -60,7 +62,7 @@ export abstract class AbstractLineToken implements IToken {
     abstract tokenize(line: string, lineNumber: number): IToken;
     abstract getAllowedNextTokens(): TokenType[];
 
-    get type() : TokenType {
+    get type(): TokenType {
         return AbstractLineToken.type;
     }
 
@@ -68,7 +70,7 @@ export abstract class AbstractLineToken implements IToken {
         return this._line;
     }
 
-    get tokenized():Tokenized | undefined {
+    get tokenized(): Tokenized | undefined {
         return this._tokenized;
     }
 

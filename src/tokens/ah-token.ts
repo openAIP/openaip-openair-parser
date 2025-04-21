@@ -1,15 +1,16 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractAltitudeToken } from './abstract-altitude-token';
 import type { IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "AH" airspace upper ceiling definitions.
  */
 export class AhToken extends AbstractAltitudeToken {
-    static type: TokenType = 'AH';
+    static type: TokenType = TokenTypeEnum.AH;
+
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
 
@@ -27,8 +28,8 @@ export class AhToken extends AbstractAltitudeToken {
             defaultAltUnit: this._defaultAltUnit,
             targetAltUnit: this._targetAltUnit,
             roundAltValues: this._roundAltValues,
+            extendedFormat: this._extendedFormat,
         });
-
         // keep original line
         token._line = line;
         // remove inline comments
@@ -50,6 +51,16 @@ export class AhToken extends AbstractAltitudeToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['COMMENT', 'AG', 'AF', 'AL', 'DP', 'VW', 'VX', 'SKIPPED', 'VD'];
+        return [
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.AG,
+            TokenTypeEnum.AF,
+            TokenTypeEnum.AL,
+            TokenTypeEnum.DP,
+            TokenTypeEnum.VW,
+            TokenTypeEnum.VX,
+            TokenTypeEnum.SKIPPED,
+            TokenTypeEnum.VD,
+        ];
     }
 }

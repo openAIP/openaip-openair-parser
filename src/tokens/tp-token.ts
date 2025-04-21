@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "TP" token value which is a transponder code string "7000"
  */
 export class TpToken extends AbstractLineToken {
-    static type: TokenType = 'TP';
+    static type: TokenType = TokenTypeEnum.TP;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -21,7 +21,7 @@ export class TpToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new TpToken({ tokenTypes: this._tokenTypes });
+        const token = new TpToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -39,6 +39,18 @@ export class TpToken extends AbstractLineToken {
 
     getAllowedNextTokens(): TokenType[] {
         // no extended format option handling, TP token only in extended format
-        return ['COMMENT', 'AG', 'AL', 'AH', 'SKIPPED', 'DP', 'VW', 'VX', 'VD', 'AN', 'AF'];
+        return [
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.AG,
+            TokenTypeEnum.AL,
+            TokenTypeEnum.AH,
+            TokenTypeEnum.SKIPPED,
+            TokenTypeEnum.DP,
+            TokenTypeEnum.VW,
+            TokenTypeEnum.VX,
+            TokenTypeEnum.VD,
+            TokenTypeEnum.AN,
+            TokenTypeEnum.AF,
+        ];
     }
 }

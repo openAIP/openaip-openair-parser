@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "DA" airspace arc definition token.
  */
-class DaToken extends AbstractLineToken {
-    static type: TokenType = 'DA';
+export class DaToken extends AbstractLineToken {
+    static type: TokenType = TokenTypeEnum.DA;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -20,7 +20,7 @@ class DaToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DaToken({ tokenTypes: this._tokenTypes });
+        const token = new DaToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -52,7 +52,15 @@ class DaToken extends AbstractLineToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['BLANK', 'COMMENT', 'DA', 'DP', 'VD', 'VX', 'SKIPPED'];
+        return [
+            TokenTypeEnum.BLANK,
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.DA,
+            TokenTypeEnum.DP,
+            TokenTypeEnum.VD,
+            TokenTypeEnum.VX,
+            TokenTypeEnum.SKIPPED,
+        ];
     }
 
     private toBearing(angle: number): number {

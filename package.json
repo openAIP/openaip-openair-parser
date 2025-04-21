@@ -64,6 +64,7 @@
         "@mapbox/geojson-rewind": "^0.5.2",
         "@openaip/coordinate-parser": "^0.14.0",
         "@turf/turf": "^7.2.0",
+        "@types/n-readlines": "^1.0.6",
         "@types/sprintf-js": "^1.1.4",
         "commander": "^13.1.0",
         "n-readlines": "^1.0.3",

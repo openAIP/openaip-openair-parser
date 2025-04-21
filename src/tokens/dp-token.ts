@@ -1,15 +1,15 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "DP" airspace polygon coordinate definition.
  */
 export class DpToken extends AbstractLineToken {
-    static type: TokenType = 'DP';
+    static type: TokenType = TokenTypeEnum.DP;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -22,7 +22,7 @@ export class DpToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DpToken({ tokenTypes: this._tokenTypes });
+        const token = new DpToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -42,6 +42,15 @@ export class DpToken extends AbstractLineToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['COMMENT', 'DP', 'DA', 'BLANK', 'EOF', 'VD', 'VX', 'SKIPPED'];
+        return [
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.DP,
+            TokenTypeEnum.DA,
+            TokenTypeEnum.BLANK,
+            TokenTypeEnum.EOF,
+            TokenTypeEnum.VD,
+            TokenTypeEnum.VX,
+            TokenTypeEnum.SKIPPED,
+        ];
     }
 }

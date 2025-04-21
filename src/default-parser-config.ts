@@ -1,6 +1,23 @@
-import type { Config } from './parser.js';
+import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
+import type { OutputGeometry } from './output-geometry.enum.js';
 
-export const DefaultParserConfig: Config = {
+type DefaultConfig = {
+    airspaceClasses: string[];
+    extendedFormat: boolean;
+    extendedFormatClasses: string[];
+    extendedFormatTypes: string[];
+    unlimited: number;
+    geometryDetail: number;
+    validateGeometry: boolean;
+    fixGeometry: boolean;
+    outputGeometry: OutputGeometry;
+    includeOpenair: boolean;
+    defaultAltUnit: AltitudeUnit;
+    targetAltUnit: AltitudeUnit;
+    roundAltValues: boolean;
+};
+
+export const DefaultParserConfig: DefaultConfig = {
     // defines allowed airspace classes used with the AC token. This configuration option only applies if the
     // standard "non-extended" format is used, i.e. with the config parameter "extendedFormat: false".
     airspaceClasses: [
@@ -46,9 +63,9 @@ export const DefaultParserConfig: Config = {
     // If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size!
     includeOpenair: false,
     // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'.
-    defaultAltUnit: 'ft',
+    defaultAltUnit: AltitudeUnitEnum.ft,
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, parser will not convert units.
-    targetAltUnit: undefined,
+    targetAltUnit: AltitudeUnitEnum.ft,
     // Round altitude values.
     roundAltValues: false,
 } as const;

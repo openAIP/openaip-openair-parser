@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "DC" airspace circle radius definition.
  */
 export class DcToken extends AbstractLineToken {
-    static type: TokenType = 'DC';
+    static type: TokenType = TokenTypeEnum.DC;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -21,13 +21,12 @@ export class DcToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DcToken({ tokenTypes: this._tokenTypes });
+        const token = new DcToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartRadius = line.replace(/^DC\s+/, '');
-
         const isRadius = /^\d+(\.\d+)?$/.test(linePartRadius);
         if (!isRadius) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown circle radius definition '${line}'` });
@@ -38,6 +37,6 @@ export class DcToken extends AbstractLineToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['BLANK', 'COMMENT', 'EOF', 'SKIPPED'];
+        return [TokenTypeEnum.BLANK, TokenTypeEnum.COMMENT, TokenTypeEnum.EOF, TokenTypeEnum.SKIPPED];
     }
 }

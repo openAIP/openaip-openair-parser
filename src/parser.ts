@@ -1,13 +1,13 @@
+import rewind from '@mapbox/geojson-rewind';
+import { featureCollection as createFeatureCollection } from '@turf/turf';
+import AirspaceFactory from './airspace-factory.js';
+import altitudeUnit, { type AltitudeUnit } from './altitude-unit.enum.js';
+import defaultConfig from './default-parser-config.js';
+import { geojsonToOpenair } from './geojson-to-openair.js';
+import { outputGeometry, type OutputGeometry } from './output-geometry.enum.js';
 import Tokenizer from './tokenizer.js';
 import AcToken from './tokens/ac-token.js';
 import EofToken from './tokens/eof-token.js';
-import AirspaceFactory from './airspace-factory.js';
-import altitudeUnit from './altitude-unit.enum.js';
-import defaultConfig from './default-parser-config.js';
-import { featureCollection as createFeatureCollection } from '@turf/turf';
-import { geojsonToOpenair } from './geojson-to-openair.js';
-import rewind from '@mapbox/geojson-rewind';
-import { outputGeometry, type OutputGeometry } from './output-geometry.enum.js';
 
 const allowedAltUnits = Object.values(altitudeUnit);
 const PARSER_STATE = {
@@ -24,14 +24,14 @@ export type Config = {
     extendedFormatTypes: string[];
     unlimited: number;
     geometryDetail: number;
-    validateGeometry: boolean;
-    fixGeometry: boolean;
-    outputGeometry: OutputGeometry;
-    includeOpenair: boolean;
-    defaultAltUnit: 'ft' | 'm';
-    targetAltUnit: 'ft' | 'm' | undefined;
-    roundAltValues: boolean;
-}
+    validateGeometry?: boolean;
+    fixGeometry?: boolean;
+    outputGeometry?: OutputGeometry;
+    includeOpenair?: boolean;
+    defaultAltUnit?: AltitudeUnit;
+    targetAltUnit?: AltitudeUnit;
+    roundAltValues?: boolean;
+};
 
 /**
  * @typedef typedefs.openaip.OpenairParser.ParserResult
@@ -64,7 +64,7 @@ export class Parser {
      * @param {string[]} [config.extendedFormatClasses] - Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
      * @param {string[]} [config.extendedFormatTypes] - Defines a set of allowed "AY" values if the extended format is used.
      */
-    constructor(config) {
+    constructor(config: Config) {
         const configuration = { ...defaultConfig, ...config };
         const {
             airspaceClasses,
@@ -97,8 +97,8 @@ export class Parser {
         if ([outputGeometry.POLYGON, outputGeometry.LINESTRING].includes(outputGeometry) === false) {
             throw new Error(
                 `Parameter 'outputGeometry' must be one of the allowed output geometries '${Object.values(
-                    outputGeometry,
-                ).join(', ')}.`,
+                    outputGeometry
+                ).join(', ')}.`
             );
         }
         if (checkTypes.boolean(fixGeometry) === false) {

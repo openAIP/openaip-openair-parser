@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 export type Config = BaseLineConfig & {
     // A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
@@ -32,7 +32,7 @@ export const ConfigSchema = z
  * Tokenizes "AC" airspace class definitions.
  */
 export class AcToken extends AbstractLineToken {
-    static type: TokenType = 'AC';
+    static type: TokenType = TokenTypeEnum.AC;
     protected _airspaceClasses: string[] = [];
     protected _extendedFormatClasses: string[] = [];
 
@@ -89,10 +89,10 @@ export class AcToken extends AbstractLineToken {
 
     getAllowedNextTokens(): TokenType[] {
         // defines allowed tokens in the original format
-        let allowedNextTokens: TokenType[] = ['COMMENT', 'AN', 'SKIPPED'];
+        let allowedNextTokens: TokenType[] = [TokenTypeEnum.COMMENT, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
         // inject extended format tokens if required
         if (this._extendedFormat === true) {
-            allowedNextTokens = allowedNextTokens.concat(['AI', 'AY'] as TokenType[]);
+            allowedNextTokens = allowedNextTokens.concat([TokenTypeEnum.AI, TokenTypeEnum.AY]);
         }
 
         return allowedNextTokens;

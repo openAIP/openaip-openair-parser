@@ -1,0 +1,27 @@
+export const TokenTypeEnum = {
+    BASE_LINE: 'BASE_LINE',
+    BASE_ALTITUDE: 'BASE_ALTITUDE',
+    BLANK: 'BLANK',
+    COMMENT: 'COMMENT',
+    SKIPPED: 'SKIPPED',
+    EOF: 'EOF',
+    AC: 'AC',
+    AY: 'AY',
+    AN: 'AN',
+    AI: 'AI',
+    AF: 'AF',
+    AG: 'AG',
+    AL: 'AL',
+    AH: 'AH',
+    DA: 'DA',
+    DB: 'DB',
+    DC: 'DC',
+    DP: 'DP',
+    DY: 'DY',
+    TP: 'TP',
+    VD: 'VD',
+    VW: 'VW',
+    VX: 'VX',
+} as const;
+
+export type TokenType = (typeof TokenTypeEnum)[keyof typeof TokenTypeEnum];

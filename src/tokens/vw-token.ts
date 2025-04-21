@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "V W=" airway width in nautical miles.
  */
 export class VwToken extends AbstractLineToken {
-    static type: TokenType = 'VW';
+    static type: TokenType = TokenTypeEnum.VW;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -21,7 +21,7 @@ export class VwToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new VwToken({ tokenTypes: this._tokenTypes });
+        const token = new VwToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -37,6 +37,6 @@ export class VwToken extends AbstractLineToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['COMMENT', 'DY', 'BLANK', 'EOF', 'SKIPPED'];
+        return [TokenTypeEnum.COMMENT, TokenTypeEnum.DY, TokenTypeEnum.BLANK, TokenTypeEnum.EOF, TokenTypeEnum.SKIPPED];
     }
 }

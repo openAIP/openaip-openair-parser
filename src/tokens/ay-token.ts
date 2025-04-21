@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 export type Config = BaseLineConfig & {
     extendedFormat?: boolean;
@@ -29,7 +29,7 @@ export const ConfigSchema = z
  * Tokenizes "AY" airspace type definitions.
  */
 export class AyToken extends AbstractLineToken {
-    static type: TokenType = 'AY';
+    static type: TokenType = TokenTypeEnum.AY;
     protected _extendedFormatTypes: string[] = [];
 
     constructor(config: Config) {
@@ -51,7 +51,11 @@ export class AyToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AyToken({ extendedFormatTypes: this._extendedFormatTypes, tokenTypes: this._tokenTypes });
+        const token = new AyToken({
+            extendedFormatTypes: this._extendedFormatTypes,
+            tokenTypes: this._tokenTypes,
+            extendedFormat: this._extendedFormat,
+        });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -68,6 +72,6 @@ export class AyToken extends AbstractLineToken {
 
     getAllowedNextTokens(): TokenType[] {
         // no extended format option handling, AY token only in extended format
-        return ['COMMENT', 'AI', 'AN', 'SKIPPED'];
+        return [TokenTypeEnum.COMMENT, TokenTypeEnum.AI, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
     }
 }

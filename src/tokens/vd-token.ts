@@ -1,14 +1,14 @@
 import { z } from 'zod';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Handles the D token which is part of an arc definition and declares turn-direction, e.g. clockwise or counter-clockwise.
  * Since the the DB token will get the center point AND start and end coordinates, this token can be omitted.
  */
 export class VdToken extends AbstractLineToken {
-    static type: TokenType = 'VD';
+    static type: TokenType = TokenTypeEnum.VD;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -21,7 +21,7 @@ export class VdToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new VdToken({ tokenTypes: this._tokenTypes });
+        const token = new VdToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -34,6 +34,6 @@ export class VdToken extends AbstractLineToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['COMMENT', 'VX', 'DA', 'DB', 'SKIPPED'];
+        return [TokenTypeEnum.COMMENT, TokenTypeEnum.VX, TokenTypeEnum.DA, TokenTypeEnum.DB, TokenTypeEnum.SKIPPED];
     }
 }

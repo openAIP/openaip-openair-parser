@@ -1,14 +1,14 @@
 import { z } from 'zod';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import type { IToken } from './abstract-line-token.js';
-import {CommentToken} from './comment-token';
+import { CommentToken } from './comment-token';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Handles skipped tokens.
  */
 export class SkippedToken extends CommentToken {
-    static type: TokenType = 'SKIPPED';
+    static type: TokenType = TokenTypeEnum.SKIPPED;
 
     isIgnoredToken() {
         return true;
@@ -22,10 +22,10 @@ export class SkippedToken extends CommentToken {
     }
 
     tokenize(line: string, lineNumber: number): IToken {
-        validateSchema(line, z.string().nonempty(),  {assert: true, name: 'line'});
-        validateSchema(lineNumber, z.number(), {assert: true, name: 'lineNumber'});
+        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new SkippedToken({ tokenTypes: this._tokenTypes });
+        const token = new SkippedToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         token._tokenized = { line, lineNumber };
@@ -34,25 +34,24 @@ export class SkippedToken extends CommentToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-
         return [
-            'COMMENT',
-            'BLANK',
-            'AC',
-            'AN',
-            'AL',
-            'AH',
-            'DP',
-            'VX',
-            'VD',
-            'DB',
-            'DC',
-            'EOF',
-            'SKIPPED',
-            'AI',
-            'AY',
-            'AF',
-            'AG',
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.BLANK,
+            TokenTypeEnum.AC,
+            TokenTypeEnum.AN,
+            TokenTypeEnum.AL,
+            TokenTypeEnum.AH,
+            TokenTypeEnum.DP,
+            TokenTypeEnum.VX,
+            TokenTypeEnum.VD,
+            TokenTypeEnum.DB,
+            TokenTypeEnum.DC,
+            TokenTypeEnum.EOF,
+            TokenTypeEnum.SKIPPED,
+            TokenTypeEnum.AI,
+            TokenTypeEnum.AY,
+            TokenTypeEnum.AF,
+            TokenTypeEnum.AG,
         ];
     }
 }

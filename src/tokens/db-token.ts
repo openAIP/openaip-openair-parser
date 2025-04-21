@@ -1,15 +1,15 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "DB" airspace arc endpoints definition.
  */
 export class DbToken extends AbstractLineToken {
-    static type: TokenType = 'DB';
+    static type: TokenType = TokenTypeEnum.DB;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -22,7 +22,7 @@ export class DbToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DbToken({ tokenTypes: this._tokenTypes });
+        const token = new DbToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -31,7 +31,6 @@ export class DbToken extends AbstractLineToken {
         // endpoints are defined as comma separated coordinate pairs
         const endpoints = linePartEndpoints.split(',');
         endpoints.map((value) => value.trim());
-
         // transform each endpoint coordinate string into coordinate object
         const coord = [];
         for (const coordinate of endpoints) {
@@ -49,6 +48,13 @@ export class DbToken extends AbstractLineToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['BLANK', 'COMMENT', 'DP', 'VD', 'VX', 'SKIPPED'];
+        return [
+            TokenTypeEnum.BLANK,
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.DP,
+            TokenTypeEnum.VD,
+            TokenTypeEnum.VX,
+            TokenTypeEnum.SKIPPED,
+        ];
     }
 }

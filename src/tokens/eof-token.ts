@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import {
     AbstractLineToken,
@@ -7,6 +6,7 @@ import {
     type IToken,
     type Tokenized,
 } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 export type Config = BaseLineConfig & {
     lastLineNumber: number;
@@ -24,7 +24,7 @@ export const ConfigSchema = z
  * is finished. Marks the end of the parsed file.
  */
 export class EofToken extends AbstractLineToken {
-    static type: TokenType = 'EOF';
+    static type: TokenType = TokenTypeEnum.EOF;
     protected _lastLineNumber: number;
 
     constructor(config: Config) {

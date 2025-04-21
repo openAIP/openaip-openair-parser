@@ -1,14 +1,14 @@
 import { z } from 'zod';
-import type { TokenType } from '../types.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken } from './abstract-line-token.js';
 import type { IToken } from './abstract-line-token.js';
+import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 /**
  * Tokenizes "AG" ground station call-sign for given AF frequency.
  */
 export class AgToken extends AbstractLineToken {
-    static type: TokenType = 'AG';
+    static type: TokenType = TokenTypeEnum.AG;
 
     canHandle(line: string): boolean {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
@@ -21,8 +21,7 @@ export class AgToken extends AbstractLineToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AgToken({ tokenTypes: this._tokenTypes });
-
+        const token = new AgToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -34,6 +33,16 @@ export class AgToken extends AbstractLineToken {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return ['COMMENT', 'AF', 'AL', 'AH', 'DP', 'VW', 'VX', 'SKIPPED', 'VD'];
+        return [
+            TokenTypeEnum.COMMENT,
+            TokenTypeEnum.AF,
+            TokenTypeEnum.AL,
+            TokenTypeEnum.AH,
+            TokenTypeEnum.DP,
+            TokenTypeEnum.VW,
+            TokenTypeEnum.VX,
+            TokenTypeEnum.SKIPPED,
+            TokenTypeEnum.VD,
+        ];
     }
 }
