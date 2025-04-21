@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import LineByLine from 'n-readlines';
 import { z } from 'zod';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
-import { DefaultParserConfig } from './default-parser-config.js';
 import { ParserError } from './parser-error.js';
 import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -29,35 +28,31 @@ import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
 import { validateSchema } from './validate-schema.js';
 
+interface ITokenizer {
+    tokenize(filepath: string): IToken[];
+}
+
 export type Config = {
-    // A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
     airspaceClasses: string[];
-    // Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
-    unlimited?: number;
-    // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
-    defaultAltUnit?: AltitudeUnit;
-    // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
-    targetAltUnit?: AltitudeUnit;
-    // If true, rounds the altitude values. Defaults to false.
-    roundAltValues?: boolean;
-    // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
-    extendedFormat?: boolean;
-    // Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
-    extendedFormatClasses?: string[];
-    // Defines a set of allowed "AY" values if the extended format is used.
-    extendedFormatTypes?: string[];
+    unlimited: number;
+    defaultAltUnit: AltitudeUnit;
+    targetAltUnit: AltitudeUnit;
+    roundAltValues: boolean;
+    extendedFormat: boolean;
+    extendedFormatClasses: string[];
+    extendedFormatTypes: string[];
 };
 
 export const ConfigSchema = z
     .object({
         airspaceClasses: z.array(z.string().min(1)),
-        unlimited: z.number().int().optional(),
-        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
-        roundAltValues: z.boolean().optional(),
-        extendedFormat: z.boolean().optional(),
-        extendedFormatClasses: z.array(z.string()).optional(),
-        extendedFormatTypes: z.array(z.string()).optional(),
+        unlimited: z.number().int(),
+        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
+        targetAltUnit: z.nativeEnum(AltitudeUnitEnum),
+        roundAltValues: z.boolean(),
+        extendedFormat: z.boolean(),
+        extendedFormatClasses: z.array(z.string().min(1)),
+        extendedFormatTypes: z.array(z.string().min(1)),
     })
     .strict()
     .describe('ConfigSchema');
@@ -69,8 +64,8 @@ const TOKEN_TYPES = Object.values(TokenTypeEnum) as TokenType[];
  * Each token holds a tokenized representation of the read line. The tokenizer will return a list of all read
  * and created tokens. The tokenizer will throw a syntax error on the first error that is encountered.
  */
-export class Tokenizer {
-    protected _config: Required<Config>;
+export class Tokenizer implements ITokenizer {
+    protected _config: Config;
     protected tokenizers: IToken[];
     // previous processed token, used to validate correct token order
     protected _tokens: IToken[] = [];
@@ -91,9 +86,8 @@ export class Tokenizer {
             extendedFormat,
             extendedFormatClasses,
             extendedFormatTypes,
-        } = { ...DefaultParserConfig, ...config };
-        // at this point we have a fully validated configuration for the Tokenizer
-        this._config = config as Required<Config>;
+        } = config;
+        this._config = config;
         /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
@@ -144,7 +138,6 @@ export class Tokenizer {
      */
     tokenize(filepath: string): IToken[] {
         this.reset();
-
         this.enforceFileExists(filepath);
         const liner: LineByLine = new LineByLine(filepath);
         let line: Buffer | false;
