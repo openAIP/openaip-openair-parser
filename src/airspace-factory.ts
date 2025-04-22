@@ -64,7 +64,7 @@ export class AirspaceFactory {
     // set to true if airspace contains tokens other than "skipped, blanks or comment"
     protected _hasBuildTokens: boolean = false;
     protected _isAirway: boolean = false;
-    protected _airway: AirwayStructure | undefined = undefined;
+    protected _airway: Partial<AirwayStructure> | undefined = undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -107,7 +107,7 @@ export class AirspaceFactory {
             }
             const airwayWidth = this._airway.width;
             const airwaySegments = this._airway.segments;
-            if (airwayWidth == null || airwaySegments.length === 0) {
+            if (airwayWidth == null || (airwaySegments != null && airwaySegments.length === 0)) {
                 throw new ParserError({
                     lineNumber: this._currentLineNumber,
                     errorMessage: 'Airway definition is missing required tokens.',
@@ -115,7 +115,7 @@ export class AirspaceFactory {
             }
             this._airspace.coordinates = this.buildCoordinatesFromAirway({
                 width: airwayWidth,
-                segments: airwaySegments,
+                segments: airwaySegments as Position[],
             });
         }
         const airspace = this._airspace;
@@ -153,64 +153,64 @@ export class AirspaceFactory {
         const { lineNumber } = token.tokenized as Tokenized;
         switch (type) {
             case CommentToken.type:
-                this.handleCommentToken(token);
+                this.handleCommentToken(token as CommentToken);
                 break;
             case AcToken.type:
-                this.handleAcToken(token);
+                this.handleAcToken(token as AcToken);
                 break;
             case AnToken.type:
-                this.handleAnToken(token);
+                this.handleAnToken(token as AnToken);
                 break;
             case AhToken.type:
-                this.handleAhToken(token);
+                this.handleAhToken(token as AhToken);
                 break;
             case AlToken.type:
-                this.handleAlToken(token);
+                this.handleAlToken(token as AlToken);
                 break;
             case DpToken.type:
-                this.handleDpToken(token);
+                this.handleDpToken(token as DpToken);
                 break;
             case DyToken.type:
-                this.handleDyToken(token);
+                this.handleDyToken(token as DyToken);
                 break;
             case VdToken.type:
-                this.handleVdToken(token);
+                this.handleVdToken(token as VdToken);
                 break;
             case VxToken.type:
-                this.handleVxToken(token);
+                this.handleVxToken(token as VxToken);
                 break;
             case VwToken.type:
-                this.handleVwToken(token);
+                this.handleVwToken(token as VwToken);
                 break;
             case DcToken.type:
-                this.handleDcToken(token);
+                this.handleDcToken(token as DcToken);
                 break;
             case DbToken.type:
-                this.handleDbToken(token);
+                this.handleDbToken(token as DbToken);
                 break;
             case DaToken.type:
-                this.handleDaToken(token);
+                this.handleDaToken(token as DaToken);
                 break;
             case BlankToken.type:
-                this.handleBlankToken(token);
+                this.handleBlankToken(token as BlankToken);
                 break;
             case EofToken.type:
                 break;
             // extended format tokens
             case AiToken.type:
-                this.handleAiToken(token);
+                this.handleAiToken(token as AiToken);
                 break;
             case AyToken.type:
-                this.handleAyToken(token);
+                this.handleAyToken(token as AyToken);
                 break;
             case AfToken.type:
-                this.handleAfToken(token);
+                this.handleAfToken(token as AfToken);
                 break;
             case AgToken.type:
-                this.handleAgToken(token);
+                this.handleAgToken(token as AgToken);
                 break;
             case TpToken.type:
-                this.handleTpToken(token);
+                this.handleTpToken(token as TpToken);
                 break;
             default:
                 throw new ParserError({ lineNumber, errorMessage: `Unknown token '${type}'` });
@@ -234,7 +234,7 @@ export class AirspaceFactory {
         // @ts-expect-error downlevel iteration flag required
         for (const [index, currentToken] of this._tokens.entries()) {
             const maxLookAheadIndex = this._tokens.length - 1;
-            const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
+            const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).tokenized as Tokenized;
 
             // Make sure the first relevant token is an AC tag. Starting from this AC tag, the token order can be validated
             // only using "look ahead" logic. Otherwise, additional "look behind" must be implemented that would
@@ -293,11 +293,11 @@ export class AirspaceFactory {
             requiredTokens.push(AyToken.type);
         }
         const requiredTokensInventory: TokenType[] = [];
-        let definitionBlockStart = null;
+        let definitionBlockStart: number | undefined = undefined;
 
         // @ts-expect-error downlevel iteration flag required
         for (const [index, currentToken] of this._tokens.entries()) {
-            const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
+            const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).tokenized as Tokenized;
             if (index === 0) {
                 // store the airspace definition block start line number for error messages
                 definitionBlockStart = currentTokenLineNumber;
@@ -334,174 +334,116 @@ export class AirspaceFactory {
         this._airspace.name = name;
     }
 
-    protected handleAcToken(token: AcToken) {
+    protected handleAcToken(token: AcToken): void {
         const { metadata } = token.tokenized as Tokenized;
         const { class: acClass } = metadata;
 
         this._airspace.airspaceClass = acClass;
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleAhToken(token) {
-        checkTypes.assert.instance(token, AhToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAhToken(token: AhToken): void {
+        const { metadata } = token.tokenized as Tokenized;
         const { altitude } = metadata;
 
-        this.airspace.upperCeiling = altitude;
-
+        this._airspace.upperCeiling = altitude;
         // check that defined upper limit is actually higher than defined lower limit
         this.enforceSaneLimits();
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleAlToken(token) {
-        checkTypes.assert.instance(token, AlToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAlToken(token: AlToken): void {
+        const { metadata } = token.tokenized as Tokenized;
         const { altitude } = metadata;
 
-        this.airspace.lowerCeiling = altitude;
-
+        this._airspace.lowerCeiling = altitude;
         // check that defined lower limit is actually lower than defined upper limit
         this.enforceSaneLimits();
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleDpToken(token) {
-        checkTypes.assert.instance(token, DpToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleDpToken(token: DpToken): void {
+        const { metadata } = token.tokenized as Tokenized;
         const { coordinate } = metadata;
 
-        checkTypes.assert.nonEmptyObject(coordinate);
-
         // IMPORTANT subsequently push coordinates
-        this.airspace.coordinates.push(this.toArrayLike(coordinate));
+        this._airspace.coordinates.push(this.toArrayLike(coordinate));
     }
 
     /**
      * Does nothing but required to create an arc.
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
      */
-    protected handleVdToken(token) {
-        checkTypes.assert.instance(token, VdToken);
-    }
+    protected handleVdToken(token: VdToken): void {}
 
     /**
      * Does nothing but required to create an arc.
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
      */
-    protected handleVxToken(token) {
-        checkTypes.assert.instance(token, VxToken);
-    }
+    protected handleVxToken(token: VxToken): void {}
 
     /**
      * Sets airway width in nautical miles.
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
      */
-    protected handleVwToken(token) {
-        checkTypes.assert.instance(token, VwToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleVwToken(token: VwToken): void {
+        const { metadata } = token.tokenized as Tokenized;
         const { width } = metadata;
 
         // IMPORTANT indicate that we are building an airspace from airway definition
-        this.isAirway = true;
-        this._airway.width = width;
+        this._isAirway = true;
+        if (this._airway == null) {
+            this._airway = { width };
+        } else {
+            this._airway.width = width;
+        }
     }
 
     /**
      * Sets airway segment.
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
      */
-    protected handleDyToken(token) {
-        checkTypes.assert.instance(token, DyToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleDyToken(token: DyToken): void {
+        const { metadata } = token.tokenized as Tokenized;
         const { coordinate } = metadata;
 
-        checkTypes.assert.nonEmptyObject(coordinate);
-
+        if (this._airway == null) {
+            this._airway = { segments: [] };
+        } else {
+            this._airway.segments = [];
+        }
         // IMPORTANT subsequently push airway segment coordinates
-        this._airway.segments.push(this.toArrayLike(coordinate));
+        (this._airway as AirwayStructure).segments.push(this.toArrayLike(coordinate));
     }
 
     /**
      * Creates a circle geometry from the last VToken coordinate and a DcToken radius.
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
      */
-    protected handleDcToken(token) {
-        checkTypes.assert.instance(token, DcToken);
-
-        const { lineNumber, metadata } = token.getTokenized();
+    protected handleDcToken(token: DcToken): void {
+        const { lineNumber, metadata } = token.tokenized as Tokenized;
         const { radius } = metadata;
-
         const precedingVxToken = this.getNextToken(token, VxToken.type, false);
+
         if (precedingVxToken === null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
         // to create a circle, the center point coordinate from the previous VToken is required
-        const { metadata: vxTokenMetadata } = precedingVxToken.getTokenized();
+        const { metadata: vxTokenMetadata } = precedingVxToken.tokenized;
         const { coordinate } = vxTokenMetadata;
 
         // convert radius in NM to meters
         const radiusM = radius * 1852;
 
         const { geometry } = createCircle(this.toArrayLike(coordinate), radiusM, {
-            steps: this.geometryDetail,
+            steps: this._geometryDetail,
             units: 'meters',
         });
         const [coordinates] = geometry.coordinates;
         // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
-        this.airspace.coordinates = coordinates;
+        this._airspace.coordinates = coordinates;
     }
 
     /**
      * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
      */
-    protected handleDbToken(token) {
-        checkTypes.assert.instance(token, DbToken);
-
-        const { lineNumber } = token.getTokenized();
+    protected handleDbToken(token: DbToken): void {
+        const { lineNumber } = token.tokenized as Tokenized;
         const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDbArcCoordinates(token);
 
         // calculate line arc
-
         const centerCoord = this.toArrayLike(centerCoordinate);
         let startCoord;
         let endCoord;
@@ -527,7 +469,7 @@ export class AirspaceFactory {
         }
         // calculate the line arc
         const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
-            steps: this.geometryDetail,
+            steps: this._geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
 
@@ -540,7 +482,7 @@ export class AirspaceFactory {
 
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        this.airspace.coordinates = this.airspace.coordinates.concat(arcCoordinates);
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
     }
 
     /**
@@ -551,34 +493,30 @@ export class AirspaceFactory {
      * @return {void}
      * @private
      */
-    protected handleDaToken(token) {
-        checkTypes.assert.instance(token, DaToken);
-
-        const { lineNumber, metadata: metadataDaToken } = token.getTokenized();
+    protected handleDaToken(token: DaToken): void {
+        const { lineNumber, metadata: metadataDaToken } = token.tokenized as Tokenized;
         const { radius, startBearing, endBearing } = metadataDaToken.arcDef;
         let angleStart = startBearing;
         let angleEnd = endBearing;
-
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
         const vdToken = this.getNextToken(token, VdToken.type, false);
-        if (vdToken) {
-            clockwise = vdToken.getTokenized().metadata.clockwise;
-        }
+        // get preceding VxToken => defines the arc center
+        const vxToken = this.getNextToken(token, VxToken.type, false);
 
+        if (vdToken) {
+            clockwise = vdToken.tokenized.metadata.clockwise;
+        }
         // if counter-clockwise, flip start/end bearing
         if (clockwise === false) {
             angleStart = endBearing;
             angleEnd = startBearing;
         }
-
-        // get preceding VxToken => defines the arc center
-        const vxToken = this.getNextToken(token, VxToken.type, false);
         if (vxToken === null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
-        const { metadata: metadataVxToken } = vxToken.getTokenized();
+        const { metadata: metadataVxToken } = vxToken.tokenized as Tokenized;
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         const centerCoord = this.toArrayLike(vxTokenCoordinate);
@@ -586,13 +524,13 @@ export class AirspaceFactory {
         const radiusKm = radius * 1.852;
         // calculate the line arc
         const { geometry } = createArc(centerCoord, radiusKm, angleStart, angleEnd, {
-            steps: this.geometryDetail,
+            steps: this._geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
 
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        this.airspace.coordinates = this.airspace.coordinates.concat(arcCoordinates);
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
     }
 
     /**
@@ -600,28 +538,31 @@ export class AirspaceFactory {
      * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array, clockwise: boolean}}
      * @private
      */
-    protected getBuildDbArcCoordinates(token) {
-        checkTypes.assert.instance(token, DbToken);
-
+    protected getBuildDbArcCoordinates(token: DbToken): {
+        centerCoordinate: Position;
+        startCoordinate: Position;
+        endCoordinate: Position;
+        clockwise: boolean;
+    } {
         // Current "token" is the DbToken => defines arc start/end coordinates
-        const { lineNumber, metadata: metadataDbToken } = token.getTokenized();
+        const { lineNumber, metadata: metadataDbToken } = token.tokenized as Tokenized;
         const { coordinates: dbTokenCoordinates } = metadataDbToken;
         const [dbTokenStartCoordinate, dbTokenEndCoordinate] = dbTokenCoordinates;
 
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken = this.getNextToken(token, VdToken.type, false);
+        const vdToken: VdToken = this.getNextToken(token, VdToken.type, false) as VdToken;
         if (vdToken) {
-            clockwise = vdToken.getTokenized().metadata.clockwise;
+            clockwise = (vdToken.tokenized as Tokenized).metadata.clockwise;
         }
 
         // get preceding VxToken => defines the arc center
-        const vxToken = this.getNextToken(token, VxToken.type, false);
+        const vxToken: VxToken = this.getNextToken(token, VxToken.type, false) as VxToken;
         if (vxToken === null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
-        const { metadata: metadataVxToken } = vxToken.getTokenized();
+        const { metadata: metadataVxToken } = vxToken.tokenized as Tokenized;
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         return {
