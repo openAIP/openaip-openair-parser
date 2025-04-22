@@ -28,10 +28,6 @@ import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
 import { validateSchema } from './validate-schema.js';
 
-interface ITokenizer {
-    tokenize(filepath: string): IToken[];
-}
-
 export type Config = {
     airspaceClasses: string[];
     unlimited: number;
@@ -64,7 +60,7 @@ const TOKEN_TYPES = Object.values(TokenTypeEnum) as TokenType[];
  * Each token holds a tokenized representation of the read line. The tokenizer will return a list of all read
  * and created tokens. The tokenizer will throw a syntax error on the first error that is encountered.
  */
-export class Tokenizer implements ITokenizer {
+export class Tokenizer {
     protected _config: Config;
     protected tokenizers: IToken[];
     // previous processed token, used to validate correct token order

@@ -13,11 +13,6 @@ import { AcToken } from './tokens/ac-token.js';
 import { EofToken } from './tokens/eof-token.js';
 import { validateSchema } from './validate-schema.js';
 
-export interface IParser {
-    parse(filepath: string): Promise<Parser>;
-}
-
-
 // TODO defined better interface for parser -> where to put the ParserResult!?!?
 export type ParserResult = {
 }
@@ -92,7 +87,7 @@ export const ConfigSchema = z
  * Reads content of an openAIR formatted file and returns a GeoJSON representation.
  * Parser implements the openAIR specification according to https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md
  */
-export class Parser implements IParser {
+export class Parser {
     protected _config: Required<Config>;
     // custom formatters
     protected _formatter = [];
