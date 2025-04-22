@@ -1,130 +1,156 @@
-const CommentToken = require('./tokens/comment-token');
-const BlankToken = require('./tokens/blank-token');
-const AcToken = require('./tokens/ac-token');
-const AnToken = require('./tokens/an-token');
-const AhToken = require('./tokens/ah-token');
-const AlToken = require('./tokens/al-token');
-const DpToken = require('./tokens/dp-token');
-const VdToken = require('./tokens/vd-token');
-const VxToken = require('./tokens/vx-token');
-const VwToken = require('./tokens/vw-token');
-const DcToken = require('./tokens/dc-token');
-const DbToken = require('./tokens/db-token');
-const DaToken = require('./tokens/da-token');
-const DyToken = require('./tokens/dy-token');
-const EofToken = require('./tokens/eof-token');
-const AbstractLineToken = require('./tokens/abstract-line-token');
-const AiToken = require('./tokens/ai-token');
-const AyToken = require('./tokens/ay-token');
-const AfToken = require('./tokens/af-token');
-const AgToken = require('./tokens/ag-token');
-const TpToken = require('./tokens/tp-token');
-const checkTypes = require('check-types');
-const {
-    circle: createCircle,
-    lineArc: createArc,
-    bearing: calcBearing,
-    distance: calcDistance,
-    buffer: createBuffer,
-    lineString: createLineString,
-} = require('@turf/turf');
-const Airspace = require('./airspace');
-const ParserError = require('./parser-error');
-const altitudeUnit = require('./altitude-unit');
-const unitConversion = require('./unit-conversion');
+import {
+    bearing as calcBearing,
+    distance as calcDistance,
+    lineArc as createArc,
+    buffer as createBuffer,
+    circle as createCircle,
+    lineString as createLineString,
+} from '@turf/turf';
+import type { Feature, LineString, Polygon, Position } from 'geojson';
+import { validate } from 'uuid';
+import { z } from 'zod';
+import { Airspace } from './airspace.js';
+import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
+import { ParserError } from './parser-error';
+import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
+import { AcToken } from './tokens/ac-token.js';
+import { AfToken } from './tokens/af-token.js';
+import { AgToken } from './tokens/ag-token.js';
+import { AhToken } from './tokens/ah-token.js';
+import { AiToken } from './tokens/ai-token.js';
+import { AlToken } from './tokens/al-token.js';
+import { AnToken } from './tokens/an-token.js';
+import { AyToken } from './tokens/ay-token.js';
+import { BlankToken } from './tokens/blank-token.js';
+import { CommentToken } from './tokens/comment-token.js';
+import { DaToken } from './tokens/da-token.js';
+import { DbToken } from './tokens/db-token.js';
+import { DcToken } from './tokens/dc-token.js';
+import { DpToken } from './tokens/dp-token.js';
+import { DyToken } from './tokens/dy-token.js';
+import { EofToken } from './tokens/eof-token.js';
+import type { TokenType } from './tokens/token-type.enum.js';
+import { TpToken } from './tokens/tp-token.js';
+import { VdToken } from './tokens/vd-token.js';
+import { VwToken } from './tokens/vw-token.js';
+import { VxToken } from './tokens/vx-token.js';
+import { feetToMeters, metersToFeet } from './unit-conversion.js';
+import { validateSchema } from './validate-schema.js';
 
-class AirspaceFactory {
-    /**
-     * @param {Object} config
-     * @param {number} [config.geometryDetail] - Defines the steps that are used to calculate arcs and circles.
-     * @param {number} [config.extendedFormat] - If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
-     * Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
-     */
-    constructor(config) {
+export type Config = {
+    geometryDetail: number;
+    extendedFormat: boolean;
+};
+
+export const ConfigSchema = z
+    .object({
+        geometryDetail: z.number().int().min(50),
+        extendedFormat: z.boolean(),
+    })
+    .strict()
+    .describe('ConfigSchema');
+
+type AirwayStructure = {
+    width: number | null;
+    segments: Position[];
+};
+
+export class AirspaceFactory {
+    protected _geometryDetail: number;
+    protected _extendedFormat: boolean;
+    protected _tokens: IToken[] = [];
+    protected _airspace: Airspace;
+    protected _currentLineNumber: number | undefined = undefined;
+    // set to true if airspace contains tokens other than "skipped, blanks or comment"
+    protected _hasBuildTokens: boolean = false;
+    protected _isAirway: boolean = false;
+    protected _airway: AirwayStructure | undefined = undefined;
+
+    constructor(config: Config) {
+        validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
+
         const { geometryDetail, extendedFormat } = config;
 
-        checkTypes.assert.integer(geometryDetail);
-        checkTypes.assert.boolean(extendedFormat);
-
-        this.geometryDetail = geometryDetail;
-        this.extendedFormat = extendedFormat;
-        /** @type {typedefs.openaip.OpenairParser.Token[]} */
-        this.tokens = null;
-        /** @type {Airspace} */
-        this.airspace = null;
-        /** @type {number|null} */
-        this.currentLineNumber = null;
-        // set to true if airspace contains tokens other than "skipped, blanks or comment"
-        this.hasBuildTokens = false;
-        this.isAirway = false;
-        // metadata required to build an airspace from a width and airways segment coordinates
-        this._airway = {
-            // width in nautical miles as read from VW token
-            width: null,
-            // airway segment coordinates read from DY tokens
-            segments: [],
-        };
+        this._airspace = new Airspace();
+        this._geometryDetail = geometryDetail;
+        this._extendedFormat = extendedFormat;
     }
 
-    /**
-     * @param {typedefs.openaip.OpenairParser.Token[]} tokens - Complete list of tokens
-     * @return {Airspace|null}
-     */
-    createAirspace(tokens) {
-        checkTypes.assert.array.of.instance(tokens, AbstractLineToken);
+    createAirspace(tokens: IToken[]): Airspace | undefined {
+        validateSchema(tokens, z.array(z.instanceof(AbstractLineToken)), { assert: true, name: 'tokens' });
 
-        this.tokens = tokens;
-        this.airspace = new Airspace();
-
+        this.reset();
+        this._tokens = tokens;
+        this._airspace = new Airspace();
         // validate all tokens are correct and that we are able to build an airspace from them
         this.validateTokens();
 
         for (const token of tokens) {
-            const { lineNumber } = token.getTokenized();
-            this.currentLineNumber = lineNumber;
-
+            const { lineNumber } = token.tokenized as Tokenized;
+            this._currentLineNumber = lineNumber;
+            // process the next token
             this.consumeToken(token);
+            // if the previously processed token is not an ignored token, set the "hasBuildTokens" flag
             if (token.isIgnoredToken() === false) {
-                this.hasBuildTokens = true;
+                this._hasBuildTokens = true;
             }
-            this.airspace.consumedTokens.push(token);
+            this._airspace.consumedTokens.push(token);
         }
         // if airspace is build from airway definitions, an additional step is required that creates the actual
         // airspace's polygon geometry
-        if (this.isAirway) {
-            this.airspace.coordinates = this.buildCoordinatesFromAirway({
-                width: this._airway.width,
-                segments: this._airway.segments,
+        if (this._isAirway === true) {
+            if (this._airway == null) {
+                throw new ParserError({
+                    lineNumber: this._currentLineNumber,
+                    errorMessage: 'Airway definition is missing required tokens.',
+                });
+            }
+            const airwayWidth = this._airway.width;
+            const airwaySegments = this._airway.segments;
+            if (airwayWidth == null || airwaySegments.length === 0) {
+                throw new ParserError({
+                    lineNumber: this._currentLineNumber,
+                    errorMessage: 'Airway definition is missing required tokens.',
+                });
+            }
+            this._airspace.coordinates = this.buildCoordinatesFromAirway({
+                width: airwayWidth,
+                segments: airwaySegments,
             });
         }
-        const airspace = this.airspace;
+        const airspace = this._airspace;
 
-        this.tokens = null;
-        this.airspace = null;
-
-        return this.hasBuildTokens ? airspace : null;
+        return this._hasBuildTokens ? airspace : undefined;
     }
 
     /**
-     * @param {{width: number, segments: Array}} options
-     * @returns {Array}
+     * Builds a coordinates list from an airway definition. The coordinate list can then be used to
+     * create a polygon geometry.
      */
-    buildCoordinatesFromAirway({ width, segments }) {
+    protected buildCoordinatesFromAirway(ctx: { width: number; segments: Position[] }): Position[] {
+        const { width, segments } = ctx;
         const airwayPathFeature = createLineString(segments);
         const bufferKm = width * 1.852;
-        const airwayPolygonFeature = createBuffer(airwayPathFeature, bufferKm, { units: 'kilometers' });
-        const [coordinates] = airwayPolygonFeature.geometry.coordinates;
+        const airwayPolygon = createBuffer(airwayPathFeature, bufferKm, { units: 'kilometers' })?.geometry;
+        if (airwayPolygon == null) {
+            throw new ParserError({
+                lineNumber: this._currentLineNumber,
+                errorMessage: 'Airway definition is missing required tokens.',
+            });
+        }
+        if (airwayPolygon.type !== 'Polygon') {
+            throw new ParserError({
+                lineNumber: this._currentLineNumber,
+                errorMessage: `Failed to create polygon from airway definition. Invalid geometry.`,
+            });
+        }
 
-        return coordinates;
+        return (airwayPolygon as Polygon).coordinates.flat();
     }
 
-    /**
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     */
-    consumeToken(token) {
-        const type = token.getType();
-        const { lineNumber } = token.getTokenized();
-
+    protected consumeToken(token: IToken): void {
+        const type = token.type;
+        const { lineNumber } = token.tokenized as Tokenized;
         switch (type) {
             case CommentToken.type:
                 this.handleCommentToken(token);
@@ -195,20 +221,19 @@ class AirspaceFactory {
      * Runs all required validations on the tokenized lines. Should be run before starting to build
      * an airspace from tokens.
      */
-    validateTokens() {
+    protected validateTokens(): void {
         this.validateTokenOrder();
         this.validateTokenInventory();
     }
 
     /**
      * Validates that tokenized lines have correct order. Should be run before "validateTokenInventory".
-     *
-     * @return {void}
      */
-    validateTokenOrder() {
+    protected validateTokenOrder(): void {
         let startingAcTagFound = false;
-        for (const [index, currentToken] of this.tokens.entries()) {
-            const maxLookAheadIndex = this.tokens.length - 1;
+        // @ts-expect-error downlevel iteration flag required
+        for (const [index, currentToken] of this._tokens.entries()) {
+            const maxLookAheadIndex = this._tokens.length - 1;
             const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
 
             // Make sure the first relevant token is an AC tag. Starting from this AC tag, the token order can be validated
@@ -234,19 +259,19 @@ class AirspaceFactory {
             // don't check last token
             if (index < maxLookAheadIndex) {
                 // get next token, skip ignored tokens
-                let lookAheadToken = this.tokens[lookAheadIndex];
+                let lookAheadToken = this._tokens[lookAheadIndex];
                 while (lookAheadToken.isIgnoredToken() && lookAheadIndex <= maxLookAheadIndex) {
                     lookAheadIndex++;
-                    lookAheadToken = this.tokens[lookAheadIndex];
+                    lookAheadToken = this._tokens[lookAheadIndex];
                 }
 
                 const isAllowedNextToken = currentToken.isAllowedNextToken(lookAheadToken);
                 if (isAllowedNextToken === false) {
-                    const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.getTokenized();
+                    const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.tokenized as Tokenized;
 
                     throw new ParserError({
                         lineNumber: lookAheadTokenLineNumber,
-                        errorMessage: `Token '${currentToken.getType()}' on line ${currentTokenLineNumber} does not allow subsequent token '${lookAheadToken.getType()}' on line ${lookAheadTokenLineNumber}`,
+                        errorMessage: `Token '${currentToken.getType()}' on line ${currentTokenLineNumber} does not allow subsequent token '${lookAheadToken.type}' on line ${lookAheadTokenLineNumber}`,
                     });
                 }
             }
@@ -258,21 +283,20 @@ class AirspaceFactory {
      * has already been checked with "validateTokenOrder". The "validateTokenOrder" method will ensure
      * that the most basic ordering is correct and that there is a geometry section present (which is NOT
      * validated with this method).
-     *
-     * @return {void}
      */
-    validateTokenInventory() {
+    protected validateTokenInventory(): void {
         // tokens that are always required, no matter if "standard" or "extended" format is used
         const requiredTokens = [AcToken.type, AnToken.type, AlToken.type, AhToken.type];
         // if the extended format is used, add the extended format tokens to the required tokens list
-        if (this.extendedFormat === true) {
+        if (this._extendedFormat === true) {
             // AY token is required, all others are optional
             requiredTokens.push(AyToken.type);
         }
-        const requiredTokensInventory = [];
+        const requiredTokensInventory: TokenType[] = [];
         let definitionBlockStart = null;
 
-        for (const [index, currentToken] of this.tokens.entries()) {
+        // @ts-expect-error downlevel iteration flag required
+        for (const [index, currentToken] of this._tokens.entries()) {
             const { lineNumber: currentTokenLineNumber } = currentToken.getTokenized();
             if (index === 0) {
                 // store the airspace definition block start line number for error messages
@@ -292,45 +316,29 @@ class AirspaceFactory {
             });
         }
         // handle optional extended format tokens AF, AG (if present)
-        const afToken = this.tokens.find((token) => token.getType() === AfToken.type);
-        const agToken = this.tokens.find((token) => token.getType() === AgToken.type);
+        const afToken = this._tokens.find((token) => token.type === AfToken.type);
+        const agToken = this._tokens.find((token) => token.type === AgToken.type);
         // AG is optional and requires AF to be present
         if (!afToken && agToken) {
             throw new ParserError({
-                lineNumber: agToken.getTokenized().lineNumber,
+                lineNumber: (agToken.tokenized as Tokenized).lineNumber,
                 errorMessage: `Token '${AgToken.type}' is present but token '${AfToken.type}' is missing.`,
             });
         }
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    handleAnToken(token) {
-        checkTypes.assert.instance(token, AnToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAnToken(token: AnToken): void {
+        const { metadata } = token.tokenized as Tokenized;
         const { name } = metadata;
 
-        this.airspace.name = name;
+        this._airspace.name = name;
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    handleAcToken(token) {
-        checkTypes.assert.instance(token, AcToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAcToken(token: AcToken) {
+        const { metadata } = token.tokenized as Tokenized;
         const { class: acClass } = metadata;
 
-        this.airspace.class = acClass;
+        this._airspace.airspaceClass = acClass;
     }
 
     /**
@@ -339,7 +347,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleAhToken(token) {
+    protected handleAhToken(token) {
         checkTypes.assert.instance(token, AhToken);
 
         const { metadata } = token.getTokenized();
@@ -357,7 +365,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleAlToken(token) {
+    protected handleAlToken(token) {
         checkTypes.assert.instance(token, AlToken);
 
         const { metadata } = token.getTokenized();
@@ -375,7 +383,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleDpToken(token) {
+    protected handleDpToken(token) {
         checkTypes.assert.instance(token, DpToken);
 
         const { metadata } = token.getTokenized();
@@ -394,7 +402,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleVdToken(token) {
+    protected handleVdToken(token) {
         checkTypes.assert.instance(token, VdToken);
     }
 
@@ -405,7 +413,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleVxToken(token) {
+    protected handleVxToken(token) {
         checkTypes.assert.instance(token, VxToken);
     }
 
@@ -416,7 +424,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleVwToken(token) {
+    protected handleVwToken(token) {
         checkTypes.assert.instance(token, VwToken);
 
         const { metadata } = token.getTokenized();
@@ -434,7 +442,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleDyToken(token) {
+    protected handleDyToken(token) {
         checkTypes.assert.instance(token, DyToken);
 
         const { metadata } = token.getTokenized();
@@ -453,7 +461,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleDcToken(token) {
+    protected handleDcToken(token) {
         checkTypes.assert.instance(token, DcToken);
 
         const { lineNumber, metadata } = token.getTokenized();
@@ -486,7 +494,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleDbToken(token) {
+    protected handleDbToken(token) {
         checkTypes.assert.instance(token, DbToken);
 
         const { lineNumber } = token.getTokenized();
@@ -543,7 +551,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleDaToken(token) {
+    protected handleDaToken(token) {
         checkTypes.assert.instance(token, DaToken);
 
         const { lineNumber, metadata: metadataDaToken } = token.getTokenized();
@@ -592,7 +600,7 @@ class AirspaceFactory {
      * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array, clockwise: boolean}}
      * @private
      */
-    getBuildDbArcCoordinates(token) {
+    protected getBuildDbArcCoordinates(token) {
         checkTypes.assert.instance(token, DbToken);
 
         // Current "token" is the DbToken => defines arc start/end coordinates
@@ -630,7 +638,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleCommentToken(token) {
+    protected handleCommentToken(token) {
         checkTypes.assert.instance(token, CommentToken);
     }
 
@@ -640,7 +648,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleBlankToken(token) {
+    protected handleBlankToken(token) {
         checkTypes.assert.instance(token, BlankToken);
     }
 
@@ -650,7 +658,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleAiToken(token) {
+    protected handleAiToken(token) {
         checkTypes.assert.instance(token, AiToken);
 
         const { metadata } = token.getTokenized();
@@ -665,7 +673,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleAyToken(token) {
+    protected handleAyToken(token) {
         checkTypes.assert.instance(token, AyToken);
 
         const { metadata } = token.getTokenized();
@@ -680,7 +688,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleAfToken(token) {
+    protected handleAfToken(token) {
         checkTypes.assert.instance(token, AfToken);
 
         const { metadata } = token.getTokenized();
@@ -698,7 +706,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleAgToken(token) {
+    protected handleAgToken(token) {
         checkTypes.assert.instance(token, AgToken);
 
         const { metadata } = token.getTokenized();
@@ -716,7 +724,7 @@ class AirspaceFactory {
      * @return {void}
      * @private
      */
-    handleTpToken(token) {
+    protected handleTpToken(token) {
         checkTypes.assert.instance(token, TpToken);
 
         const { metadata } = token.getTokenized();
@@ -730,7 +738,7 @@ class AirspaceFactory {
      * @return {number[]}
      * @private
      */
-    toArrayLike(coordinate) {
+    protected toArrayLike(coordinate) {
         return [coordinate.longitude, coordinate.latitude];
     }
 
@@ -743,7 +751,7 @@ class AirspaceFactory {
      * @return {typedefs.openaip.OpenairParser.Token|null}
      * @private
      */
-    getNextToken(token, tokenType, lookAhead = true) {
+    protected getNextToken(token, tokenType, lookAhead = true) {
         // get index of current token in tokens list
         let currentIndex = this.tokens.findIndex((value) => value === token);
 
@@ -775,7 +783,7 @@ class AirspaceFactory {
      * @param ceiling
      * @returns {{unit: string, value, referenceDatum: string}}
      */
-    flToFeet(ceiling) {
+    protected flToFeet(ceiling) {
         let { value, unit, referenceDatum } = ceiling;
 
         if (unit === 'FL') {
@@ -787,7 +795,7 @@ class AirspaceFactory {
         return { value, unit, referenceDatum };
     }
 
-    enforceSaneLimits() {
+    protected enforceSaneLimits() {
         if (this.airspace.lowerCeiling && this.airspace.upperCeiling) {
             // IMPORTANT "feeted" flight level ceilings must be converted to configured target unit before comparing if specified
             const feeted = function (ceiling) {
@@ -823,6 +831,13 @@ class AirspaceFactory {
             }
         }
     }
-}
 
-module.exports = AirspaceFactory;
+    protected reset() {
+        this._tokens = [];
+        this._airspace = undefined;
+        this._currentLineNumber = undefined;
+        this._hasBuildTokens = false;
+        this._isAirway = false;
+        this._airway = undefined;
+    }
+}

@@ -1,27 +1,44 @@
+import type { LineString, Polygon } from 'geojson';
 import { z } from 'zod';
-import { Geometry } from './types.js';
 import { validateSchema } from './validate-schema.js';
 
-export type Config = {
-    lineNumber?: number;
-    errorMessage: string;
-    geometry?: object;
-}
+export const GeoJsonPositionSchema = z.array(z.number());
 
-export const ConfigSchema =  z.object({
-    lineNumber: z.number().optional(),
-    errorMessage: z.string().nonempty(),
-    geometry: Geometry.PolygonSchema.optional(),
-}).strict().describe('ConfigSchema');
+export const GeoJsonPolygonSchema = z.object({
+    type: z.literal('Polygon'),
+    coordinates: z.array(z.array(GeoJsonPositionSchema)),
+    bbox: z.array(z.number()).optional(),
+});
+
+export const GeoJsonLineStringSchema = z.object({
+    type: z.literal('LineString'),
+    coordinates: z.array(GeoJsonPositionSchema),
+    bbox: z.array(z.number()).optional(),
+});
+
+export type Config = {
+    errorMessage: string;
+    lineNumber?: number;
+    geometry?: Polygon | LineString;
+};
+
+export const ConfigSchema = z
+    .object({
+        errorMessage: z.string().nonempty(),
+        lineNumber: z.number().optional(),
+        geometry: z.union([GeoJsonPolygonSchema, GeoJsonLineStringSchema]).optional(),
+    })
+    .strict()
+    .describe('ConfigSchema');
 
 export class ParserError extends Error {
     protected _name: string;
     protected _lineNumber?: number;
     protected _errorMessage: string;
-    protected _geometry?: Geometry.Polygon;
+    protected _geometry?: Polygon | LineString;
 
     constructor(config: Config) {
-        validateSchema(config, ConfigSchema, { assert: true, name: 'config'});
+        validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
         const { lineNumber, errorMessage, geometry } = config;
 
@@ -46,7 +63,7 @@ export class ParserError extends Error {
         return this._errorMessage;
     }
 
-    get geometry(): Geometry.Polygon | undefined {
+    get geometry(): GeoJSON.Polygon | GeoJSON.LineString | undefined {
         return this._geometry;
     }
 

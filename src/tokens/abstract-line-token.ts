@@ -47,8 +47,6 @@ export abstract class AbstractLineToken implements IToken {
 
         this._tokenTypes = tokenTypes;
         this._extendedFormat = extendedFormat;
-        this._tokenized = undefined;
-        this._line = undefined;
     }
 
     /**

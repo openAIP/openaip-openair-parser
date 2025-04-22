@@ -133,6 +133,8 @@ export class Tokenizer {
      * Tokenizes the openAIR file at given path and returns the list of created tokens.
      */
     tokenize(filepath: string): IToken[] {
+        validateSchema(filepath, z.string().nonempty(), { assert: true, name: 'filepath' });
+
         this.reset();
         this.enforceFileExists(filepath);
         const liner: LineByLine = new LineByLine(filepath);
@@ -177,14 +179,14 @@ export class Tokenizer {
         return this._tokens;
     }
 
-    private async enforceFileExists(filepath: string): Promise<void> {
+    protected async enforceFileExists(filepath: string): Promise<void> {
         const exists = fs.existsSync(filepath);
         if (!exists) {
             throw new Error(`Failed to read file ${filepath}`);
         }
     }
 
-    private reset(): void {
+    protected reset(): void {
         this._tokens = [];
         this._prevToken = undefined;
         this._currentLineNumber = 0;

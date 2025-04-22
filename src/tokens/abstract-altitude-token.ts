@@ -2,8 +2,9 @@ import { z } from 'zod';
 import { AltitudeUnitEnum, type AltitudeUnit } from '../altitude-unit.enum.js';
 import { feetToMeters, metersToFeet } from '../unit-conversion.js';
 import { validateSchema } from '../validate-schema.js';
-import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
+import { AbstractLineToken, type Config as BaseLineConfig } from './abstract-line-token.js';
 import { type TokenType } from './token-type.enum.js';
+import type { Altitude } from '../airspace.js';
 
 export type Config = BaseLineConfig & {
     unlimited: number;
@@ -29,7 +30,7 @@ export const ConfigSchema = z
     .strict()
     .describe('ConfigSchema');
 
-type Altitude = { value: number; unit: string; referenceDatum: string };
+
 
 interface IAltitudeReader {
     canHandle(altitudeString: string): boolean;
@@ -179,7 +180,7 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
         return { value, unit, referenceDatum };
     }
 
-    private convertUnits(value: number, baseUnit: string, targetUnit: string): number {
+    protected convertUnits(value: number, baseUnit: string, targetUnit: string): number {
         if (baseUnit === targetUnit) return value;
 
         let convValue;
@@ -198,7 +199,7 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
      * Harmonizes various Openair related reference datum definitions and returns internally used reference datum.
      * If NO reference datum is given, default is to use "MSL"!
      */
-    private harmonizeReference(reference: string | null): string {
+    protected harmonizeReference(reference: string | null): string {
         switch (reference) {
             case 'GND':
             case 'GROUND':

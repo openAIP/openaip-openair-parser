@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import rewind from '@mapbox/geojson-rewind';
 import { featureCollection as createFeatureCollection } from '@turf/turf';
 import { z } from 'zod';
-import AirspaceFactory from './airspace-factory.js';
+import { AirspaceFactory } from './airspace-factory.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
@@ -14,8 +14,7 @@ import { EofToken } from './tokens/eof-token.js';
 import { validateSchema } from './validate-schema.js';
 
 // TODO defined better interface for parser -> where to put the ParserResult!?!?
-export type ParserResult = {
-}
+export type ParserResult = {};
 
 const ParserStateEnum = {
     START: 'start',

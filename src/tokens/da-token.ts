@@ -63,7 +63,7 @@ export class DaToken extends AbstractLineToken {
         ];
     }
 
-    private toBearing(angle: number): number {
+    protected toBearing(angle: number): number {
         angle = parseFloat(angle.toString());
 
         let bearing = angle % 360;
