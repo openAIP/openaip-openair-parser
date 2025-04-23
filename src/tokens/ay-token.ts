@@ -7,15 +7,17 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 type Metadata = { type: string };
 
 export type Config = BaseLineConfig & {
-    extendedFormat?: boolean;
     // Defines a set of allowed "AY" values if the extended format is used.
     extendedFormatTypes: string[];
+    tokenTypes: TokenType[];
+    extendedFormat: boolean;
 };
 
 export const ConfigSchema = z
     .object({
-        extendedFormat: z.boolean().optional(),
         extendedFormatTypes: z.array(z.string().nonempty()),
+        tokenTypes: z.array(z.string().nonempty()),
+        extendedFormat: z.boolean(),
     })
     .strict()
     // enforce that both extended types are defined if extended format should be parsed

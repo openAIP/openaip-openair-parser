@@ -16,7 +16,7 @@ export const ConfigSchema = z
     .object({
         lastLineNumber: z.number().min(1),
     })
-    .strict()
+    // non-strict validation - other properties are validated by abstract root class
     .describe('ConfigSchema');
 
 /**

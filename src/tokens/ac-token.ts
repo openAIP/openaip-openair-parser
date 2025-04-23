@@ -11,14 +11,16 @@ export type Config = BaseLineConfig & {
     airspaceClasses?: string[];
     // Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
     extendedFormatClasses?: string[];
+    tokenTypes: TokenType[];
+    extendedFormat: boolean;
 };
 
 export const ConfigSchema = z
     .object({
-        tokenTypes: z.array(z.string().nonempty()),
-        extendedFormat: z.boolean().optional(),
         airspaceClasses: z.array(z.string().nonempty()).optional(),
         extendedFormatClasses: z.array(z.string().nonempty()).optional(),
+        tokenTypes: z.array(z.string().nonempty()),
+        extendedFormat: z.boolean(),
     })
     .strict()
     // enforce that both extended classes and types are defined if extended format should be parsed

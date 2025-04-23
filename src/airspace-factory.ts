@@ -241,14 +241,14 @@ export class AirspaceFactory {
             // only using "look ahead" logic. Otherwise, additional "look behind" must be implemented that would
             // increase processing time.
             if (startingAcTagFound === false && currentToken.isIgnoredToken() === false) {
-                if (currentToken.getType() === AcToken.type) {
+                if (currentToken.type === AcToken.type) {
                     startingAcTagFound = true;
                 } else {
                     throw new ParserError({
                         lineNumber: currentTokenLineNumber,
                         errorMessage: `The first token must be of type '${
                             AcToken.type
-                        }'. Token '${currentToken.getType()}' found on line ${currentTokenLineNumber}.`,
+                        }'. Token '${currentToken.type}' found on line ${currentTokenLineNumber}.`,
                     });
                 }
             }
@@ -272,7 +272,7 @@ export class AirspaceFactory {
 
                     throw new ParserError({
                         lineNumber: lookAheadTokenLineNumber,
-                        errorMessage: `Token '${currentToken.getType()}' on line ${currentTokenLineNumber} does not allow subsequent token '${lookAheadToken.type}' on line ${lookAheadTokenLineNumber}`,
+                        errorMessage: `Token '${currentToken.type}' on line ${currentTokenLineNumber} does not allow subsequent token '${lookAheadToken.type}' on line ${lookAheadTokenLineNumber}`,
                     });
                 }
             }
@@ -304,8 +304,8 @@ export class AirspaceFactory {
                 definitionBlockStart = currentTokenLineNumber;
             }
             // if current token type is in the list of required tokens, add it to the inventory
-            if (requiredTokens.includes(currentToken.getType())) {
-                requiredTokensInventory.push(currentToken.getType());
+            if (requiredTokens.includes(currentToken.type)) {
+                requiredTokensInventory.push(currentToken.type);
             }
         }
         // check if all required tokens are present
