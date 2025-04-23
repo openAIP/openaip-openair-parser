@@ -8,7 +8,7 @@ import type { Airspace, AirspaceProperties } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
-import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
+import { type OutputGeometry } from './output-geometry.enum.js';
 import { Tokenizer } from './tokenizer.js';
 import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -74,14 +74,6 @@ export const ConfigSchema = z
     .describe('ConfigSchema');
 
 /**
- * @typedef typedefs.openaip.OpenairParser.ParserResult
- * @type Object
- * @property {boolean} success - If true, parsing was successful, false if not.
- * @property {FeatureCollection} - [geojson] - On success, contains a GeoJson FeatureCollection representation of the parsed openAIR file.
- * @property {Array} [errors] - A list of errors if parsing was NOT successful.
- */
-
-/**
  * Reads content of an openAIR formatted file and returns a GeoJSON representation.
  * Parser implements the openAIR specification according to https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md
  */
@@ -93,7 +85,7 @@ export class Parser {
     protected _airspaceTokens: IToken[] = [];
     protected _geojson: FeatureCollection<Polygon | LineString, AirspaceProperties> | undefined = undefined;
 
-    constructor(config: Config) {
+    constructor(config?: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
         this._config = { ...DefaultParserConfig, ...config } as Required<Config>;
