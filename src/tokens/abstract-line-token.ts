@@ -2,10 +2,19 @@ import { z } from 'zod';
 import { validateSchema } from '../validate-schema.js';
 import { type TokenType } from './token-type.enum.js';
 
+export type Tokenized<M = undefined> = {
+    line: string;
+    lineNumber: number;
+} & (M extends undefined ? { metadata?: M } : { metadata: M });
+
 export interface IToken {
     type: TokenType;
     line: string | undefined;
-    tokenized: Tokenized | undefined;
+    tokenized: {
+        line: string;
+        lineNumber: number;
+        metadata?: unknown;
+    };
     canHandle(line: string): boolean;
     tokenize(line: string, lineNumber: number): IToken;
     isIgnoredToken(): boolean;
@@ -27,17 +36,11 @@ export const ConfigSchema = z
     .strict()
     .describe('ConfigSchema');
 
-export type Tokenized = {
-    line: string;
-    lineNumber: number;
-    [metadata: string]: any;
-};
-
-export abstract class AbstractLineToken implements IToken {
+export abstract class AbstractLineToken<M> implements IToken {
     static type: TokenType = 'BASE_LINE';
     protected _tokenTypes: TokenType[];
     protected _extendedFormat: boolean;
-    protected _tokenized: Tokenized | undefined;
+    protected _tokenized: Tokenized<M> | undefined;
     protected _line: string | undefined;
 
     constructor(config: Config) {
@@ -68,8 +71,11 @@ export abstract class AbstractLineToken implements IToken {
         return this._line;
     }
 
-    get tokenized(): Tokenized | undefined {
-        return this._tokenized;
+    get tokenized(): Tokenized<M> {
+        if (this._tokenized == null) {
+            throw new Error('Tokenized representation is not available. Tokenize the line first.');
+        }
+        return this._tokenized as Tokenized<M>;
     }
 
     /**

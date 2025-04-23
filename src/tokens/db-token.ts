@@ -1,14 +1,17 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
+import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { coordinates: Coordinate[] };
+
 /**
  * Tokenizes "DB" airspace arc endpoints definition.
  */
-export class DbToken extends AbstractLineToken {
+export class DbToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DB;
 
     canHandle(line: string): boolean {
@@ -32,11 +35,11 @@ export class DbToken extends AbstractLineToken {
         const endpoints = linePartEndpoints.split(',');
         endpoints.map((value) => value.trim());
         // transform each endpoint coordinate string into coordinate object
-        const coord = [];
+        const coord: Coordinate[] = [];
         for (const coordinate of endpoints) {
             try {
                 const parser = new CoordinateParser();
-                const parsedCoordinate = parser.parse(coordinate.trim());
+                const parsedCoordinate: Coordinate = parser.parse(coordinate.trim());
                 coord.push(parsedCoordinate);
             } catch (e) {
                 throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });

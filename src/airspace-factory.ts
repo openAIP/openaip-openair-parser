@@ -1,3 +1,4 @@
+import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
 import {
     bearing as calcBearing,
     distance as calcDistance,
@@ -9,7 +10,7 @@ import {
 import type { Feature, LineString, Polygon, Position } from 'geojson';
 import { validate } from 'uuid';
 import { z } from 'zod';
-import { Airspace } from './airspace.js';
+import { Airspace, type Altitude, type Frequency } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error';
 import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
@@ -51,7 +52,7 @@ export const ConfigSchema = z
     .describe('ConfigSchema');
 
 type AirwayStructure = {
-    width: number | null;
+    width: number;
     segments: Position[];
 };
 
@@ -328,21 +329,21 @@ export class AirspaceFactory {
     }
 
     protected handleAnToken(token: AnToken): void {
-        const { metadata } = token.tokenized as Tokenized;
+        const { metadata } = token.tokenized;
         const { name } = metadata;
 
         this._airspace.name = name;
     }
 
     protected handleAcToken(token: AcToken): void {
-        const { metadata } = token.tokenized as Tokenized;
+        const { metadata } = token.tokenized;
         const { class: acClass } = metadata;
 
         this._airspace.airspaceClass = acClass;
     }
 
     protected handleAhToken(token: AhToken): void {
-        const { metadata } = token.tokenized as Tokenized;
+        const { metadata } = token.tokenized;
         const { altitude } = metadata;
 
         this._airspace.upperCeiling = altitude;
@@ -351,7 +352,7 @@ export class AirspaceFactory {
     }
 
     protected handleAlToken(token: AlToken): void {
-        const { metadata } = token.tokenized as Tokenized;
+        const { metadata } = token.tokenized;
         const { altitude } = metadata;
 
         this._airspace.lowerCeiling = altitude;
@@ -360,7 +361,7 @@ export class AirspaceFactory {
     }
 
     protected handleDpToken(token: DpToken): void {
-        const { metadata } = token.tokenized as Tokenized;
+        const { metadata } = token.tokenized;
         const { coordinate } = metadata;
 
         // IMPORTANT subsequently push coordinates
@@ -381,7 +382,7 @@ export class AirspaceFactory {
      * Sets airway width in nautical miles.
      */
     protected handleVwToken(token: VwToken): void {
-        const { metadata } = token.tokenized as Tokenized;
+        const { metadata } = token.tokenized;
         const { width } = metadata;
 
         // IMPORTANT indicate that we are building an airspace from airway definition
@@ -397,7 +398,7 @@ export class AirspaceFactory {
      * Sets airway segment.
      */
     protected handleDyToken(token: DyToken): void {
-        const { metadata } = token.tokenized as Tokenized;
+        const { metadata } = token.tokenized;
         const { coordinate } = metadata;
 
         if (this._airway == null) {
@@ -413,11 +414,11 @@ export class AirspaceFactory {
      * Creates a circle geometry from the last VToken coordinate and a DcToken radius.
      */
     protected handleDcToken(token: DcToken): void {
-        const { lineNumber, metadata } = token.tokenized as Tokenized;
+        const { lineNumber, metadata } = token.tokenized;
         const { radius } = metadata;
         const precedingVxToken = this.getNextToken(token, VxToken.type, false);
 
-        if (precedingVxToken === null) {
+        if (precedingVxToken ) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
         // to create a circle, the center point coordinate from the previous VToken is required
@@ -440,7 +441,7 @@ export class AirspaceFactory {
      * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
      */
     protected handleDbToken(token: DbToken): void {
-        const { lineNumber } = token.tokenized as Tokenized;
+        const { lineNumber } = token.tokenized;
         const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDbArcCoordinates(token);
 
         // calculate line arc
@@ -488,24 +489,20 @@ export class AirspaceFactory {
     /**
      * Creates an arc geometry from the last VToken coordinate and a DaToken that contains arc definition as
      * radius, angleStart and angleEnd.
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
      */
     protected handleDaToken(token: DaToken): void {
-        const { lineNumber, metadata: metadataDaToken } = token.tokenized as Tokenized;
+        const { lineNumber, metadata: metadataDaToken } = token.tokenized;
         const { radius, startBearing, endBearing } = metadataDaToken.arcDef;
         let angleStart = startBearing;
         let angleEnd = endBearing;
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken = this.getNextToken(token, VdToken.type, false);
+        const vdToken = this.getNextToken<VdToken>(token, VdToken.type, false);
         // get preceding VxToken => defines the arc center
-        const vxToken = this.getNextToken(token, VxToken.type, false);
+        const vxToken = this.getNextToken<VxToken>(token, VxToken.type, false);
 
-        if (vdToken) {
+        if (vdToken != null) {
             clockwise = vdToken.tokenized.metadata.clockwise;
         }
         // if counter-clockwise, flip start/end bearing
@@ -513,10 +510,10 @@ export class AirspaceFactory {
             angleStart = endBearing;
             angleEnd = startBearing;
         }
-        if (vxToken === null) {
+        if (vxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
-        const { metadata: metadataVxToken } = vxToken.tokenized as Tokenized;
+        const { metadata: metadataVxToken } = vxToken.tokenized;
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         const centerCoord = this.toArrayLike(vxTokenCoordinate);
@@ -533,19 +530,14 @@ export class AirspaceFactory {
         this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
     }
 
-    /**
-     * @param {typedefs.openaip.OpenairParser.Token} token - Must be a DbToken!
-     * @return {{centerCoordinate: Array, startCoordinate: Array, endCoordinate: Array, clockwise: boolean}}
-     * @private
-     */
     protected getBuildDbArcCoordinates(token: DbToken): {
-        centerCoordinate: Position;
-        startCoordinate: Position;
-        endCoordinate: Position;
+        centerCoordinate: Coordinate;
+        startCoordinate: Coordinate;
+        endCoordinate: Coordinate;
         clockwise: boolean;
     } {
         // Current "token" is the DbToken => defines arc start/end coordinates
-        const { lineNumber, metadata: metadataDbToken } = token.tokenized as Tokenized;
+        const { lineNumber, metadata: metadataDbToken } = token.tokenized;
         const { coordinates: dbTokenCoordinates } = metadataDbToken;
         const [dbTokenStartCoordinate, dbTokenEndCoordinate] = dbTokenCoordinates;
 
@@ -554,15 +546,15 @@ export class AirspaceFactory {
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
         const vdToken: VdToken = this.getNextToken(token, VdToken.type, false) as VdToken;
         if (vdToken) {
-            clockwise = (vdToken.tokenized as Tokenized).metadata.clockwise;
+            clockwise = vdToken.tokenized.metadata.clockwise;
         }
 
         // get preceding VxToken => defines the arc center
         const vxToken: VxToken = this.getNextToken(token, VxToken.type, false) as VxToken;
-        if (vxToken === null) {
+        if (vxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
-        const { metadata: metadataVxToken } = vxToken.tokenized as Tokenized;
+        const { metadata: metadataVxToken } = vxToken.tokenized;
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         return {
@@ -573,158 +565,94 @@ export class AirspaceFactory {
         };
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleCommentToken(token) {
-        checkTypes.assert.instance(token, CommentToken);
-    }
+    protected handleCommentToken(token: CommentToken): void {}
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleBlankToken(token) {
-        checkTypes.assert.instance(token, BlankToken);
-    }
+    protected handleBlankToken(token: BlankToken): void {}
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleAiToken(token) {
-        checkTypes.assert.instance(token, AiToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAiToken(token: AiToken): void {
+        const { metadata } = token.tokenized;
         const { identifier } = metadata;
 
-        this.airspace.identifier = identifier;
+        this._airspace.identifier = identifier;
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleAyToken(token) {
-        checkTypes.assert.instance(token, AyToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAyToken(token: AyToken): void {
+        const { metadata } = token.tokenized;
         const { type } = metadata;
 
-        this.airspace.type = type;
+        this._airspace.type = type;
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleAfToken(token) {
-        checkTypes.assert.instance(token, AfToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAfToken(token: AfToken): void {
+        const { metadata } = token.tokenized;
         const { frequency } = metadata;
 
-        if (this.airspace.frequency == null) {
-            this.airspace.frequency = {};
+        if (this._airspace.frequency == null) {
+            this._airspace.frequency = { value: frequency };
+        } else {
+            this._airspace.frequency.value = frequency;
         }
-        this.airspace.frequency.value = frequency;
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleAgToken(token) {
-        checkTypes.assert.instance(token, AgToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleAgToken(token: AgToken): void {
+        const { metadata } = token.tokenized;
         const { name } = metadata;
 
-        if (this.airspace.frequency == null) {
-            this.airspace.frequency = {};
+        if (this._airspace.frequency == null) {
+            this._airspace.frequency = { name };
+        } else {
+            this._airspace.frequency.name = name;
         }
-        this.airspace.frequency.name = name;
     }
 
-    /**
-     *
-     * @param {typedefs.openaip.OpenairParser.Token} token
-     * @return {void}
-     * @private
-     */
-    protected handleTpToken(token) {
-        checkTypes.assert.instance(token, TpToken);
-
-        const { metadata } = token.getTokenized();
+    protected handleTpToken(token: TpToken): void {
+        const { metadata } = token.tokenized;
         const { code } = metadata;
 
-        this.airspace.transponderCode = code;
+        this._airspace.transponderCode = code;
     }
 
-    /**
-     * @param {Object} coordinate
-     * @return {number[]}
-     * @private
-     */
-    protected toArrayLike(coordinate) {
+    protected toArrayLike(coordinate: Coordinate): Position {
         return [coordinate.longitude, coordinate.latitude];
     }
 
     /**
      * Traverses up the list of "consumed tokens" from the token until a token with the specified type is found.
      *
-     * @param {typedefs.openaip.OpenairParser.Token} token - Currently consumed token
-     * @param {string} tokenType - Token type to search for
-     * @param {boolean} [lookAhead] - If true, searches for NEXT token in list with specified type. If false, searches preceding token.
-     * @return {typedefs.openaip.OpenairParser.Token|null}
-     * @private
+     * token - Currently consumed token
+     * tokenType - Token type to search for
+     * lookAhead - If true, searches for NEXT token in list with specified type. If false, searches preceding token.
      */
-    protected getNextToken(token, tokenType, lookAhead = true) {
+    protected getNextToken<T>(token: IToken, tokenType: TokenType, lookAhead: boolean = true): T | undefined {
         // get index of current token in tokens list
-        let currentIndex = this.tokens.findIndex((value) => value === token);
+        let currentIndex = this._tokens.findIndex((value) => value === token);
 
         if (lookAhead) {
-            for (currentIndex; currentIndex <= this.tokens.length - 1; currentIndex++) {
-                const nextToken = this.tokens[currentIndex];
+            for (currentIndex; currentIndex <= this._tokens.length - 1; currentIndex++) {
+                const nextToken = this._tokens[currentIndex];
 
-                if (nextToken.getType() === tokenType) {
-                    return nextToken;
+                if (nextToken.type === tokenType) {
+                    return nextToken as T;
                 }
             }
         } else {
             for (currentIndex; currentIndex >= 0; currentIndex--) {
-                const nextToken = this.tokens[currentIndex];
+                const nextToken = this._tokens[currentIndex];
 
-                if (nextToken.getType() === tokenType) {
-                    return nextToken;
+                if (nextToken.type === tokenType) {
+                    return nextToken as T;
                 }
             }
         }
 
-        return null;
+        return undefined;
     }
 
     /**
      * Helper that converts FL into FEET. Simplified value to be expected as return value, will not
      * be sufficient for very few edge cases.
-     *
-     * @param ceiling
-     * @returns {{unit: string, value, referenceDatum: string}}
      */
-    protected flToFeet(ceiling) {
+    protected flToFeet(ceiling: Altitude): Altitude {
         let { value, unit, referenceDatum } = ceiling;
 
         if (unit === 'FL') {
@@ -737,18 +665,18 @@ export class AirspaceFactory {
     }
 
     protected enforceSaneLimits() {
-        if (this.airspace.lowerCeiling && this.airspace.upperCeiling) {
+        if (this._airspace.lowerCeiling && this._airspace.upperCeiling) {
             // IMPORTANT "feeted" flight level ceilings must be converted to configured target unit before comparing if specified
-            const feeted = function (ceiling) {
+            const feeted = function (ceiling: Altitude) {
                 const feeted = ceiling;
                 const { unit, value } = ceiling;
 
                 switch (unit) {
-                    case altitudeUnit.m:
-                        feeted.value = unitConversion.metersToFeet(value);
-                        feeted.unit = altitudeUnit.ft;
+                    case AltitudeUnitEnum.m:
+                        feeted.value = metersToFeet(value);
+                        feeted.unit = AltitudeUnitEnum.ft;
                         break;
-                    case altitudeUnit.ft:
+                    case AltitudeUnitEnum.ft:
                     default:
                     // nothing to do
                 }
@@ -759,13 +687,13 @@ export class AirspaceFactory {
             Only compare if both lower and upper limit have the same reference datum. If they have different reference datums,
             e.g GND and MSL, the comparison cannot be done.
              */
-            if (this.airspace.lowerCeiling.referenceDatum === this.airspace.upperCeiling.referenceDatum) {
-                const compareUpper = feeted(this.flToFeet(this.airspace.upperCeiling));
-                const compareLower = feeted(this.flToFeet(this.airspace.lowerCeiling));
+            if (this._airspace.lowerCeiling.referenceDatum === this._airspace.upperCeiling.referenceDatum) {
+                const compareUpper = feeted(this.flToFeet(this._airspace.upperCeiling));
+                const compareLower = feeted(this.flToFeet(this._airspace.lowerCeiling));
 
                 if (compareLower.value > compareUpper.value) {
                     throw new ParserError({
-                        lineNumber: this.currentLineNumber,
+                        lineNumber: this._currentLineNumber,
                         errorMessage: 'Lower limit must be less than upper limit',
                     });
                 }
@@ -775,7 +703,7 @@ export class AirspaceFactory {
 
     protected reset() {
         this._tokens = [];
-        this._airspace = undefined;
+        this._airspace = new Airspace();
         this._currentLineNumber = undefined;
         this._hasBuildTokens = false;
         this._isAirway = false;

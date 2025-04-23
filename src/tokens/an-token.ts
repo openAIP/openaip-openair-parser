@@ -4,10 +4,12 @@ import type { IToken } from './abstract-line-token.js';
 import { AbstractLineToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { name: string };
+
 /**
  * Tokenizes "AN" airspace name definitions.
  */
-export class AnToken extends AbstractLineToken {
+export class AnToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AN;
 
     canHandle(line: string): boolean {

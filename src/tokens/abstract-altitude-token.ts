@@ -1,10 +1,12 @@
 import { z } from 'zod';
+import type { Altitude } from '../airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from '../altitude-unit.enum.js';
 import { feetToMeters, metersToFeet } from '../unit-conversion.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig } from './abstract-line-token.js';
 import { type TokenType } from './token-type.enum.js';
-import type { Altitude } from '../airspace.js';
+
+type Metadata = { altitude: Altitude };
 
 export type Config = BaseLineConfig & {
     unlimited: number;
@@ -29,8 +31,6 @@ export const ConfigSchema = z
     })
     .strict()
     .describe('ConfigSchema');
-
-
 
 interface IAltitudeReader {
     canHandle(altitudeString: string): boolean;
@@ -57,7 +57,7 @@ const AbstractAltitudeReaderConfigSchema = z
 /**
  * Tokenizes "AH/AL" airspace ceiling definitions.
  */
-export abstract class AbstractAltitudeToken extends AbstractLineToken {
+export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> {
     static type: TokenType = 'BASE_ALTITUDE';
     protected _unlimited: number;
     protected _defaultAltUnit: AltitudeUnit;
@@ -93,10 +93,6 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken {
 
     /**
      * Turns an altitude string into an altitude object literal.
-     *
-     * @param {string} altitudeString
-     * @return {{value: number, unit: string, referenceDatum: string}}
-     * @private
      */
     getAltitude(altitudeString: string): Altitude {
         validateSchema(altitudeString, z.string().nonempty(), { assert: true, name: 'altitudeString' });

@@ -1,14 +1,17 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
+import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { coordinate: Coordinate };
+
 /**
  * Tokenizes "V X=" airspace circle center coordinate definition.
  */
-export class VxToken extends AbstractLineToken {
+export class VxToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.VX;
 
     canHandle(line: string): boolean {
@@ -28,7 +31,7 @@ export class VxToken extends AbstractLineToken {
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartCoordinate = line.replace(/^V\s+[X]=/, '');
-        let coordinate;
+        let coordinate: Coordinate;
         try {
             const parser = new CoordinateParser();
             coordinate = parser.parse(linePartCoordinate.trim());

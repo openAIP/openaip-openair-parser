@@ -4,10 +4,12 @@ import { AbstractLineToken } from './abstract-line-token.js';
 import type { IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { name: string };
+
 /**
  * Tokenizes "AG" ground station call-sign for given AF frequency.
  */
-export class AgToken extends AbstractLineToken {
+export class AgToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AG;
 
     canHandle(line: string): boolean {

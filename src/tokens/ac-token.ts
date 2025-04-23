@@ -4,6 +4,8 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { class: string };
+
 export type Config = BaseLineConfig & {
     // A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
     airspaceClasses?: string[];
@@ -31,7 +33,7 @@ export const ConfigSchema = z
 /**
  * Tokenizes "AC" airspace class definitions.
  */
-export class AcToken extends AbstractLineToken {
+export class AcToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AC;
     protected _airspaceClasses: string[] = [];
     protected _extendedFormatClasses: string[] = [];

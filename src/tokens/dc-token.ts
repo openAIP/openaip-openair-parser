@@ -4,10 +4,12 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { radius: number };
+
 /**
  * Tokenizes "DC" airspace circle radius definition.
  */
-export class DcToken extends AbstractLineToken {
+export class DcToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DC;
 
     canHandle(line: string): boolean {

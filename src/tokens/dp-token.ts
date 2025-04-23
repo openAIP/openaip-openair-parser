@@ -1,14 +1,17 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
+import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { coordinate: Coordinate };
+
 /**
  * Tokenizes "DP" airspace polygon coordinate definition.
  */
-export class DpToken extends AbstractLineToken {
+export class DpToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DP;
 
     canHandle(line: string): boolean {
@@ -29,7 +32,7 @@ export class DpToken extends AbstractLineToken {
         line = line.replace(/\s?\*.*/, '');
         // extract coordinate pair
         const linePartCoordinate = line.replace(/^DP\s+/, '');
-        let coordinate;
+        let coordinate: Coordinate;
         try {
             const parser = new CoordinateParser();
             coordinate = parser.parse(linePartCoordinate.trim());

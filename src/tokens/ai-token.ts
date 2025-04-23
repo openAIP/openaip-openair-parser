@@ -3,10 +3,12 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { identifier: string };
+
 /**
  * Tokenizes "AI" unique airspace identifier string.
  */
-export class AiToken extends AbstractLineToken {
+export class AiToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AI;
 
     canHandle(line: string): boolean {

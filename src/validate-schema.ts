@@ -89,7 +89,7 @@ function buildErrorMessage(config: {
         message += ` Received: ${JSON.stringify(config.value)}.`;
     }
     // handle null and undefined values
-    if (config.value === null) {
+    if (config.value == null) {
         message += ' Received: null.';
     }
     if (config.value === undefined) {

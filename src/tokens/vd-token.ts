@@ -3,11 +3,13 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { clockwise: boolean };
+
 /**
  * Handles the D token which is part of an arc definition and declares turn-direction, e.g. clockwise or counter-clockwise.
  * Since the the DB token will get the center point AND start and end coordinates, this token can be omitted.
  */
-export class VdToken extends AbstractLineToken {
+export class VdToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.VD;
 
     canHandle(line: string): boolean {

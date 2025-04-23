@@ -1,14 +1,17 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
+import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { coordinate: Coordinate };
+
 /**
  * Tokenizes "DY" airway segment coordinate definition.
  */
-export class DyToken extends AbstractLineToken {
+export class DyToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DY;
 
     canHandle(line: string): boolean {
@@ -29,7 +32,7 @@ export class DyToken extends AbstractLineToken {
         line = line.replace(/\s?\*.*/, '');
         // extract coordinate pair
         const linePartCoordinate = line.replace(/^DY\s+/, '');
-        let coordinate;
+        let coordinate: Coordinate;
         try {
             const parser = new CoordinateParser();
             coordinate = parser.parse(linePartCoordinate.trim());

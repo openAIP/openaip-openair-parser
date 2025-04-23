@@ -4,10 +4,12 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { code: number };
+
 /**
  * Tokenizes "TP" token value which is a transponder code string "7000"
  */
-export class TpToken extends AbstractLineToken {
+export class TpToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.TP;
 
     canHandle(line: string): boolean {
@@ -32,7 +34,7 @@ export class TpToken extends AbstractLineToken {
         if (isValidCode === false) {
             throw new ParserError({ lineNumber, errorMessage: `Invalid transponder code string '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { code: linePartCode } };
+        token._tokenized = { line, lineNumber, metadata: { code: parseInt(linePartCode) } };
 
         return token;
     }

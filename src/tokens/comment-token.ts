@@ -7,7 +7,7 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 /**
  * Handles comments, e.g. lines starting with "*".
  */
-export class CommentToken extends AbstractLineToken {
+export class CommentToken extends AbstractLineToken<undefined> {
     static type: TokenType = TokenTypeEnum.COMMENT;
 
     isIgnoredToken(): boolean {

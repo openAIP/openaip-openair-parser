@@ -4,10 +4,12 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { frequency: string };
+
 /**
  * Tokenizes "AF" token value which is a frequency string "123.456"
  */
-export class AfToken extends AbstractLineToken {
+export class AfToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AF;
 
     canHandle(line: string): boolean {

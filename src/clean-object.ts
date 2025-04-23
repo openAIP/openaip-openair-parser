@@ -42,7 +42,7 @@ export function cleanObject<T>(
             return value;
         }
         if (
-            (keepNull === false && value === null) ||
+            (keepNull === false && value == null) ||
             (keepUndefined === false && value === undefined) ||
             (keepEmptyStrings === false && isEmptyString(value)) ||
             (keepEmptyArrays === false && isEmptyArray(value)) ||

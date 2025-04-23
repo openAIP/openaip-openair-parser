@@ -3,10 +3,18 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = {
+    arcDef: {
+        radius: number;
+        startBearing: number;
+        endBearing: number;
+    };
+};
+
 /**
  * Tokenizes "DA" airspace arc definition token.
  */
-export class DaToken extends AbstractLineToken {
+export class DaToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DA;
 
     canHandle(line: string): boolean {

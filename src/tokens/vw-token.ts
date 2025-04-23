@@ -4,10 +4,12 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { width: number };
+
 /**
  * Tokenizes "V W=" airway width in nautical miles.
  */
-export class VwToken extends AbstractLineToken {
+export class VwToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.VW;
 
     canHandle(line: string): boolean {

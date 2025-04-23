@@ -43,7 +43,7 @@ type AirspaceFeatureProperties = {
     airspaceClass: string;
     upperCeiling: Altitude;
     lowerCeiling: Altitude;
-    frequency: Frequency | undefined;
+    frequency: Partial<Frequency> | undefined;
     transponderCode: number | undefined;
     openair?: string | undefined;
 };
@@ -62,7 +62,7 @@ export class Airspace {
     protected _coordinates: Position[] = [];
     protected _identifier: string | undefined = undefined;
     protected _type: string | undefined = undefined;
-    protected _frequency: Frequency | undefined = undefined;
+    protected _frequency: Partial<Frequency> | undefined = undefined;
     protected _transponderCode: number | undefined = undefined;
 
     get consumedTokens(): IToken[] {
@@ -129,11 +129,11 @@ export class Airspace {
         this._type = value;
     }
 
-    get frequency(): Frequency | undefined {
+    get frequency(): Partial<Frequency> | undefined {
         return this._frequency;
     }
 
-    set frequency(value: Frequency | undefined) {
+    set frequency(value: Partial<Frequency> | undefined) {
         this._frequency = value;
     }
 

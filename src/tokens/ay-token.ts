@@ -4,6 +4,8 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
+type Metadata = { type: string };
+
 export type Config = BaseLineConfig & {
     extendedFormat?: boolean;
     // Defines a set of allowed "AY" values if the extended format is used.
@@ -28,7 +30,7 @@ export const ConfigSchema = z
 /**
  * Tokenizes "AY" airspace type definitions.
  */
-export class AyToken extends AbstractLineToken {
+export class AyToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AY;
     protected _extendedFormatTypes: string[] = [];
 
