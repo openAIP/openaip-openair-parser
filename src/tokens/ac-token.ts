@@ -52,7 +52,8 @@ export class AcToken extends AbstractLineToken<Metadata> {
     }
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is AC line e.g. "AC D"
         return /^AC\s+.*$/.test(line);
