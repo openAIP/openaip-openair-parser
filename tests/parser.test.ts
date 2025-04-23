@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { describe, expect, test } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
-import { OutputGeometry, OutputGeometryEnum } from '../src/output-geometry.enum.js';
+import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
 import { Parser } from '../src/parser';
 
 describe('test parse complete airspace definition blocks', () => {
