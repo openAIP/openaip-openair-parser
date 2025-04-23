@@ -1,43 +1,55 @@
-import { z } from 'zod';
-import { validateSchema } from './validate-schema.js';
-import { sprintf } from 'sprintf-js';
 import { randomUUID } from 'node:crypto';
+import type { FeatureCollection, LineString, Polygon, Position } from 'geojson';
+import { sprintf } from 'sprintf-js';
+import { z } from 'zod';
+import type { AirspaceProperties } from './airspace.js';
+import { validateSchema } from './validate-schema.js';
 
-export type Options = { extendedFormat?: boolean }
+export type Options = { extendedFormat?: boolean };
 export const OptionsSchema = z.object({
     // if true, exports to extended format. If read from original format, it will only add the "AI" tag.
     extendedFormat: z.boolean().optional(),
-})
+});
 
 /**
  * Converts a GeoJSON FeatureCollection created by parser instance to OpenAir format.
  */
-export function geojsonToOpenair(featureCollection: GeoJSON.FeatureCollection, options?: Options): string[] {
-    validateSchema(featureCollection, z.object({
+export function geojsonToOpenair(
+    featureCollection: FeatureCollection<Polygon | LineString, AirspaceProperties>,
+    options?: Options
+): string[] {
+    validateSchema(
+        featureCollection,
+        z.object({
             type: z.literal('FeatureCollection'),
-            features: z.array(z.record(z.any()))
+            features: z.array(z.record(z.any())),
         }),
-        { assert: true, name: 'featureCollection'}
+        { assert: true, name: 'featureCollection' }
     );
-    validateSchema(options, OptionsSchema, {assert: true, name: 'options'});
+    validateSchema(options, OptionsSchema, { assert: true, name: 'options' });
 
     const defaultOptions = { extendedFormat: false };
     const { extendedFormat } = Object.assign(defaultOptions, options);
     const openair = [];
 
     for (const geojson of featureCollection.features) {
-        const { name, class: aspcClass, lowerCeiling, upperCeiling, identifier, type, frequency } = geojson.properties;
+        const { name, airspaceClass, lowerCeiling, upperCeiling, identifier, type, frequency } = geojson.properties;
         const { value: frequencyValue, name: frequencyName } = frequency || {};
 
         // if extended format is set as output format, at least inject an AI token if not exists
         const aiValue = identifier ?? randomUUID();
-
-        const { coordinates: polyCoordinates } = geojson.geometry;
-        // polygon coordinates are wrapped in array
-        const [coordinates] = polyCoordinates;
+        const { type: geomType, coordinates: geomCoordinates } = geojson.geometry;
+        let coordinates: Position[];
+        // unwrap polygon coordinates that are wrapped in array
+        if (geomType === 'Polygon') {
+            coordinates = geomCoordinates[0];
+        } else {
+            // line string coordinates are already unwrapped
+            coordinates = geomCoordinates;
+        }
 
         // AC
-        openair.push(`AC ${aspcClass}`);
+        openair.push(`AC ${airspaceClass}`);
         // AY (extended format) - optional tag
         if (extendedFormat && type != null) openair.push(`AY ${type}`);
         // AN
@@ -63,7 +75,7 @@ export function geojsonToOpenair(featureCollection: GeoJSON.FeatureCollection, o
     return openair;
 }
 
-function toCoordinate(value: number[]): string {
+function toCoordinate(value: Position): string {
     const [x, y] = value;
     const lon = convertDecToDms(x, 'lon');
     const lat = convertDecToDms(y, 'lat');
@@ -93,7 +105,7 @@ function convertDecToDms(decimal: number, axis: string): string {
     return `${deg}:${min}:${sec} ${suffix}`;
 }
 
-function toAltLimit(value: { value: number, unit: string, referenceDatum: string }): string {
+function toAltLimit(value: { value: number; unit: string; referenceDatum: string }): string {
     const { value: altValue, unit, referenceDatum } = value;
 
     let altLimit;

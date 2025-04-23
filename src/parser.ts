@@ -3,6 +3,7 @@ import rewind from '@mapbox/geojson-rewind';
 import { featureCollection as createFeatureCollection } from '@turf/turf';
 import { z } from 'zod';
 import { AirspaceFactory } from './airspace-factory.js';
+import type { Airspace } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
@@ -88,10 +89,7 @@ export const ConfigSchema = z
  */
 export class Parser {
     protected _config: Required<Config>;
-    // custom formatters
-    protected _formatter = [];
-    // TODO add type
-    protected _airspaces = [];
+    protected _airspaces: Airspace[] = [];
     protected _currentState: ParserState = ParserStateEnum.START;
     protected _currentToken: IToken | undefined = undefined;
     protected _airspaceTokens: IToken[] = [];
@@ -160,7 +158,6 @@ export class Parser {
 
         // create airspaces as a GeoJSON feature collection and store them internally
         const geojsonFeatures = this._airspaces.map((value) => {
-            // TODO check that this resolves when Airspace type is set
             return value.asGeoJson({
                 validateGeometry: this._config.validateGeometry,
                 fixGeometry: this._config.fixGeometry,
@@ -184,7 +181,6 @@ export class Parser {
         });
         const airspace = factory.createAirspace(this._airspaceTokens);
         if (airspace != null) {
-            // TODO check that this resolves when Airspace type is set
             // push new airspace to list
             this._airspaces.push(airspace);
         }

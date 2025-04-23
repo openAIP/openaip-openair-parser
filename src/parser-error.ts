@@ -63,7 +63,7 @@ export class ParserError extends Error {
         return this._errorMessage;
     }
 
-    get geometry(): GeoJSON.Polygon | GeoJSON.LineString | undefined {
+    get geometry(): Polygon | LineString | undefined {
         return this._geometry;
     }
 

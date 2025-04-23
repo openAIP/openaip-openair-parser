@@ -36,8 +36,8 @@ export type Altitude = { value: number; unit: string; referenceDatum: string };
 
 export type Frequency = { value: string; name?: string };
 
-type AirspaceFeatureProperties = {
-    id: string;
+export type AirspaceProperties = {
+    identifier: string;
     name: string;
     type: string | undefined;
     airspaceClass: string;
@@ -48,7 +48,7 @@ type AirspaceFeatureProperties = {
     openair?: string | undefined;
 };
 
-export type AirspaceFeature = Feature<Polygon | LineString, AirspaceFeatureProperties>;
+export type AirspaceFeature = Feature<Polygon | LineString, AirspaceProperties>;
 
 /**
  * Result of a parsed airspace definition block. Can be output as GeoJSON.
@@ -185,7 +185,7 @@ export class Airspace {
         }
 
         // set feature properties
-        const properties = cleanObject<AirspaceFeatureProperties>({
+        const properties = cleanObject<AirspaceProperties>({
             id: this._identifier as string,
             name: this._name as string,
             airspaceClass: this._airspaceClass as string,
@@ -209,7 +209,7 @@ export class Airspace {
                 ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, outputGeometry })
                 : createLinestring(this._coordinates).geometry;
         // create a GeoJSON feature from the geometry
-        const feature = createFeature<Polygon | LineString, AirspaceFeatureProperties>(airspaceGeometry, properties, {
+        const feature = createFeature<Polygon | LineString, AirspaceProperties>(airspaceGeometry, properties, {
             id: uuid.v4(),
         });
 
