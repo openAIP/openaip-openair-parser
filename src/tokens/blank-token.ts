@@ -21,7 +21,8 @@ export class BlankToken extends AbstractLineToken<undefined> {
     }
 
     tokenize(line: string, lineNumber: number): IToken {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
         const token = new BlankToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });

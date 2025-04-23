@@ -145,9 +145,7 @@ export class Tokenizer {
             this._currentLineString = line.toString().trim();
 
             // find the tokenizer that can handle the current line
-            const lineTokenizer = this.tokenizers.find(
-                (value) => this._currentLineString && value.canHandle(this._currentLineString)
-            );
+            const lineTokenizer = this.tokenizers.find((value) => value.canHandle(this._currentLineString as string));
             if (lineTokenizer == null) {
                 // fail hard if unable to find a tokenizer for a specific line
                 throw new ParserError({
