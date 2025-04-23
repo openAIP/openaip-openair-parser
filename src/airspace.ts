@@ -5,7 +5,7 @@ import {
     lineToPolygon,
 } from '@turf/turf';
 import type { Feature, LineString, Polygon, Position } from 'geojson';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 import { z } from 'zod';
 import { cleanObject } from './clean-object.js';
 import { GeojsonPolygonValidator } from './geojson-polygon-validator.js';

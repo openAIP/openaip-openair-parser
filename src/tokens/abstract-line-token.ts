@@ -64,7 +64,8 @@ export abstract class AbstractLineToken<M> implements IToken {
     abstract getAllowedNextTokens(): TokenType[];
 
     get type(): TokenType {
-        return AbstractLineToken.type;
+        // this is required to get the static type of the concrete class later
+        return (this.constructor as typeof AbstractLineToken).type;
     }
 
     get line(): string | undefined {
