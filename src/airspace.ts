@@ -160,7 +160,7 @@ export class Airspace {
         };
         // first token is always an AcToken
         const acToken: AcToken = this._consumedTokens.shift() as AcToken;
-        const { lineNumber } = acToken.tokenized as Tokenized;
+        const { lineNumber } = acToken.tokenized;
 
         if (
             // directly error out on definitions with only 2 points or less
@@ -186,7 +186,7 @@ export class Airspace {
 
         // set feature properties
         const properties = cleanObject<AirspaceProperties>({
-            id: this._identifier as string,
+            identifier: this._identifier as string,
             name: this._name as string,
             airspaceClass: this._airspaceClass as string,
             type: this._type as string,

@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import rewind from '@mapbox/geojson-rewind';
 import { featureCollection as createFeatureCollection } from '@turf/turf';
+import type { FeatureCollection, LineString, Polygon } from 'geojson';
 import { z } from 'zod';
 import { AirspaceFactory } from './airspace-factory.js';
-import type { Airspace } from './airspace.js';
+import type { Airspace, AirspaceProperties } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
@@ -13,9 +14,6 @@ import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
 import { EofToken } from './tokens/eof-token.js';
 import { validateSchema } from './validate-schema.js';
-
-// TODO defined better interface for parser -> where to put the ParserResult!?!?
-export type ParserResult = {};
 
 const ParserStateEnum = {
     START: 'start',
@@ -93,8 +91,7 @@ export class Parser {
     protected _currentState: ParserState = ParserStateEnum.START;
     protected _currentToken: IToken | undefined = undefined;
     protected _airspaceTokens: IToken[] = [];
-    // TODO check if really both geom types apply -> FeatureCollection<Geometry, GeoJsonProperties>
-    protected _geojson: any | undefined = undefined;
+    protected _geojson: FeatureCollection<Polygon | LineString, AirspaceProperties> | undefined = undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -171,23 +168,6 @@ export class Parser {
         return this;
     }
 
-    /**
-     * Builds airspace from the current list of airspace tokens.
-     */
-    protected buildAirspace(): void {
-        const factory = new AirspaceFactory({
-            geometryDetail: this._config.geometryDetail,
-            extendedFormat: this._config.extendedFormat,
-        });
-        const airspace = factory.createAirspace(this._airspaceTokens);
-        if (airspace != null) {
-            // push new airspace to list
-            this._airspaces.push(airspace);
-        }
-        // reset read airspace tokens
-        this._airspaceTokens = [];
-    }
-
     toFormat(format: string): string {
         switch (format) {
             case 'geojson':
@@ -199,8 +179,7 @@ export class Parser {
         }
     }
 
-    // TODO refine this -> why is the result HERE?!
-    toGeojson(): ParserResult {
+    toGeojson(): FeatureCollection<Polygon | LineString, AirspaceProperties> {
         if (this._geojson == null) {
             throw new Error('Failed to export to GeoJSON. Parsed GeoJSON is empty.');
         }
@@ -220,6 +199,23 @@ export class Parser {
         if (!exists) {
             throw new Error(`Failed to read file ${filepath}`);
         }
+    }
+
+    /**
+     * Builds airspace from the current list of airspace tokens.
+     */
+    protected buildAirspace(): void {
+        const factory = new AirspaceFactory({
+            geometryDetail: this._config.geometryDetail,
+            extendedFormat: this._config.extendedFormat,
+        });
+        const airspace = factory.createAirspace(this._airspaceTokens);
+        if (airspace != null) {
+            // push new airspace to list
+            this._airspaces.push(airspace);
+        }
+        // reset read airspace tokens
+        this._airspaceTokens = [];
     }
 
     protected reset() {

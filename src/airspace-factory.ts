@@ -416,9 +416,9 @@ export class AirspaceFactory {
     protected handleDcToken(token: DcToken): void {
         const { lineNumber, metadata } = token.tokenized;
         const { radius } = metadata;
-        const precedingVxToken = this.getNextToken(token, VxToken.type, false);
+        const precedingVxToken = this.getNextToken<VxToken>(token, VxToken.type, false);
 
-        if (precedingVxToken ) {
+        if (precedingVxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
         // to create a circle, the center point coordinate from the previous VToken is required
@@ -544,13 +544,13 @@ export class AirspaceFactory {
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken: VdToken = this.getNextToken(token, VdToken.type, false) as VdToken;
+        const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.type, false) as VdToken;
         if (vdToken) {
             clockwise = vdToken.tokenized.metadata.clockwise;
         }
 
         // get preceding VxToken => defines the arc center
-        const vxToken: VxToken = this.getNextToken(token, VxToken.type, false) as VxToken;
+        const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.type, false) as VxToken;
         if (vxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
