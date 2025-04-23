@@ -35,9 +35,9 @@ export class AyToken extends AbstractLineToken<Metadata> {
     protected _extendedFormatTypes: string[] = [];
 
     constructor(config: Config) {
-        const { tokenTypes, extendedFormatTypes } = config;
+        const { tokenTypes, extendedFormatTypes, extendedFormat } = config;
 
-        super({ tokenTypes });
+        super({ tokenTypes, extendedFormat });
 
         this._extendedFormatTypes = extendedFormatTypes;
     }

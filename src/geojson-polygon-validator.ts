@@ -12,7 +12,7 @@ import {
     lineToPolygon,
     unkinkPolygon,
 } from '@turf/turf';
-import type { Feature, FeatureCollection, LineString, Polygon, Position } from 'geojson';
+import type { Feature, FeatureCollection, LineString, Point, Polygon, Position } from 'geojson';
 import { z } from 'zod';
 import { validateSchema } from './validate-schema.js';
 
