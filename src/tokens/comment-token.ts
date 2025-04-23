@@ -15,7 +15,8 @@ export class CommentToken extends AbstractLineToken<undefined> {
     }
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is comment line starting with "* this is a comment"
         return /^\*.*$/.test(line);

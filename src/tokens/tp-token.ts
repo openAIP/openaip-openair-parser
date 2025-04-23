@@ -13,7 +13,8 @@ export class TpToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.TP;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is TP line e.g. "TP 7000"
         return /^TP\s+.*$/.test(line);

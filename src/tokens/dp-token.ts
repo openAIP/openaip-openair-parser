@@ -15,7 +15,8 @@ export class DpToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DP;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is DP line e.g. "DP 54:25:00 N 010:40:00 E"
         return /^DP\s+.*$/.test(line);

@@ -12,7 +12,8 @@ export class AiToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AI;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is AI line e.g. "AI f012e054-e9a4-43dd-87be-eb88b3088439"
         return /^AI\s+.*$/.test(line);

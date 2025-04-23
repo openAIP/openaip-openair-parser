@@ -13,7 +13,8 @@ export class DcToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DC;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is DC line e.g. "DC 1.10"
         return /^DC\s+.*$/.test(line);

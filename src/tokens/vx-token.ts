@@ -15,7 +15,8 @@ export class VxToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.VX;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is V line e.g. "V X=53:24:25 N 010:25:10 E"
         return /^V\s+X=.*$/.test(line);

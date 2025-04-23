@@ -18,7 +18,8 @@ export class DaToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DA;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is DA line e.g. "DA 0.25,-57,123" as well as "DA 0.25,57.56,270.5"
         return /^DA\s+([+-]?\d*(\.\d+)?),\s*([+-]?\d*(\.\d+)?),\s*([+-]?\d*(\.\d+)?)$/.test(line);

@@ -15,7 +15,8 @@ export class DbToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.DB;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is DB line e.g. "DB 52:22:39 N 013:08:15 E , 52:24:33 N 013:11:02 E"
         return /^DB\s+.*$/.test(line);

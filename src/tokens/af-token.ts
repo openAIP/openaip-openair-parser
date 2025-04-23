@@ -13,7 +13,8 @@ export class AfToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AF;
 
     canHandle(line: string): boolean {
-        validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
+        // IMPORTANT only validate string - string MAY be empty
+        validateSchema(line, z.string(), { assert: true, name: 'line' });
 
         // is AF line e.g. "AF 123.456"
         return /^AF\s+.*$/.test(line);
