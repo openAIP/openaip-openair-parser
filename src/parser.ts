@@ -8,7 +8,7 @@ import type { Airspace, AirspaceProperties } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
-import { type OutputGeometry } from './output-geometry.enum.js';
+import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
 import { Tokenizer } from './tokenizer.js';
 import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -65,6 +65,7 @@ export const ConfigSchema = z
         validateGeometry: z.boolean().optional(),
         fixGeometry: z.boolean().optional(),
         includeOpenair: z.boolean().optional(),
+        outputGeometry: z.nativeEnum(OutputGeometryEnum).optional(),
         defaultAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean().optional(),
