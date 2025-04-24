@@ -40,7 +40,7 @@ export type AirspaceProperties = {
     identifier: string;
     name: string;
     type: string | undefined;
-    airspaceClass: string;
+    class: string;
     upperCeiling: Altitude;
     lowerCeiling: Altitude;
     frequency: Partial<Frequency> | undefined;
@@ -56,6 +56,7 @@ export type AirspaceFeature = Feature<Polygon | LineString, AirspaceProperties>;
 export class Airspace {
     protected _consumedTokens: IToken[] = [];
     protected _name: string | undefined = undefined;
+    // use "airspaceClass" instead of "class" to avoid conflicts with the "class" keyword
     protected _airspaceClass: string | undefined = undefined;
     protected _upperCeiling: Altitude | undefined = undefined;
     protected _lowerCeiling: Altitude | undefined = undefined;
@@ -188,7 +189,7 @@ export class Airspace {
         const properties = cleanObject<AirspaceProperties>({
             identifier: this._identifier as string,
             name: this._name as string,
-            airspaceClass: this._airspaceClass as string,
+            class: this._airspaceClass as string,
             type: this._type as string,
             frequency: this._frequency,
             transponderCode: this._transponderCode,

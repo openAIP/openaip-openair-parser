@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import path from 'node:path';
+import appRoot from 'app-root-path';
 import { describe, expect, test } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
@@ -21,7 +23,9 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson.features.length).toEqual(0);
     });
     test('handle inline comments', async () => {
-        const expectedJson = await import('./fixtures/results/handle-inline-comments.js');
+        const filePath = path.resolve(`${appRoot}/tests/fixtures/results/handle-inline-comments.json`);
+        const fileContent = fs.readFileSync(filePath);
+        const expectedJson = JSON.parse(fileContent.toString());
         const openairParser = new Parser();
         await openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
         const geojson = openairParser.toGeojson();
