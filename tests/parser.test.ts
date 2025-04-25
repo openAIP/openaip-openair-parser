@@ -196,37 +196,42 @@ describe('test optional configuration parameters', () => {
     test('do not round altitude value', () => {
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/round-altitude-values.txt');
+        const geojson = openairParser.toGeojson();
+
         expect(success).toBe(true);
-        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
-        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1607.611551);
+        expect(geojson.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1607.611551);
     });
     test('round altitude value', () => {
         const openairParser = new Parser({ roundAltValues: true });
         const { success } = openairParser.parse('./tests/fixtures/round-altitude-values.txt');
         const geojson = openairParser.toGeojson();
 
+        expect(success).toBe(true);
         expect(geojson?.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1608);
     });
     test('use default altitude unit', () => {
         const openairParser = new Parser({ defaultAltUnit: AltitudeUnitEnum.ft, targetAltUnit: AltitudeUnitEnum.m });
-        openairParser.parse('./tests/fixtures/use-default-altitude-unit.txt');
+        const { success } = openairParser.parse('./tests/fixtures/use-default-altitude-unit.txt');
         const geojson = openairParser.toGeojson();
 
+        expect(success).toBe(true);
         expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual('M');
     });
     test('keep units if no target altitude unit is specified', () => {
         const openairParser = new Parser({ defaultAltUnit: AltitudeUnitEnum.m });
-        openairParser.parse('./tests/fixtures/meter-altitude-unit.txt');
+        const { success } = openairParser.parse('./tests/fixtures/meter-altitude-unit.txt');
         const geojson = openairParser.toGeojson();
 
+        expect(success).toBe(true);
         expect(geojson?.features?.[0]?.properties?.upperCeiling?.unit).toEqual('FL');
         expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual('M');
     });
     test('correct limit validation when converting from ft to m', () => {
         const openairParser = new Parser({ defaultAltUnit: AltitudeUnitEnum.ft, targetAltUnit: AltitudeUnitEnum.m });
-        openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
+        const { success } = openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
         const geojson = openairParser.toGeojson();
 
+        expect(success).toBe(true);
         expect(geojson?.features?.[0]?.properties?.upperCeiling?.value).toEqual(10667.99965862401);
     });
 });
