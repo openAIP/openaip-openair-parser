@@ -378,18 +378,20 @@ describe('test parse invalid airspace definition blocks', () => {
 describe('test parse invalid airspace definition blocks and fix geometry', () => {
     test('airspace with invalid geometry with self intersection can be fixed and is not Multipolygon', () => {
         const openairParser = new Parser({ fixGeometry: true });
-        openairParser.parse('./tests/fixtures/do-not-split-into-multipolygon.txt');
+        const { success } = openairParser.parse('./tests/fixtures/do-not-split-into-multipolygon.txt');
         const { features } = openairParser.toGeojson();
         const { geometry } = features[0];
 
+        expect(success).toBe(true);
         expect(geometry.type).toEqual('Polygon');
     });
     test('airspace fix start and end coordinates if not equal', () => {
         const openairParser = new Parser({ fixGeometry: true });
-        openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
+        const { success } = openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
         const { features } = openairParser.toGeojson();
         const { geometry } = features[0];
 
+        expect(success).toBe(true);
         expect(geometry.type).toEqual('Polygon');
     });
 });
