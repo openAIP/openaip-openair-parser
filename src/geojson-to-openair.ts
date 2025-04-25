@@ -33,7 +33,15 @@ export function geojsonToOpenair(
     const openair = [];
 
     for (const geojson of featureCollection.features) {
-        const { name, airspaceClass, lowerCeiling, upperCeiling, identifier, type, frequency } = geojson.properties;
+        const {
+            name,
+            class: airspaceClass,
+            lowerCeiling,
+            upperCeiling,
+            identifier,
+            type,
+            frequency,
+        } = geojson.properties;
         const { value: frequencyValue, name: frequencyName } = frequency || {};
 
         // if extended format is set as output format, at least inject an AI token if not exists

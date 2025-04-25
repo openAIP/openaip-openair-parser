@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import rewind from '@mapbox/geojson-rewind';
 import { featureCollection as createFeatureCollection } from '@turf/turf';
 import type { FeatureCollection, LineString, Polygon } from 'geojson';
 import { z } from 'zod';
@@ -147,7 +146,7 @@ export class Parser {
         }
 
         // create airspaces as a GeoJSON feature collection and store them internally
-        const geojsonFeatures = this._airspaces.map((value) => {
+        const geojsonAirspaces = this._airspaces.map((value) => {
             return value.asGeoJson({
                 validateGeometry: this._config.validateGeometry,
                 fixGeometry: this._config.fixGeometry,
@@ -155,8 +154,8 @@ export class Parser {
                 outputGeometry: this._config.outputGeometry,
             });
         });
-        // IMPORTANT make sure that GeoJSON polygons follow the right-hand rule
-        this._geojson = rewind(createFeatureCollection(geojsonFeatures), false);
+        // create the feature collection
+        this._geojson = createFeatureCollection(geojsonAirspaces);
 
         return this;
     }

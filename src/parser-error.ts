@@ -1,4 +1,4 @@
-import type { LineString, Polygon } from 'geojson';
+import type { LineString, Polygon, Position } from 'geojson';
 import { z } from 'zod';
 import { validateSchema } from './validate-schema.js';
 
@@ -20,6 +20,7 @@ export type Config = {
     errorMessage: string;
     lineNumber?: number;
     geometry?: Polygon | LineString;
+    selfIntersections?: Position[];
 };
 
 export const ConfigSchema = z
@@ -27,6 +28,7 @@ export const ConfigSchema = z
         errorMessage: z.string().nonempty(),
         lineNumber: z.number().optional(),
         geometry: z.union([GeoJsonPolygonSchema, GeoJsonLineStringSchema]).optional(),
+        selfIntersections: GeoJsonPositionSchema.optional(),
     })
     .strict()
     .describe('ConfigSchema');
@@ -35,12 +37,13 @@ export class ParserError extends Error {
     protected _name: string;
     protected _lineNumber?: number;
     protected _errorMessage: string;
-    protected _geometry?: Polygon | LineString;
+    protected _geometry?: Polygon | LineString | undefined;
+    protected _selfIntersections?: Position[] = undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { lineNumber, errorMessage, geometry } = config;
+        const { lineNumber, errorMessage, geometry, selfIntersections } = config;
 
         const message = lineNumber == null ? errorMessage : `Error found at line ${lineNumber}: ${errorMessage}`;
         super(message);
@@ -49,6 +52,7 @@ export class ParserError extends Error {
         this._lineNumber = lineNumber;
         this._errorMessage = message;
         this._geometry = geometry;
+        this._selfIntersections = selfIntersections;
     }
 
     get name(): string {
@@ -65,6 +69,10 @@ export class ParserError extends Error {
 
     get geometry(): Polygon | LineString | undefined {
         return this._geometry;
+    }
+
+    get selfIntersections(): Position[] | undefined {
+        return this._selfIntersections;
     }
 
     toString(): string {

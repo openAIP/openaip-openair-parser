@@ -7,11 +7,10 @@ import {
     circle as createCircle,
     lineString as createLineString,
 } from '@turf/turf';
-import type { Feature, LineString, Polygon, Position } from 'geojson';
-import { validate } from 'uuid';
+import type { Polygon, Position } from 'geojson';
 import { z } from 'zod';
-import { Airspace, type Altitude, type Frequency } from './airspace.js';
-import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
+import { Airspace, type Altitude } from './airspace.js';
+import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error';
 import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -35,7 +34,7 @@ import { TpToken } from './tokens/tp-token.js';
 import { VdToken } from './tokens/vd-token.js';
 import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
-import { feetToMeters, metersToFeet } from './unit-conversion.js';
+import { metersToFeet } from './unit-conversion.js';
 import { validateSchema } from './validate-schema.js';
 
 export type Config = {
@@ -119,9 +118,8 @@ export class AirspaceFactory {
                 segments: airwaySegments as Position[],
             });
         }
-        const airspace = this._airspace;
 
-        return this._hasBuildTokens ? airspace : undefined;
+        return this._hasBuildTokens ? this._airspace : undefined;
     }
 
     /**

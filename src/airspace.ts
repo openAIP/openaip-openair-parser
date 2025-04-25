@@ -1,14 +1,9 @@
-import {
-    feature as createFeature,
-    lineString as createLinestring,
-    polygon as createPolygon,
-    lineToPolygon,
-} from '@turf/turf';
+import { feature as createFeature, lineString as createLinestring, polygon as createPolygon } from '@turf/turf';
 import type { Feature, LineString, Polygon, Position } from 'geojson';
 import * as uuid from 'uuid';
 import { z } from 'zod';
 import { cleanObject } from './clean-object.js';
-import { GeojsonPolygonValidator } from './geojson-polygon-validator.js';
+import * as geojsonPolygon from './geojson-polygon.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
 import { ParserError } from './parser-error.js';
 import type { IToken, Tokenized } from './tokens/abstract-line-token.js';
@@ -60,18 +55,26 @@ export class Airspace {
     protected _airspaceClass: string | undefined = undefined;
     protected _upperCeiling: Altitude | undefined = undefined;
     protected _lowerCeiling: Altitude | undefined = undefined;
-    protected _coordinates: Position[] = [];
     protected _identifier: string | undefined = undefined;
     protected _type: string | undefined = undefined;
     protected _frequency: Partial<Frequency> | undefined = undefined;
     protected _transponderCode: number | undefined = undefined;
+    protected _coordinates: Position[] = [];
+
+    set consumedTokens(value: IToken[]) {
+        this._consumedTokens = value;
+    }
 
     get consumedTokens(): IToken[] {
         return this._consumedTokens;
     }
 
-    set consumedTokens(value: IToken[]) {
-        this._consumedTokens = value;
+    get identifier(): string | undefined {
+        return this._identifier;
+    }
+
+    set identifier(value: string | undefined) {
+        this._identifier = value;
     }
 
     get name(): string | undefined {
@@ -112,14 +115,6 @@ export class Airspace {
 
     set coordinates(value: Position[]) {
         this._coordinates = value;
-    }
-
-    get identifier(): string | undefined {
-        return this._identifier;
-    }
-
-    set identifier(value: string | undefined) {
-        this._identifier = value;
     }
 
     get type(): string | undefined {
@@ -227,9 +222,13 @@ export class Airspace {
         const token: IToken = this._consumedTokens[0] as IToken;
         const lineNumber: number = token.tokenized?.lineNumber as number;
         let airspacePolygon: Polygon;
-        // build airspace from current coordinates => this variable may be updated with an updated/fixed geometry if required
+
+        // create a polygon from the coordinates - run also geometry adjustments that do not alter the geometry
         try {
             airspacePolygon = createPolygon([this._coordinates]).geometry;
+            airspacePolygon = geojsonPolygon.removeDuplicatePoints(airspacePolygon, { buffer: 200 });
+            airspacePolygon = geojsonPolygon.removeIntermediatePoints(airspacePolygon);
+            airspacePolygon = geojsonPolygon.withRightHandRule(airspacePolygon);
         } catch (e) {
             // Geometry creation errors may happen here already as it is NOT possible to create certain invalid
             //  polygon geometries, i.e. too few points, start and end points do not match - if "fix geometry" flag
@@ -237,8 +236,7 @@ export class Airspace {
             // geometry is checked for other issues like self-intersections etc and other fixes are applied.
             if (fixGeometry === true) {
                 try {
-                    const geojsonValidator = new GeojsonPolygonValidator();
-                    airspacePolygon = geojsonValidator.createFixedPolygon(this._coordinates);
+                    airspacePolygon = geojsonPolygon.createFixedPolygon(createPolygon([this._coordinates]).geometry);
                 } catch (e) {
                     if (e instanceof SyntaxError) {
                         throw new ParserError({
@@ -258,56 +256,34 @@ export class Airspace {
                 });
             }
         }
-        // only try to fix if not valid or has self-intersection
+        // apply geometry fixes if specified and required - fix will only happen if the geometry is invalid
         if (fixGeometry === true) {
-            const { isValid, selfIntersections } = this.validateAirspaceGeometry(airspacePolygon);
-            // IMPORTANT only run if required since process will slightly change the original airspace by creating a buffer
-            //  which will lead to an increase of polygon coordinates
-            if (isValid === false || (selfIntersections != null && selfIntersections.length > 0)) {
-                try {
-                    const geojsonValidator = new GeojsonPolygonValidator();
-                    airspacePolygon = geojsonValidator.createFixedPolygon(this._coordinates);
-                } catch (e) {
-                    if (e instanceof SyntaxError) {
-                        throw new ParserError({
-                            lineNumber,
-                            errorMessage: e.message,
-                            geometry: this.asLineStringGeometry(),
-                        });
-                    } else {
-                        throw e;
-                    }
-                }
-            }
-        } else {
             try {
-                // create a linestring first, then polygonize it => suppresses errors where first coordinate does not equal last coordinate when creating polygon
-                const linestring = createLinestring(this._coordinates);
-                const castGeom = lineToPolygon(linestring).geometry;
-                if (castGeom.type !== 'Polygon') {
-                    throw new Error('Failed to create polygon from linestring. Invalid geometry.');
-                }
-                airspacePolygon = castGeom;
+                airspacePolygon = geojsonPolygon.createFixedPolygon(airspacePolygon);
             } catch (e) {
-                throw new ParserError({
-                    lineNumber,
-                    errorMessage: e.message,
-                    geometry: this.asLineStringGeometry(),
-                });
+                if (e instanceof SyntaxError) {
+                    throw new ParserError({
+                        lineNumber,
+                        errorMessage: e.message,
+                        geometry: this.asLineStringGeometry(),
+                    });
+                } else {
+                    throw e;
+                }
             }
         }
         // validation logic comes AFTER the geometry has been fixed
         if (validateGeometry === true) {
             // IMPORTANT work on "airspacePolygon" variable as it may contain either the original or fixed geometry
-            const { isValid, selfIntersections } = this.validateAirspaceGeometry(airspacePolygon);
+            const { isValid, selfIntersections } = this.validateAirspacePolygon(airspacePolygon);
             if (isValid === false || (selfIntersections != null && selfIntersections?.length > 0)) {
                 if (selfIntersections != null) {
                     // build the self-intersection error message
-                    const intersectionPoints = selfIntersections.map((value) => `${value[1]},${value[0]}`);
                     throw new ParserError({
                         lineNumber,
-                        errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} is invalid due to a self intersection at '${intersectionPoints.join(' and ')}.`,
+                        errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} is invalid due to self intersection.`,
                         geometry: this.asLineStringGeometry(),
+                        selfIntersections,
                     });
                 } else {
                     throw new ParserError({
@@ -322,17 +298,16 @@ export class Airspace {
         return airspacePolygon;
     }
 
-    protected validateAirspaceGeometry(geometry: Polygon) {
-        const geojsonValidator = new GeojsonPolygonValidator();
+    protected validateAirspacePolygon(polygon: Polygon) {
         let selfIntersections = undefined;
         let isValid: boolean = false;
         try {
-            geojsonValidator.validate(geometry);
+            geojsonPolygon.validate(polygon);
             isValid = true;
         } catch (err) {
             const message = err?.message || 'Unknown geometry error.';
-            if (message.includes('Geometry is invalid due to a self intersection') === true) {
-                selfIntersections = geojsonValidator.getSelfIntersections(geometry as Polygon);
+            if (message.includes('Geometry is invalid due to self intersection') === true) {
+                selfIntersections = geojsonPolygon.getSelfIntersections(polygon);
             }
         }
 
