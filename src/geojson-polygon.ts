@@ -228,6 +228,10 @@ export function removeDuplicatePoints(polygon: Polygon, config?: { buffer?: numb
         processed.push(processed[0]);
     }
 
+    if (processed.length < 4) {
+        throw new Error('The polygon dimensions are too small to create a polygon.');
+    }
+
     return createPolygon([processed]).geometry;
 }
 

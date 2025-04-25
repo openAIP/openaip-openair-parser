@@ -75,19 +75,6 @@ describe('test parse complete airspace definition blocks', () => {
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
-    // TODO fix this !? Or is this an edge case that should be handled manually in the file , i.e. bigger radius!?
-    test('parse laser beam airspace with very small circular geometry', () => {
-        const expectedJson = loadJsonFixture('aspc-with-very-small-circular-geometry.json');
-        const openairParser = new Parser();
-        const { success } = openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
-        const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
-        expectedJson.features.map((value) => delete value.id);
-        (geojson as FeatureCollection).features.map((value) => delete value.id);
-
-        expect(success).toBe(true);
-        expect(geojson).toEqual(expectedJson);
-    });
     test('parse airspace with clockwise arc geometry', () => {
         const expectedJson = loadJsonFixture('aspc-clockwise-arc.json');
         const openairParser = new Parser();
@@ -263,7 +250,7 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error.message).toEqual(
-            "Error found at line 2: Geometry of airspace 'ED-R10B Todendorf-Putlos MON-SAT+' starting on line 2 is invalid due to self intersection."
+            "Error found at line 1: Geometry of airspace 'ED-R10B Todendorf-Putlos MON-SAT+' starting on line 1 is invalid due to self intersection."
         );
     });
     test('airspace with intersection converted into LINESTRING geometry return geometry', () => {
@@ -370,6 +357,17 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(error).toBeDefined();
         expect(error.message).toEqual(
             'Error found at line 1: Airspace definition block is missing required tokens: AY'
+        );
+    });
+
+    test('parse laser beam airspace with too small circular geometry', () => {
+        const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            "Error found at line 1: Geometry of airspace 'Lampedusa(LaserBeam)' starting on line 1 is invalid. The polygon dimensions are too small to create a polygon."
         );
     });
 });
