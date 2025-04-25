@@ -243,124 +243,135 @@ describe('test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual("Error found at line 3: The first token must be of type 'AC'. Token 'AN' found on line 3.");
+        expect(error.message).toEqual(
+            "Error found at line 3: The first token must be of type 'AC'. Token 'AN' found on line 3."
+        );
     });
-
     test('airspace with invalid coordinates', () => {
         const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/invalid-coordinates-airspace.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/invalid-coordinates-airspace.txt');
-        }).toThrow(
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
             "Error found at line 14: Error found at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:'"
         );
     });
-
     test('airspace with intersection', () => {
         const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
-        }).toThrow(
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
             "Error found at line 2: Geometry of airspace 'ED-R10B Todendorf-Putlos MON-SAT+' starting on line 2 is invalid due to self intersection."
         );
     });
-
     test('airspace with intersection converted into LINESTRING geometry return geometry', () => {
         const expectedJson = loadJsonFixture('invalid-intersect-to-linestring.json');
         const openairParser = new Parser({ outputGeometry: OutputGeometryEnum.LINESTRING });
-        openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
+        const { success } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
 
+        expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
-
     test('airspace with insufficient coordinates fails even if fix geometry is set', () => {
         const openairParser = new Parser({ fixGeometry: true });
+        const { success, error } = openairParser.parse('./tests/fixtures/insufficient-coordinates-airspace.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/insufficient-coordinates-airspace.txt');
-        }).toThrow(
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
             "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 has insufficient number of coordinates: 3"
         );
     });
-
     test('airspace with invalid geometry with self intersection can be fixed', () => {
         const openairParser = new Parser({ fixGeometry: true });
-        openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
 
-        expect(() => {
-            openairParser.toGeojson();
-        }).not.toThrow();
+        expect(success).toBe(true);
+        expect(error).toBeUndefined();
     });
-
     test('airspace with invalid geometry with self intersection passes if not validated', () => {
         const openairParser = new Parser({ fixGeometry: false, validateGeometry: false });
+        const { success, error } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/circular-invalid-airspace.txt');
-        }).not.toThrow();
+        expect(success).toBe(true);
+        expect(error).toBeUndefined();
     });
-
     test('airspace with empty name', () => {
         const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/empty-name.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/empty-name.txt');
-        }).toThrow("Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3");
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            "Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3"
+        );
     });
-
     test('airspace with duplicate ceiling definitions are rejected', () => {
         const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/duplicate-ceiling-definitions.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/duplicate-ceiling-definitions.txt');
-        }).toThrow("Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4");
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            "Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4"
+        );
     });
-
     test('airspace start and end coordinates are not equal', () => {
         const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
-        }).toThrow(
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
             "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent."
         );
     });
-
     test('single airspace with AG and missing AF tag', () => {
         const openairParser = new Parser({ extendedFormat: true });
+        const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-ag-but-missing-af.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/single-airspace-ag-but-missing-af.txt');
-        }).toThrow("Error found at line 5: Token 'AG' is present but token 'AF' is missing.");
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual("Error found at line 5: Token 'AG' is present but token 'AF' is missing.");
     });
-
     test('single airspace with invalid TP tag', () => {
         const openairParser = new Parser({ extendedFormat: true });
+        const { success, error } = openairParser.parse('./tests/fixtures/invalid-transponder-code.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/invalid-transponder-code.txt');
-        }).toThrow("Error found at line 9: Error found at line 9: Invalid transponder code string 'TP 7891'");
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            "Error found at line 9: Error found at line 9: Invalid transponder code string 'TP 7891'"
+        );
     });
-
     test('single airspace with missing AL and AH tags', () => {
         const openairParser = new Parser({ extendedFormat: true });
+        const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-missing-ah-al-tag.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/single-airspace-missing-ah-al-tag.txt');
-        }).toThrow('Error found at line 3: Airspace definition block is missing required tokens: AL, AH');
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            'Error found at line 3: Airspace definition block is missing required tokens: AL, AH, AY'
+        );
     });
-
     test('single airspace in extended format with missing AY tag', () => {
         const openairParser = new Parser({ extendedFormat: true });
+        const { success, error } = openairParser.parse(
+            './tests/fixtures/single-airspace-extended-format-missing-AY-tag.txt'
+        );
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/single-airspace-extended-format-missing-AY-tag.txt');
-        }).toThrow('Error found at line 1: Airspace definition block is missing required tokens: AY');
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            'Error found at line 1: Airspace definition block is missing required tokens: AY'
+        );
     });
 });
 
