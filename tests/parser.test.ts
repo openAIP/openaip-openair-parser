@@ -239,10 +239,11 @@ describe('test optional configuration parameters', () => {
 describe('test parse invalid airspace definition blocks', () => {
     test('single airspace with missing AC tag', () => {
         const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-without-ac-tag.txt');
 
-        expect(() => {
-            openairParser.parse('./tests/fixtures/single-airspace-without-ac-tag.txt');
-        }).toThrow("Error found at line 3: The first token must be of type 'AC'. Token 'AN' found on line 3.");
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual("Error found at line 3: The first token must be of type 'AC'. Token 'AN' found on line 3.");
     });
 
     test('airspace with invalid coordinates', () => {
