@@ -13,7 +13,7 @@ export type Config = BaseLineConfig & {
     // Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
     defaultAltUnit: AltitudeUnit;
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not set, does not convert units.
-    targetAltUnit: AltitudeUnit;
+    targetAltUnit?: AltitudeUnit | undefined;
     // If true, rounds the altitude values. Defaults to false. This parameter is most useful when used with unit conversion, e.g. m -> feet.
     roundAltValues: boolean;
     // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
@@ -25,7 +25,7 @@ export const ConfigSchema = z
         tokenTypes: z.array(z.string().nonempty()),
         unlimited: z.number(),
         defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum),
+        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
         extendedFormat: z.boolean(),
     })
@@ -40,7 +40,7 @@ interface IAltitudeReader {
 type AbstractAltitudeReaderConfig = {
     unlimited: number;
     defaultAltUnit: AltitudeUnit;
-    targetAltUnit: AltitudeUnit;
+    targetAltUnit?: AltitudeUnit | undefined;
     roundAltValues: boolean;
 };
 
@@ -48,7 +48,7 @@ const AbstractAltitudeReaderConfigSchema = z
     .object({
         unlimited: z.number(),
         defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum),
+        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
     })
     .strict()
@@ -61,7 +61,7 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
     static type: TokenType = 'BASE_ALTITUDE';
     protected _unlimited: number;
     protected _defaultAltUnit: AltitudeUnit;
-    protected _targetAltUnit: AltitudeUnit;
+    protected _targetAltUnit: AltitudeUnit | undefined;
     protected _roundAltValues: boolean;
     protected _readers: IAltitudeReader[] = [];
 

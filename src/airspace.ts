@@ -32,7 +32,7 @@ export type Altitude = { value: number; unit: string; referenceDatum: string };
 export type Frequency = { value: string; name?: string };
 
 export type AirspaceProperties = {
-    identifier: string;
+    id: string;
     name: string;
     type: string | undefined;
     class: string;
@@ -182,7 +182,7 @@ export class Airspace {
 
         // set feature properties
         const properties = cleanObject<AirspaceProperties>({
-            identifier: this._identifier as string,
+            id: this._identifier as string,
             name: this._name as string,
             class: this._airspaceClass as string,
             type: this._type as string,

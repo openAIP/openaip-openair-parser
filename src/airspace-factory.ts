@@ -401,7 +401,7 @@ export class AirspaceFactory {
 
         if (this._airway == null) {
             this._airway = { segments: [] };
-        } else {
+        } else if (this._airway.segments == null) {
             this._airway.segments = [];
         }
         // IMPORTANT subsequently push airway segment coordinates

@@ -24,9 +24,9 @@ program
 
     const parser = new Parser({ validateGeometry, fixGeometry, extendedFormat });
     try {
-        await parser.parse(program.inputFilepath);
+        parser.parse(program.inputFilepath);
         const geojson = parser.toGeojson();
-        await fs.writeFileSync(program.outputFilepath, Buffer.from(JSON.stringify(geojson, null, 2), 'utf-8'));
+        fs.writeFileSync(program.outputFilepath, Buffer.from(JSON.stringify(geojson, null, 2), 'utf-8'));
         if (debug) console.log(`Successfully parsed ${geojson.features.length} airspaces`);
     } catch (e) {
         if (debug) console.log(e.message);

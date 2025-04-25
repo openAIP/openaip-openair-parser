@@ -32,7 +32,7 @@ export type Config = {
     airspaceClasses: string[];
     unlimited: number;
     defaultAltUnit: AltitudeUnit;
-    targetAltUnit: AltitudeUnit;
+    targetAltUnit?: AltitudeUnit | undefined;
     roundAltValues: boolean;
     extendedFormat: boolean;
     extendedFormatClasses: string[];
@@ -44,7 +44,7 @@ export const ConfigSchema = z
         airspaceClasses: z.array(z.string().min(1)),
         unlimited: z.number().int(),
         defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum),
+        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
         extendedFormat: z.boolean(),
         extendedFormatClasses: z.array(z.string().min(1)),

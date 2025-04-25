@@ -3,11 +3,13 @@ import { featureCollection as createFeatureCollection } from '@turf/turf';
 import type { FeatureCollection, LineString, Polygon } from 'geojson';
 import { z } from 'zod';
 import { AirspaceFactory } from './airspace-factory.js';
-import type { Airspace, AirspaceProperties } from './airspace.js';
+import type { Airspace, AirspaceFeature, AirspaceProperties } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
+import { OutputFormatEnum, type OutputFormat } from './output-format.enum.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
+import type { ParserError } from './parser-error.js';
 import { Tokenizer } from './tokenizer.js';
 import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -48,7 +50,7 @@ export type Config = {
     // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
     defaultAltUnit?: AltitudeUnit;
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, keeps defined unit.
-    targetAltUnit?: AltitudeUnit;
+    targetAltUnit?: AltitudeUnit | undefined;
     // If true, rounds the altitude values. Defaults to false.
     roundAltValues?: boolean;
 };
@@ -73,6 +75,29 @@ export const ConfigSchema = z
     .optional()
     .describe('ConfigSchema');
 
+export type ParseConfig = {
+    // by default, uses GeoJSON as output format
+    outputFormat: OutputFormat;
+};
+
+export const ParseConfigSchema = z
+    .object({
+        outputFormat: z.nativeEnum(OutputFormatEnum).optional(),
+    })
+    .strict()
+    .optional()
+    .describe('ParseConfigSchema');
+
+export type ParserResult =
+    | { success: true; outputFormat: 'OPENAIR'; output: string[]; error?: never }
+    | {
+          success: true;
+          outputFormat: 'GEOJSON';
+          output: FeatureCollection<Polygon | LineString, AirspaceProperties>;
+          error?: never;
+      }
+    | { success: false; outputFormat: OutputFormat; output?: never; error: ParserError };
+
 /**
  * Reads content of an openAIR formatted file and returns a GeoJSON representation.
  * Parser implements the openAIR specification according to https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md
@@ -91,102 +116,102 @@ export class Parser {
         this._config = { ...DefaultParserConfig, ...config } as Required<Config>;
     }
 
-    async parse(filepath: string): Promise<Parser> {
-        this.reset();
-        this.enforceFileExists(filepath);
-        /*
-        Tokenizes the file contents into a list of tokens and a list of syntax
-        errors encountered during tokenization. Each token represents a single line and holds a
-        "prepared value" of each line, e.g. "DP 52:24:33 N 013:11:02 E" will be converted into
-        a prepared value, i.e. object, that contains valid coordinate decimals.
+    parse(filepath: string, config?: ParseConfig): ParserResult {
+        validateSchema(filepath, z.string().nonempty(), { assert: true, name: 'filepath' });
+        validateSchema(config, ParseConfigSchema, { assert: true, name: 'config' });
 
-        IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
-         */
-        const tokenizer = new Tokenizer({
-            airspaceClasses: this._config.airspaceClasses,
-            unlimited: this._config.unlimited,
-            defaultAltUnit: this._config.defaultAltUnit,
-            targetAltUnit: this._config.targetAltUnit,
-            roundAltValues: this._config.roundAltValues,
-            extendedFormat: this._config.extendedFormat,
-            extendedFormatClasses: this._config.extendedFormatClasses,
-            extendedFormatTypes: this._config.extendedFormatTypes,
-        });
-        const tokens = tokenizer.tokenize(filepath);
+        const defaultConfig = {
+            outputFormat: OutputFormatEnum.GEOJSON,
+        };
+        const { outputFormat } = { ...defaultConfig, ...config } as Required<ParseConfig>;
 
-        // iterate over tokens and create airspaces
-        for (let i = 0; i < tokens.length; i++) {
-            this._currentToken = tokens[i];
+        try {
+            this.reset();
+            this.enforceFileExists(filepath);
+            /*
+            Tokenizes the file contents into a list of tokens and a list of syntax
+            errors encountered during tokenization. Each token represents a single line and holds a
+            "prepared value" of each line, e.g. "DP 52:24:33 N 013:11:02 E" will be converted into
+            a prepared value, i.e. object, that contains valid coordinate decimals.
 
-            // do not change state if reading a comment or skipped token regardless of current state
-            if (this._currentToken.isIgnoredToken()) continue;
-
-            // AC tokens mark either start or end of airspace definition block
-            if (this._currentToken instanceof AcToken) {
-                if (this._currentState === ParserStateEnum.READ) {
-                    // each new AC line will trigger an airspace build if parser is in READ state
-                    // this is needed for files that do not have blanks between definition blocks but comments
-                    this.buildAirspace();
-                }
-            }
-
-            // handle EOF
-            if (this._currentToken instanceof EofToken) {
-                // if EOF is reached and parser is in READ state, check if we have any unprocessed airspace tokens
-                // and if so, build the airspace
-                if (this._currentState === ParserStateEnum.READ && this._airspaceTokens.length > 0) {
-                    this.buildAirspace();
-                    continue;
-                }
-            }
-
-            this._currentState = ParserStateEnum.READ;
-            // in all other cases, push token to airspace tokens list and continue
-            this._airspaceTokens.push(this._currentToken);
-        }
-
-        // create airspaces as a GeoJSON feature collection and store them internally
-        const geojsonAirspaces = this._airspaces.map((value) => {
-            return value.asGeoJson({
-                validateGeometry: this._config.validateGeometry,
-                fixGeometry: this._config.fixGeometry,
-                includeOpenair: this._config.includeOpenair,
-                outputGeometry: this._config.outputGeometry,
+            IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
+            */
+            const tokenizer = new Tokenizer({
+                airspaceClasses: this._config.airspaceClasses,
+                unlimited: this._config.unlimited,
+                defaultAltUnit: this._config.defaultAltUnit,
+                targetAltUnit: this._config.targetAltUnit,
+                roundAltValues: this._config.roundAltValues,
+                extendedFormat: this._config.extendedFormat,
+                extendedFormatClasses: this._config.extendedFormatClasses,
+                extendedFormatTypes: this._config.extendedFormatTypes,
             });
-        });
-        // create the feature collection
-        this._geojson = createFeatureCollection(geojsonAirspaces);
+            const tokens = tokenizer.tokenize(filepath);
 
-        return this;
-    }
+            // iterate over tokens and create airspaces
+            for (let i = 0; i < tokens.length; i++) {
+                this._currentToken = tokens[i];
 
-    toFormat(format: string): string {
-        switch (format) {
-            case 'geojson':
-                return JSON.stringify(this._geojson);
-            case 'openair':
-                return this.toOpenair().join('\n');
-            default:
-                throw new Error(`Unknown format '${format}'`);
+                // do not change state if reading a comment or skipped token regardless of current state
+                if (this._currentToken.isIgnoredToken()) continue;
+
+                // AC tokens mark either start or end of airspace definition block
+                if (this._currentToken instanceof AcToken) {
+                    if (this._currentState === ParserStateEnum.READ) {
+                        // each new AC line will trigger an airspace build if parser is in READ state
+                        // this is needed for files that do not have blanks between definition blocks but comments
+                        this.buildAirspace();
+                    }
+                }
+
+                // handle EOF
+                if (this._currentToken instanceof EofToken) {
+                    // if EOF is reached and parser is in READ state, check if we have any unprocessed airspace tokens
+                    // and if so, build the airspace
+                    if (this._currentState === ParserStateEnum.READ && this._airspaceTokens.length > 0) {
+                        this.buildAirspace();
+                        continue;
+                    }
+                }
+
+                this._currentState = ParserStateEnum.READ;
+                // in all other cases, push token to airspace tokens list and continue
+                this._airspaceTokens.push(this._currentToken);
+            }
+
+            // create airspaces as a GeoJSON feature collection and store them internally
+            const geojsonAirspaces = this._airspaces.map((value) => {
+                return value.asGeoJson({
+                    validateGeometry: this._config.validateGeometry,
+                    fixGeometry: this._config.fixGeometry,
+                    includeOpenair: this._config.includeOpenair,
+                    outputGeometry: this._config.outputGeometry,
+                });
+            });
+            // create the feature collection
+            this._geojson = createFeatureCollection(geojsonAirspaces);
+
+            const result: Partial<ParserResult> = {
+                success: true,
+                outputFormat,
+            };
+            if (outputFormat === OutputFormatEnum.GEOJSON) {
+                result.output = this._geojson;
+            }
+            if (outputFormat === OutputFormatEnum.OPENAIR) {
+                result.output = geojsonToOpenair(this._geojson, { extendedFormat: this._config.extendedFormat });
+            }
+
+            return result as ParserResult;
+        } catch (err) {
+            return {
+                success: false,
+                error: err,
+            };
         }
     }
 
-    toGeojson(): FeatureCollection<Polygon | LineString, AirspaceProperties> {
-        if (this._geojson == null) {
-            throw new Error('Failed to export to GeoJSON. Parsed GeoJSON is empty.');
-        }
-        return this._geojson;
-    }
-
-    toOpenair(): string[] {
-        if (this._geojson == null) {
-            throw new Error('Failed to export to OpenAIR. Parsed GeoJSON is empty.');
-        }
-
-        return geojsonToOpenair(this._geojson, { extendedFormat: this._config.extendedFormat });
-    }
-
-    protected async enforceFileExists(filepath: string): Promise<void> {
+    protected enforceFileExists(filepath: string): void {
         const exists = fs.existsSync(filepath);
         if (!exists) {
             throw new Error(`Failed to read file ${filepath}`);

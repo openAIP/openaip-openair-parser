@@ -28,7 +28,7 @@ export const ConfigSchema = z
         errorMessage: z.string().nonempty(),
         lineNumber: z.number().optional(),
         geometry: z.union([GeoJsonPolygonSchema, GeoJsonLineStringSchema]).optional(),
-        selfIntersections: GeoJsonPositionSchema.optional(),
+        selfIntersections: z.array(GeoJsonPositionSchema).optional(),
     })
     .strict()
     .describe('ConfigSchema');
