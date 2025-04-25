@@ -88,15 +88,7 @@ export const ParseConfigSchema = z
     .optional()
     .describe('ParseConfigSchema');
 
-export type ParserResult =
-    | { success: true; outputFormat: 'OPENAIR'; output: string[]; error?: never }
-    | {
-          success: true;
-          outputFormat: 'GEOJSON';
-          output: FeatureCollection<Polygon | LineString, AirspaceProperties>;
-          error?: never;
-      }
-    | { success: false; outputFormat: OutputFormat; output?: never; error: ParserError };
+export type ParserResult = { success: true; error?: never } | { success: false; error: ParserError };
 
 /**
  * Reads content of an openAIR formatted file and returns a GeoJSON representation.
@@ -193,14 +185,7 @@ export class Parser {
 
             const result: Partial<ParserResult> = {
                 success: true,
-                outputFormat,
             };
-            if (outputFormat === OutputFormatEnum.GEOJSON) {
-                result.output = this._geojson;
-            }
-            if (outputFormat === OutputFormatEnum.OPENAIR) {
-                result.output = geojsonToOpenair(this._geojson, { extendedFormat: this._config.extendedFormat });
-            }
 
             return result as ParserResult;
         } catch (err) {
@@ -209,6 +194,33 @@ export class Parser {
                 error: err,
             };
         }
+    }
+
+    toFormat(format: string): string {
+        switch (format) {
+            case 'geojson':
+                return JSON.stringify(this._geojson);
+            case 'openair':
+                return this.toOpenair().join('\n');
+            default:
+                throw new Error(`Unknown format '${format}'`);
+        }
+    }
+
+    toGeojson(): FeatureCollection<Polygon | LineString, AirspaceProperties> {
+        if (this._geojson == null) {
+            throw new Error('No parser result found. Parse something first.');
+        }
+
+        return this._geojson;
+    }
+
+    toOpenair(): string[] {
+        if (this._geojson == null) {
+            throw new Error('No parser result found. Parse something first.');
+        }
+
+        return geojsonToOpenair(this._geojson, { extendedFormat: this._config.extendedFormat });
     }
 
     protected enforceFileExists(filepath: string): void {
