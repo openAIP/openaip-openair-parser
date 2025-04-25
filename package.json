@@ -62,6 +62,7 @@
     },
     "dependencies": {
         "@openaip/coordinate-parser": "^0.14.0",
+        "@placemarkio/check-geojson": "^0.1.14",
         "@turf/turf": "^7.2.0",
         "@types/n-readlines": "^1.0.6",
         "@types/sprintf-js": "^1.1.4",
