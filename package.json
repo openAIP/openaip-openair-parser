@@ -61,7 +61,6 @@
         "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
     },
     "dependencies": {
-        "@mapbox/geojson-rewind": "^0.5.2",
         "@openaip/coordinate-parser": "^0.14.0",
         "@turf/turf": "^7.2.0",
         "@types/n-readlines": "^1.0.6",
