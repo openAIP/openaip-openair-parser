@@ -4,7 +4,6 @@ import appRoot from 'app-root-path';
 import type { FeatureCollection } from 'geojson';
 import { describe, expect, test } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
-import { OutputFormatEnum } from '../src/output-format.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
 import { Parser } from '../src/parser';
 
