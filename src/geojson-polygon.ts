@@ -22,12 +22,6 @@ export const GeoJsonPolygonSchema = z.object({
     bbox: z.array(z.number()).optional(),
 });
 
-export const GeoJsonPointSchema = z.object({
-    type: z.literal('Point'),
-    coordinates: GeoJsonPositionSchema,
-    bbox: z.array(z.number()).optional(),
-});
-
 const RemoveIntermediatePointsConfigSchema = z
     .object({ greedyVariance: z.number().int().optional() })
     .strict()
@@ -95,7 +89,7 @@ export function makeValid(polygon: Polygon): Polygon {
     }
     const { coordinates } = extractGeometry(polygon);
 
-    return createFixedPolygon(polygon);
+    return createFixedPolygon(coordinates);
 }
 
 /**
@@ -147,16 +141,21 @@ export function getLargestPolygon(polygons: Polygon[]): Polygon {
  * Tries to create a valid geometry without any self-intersections and holes from the input coordinates.
  * This does ALTER the geometry and will return a valid geometry instead. Depending on the size of self-intersections,
  * holes and other errors, the returned geometry may differ A LOT from the original one!
+ *
+ * This function only takes a list of coordinates which makes it possible to pass an invalid polygon geometry
+ * and return a valid polygon geometry instead. The function requires at least three coordinates. The 4th, i.e. the
+ * endpoint of the polygon, is automatically added to the list of coordinates if required.
  */
-export function createFixedPolygon(polygon: Polygon): Polygon {
-    validateSchema(polygon, GeoJsonPolygonSchema, { assert: true, name: 'polygon' });
-
-    // return if already valid
-    if (isValid(polygon)) {
-        return polygon;
-    }
+export function createFixedPolygon(coordinates: Position[]): Polygon {
+    validateSchema(coordinates, z.array(GeoJsonPositionSchema).min(3), { assert: true, name: 'polygon' });
 
     try {
+        // check if we have a closed polygon coordinates list - this is the least required constraint to create a polygon
+        if (coordinates[0] !== coordinates[coordinates.length - 1]) {
+            coordinates.push(coordinates[0]);
+        }
+        // create a polygon feature from the coordinates
+        const polygon = createPolygon([coordinates]).geometry;
         // prepare "raw" coordinates first before creating a polygon feature
         let fixedPolygon = removeDuplicatePoints(polygon);
         fixedPolygon = removeIntermediatePoints(fixedPolygon);
@@ -176,7 +175,6 @@ export function createFixedPolygon(polygon: Polygon): Polygon {
         invalid polygons, this will at least return a valid geometry though it will differ the most from the original one.
          */
         try {
-            const coordinates = polygon.coordinates[0];
             const pointFeatures: Feature<Point>[] = [];
             for (const coord of coordinates) {
                 pointFeatures.push(createPoint(coord));

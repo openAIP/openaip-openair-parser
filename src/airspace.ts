@@ -236,7 +236,7 @@ export class Airspace {
             // geometry is checked for other issues like self-intersections etc and other fixes are applied.
             if (fixGeometry === true) {
                 try {
-                    airspacePolygon = geojsonPolygon.createFixedPolygon(createPolygon([this._coordinates]).geometry);
+                    airspacePolygon = geojsonPolygon.createFixedPolygon(this._coordinates);
                 } catch (e) {
                     if (e instanceof SyntaxError) {
                         throw new ParserError({
@@ -259,7 +259,7 @@ export class Airspace {
         // apply geometry fixes if specified and required - fix will only happen if the geometry is invalid
         if (fixGeometry === true) {
             try {
-                airspacePolygon = geojsonPolygon.createFixedPolygon(airspacePolygon);
+                airspacePolygon = geojsonPolygon.createFixedPolygon(airspacePolygon.coordinates[0]);
             } catch (e) {
                 if (e instanceof SyntaxError) {
                     throw new ParserError({
