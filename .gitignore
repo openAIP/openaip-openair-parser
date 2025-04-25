@@ -7,3 +7,4 @@ secrets/
 .npmrc
 nohup.out
 var/
+.eslintcache
