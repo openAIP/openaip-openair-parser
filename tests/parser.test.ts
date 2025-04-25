@@ -27,162 +27,170 @@ describe('test parse complete airspace definition blocks', () => {
         const expectedJson = loadJsonFixture('handle-inline-comments.json');
         const openairParser = new Parser();
         const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
-
-        expect(success).toBe(true);
-        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
         (output as FeatureCollection).features.map((value) => delete value.id);
 
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
         expect(output).toEqual(expectedJson);
     });
     test('parse airspace with simple polygon geometry', () => {
         const expectedJson = loadJsonFixture('aspc-with-simple-polygon.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/polygon-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/polygon-airspace.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse airspace with simple polygon geometry into LINESTRING geometry', () => {
         const expectedJson = loadJsonFixture('simple-poly-to-linestring.json');
         const openairParser = new Parser({ outputGeometry: OutputGeometryEnum.LINESTRING });
-        openairParser.parse('./tests/fixtures/polygon-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/polygon-airspace.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        // remove feature id for comparison
+        expectedJson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse airspace with circular geometry', () => {
         const expectedJson = loadJsonFixture('aspc-with-circular-geometry.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/circular-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/circular-airspace.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
+    // TODO fix this !? Or is this an edge case that should be handled manually in the file , i.e. bigger radius!?
     test('parse laser beam airspace with very small circular geometry', () => {
         const expectedJson = loadJsonFixture('aspc-with-very-small-circular-geometry.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse airspace with clockwise arc geometry', () => {
         const expectedJson = loadJsonFixture('aspc-clockwise-arc.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/arc-clockwise-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/arc-clockwise-airspace.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse airspace with counter-clockwise arc geometry', () => {
         const expectedJson = loadJsonFixture('aspc-ccw-arc.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/arc-counterclockwise-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse(
+            './tests/fixtures/arc-counterclockwise-airspace.txt'
+        );
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse airspace with arc/angle geometry', () => {
         const expectedJson = loadJsonFixture('aspc-arc-angle.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/arc-angle-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/arc-angle-airspace.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse airspace starting with clockwise and counter-clockwise arc definition', () => {
         const expectedJson = loadJsonFixture('aspc-cw-ccw-start.json');
         const openairParser = new Parser({ validateGeometry: false, fixGeometry: false });
-        openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse(
+            './tests/fixtures/arc-clockwise-counterclockwise-airspace.txt'
+        );
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse airspace starting with arc definition', () => {
         const expectedJson = loadJsonFixture('aspc-arc-start.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/arc-first-airspace.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/arc-first-airspace.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse multiple airspace definition blocks', () => {
         const expectedJson = loadJsonFixture('aspc-multiple-blocks.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.id);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse custom airway definition', () => {
         const expectedJson = loadJsonFixture('aspc-awy.json');
         const openairParser = new Parser();
-        openairParser.parse('./tests/fixtures/airway.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/airway.txt');
         // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
         expectedJson.features.map((value) => delete value.geometry);
-        geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.geometry);
+        (output as FeatureCollection).features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.geometry);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
     test('parse extended format tags', () => {
         const expectedJson = loadJsonFixture('aspc-extended-format-tags.json');
         const openairParser = new Parser({ extendedFormat: true });
-        openairParser.parse('./tests/fixtures/extended-format-tags.txt');
-        const geojson = openairParser.toGeojson();
-
+        const { success, outputFormat, output } = openairParser.parse('./tests/fixtures/extended-format-tags.txt');
         // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
         expectedJson.features.map((value) => delete value.geometry);
-        geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.geometry);
+        (output as FeatureCollection).features.map((value) => delete value.id);
+        (output as FeatureCollection).features.map((value) => delete value.geometry);
 
-        expect(geojson).toEqual(expectedJson);
+        expect(success).toBe(true);
+        expect(outputFormat).toBe(OutputFormatEnum.GEOJSON);
+        expect(output).toEqual(expectedJson);
     });
 });
 
