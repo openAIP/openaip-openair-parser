@@ -155,7 +155,7 @@ export class Airspace {
             ...config,
         };
         // first token is always an AcToken
-        const acToken: AcToken = this._consumedTokens.shift() as AcToken;
+        const acToken: AcToken = this._consumedTokens[0] as AcToken;
         const { lineNumber } = acToken.tokenized;
 
         if (
