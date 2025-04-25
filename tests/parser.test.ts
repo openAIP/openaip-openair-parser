@@ -401,9 +401,10 @@ describe('test formats', () => {
         // read from expected file and remove last "blank line" in file (automatically added by IDE)
         const expected = fs.readFileSync('./tests/fixtures/formats/expected-output-openair.txt', 'utf-8').split('\n');
         const openairParser = new Parser({ fixGeometry: true });
-        openairParser.parse('./tests/fixtures/formats/in-output-openair.txt');
+        const { success } = openairParser.parse('./tests/fixtures/formats/in-output-openair.txt');
         const openair = openairParser.toOpenair();
 
+        expect(success).toBe(true);
         // make sure to also take "last blank line added by IDE" into account
         expect(removeBlanksAtEof(openair).join('\n')).toEqual(removeBlanksAtEof(expected).join('\n'));
     });
