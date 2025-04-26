@@ -55,7 +55,7 @@
         "test": "vitest run --coverage",
         "tsc:run": "tsc --noEmit",
         "lint": "eslint src --cache",
-        "format": "prettier --write .",
+        "format": "prettier --write src/ tests/",
         "run-security-audit": "npm audit --omit=dev",
         "update-packages": "ncu --target minor --upgrade && npm install && npm audit fix",
         "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
