@@ -24,7 +24,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson.features.length).toEqual(0);
     });
     test('handle inline comments', () => {
-        const expectedJson = loadJsonFixture('handle-inline-comments.json');
+        const expectedJson = loadParserJsonResult('handle-inline-comments.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
         const geojson = openairParser.toGeojson();
@@ -36,7 +36,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with simple polygon geometry', () => {
-        const expectedJson = loadJsonFixture('aspc-with-simple-polygon.json');
+        const expectedJson = loadParserJsonResult('aspc-with-simple-polygon.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/polygon-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -50,7 +50,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with simple polygon geometry into LINESTRING geometry', () => {
-        const expectedJson = loadJsonFixture('simple-poly-to-linestring.json');
+        const expectedJson = loadParserJsonResult('simple-poly-to-linestring.json');
         const openairParser = new Parser({ outputGeometry: OutputGeometryEnum.LINESTRING });
         const { success } = openairParser.parse('./tests/fixtures/polygon-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -64,7 +64,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with circular geometry', () => {
-        const expectedJson = loadJsonFixture('aspc-with-circular-geometry.json');
+        const expectedJson = loadParserJsonResult('aspc-with-circular-geometry.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/circular-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -76,7 +76,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with clockwise arc geometry', () => {
-        const expectedJson = loadJsonFixture('aspc-clockwise-arc.json');
+        const expectedJson = loadParserJsonResult('aspc-clockwise-arc.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/arc-clockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -88,7 +88,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with counter-clockwise arc geometry', () => {
-        const expectedJson = loadJsonFixture('aspc-ccw-arc.json');
+        const expectedJson = loadParserJsonResult('aspc-ccw-arc.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/arc-counterclockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -100,7 +100,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with arc/angle geometry', () => {
-        const expectedJson = loadJsonFixture('aspc-arc-angle.json');
+        const expectedJson = loadParserJsonResult('aspc-arc-angle.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/arc-angle-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -112,7 +112,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with clockwise and counter-clockwise arc definition', () => {
-        const expectedJson = loadJsonFixture('aspc-cw-ccw-start.json');
+        const expectedJson = loadParserJsonResult('aspc-cw-ccw-start.json');
         const openairParser = new Parser({ validateGeometry: false, fixGeometry: false });
         const { success } = openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -125,7 +125,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with arc definition', () => {
-        const expectedJson = loadJsonFixture('aspc-arc-start.json');
+        const expectedJson = loadParserJsonResult('aspc-arc-start.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/arc-first-airspace.txt');
         const geojson = openairParser.toGeojson();
@@ -137,7 +137,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse multiple airspace definition blocks', () => {
-        const expectedJson = loadJsonFixture('aspc-multiple-blocks.json');
+        const expectedJson = loadParserJsonResult('aspc-multiple-blocks.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
         const geojson = openairParser.toGeojson();
@@ -149,7 +149,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse custom airway definition', () => {
-        const expectedJson = loadJsonFixture('aspc-awy.json');
+        const expectedJson = loadParserJsonResult('aspc-awy.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/airway.txt');
         const geojson = openairParser.toGeojson();
@@ -163,7 +163,7 @@ describe('test parse complete airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse extended format tags', () => {
-        const expectedJson = loadJsonFixture('aspc-extended-format-tags.json');
+        const expectedJson = loadParserJsonResult('aspc-extended-format-tags.json');
         const openairParser = new Parser({ extendedFormat: true });
         const { success } = openairParser.parse('./tests/fixtures/extended-format-tags.txt');
         const geojson = openairParser.toGeojson();
@@ -254,7 +254,7 @@ describe('test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace with intersection converted into LINESTRING geometry return geometry', () => {
-        const expectedJson = loadJsonFixture('invalid-intersect-to-linestring.json');
+        const expectedJson = loadParserJsonResult('invalid-intersect-to-linestring.json');
         const openairParser = new Parser({ outputGeometry: OutputGeometryEnum.LINESTRING });
         const { success } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
         const geojson = openairParser.toGeojson();
@@ -407,7 +407,7 @@ describe('test formats', () => {
     });
 });
 
-function loadJsonFixture(filename: string) {
+function loadParserJsonResult(filename: string) {
     const filePath = path.resolve(`${appRoot}/tests/fixtures/results/${filename}`);
     const fileContent = fs.readFileSync(filePath);
 
