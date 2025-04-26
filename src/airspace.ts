@@ -34,15 +34,15 @@ export type Altitude = { value: number; unit: string; referenceDatum: string };
 export type Frequency = { value: string; name?: string };
 
 export type AirspaceProperties = {
-    id: string;
+    id?: string;
     name: string;
-    type: string | undefined;
+    type?: string;
     class: string;
     upperCeiling: Altitude;
     lowerCeiling: Altitude;
-    frequency: Partial<Frequency> | undefined;
-    transponderCode: number | undefined;
-    openair?: string | undefined;
+    frequency?: Partial<Frequency>;
+    transponderCode?: number;
+    openair?: string;
 };
 
 export type AirspaceFeature = Feature<Polygon | LineString, AirspaceProperties>;

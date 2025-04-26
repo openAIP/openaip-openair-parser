@@ -102,7 +102,7 @@ Outputs GeoJSON FeatureCollection:
                     "value": "123.505",
                     "name": "Todendorf Information"
                 },
-                "transponderCode": "7000",
+                "transponderCode": 7000,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
