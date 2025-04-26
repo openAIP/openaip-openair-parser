@@ -230,7 +230,6 @@ export class AirspaceFactory {
      */
     protected validateTokenOrder(): void {
         let startingAcTagFound = false;
-        // @ts-expect-error downlevel iteration flag required
         for (const [index, currentToken] of this._tokens.entries()) {
             const maxLookAheadIndex = this._tokens.length - 1;
             const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).tokenized as Tokenized;
@@ -294,7 +293,6 @@ export class AirspaceFactory {
         const requiredTokensInventory: TokenType[] = [];
         let definitionBlockStart: number | undefined = undefined;
 
-        // @ts-expect-error downlevel iteration flag required
         for (const [index, currentToken] of this._tokens.entries()) {
             const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).tokenized as Tokenized;
             if (index === 0) {
