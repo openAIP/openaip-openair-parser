@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { Airspace, type Altitude } from './airspace.js';
 import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error';
+import { AaToken } from './tokens/aa-token.js';
 import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
@@ -20,6 +21,7 @@ import { AhToken } from './tokens/ah-token.js';
 import { AiToken } from './tokens/ai-token.js';
 import { AlToken } from './tokens/al-token.js';
 import { AnToken } from './tokens/an-token.js';
+import { AxToken } from './tokens/ax-token.js';
 import { AyToken } from './tokens/ay-token.js';
 import { BlankToken } from './tokens/blank-token.js';
 import { CommentToken } from './tokens/comment-token.js';
@@ -30,7 +32,6 @@ import { DpToken } from './tokens/dp-token.js';
 import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
 import type { TokenType } from './tokens/token-type.enum.js';
-import { AxToken } from './tokens/ax-token.js';
 import { VdToken } from './tokens/vd-token.js';
 import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
@@ -209,7 +210,10 @@ export class AirspaceFactory {
                 this.handleAgToken(token as AgToken);
                 break;
             case AxToken.type:
-                this.handleTpToken(token as AxToken);
+                this.handleAxToken(token as AxToken);
+                break;
+            case AaToken.type:
+                this.handleAaToken(token as AaToken);
                 break;
             default:
                 throw new ParserError({ lineNumber, errorMessage: `Unknown token '${type}'` });
@@ -619,11 +623,22 @@ export class AirspaceFactory {
         }
     }
 
-    protected handleTpToken(token: AxToken): void {
+    protected handleAxToken(token: AxToken): void {
         const { metadata } = token.tokenized;
         const { code } = metadata;
 
         this._airspace.transponderCode = code;
+    }
+
+    protected handleAaToken(token: AaToken): void {
+        const { metadata } = token.tokenized;
+        const { activation } = metadata;
+
+        // initialize activation times if not already done
+        if (this._airspace.activationTimes == null) {
+            this._airspace.activationTimes = [];
+        }
+        this._airspace.activationTimes.push(activation);
     }
 
     protected toArrayLike(coordinate: Coordinate): Position {

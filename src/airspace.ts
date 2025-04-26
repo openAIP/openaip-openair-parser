@@ -33,6 +33,11 @@ export type Altitude = { value: number; unit: string; referenceDatum: string };
 
 export type Frequency = { value: string; name?: string };
 
+export type Activation = {
+    start?: string;
+    end?: string;
+};
+
 export type AirspaceProperties = {
     id?: string;
     name: string;
@@ -42,6 +47,7 @@ export type AirspaceProperties = {
     lowerCeiling: Altitude;
     frequency?: Partial<Frequency>;
     transponderCode?: number;
+    activationTimes?: Activation[];
     openair?: string;
 };
 
@@ -61,6 +67,7 @@ export class Airspace {
     protected _type: string | undefined = undefined;
     protected _frequency: Partial<Frequency> | undefined = undefined;
     protected _transponderCode: number | undefined = undefined;
+    protected _activationTimes: Activation[] | undefined;
     protected _coordinates: Position[] = [];
 
     set consumedTokens(value: IToken[]) {
@@ -143,6 +150,14 @@ export class Airspace {
         this._transponderCode = value;
     }
 
+    get activationTimes(): Activation[] | undefined {
+        return this._activationTimes;
+    }
+
+    set activationTimes(value: Activation[] | undefined) {
+        this._activationTimes = value;
+    }
+
     asGeoJson(config: AsGeojsonConfig): AirspaceFeature {
         validateSchema(config, AsGeojsonConfigSchema, { assert: true, name: 'config' });
 
@@ -181,6 +196,7 @@ export class Airspace {
             type: this._type as string,
             frequency: this._frequency,
             transponderCode: this._transponderCode,
+            activationTimes: this._activationTimes,
             upperCeiling: this._upperCeiling as Altitude,
             lowerCeiling: this._lowerCeiling as Altitude,
         });

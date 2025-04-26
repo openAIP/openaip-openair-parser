@@ -47,6 +47,12 @@ export class CommentToken extends AbstractLineToken<undefined> {
             TokenTypeEnum.VD,
             TokenTypeEnum.DB,
             TokenTypeEnum.DC,
+            TokenTypeEnum.AX,
+            TokenTypeEnum.AA,
+            TokenTypeEnum.AY,
+            TokenTypeEnum.AI,
+            TokenTypeEnum.AF,
+            TokenTypeEnum.AG,
             TokenTypeEnum.EOF,
             TokenTypeEnum.SKIPPED,
         ];

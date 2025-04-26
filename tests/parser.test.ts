@@ -162,10 +162,27 @@ describe('test parse complete airspace definition blocks', () => {
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
+});
+
+describe('test extended format', () => {
     test('parse extended format tags', () => {
         const expectedJson = loadParserJsonResult('aspc-extended-format-tags.json');
         const openairParser = new Parser({ extendedFormat: true });
         const { success } = openairParser.parse('./tests/fixtures/extended-format-tags.txt');
+        const geojson = openairParser.toGeojson();
+        // remove unnecessary props from expected json
+        expectedJson.features.map((value) => delete value.id);
+        expectedJson.features.map((value) => delete value.geometry);
+        geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.geometry);
+
+        expect(success).toBe(true);
+        expect(geojson).toEqual(expectedJson);
+    });
+    test('parse extended format activation times', () => {
+        const expectedJson = loadParserJsonResult('aspc-activation-window-extended-format.json');
+        const openairParser = new Parser({ extendedFormat: true });
+        const { success, error } = openairParser.parse('./tests/fixtures/activation-window-extended-format.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
@@ -319,6 +336,19 @@ describe('test parse invalid airspace definition blocks', () => {
             "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent."
         );
     });
+    test('parse laser beam airspace with too small circular geometry', () => {
+        const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            'Error found at line 6: The polygon dimensions are too small to create a polygon.'
+        );
+    });
+});
+
+describe('test parse invalid airspace extended format definition blocks', () => {
     test('single airspace with AG and missing AF tag', () => {
         const openairParser = new Parser({ extendedFormat: true });
         const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-ag-but-missing-af.txt');
@@ -357,16 +387,6 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(error).toBeDefined();
         expect(error.message).toEqual(
             'Error found at line 1: Airspace definition block is missing required tokens: AY'
-        );
-    });
-    test('parse laser beam airspace with too small circular geometry', () => {
-        const openairParser = new Parser();
-        const { success, error } = openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
-
-        expect(success).toBe(false);
-        expect(error).toBeDefined();
-        expect(error.message).toEqual(
-            'Error found at line 6: The polygon dimensions are too small to create a polygon.'
         );
     });
 });

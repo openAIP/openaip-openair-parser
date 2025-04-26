@@ -1,7 +1,7 @@
 # OpenAIR Format Parser
 
 A highly configurable [OpenAIR](http://www.winpilot.com/usersguide/userairspace.asp) parser for Node. The parser can also
-be configured to validate and fix defined geometries. The parser supports the **original** v1 and the **extended** v2 OpenAIR format.
+be configured to validate and fix defined geometries. The parser supports parsing the **original** v1 and the **extended** v2 OpenAIR format.
 For more informations on the v2 extended format, please see the Naviter format specification here: [https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md).
 
 ### Reads **original OpenAIR** airspace definitions with `extendedFormat: false`:

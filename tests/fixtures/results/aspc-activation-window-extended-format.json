@@ -1,0 +1,45 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+                "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "value": "123.505",
+                    "name": "Ground Station Name"
+                },
+                "transponderCode": 7000,
+                "activationTimes": [
+                    {
+                        "start": "2025-01-01T12:00:00.000Z",
+                        "end": "2025-01-01T13:00:00.000Z"
+                    },
+                    {
+                        "start": "2025-01-01T14:00:00.000Z",
+                        "end": "2025-01-01T15:00:00.000Z"
+                    },
+                    {
+                        "end": "2025-02-02T12:00:00.000Z"
+                    },
+                    {
+                        "start": "2025-03-03T11:00:00.000Z"
+                    }
+                ],
+                "upperCeiling": {
+                    "value": 40000,
+                    "unit": "FT",
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
+                }
+            }
+        }
+    ]
+}

@@ -52,6 +52,7 @@ export class AfToken extends AbstractLineToken<Metadata> {
             TokenTypeEnum.VX,
             TokenTypeEnum.VD,
             TokenTypeEnum.AX,
+            TokenTypeEnum.AA,
         ];
     }
 }
