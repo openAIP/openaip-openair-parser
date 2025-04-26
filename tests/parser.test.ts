@@ -327,14 +327,14 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(error).toBeDefined();
         expect(error.message).toEqual("Error found at line 5: Token 'AG' is present but token 'AF' is missing.");
     });
-    test('single airspace with invalid TP tag', () => {
+    test('single airspace with invalid AX tag', () => {
         const openairParser = new Parser({ extendedFormat: true });
         const { success, error } = openairParser.parse('./tests/fixtures/invalid-transponder-code.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error.message).toEqual(
-            "Error found at line 9: Error found at line 9: Invalid transponder code string 'TP 7891'"
+            "Error found at line 9: Error found at line 9: Invalid transponder code string 'AX 7891'"
         );
     });
     test('single airspace with missing AL and AH tags', () => {

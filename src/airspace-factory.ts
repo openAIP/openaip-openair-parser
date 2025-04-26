@@ -30,7 +30,7 @@ import { DpToken } from './tokens/dp-token.js';
 import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
 import type { TokenType } from './tokens/token-type.enum.js';
-import { TpToken } from './tokens/tp-token.js';
+import { AxToken } from './tokens/ax-token.js';
 import { VdToken } from './tokens/vd-token.js';
 import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
@@ -208,8 +208,8 @@ export class AirspaceFactory {
             case AgToken.type:
                 this.handleAgToken(token as AgToken);
                 break;
-            case TpToken.type:
-                this.handleTpToken(token as TpToken);
+            case AxToken.type:
+                this.handleTpToken(token as AxToken);
                 break;
             default:
                 throw new ParserError({ lineNumber, errorMessage: `Unknown token '${type}'` });
@@ -619,7 +619,7 @@ export class AirspaceFactory {
         }
     }
 
-    protected handleTpToken(token: TpToken): void {
+    protected handleTpToken(token: AxToken): void {
         const { metadata } = token.tokenized;
         const { code } = metadata;
 

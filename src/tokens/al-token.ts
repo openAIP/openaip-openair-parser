@@ -63,7 +63,7 @@ export class AlToken extends AbstractAltitudeToken {
             TokenTypeEnum.VX,
             TokenTypeEnum.SKIPPED,
             TokenTypeEnum.VD,
-            TokenTypeEnum.TP,
+            TokenTypeEnum.AX,
         ];
     }
 }

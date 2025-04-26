@@ -18,7 +18,7 @@ export const TokenTypeEnum = {
     DC: 'DC',
     DP: 'DP',
     DY: 'DY',
-    TP: 'TP',
+    AX: 'AX',
     VD: 'VD',
     VW: 'VW',
     VX: 'VX',

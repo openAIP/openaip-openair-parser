@@ -6,7 +6,7 @@ AH 40000ft MSL
 AL GND
 AF 123.505
 * invalid code
-TP 7891
+AX 7891
 AG Ground Station Name
 DP 54:25:00 N 010:40:00 E
 DP 54:25:00 N 010:50:00 E

@@ -7,29 +7,29 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 type Metadata = { code: number };
 
 /**
- * Tokenizes "TP" token value which is a transponder code string "7000"
+ * Tokenizes "AX" token value which is a transponder code string "7000"
  */
-export class TpToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.TP;
+export class AxToken extends AbstractLineToken<Metadata> {
+    static type: TokenType = TokenTypeEnum.AX;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
         validateSchema(line, z.string(), { assert: true, name: 'line' });
 
-        // is TP line e.g. "TP 7000"
-        return /^TP\s+.*$/.test(line);
+        // is AX line e.g. "AX 7000"
+        return /^AX\s+.*$/.test(line);
     }
 
     tokenize(line: string, lineNumber: number): IToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new TpToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new AxToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
         // keep original line
         token._line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
-        const linePartCode = line.replace(/^TP\s+/, '');
+        const linePartCode = line.replace(/^AX\s+/, '');
         // validate transponder code string
         const isValidCode = /^[0-7]{4}$/.test(linePartCode);
         if (isValidCode === false) {
@@ -41,7 +41,7 @@ export class TpToken extends AbstractLineToken<Metadata> {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        // no extended format option handling, TP token only in extended format
+        // no extended format option handling, AX token only in extended format
         return [
             TokenTypeEnum.COMMENT,
             TokenTypeEnum.AG,

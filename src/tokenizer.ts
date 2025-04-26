@@ -22,7 +22,7 @@ import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
 import { SkippedToken } from './tokens/skipped-token.js';
 import { TokenTypeEnum, type TokenType } from './tokens/token-type.enum.js';
-import { TpToken } from './tokens/tp-token.js';
+import { AxToken } from './tokens/ax-token.js';
 import { VdToken } from './tokens/vd-token.js';
 import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
@@ -125,7 +125,7 @@ export class Tokenizer {
             new AyToken({ tokenTypes: TOKEN_TYPES, extendedFormat, extendedFormatTypes }),
             new AfToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
             new AgToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new TpToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new AxToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
         ];
     }
 

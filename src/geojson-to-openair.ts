@@ -33,7 +33,16 @@ export function geojsonToOpenair(
     const openair = [];
 
     for (const geojson of featureCollection.features) {
-        const { name, class: airspaceClass, lowerCeiling, upperCeiling, id, type, frequency } = geojson.properties;
+        const {
+            name,
+            class: airspaceClass,
+            lowerCeiling,
+            upperCeiling,
+            id,
+            type,
+            frequency,
+            transponderCode,
+        } = geojson.properties;
         const { value: frequencyValue, name: frequencyName } = frequency || {};
 
         // if extended format is set as output format, at least inject an AI token if not exists
@@ -60,6 +69,8 @@ export function geojsonToOpenair(
         if (extendedFormat && frequencyValue != null) openair.push(`AF ${frequencyValue}`);
         // AG (extended format) - optional tag
         if (extendedFormat && frequencyName != null) openair.push(`AG ${frequencyName}`);
+        // AX (extended format) - optional tag
+        if (extendedFormat && transponderCode != null) openair.push(`AX ${transponderCode}`);
         // AL
         openair.push(`AL ${toAltLimit(lowerCeiling)}`);
         // AH

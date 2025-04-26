@@ -45,7 +45,7 @@ export class AiToken extends AbstractLineToken<Metadata> {
             TokenTypeEnum.AL,
             TokenTypeEnum.AH,
             TokenTypeEnum.SKIPPED,
-            TokenTypeEnum.TP,
+            TokenTypeEnum.AX,
         ];
     }
 }

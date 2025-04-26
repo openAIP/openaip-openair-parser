@@ -49,7 +49,7 @@ export class AnToken extends AbstractLineToken<Metadata> {
                 TokenTypeEnum.AI,
                 TokenTypeEnum.AF,
                 TokenTypeEnum.AG,
-                TokenTypeEnum.TP,
+                TokenTypeEnum.AX,
             ] as TokenType[]);
         }
 
