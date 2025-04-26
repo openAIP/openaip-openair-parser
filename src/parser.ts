@@ -100,9 +100,11 @@ export class Parser {
     parse(filepath: string): ParserResult {
         validateSchema(filepath, z.string().nonempty(), { assert: true, name: 'filepath' });
 
+        // hard fail if file does not exist
+        this.enforceFileExists(filepath);
+
         try {
             this.reset();
-            this.enforceFileExists(filepath);
             /*
             Tokenizes the file contents into a list of tokens and a list of syntax
             errors encountered during tokenization. Each token represents a single line and holds a
