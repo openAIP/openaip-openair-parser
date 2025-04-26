@@ -437,25 +437,13 @@ export class AirspaceFactory {
         geometry basically does not change at all. To mitigate returning invalid geometries, remove duplicates with a specified buffer
         after the circle is created.
         */
-        const processed = [];
-        for (const coord of coordinates) {
-            const exists = processed.find((value) => {
-                // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
-                const minAllowedDistance = 200 / 1000;
-                const distance = calcDistance(value, coord, { units: 'kilometers' });
-
-                return distance <= minAllowedDistance;
-            });
-            if (exists == null) {
-                processed.push(coord);
-            }
-        }
+        const refinedCoordinates = this.removeNearestCoordinates(coordinates, { minAllowedDistance: 200 });
         // make sure that the last coordinate equals the first coordinate - i.e. close the polygon
-        if (processed[0] !== processed[processed.length - 1]) {
-            processed.push(processed[0]);
+        if (refinedCoordinates[0] !== refinedCoordinates[refinedCoordinates.length - 1]) {
+            refinedCoordinates.push(refinedCoordinates[0]);
         }
         // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
-        this._airspace.coordinates = processed;
+        this._airspace.coordinates = refinedCoordinates;
     }
 
     /**
@@ -510,20 +498,8 @@ export class AirspaceFactory {
         geometry basically does not change at all. To mitigate returning invalid geometries, remove duplicates with a specified buffer
         after the circle is created.
         */
-        const processed = [];
-        for (const coord of arcCoordinates) {
-            const exists = processed.find((value) => {
-                // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
-                const minAllowedDistance = 200 / 1000;
-                const distance = calcDistance(value, coord, { units: 'kilometers' });
-
-                return distance <= minAllowedDistance;
-            });
-            if (exists == null) {
-                processed.push(coord);
-            }
-        }
-        this._airspace.coordinates = this._airspace.coordinates.concat(processed);
+        const refinedCoordinates = this.removeNearestCoordinates(arcCoordinates, { minAllowedDistance: 200 });
+        this._airspace.coordinates = this._airspace.coordinates.concat(refinedCoordinates);
     }
 
     /**
@@ -739,6 +715,26 @@ export class AirspaceFactory {
                 }
             }
         }
+    }
+
+    protected removeNearestCoordinates(coordinates: Position[], config: { minAllowedDistance?: number }): Position[] {
+        const defaultConfig = { minAllowedDistance: 200 };
+        const { minAllowedDistance } = { ...defaultConfig, ...config };
+        const processed = [];
+        for (const coord of coordinates) {
+            const exists = processed.find((value) => {
+                // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
+                const bufferDistance = minAllowedDistance / 1000;
+                const distance = calcDistance(value, coord, { units: 'kilometers' });
+
+                return distance <= bufferDistance;
+            });
+            if (exists == null) {
+                processed.push(coord);
+            }
+        }
+
+        return processed;
     }
 
     protected reset() {
