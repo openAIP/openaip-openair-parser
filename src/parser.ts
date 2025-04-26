@@ -3,11 +3,10 @@ import { featureCollection as createFeatureCollection } from '@turf/turf';
 import type { FeatureCollection, LineString, Polygon } from 'geojson';
 import { z } from 'zod';
 import { AirspaceFactory } from './airspace-factory.js';
-import type { Airspace, AirspaceFeature, AirspaceProperties } from './airspace.js';
+import type { Airspace, AirspaceProperties } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
-import { OutputFormatEnum, type OutputFormat } from './output-format.enum.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
 import type { ParserError } from './parser-error.js';
 import { Tokenizer } from './tokenizer.js';
@@ -38,6 +37,8 @@ export type Config = {
     unlimited?: number;
     // Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
     geometryDetail?: number;
+    // Defines the minimum distance between two points in meters. If two points are closer than this value, they will be merged into one point. Defaults to 0.
+    consumeDuplicateBuffer?: number;
     // If true, the GeoJson features are validated. Parser will throw an error if an invalid geometry is found. Defaults to true.
     validateGeometry?: boolean;
     // If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
@@ -63,6 +64,7 @@ export const ConfigSchema = z
         extendedFormatTypes: z.array(z.string().min(1)).optional(),
         unlimited: z.number().int().min(1).optional(),
         geometryDetail: z.number().int().min(1).optional(),
+        consumeDuplicateBuffer: z.number().min(0).optional(),
         validateGeometry: z.boolean().optional(),
         fixGeometry: z.boolean().optional(),
         includeOpenair: z.boolean().optional(),
@@ -74,19 +76,6 @@ export const ConfigSchema = z
     .strict()
     .optional()
     .describe('ConfigSchema');
-
-export type ParseConfig = {
-    // by default, uses GeoJSON as output format
-    outputFormat: OutputFormat;
-};
-
-export const ParseConfigSchema = z
-    .object({
-        outputFormat: z.nativeEnum(OutputFormatEnum).optional(),
-    })
-    .strict()
-    .optional()
-    .describe('ParseConfigSchema');
 
 export type ParserResult = { success: true; error?: never } | { success: false; error: ParserError };
 
@@ -108,14 +97,8 @@ export class Parser {
         this._config = { ...DefaultParserConfig, ...config } as Required<Config>;
     }
 
-    parse(filepath: string, config?: ParseConfig): ParserResult {
+    parse(filepath: string): ParserResult {
         validateSchema(filepath, z.string().nonempty(), { assert: true, name: 'filepath' });
-        validateSchema(config, ParseConfigSchema, { assert: true, name: 'config' });
-
-        const defaultConfig = {
-            outputFormat: OutputFormatEnum.GEOJSON,
-        };
-        const { outputFormat } = { ...defaultConfig, ...config } as Required<ParseConfig>;
 
         try {
             this.reset();
@@ -178,6 +161,7 @@ export class Parser {
                     fixGeometry: this._config.fixGeometry,
                     includeOpenair: this._config.includeOpenair,
                     outputGeometry: this._config.outputGeometry,
+                    consumeDuplicateBuffer: this._config.consumeDuplicateBuffer,
                 });
             });
             // create the feature collection

@@ -8,6 +8,7 @@ type DefaultConfig = {
     extendedFormatTypes: string[];
     unlimited: number;
     geometryDetail: number;
+    consumeDuplicateBuffer: number;
     validateGeometry: boolean;
     fixGeometry: boolean;
     outputGeometry: OutputGeometry;
@@ -53,6 +54,8 @@ export const DefaultParserConfig: DefaultConfig = {
     unlimited: 999,
     // Defines the level of detail (smoothness) of arc/circular geometries.
     geometryDetail: 100,
+    // Defines the minimum distance between two points in meters. If two points are closer than this value, they will be merged into one point. Defaults to 0.
+    consumeDuplicateBuffer: 0,
     // If true, validates each built airspace geometry to be valid/simple geometry - also checks for self intersections.
     validateGeometry: true,
     // If true, tries to fix an invalid geometry - note that this potentially alters the original airspace geometry!

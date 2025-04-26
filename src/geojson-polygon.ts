@@ -28,12 +28,6 @@ const RemoveIntermediatePointsConfigSchema = z
     .optional()
     .describe('Config');
 
-const RemoveDuplicatePointsConfigSchema = z
-    .object({ buffer: z.number().int().optional() })
-    .strict()
-    .optional()
-    .describe('Config');
-
 /**
  * Checks if a given GeoJSON geometry is valid.
  */
@@ -146,8 +140,22 @@ export function getLargestPolygon(polygons: Polygon[]): Polygon {
  * and return a valid polygon geometry instead. The function requires at least three coordinates. The 4th, i.e. the
  * endpoint of the polygon, is automatically added to the list of coordinates if required.
  */
-export function createFixedPolygon(coordinates: Position[]): Polygon {
+export function createFixedPolygon(coordinates: Position[], config?: { consumeDuplicateBuffer?: number }): Polygon {
     validateSchema(coordinates, z.array(GeoJsonPositionSchema).min(3), { assert: true, name: 'polygon' });
+    validateSchema(
+        config,
+        z
+            .object({ buffer: z.number().int().min(0).optional() })
+            .strict()
+            .optional(),
+        {
+            assert: true,
+            name: 'config',
+        }
+    );
+
+    const defaultConfig = { consumeDuplicateBuffer: 0 };
+    const { consumeDuplicateBuffer } = { ...defaultConfig, ...config };
 
     try {
         // check if we have a closed polygon coordinates list - this is the least required constraint to create a polygon
@@ -157,7 +165,7 @@ export function createFixedPolygon(coordinates: Position[]): Polygon {
         // create a polygon feature from the coordinates
         const polygon = createPolygon([coordinates]).geometry;
         // prepare "raw" coordinates first before creating a polygon feature
-        let fixedPolygon = removeDuplicatePoints(polygon);
+        let fixedPolygon = removeDuplicatePoints(polygon, { consumeDuplicateBuffer });
         fixedPolygon = removeIntermediatePoints(fixedPolygon);
         const unkinkedFeatureCollection = unkinkPolygon(fixedPolygon) as FeatureCollection<Polygon>;
         // convert to list of polygon geometries
@@ -199,22 +207,33 @@ export function withRightHandRule(polygon: Polygon): Polygon {
  * Removes high duplicate coordinates by default. Optional can be configured to also remove a coordinate if
  * another coordinate is within a defined buffer in meters.
  */
-export function removeDuplicatePoints(polygon: Polygon, config?: { buffer?: number }): Polygon {
+export function removeDuplicatePoints(polygon: Polygon, config?: { consumeDuplicateBuffer?: number }): Polygon {
     validateSchema(polygon, GeoJsonPolygonSchema, { assert: true, name: 'polygon' });
-    validateSchema(config, RemoveDuplicatePointsConfigSchema, { assert: true, name: 'config' });
+    validateSchema(
+        config,
+        z
+            .object({ consumeDuplicateBuffer: z.number().int().min(0).optional() })
+            .strict()
+            .optional(),
+        {
+            assert: true,
+            name: 'config',
+        }
+    );
 
-    const defaultConfig = { buffer: 200 };
-    const { buffer } = { ...defaultConfig, ...config };
+    const defaultConfig = { consumeDuplicateBuffer: 0 };
+    const { consumeDuplicateBuffer } = { ...defaultConfig, ...config };
 
     const coordinates = polygon.coordinates[0];
     if (coordinates.length < 4) {
         throw new Error('Polygon must at least have four coordinates');
     }
+
     const processed = [];
     for (const coord of coordinates) {
         const exists = processed.find((value) => {
             // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
-            const minAllowedDistance = buffer / 1000;
+            const minAllowedDistance = consumeDuplicateBuffer / 1000;
             const distance = calcDistance(value, coord, { units: 'kilometers' });
 
             return distance < minAllowedDistance;

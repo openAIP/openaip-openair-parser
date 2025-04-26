@@ -10,22 +10,24 @@ import type { IToken, Tokenized } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
 import { validateSchema } from './validate-schema.js';
 
-export type Config = {
+export type AsGeojsonConfig = {
     validateGeometry: boolean;
     fixGeometry: boolean;
     includeOpenair: boolean;
     outputGeometry: OutputGeometry;
+    consumeDuplicateBuffer: number;
 };
 
-export const ConfigSchema = z
+export const AsGeojsonConfigSchema = z
     .object({
-        validateGeometry: z.boolean().optional(),
-        fixGeometry: z.boolean().optional(),
-        includeOpenair: z.boolean().optional(),
-        outputGeometry: z.enum(['POLYGON', 'LINESTRING']).optional(),
+        validateGeometry: z.boolean(),
+        fixGeometry: z.boolean(),
+        includeOpenair: z.boolean(),
+        outputGeometry: z.enum(['POLYGON', 'LINESTRING']),
+        consumeDuplicateBuffer: z.number().min(0),
     })
     .strict()
-    .describe('ConfigSchema');
+    .describe('AsGeojsonConfigSchema');
 
 export type Altitude = { value: number; unit: string; referenceDatum: string };
 
@@ -141,19 +143,10 @@ export class Airspace {
         this._transponderCode = value;
     }
 
-    asGeoJson(config: Config): AirspaceFeature {
-        validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
+    asGeoJson(config: AsGeojsonConfig): AirspaceFeature {
+        validateSchema(config, AsGeojsonConfigSchema, { assert: true, name: 'config' });
 
-        const defaultConfig = {
-            validateGeometry: false,
-            fixGeometry: false,
-            includeOpenair: false,
-            outputGeometry: OutputGeometryEnum.POLYGON,
-        };
-        const { validateGeometry, fixGeometry, includeOpenair, outputGeometry } = {
-            ...defaultConfig,
-            ...config,
-        };
+        const { validateGeometry, fixGeometry, includeOpenair, outputGeometry, consumeDuplicateBuffer } = config;
         // first token is always an AcToken
         const acToken: AcToken = this._consumedTokens[0] as AcToken;
         const { lineNumber } = acToken.tokenized;
@@ -202,7 +195,7 @@ export class Airspace {
         // build the GeoJSON geometry object
         const airspaceGeometry =
             outputGeometry === OutputGeometryEnum.POLYGON
-                ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, outputGeometry })
+                ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, consumeDuplicateBuffer })
                 : createLinestring(this._coordinates).geometry;
         // create a GeoJSON feature from the geometry
         const feature = createFeature<Polygon | LineString, AirspaceProperties>(airspaceGeometry, properties, {
@@ -215,9 +208,13 @@ export class Airspace {
     protected buildPolygonGeometry(config: {
         validateGeometry: boolean;
         fixGeometry: boolean;
-        outputGeometry: OutputGeometry;
+        consumeDuplicateBuffer: number;
     }): Polygon {
-        const { validateGeometry, fixGeometry } = config;
+        const defaultConfig = { consumeDuplicateBuffer: 0 };
+        const { validateGeometry, fixGeometry, consumeDuplicateBuffer } = {
+            ...defaultConfig,
+            ...config,
+        };
         // get the current AcToken and line number
         const token: IToken = this._consumedTokens[0] as IToken;
         const lineNumber: number = token.tokenized?.lineNumber as number;
@@ -226,7 +223,7 @@ export class Airspace {
         // create a polygon from the coordinates - run also geometry adjustments that do not alter the geometry
         try {
             airspacePolygon = createPolygon([this._coordinates]).geometry;
-            airspacePolygon = geojsonPolygon.removeDuplicatePoints(airspacePolygon, { buffer: 200 });
+            airspacePolygon = geojsonPolygon.removeDuplicatePoints(airspacePolygon, { consumeDuplicateBuffer });
             airspacePolygon = geojsonPolygon.removeIntermediatePoints(airspacePolygon);
             airspacePolygon = geojsonPolygon.withRightHandRule(airspacePolygon);
         } catch (e) {
