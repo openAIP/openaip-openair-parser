@@ -366,7 +366,7 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error.message).toEqual(
-            "Error found at line 1: Geometry of airspace 'Lampedusa(LaserBeam)' starting on line 1 is invalid. The polygon dimensions are too small to create a polygon."
+            'Error found at line 6: The polygon dimensions are too small to create a polygon.'
         );
     });
 });
