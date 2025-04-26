@@ -8,3 +8,4 @@ secrets/
 nohup.out
 var/
 .eslintcache
+dist/
