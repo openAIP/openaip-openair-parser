@@ -236,7 +236,7 @@ export function removeDuplicatePoints(polygon: Polygon, config?: { consumeDuplic
             const minAllowedDistance = consumeDuplicateBuffer / 1000;
             const distance = calcDistance(value, coord, { units: 'kilometers' });
 
-            return distance < minAllowedDistance;
+            return distance <= minAllowedDistance;
         });
         if (exists == null) {
             processed.push(coord);

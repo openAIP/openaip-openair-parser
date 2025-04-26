@@ -431,8 +431,31 @@ export class AirspaceFactory {
             units: 'meters',
         });
         const [coordinates] = geometry.coordinates;
+        /*
+        When creating circles and arcs, there may be self-intersections if the defined coordinatesof center and start-/endpoints and radius
+        do not match exactly. These self-intersecting coordinates are usually very close together and when removed, the airspace
+        geometry basically does not change at all. To mitigate returning invalid geometries, remove duplicates with a specified buffer
+        after the circle is created.
+        */
+        const processed = [];
+        for (const coord of coordinates) {
+            const exists = processed.find((value) => {
+                // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
+                const minAllowedDistance = 200 / 1000;
+                const distance = calcDistance(value, coord, { units: 'kilometers' });
+
+                return distance <= minAllowedDistance;
+            });
+            if (exists == null) {
+                processed.push(coord);
+            }
+        }
+        // make sure that the last coordinate equals the first coordinate - i.e. close the polygon
+        if (processed[0] !== processed[processed.length - 1]) {
+            processed.push(processed[0]);
+        }
         // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
-        this._airspace.coordinates = coordinates;
+        this._airspace.coordinates = processed;
     }
 
     /**
@@ -481,7 +504,26 @@ export class AirspaceFactory {
 
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        /*
+        When creating circles and arcs, there may be self-intersections if the defined coordinatesof center and start-/endpoints and radius
+        do not match exactly. These self-intersecting coordinates are usually very close together and when removed, the airspace
+        geometry basically does not change at all. To mitigate returning invalid geometries, remove duplicates with a specified buffer
+        after the circle is created.
+        */
+        const processed = [];
+        for (const coord of arcCoordinates) {
+            const exists = processed.find((value) => {
+                // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
+                const minAllowedDistance = 200 / 1000;
+                const distance = calcDistance(value, coord, { units: 'kilometers' });
+
+                return distance <= minAllowedDistance;
+            });
+            if (exists == null) {
+                processed.push(coord);
+            }
+        }
+        this._airspace.coordinates = this._airspace.coordinates.concat(processed);
     }
 
     /**
