@@ -733,6 +733,12 @@ export class AirspaceFactory {
                 processed.push(coord);
             }
         }
+        if (processed.length < 4) {
+            throw new ParserError({
+                lineNumber: this._currentLineNumber,
+                errorMessage: 'The polygon dimensions are too small to create a polygon.',
+            });
+        }
 
         return processed;
     }

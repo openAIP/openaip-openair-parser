@@ -359,7 +359,6 @@ describe('test parse invalid airspace definition blocks', () => {
             'Error found at line 1: Airspace definition block is missing required tokens: AY'
         );
     });
-
     test('parse laser beam airspace with too small circular geometry', () => {
         const openairParser = new Parser();
         const { success, error } = openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
