@@ -211,7 +211,7 @@ export class Parser {
 
     protected enforceFileExists(filepath: string): void {
         const exists = fs.existsSync(filepath);
-        if (!exists) {
+        if (exists === false) {
             throw new Error(`Failed to read file ${filepath}`);
         }
     }
