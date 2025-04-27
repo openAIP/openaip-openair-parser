@@ -1,6 +1,6 @@
 AC Q
 AN LED52B Ocaña: Daily HJ LELT TFC 123.375
-AH 9500ft MSL
+AH 9500ft AMSL
 AL 1000ft AGL
 * skipped tokens below
 SP 0,3,255,150,40

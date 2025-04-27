@@ -14,7 +14,7 @@
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "GND"
+                    "referenceDatum": "AGL"
                 }
             },
             "geometry": {

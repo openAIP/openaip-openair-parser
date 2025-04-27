@@ -9,7 +9,7 @@ For more informations on the v2 extended format, please see the Naviter format s
 ```text
 AC R
 AN ED-R10B Todendorf-Putlos MON-SAT+
-AH 40000ft MSL
+AH 40000ft AMSL
 AL GND
 DP 54:25:00 N 010:40:00 E
 DP 54:25:00 N 010:50:00 E
@@ -35,12 +35,12 @@ Outputs GeoJSON FeatureCollection:
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "MSL"
+                    "referenceDatum": "AMSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "GND"
+                    "referenceDatum": "AGL"
                 }
             },
             "geometry": {
@@ -73,7 +73,7 @@ AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AF 123.505
 AG Todendorf Information
 AX 7000
-AH 40000ft MSL
+AH 40000ft AMSL
 AL GND
 DP 54:25:00 N 010:40:00 E
 DP 54:25:00 N 010:50:00 E
@@ -106,12 +106,12 @@ Outputs GeoJSON FeatureCollection:
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "MSL"
+                    "referenceDatum": "AMSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "GND"
+                    "referenceDatum": "AGL"
                 }
             },
             "geometry": {
@@ -193,13 +193,11 @@ const config = {
     outputGeometry: 'POLYGON',
     // If true, the GeoJSON output will contain the original OpenAIR airspace definition block for each airspace. Note that this will considerably increase JSON object size!
     includeOpenair: false,
-    // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'.
-    defaultAltUnit: 'ft',
-    // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'.
-    targetAltUnit: 'ft',
     // round altitude values
     roundAltValues: false,
 };
+
+// TODO change: default alt unit and target alt unit are not supported anymore -> parsers takes units "as is", e.g m and ft in geosjon output
 
 const parser = new Parser(config);
 await parser.parse('./path/to/openair-file.txt');

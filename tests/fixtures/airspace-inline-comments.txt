@@ -1,6 +1,6 @@
 AC R
 AN TMP JSDF X-12-2 till 31Mar22 Height by NOTAM * comment bla
-AL SFC
+AL GND
 AH FL240
 DP 36:23:04 N 133:39:50 E * this is a comment
 DP 36:12:24 N 133:39:50 E     **** comment

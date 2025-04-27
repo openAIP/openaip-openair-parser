@@ -9,12 +9,12 @@
                 "upperCeiling": {
                     "value": 5000,
                     "unit": "FT",
-                    "referenceDatum": "MSL"
+                    "referenceDatum": "AMSL"
                 },
                 "lowerCeiling": {
                     "value": 1501,
                     "unit": "FT",
-                    "referenceDatum": "GND"
+                    "referenceDatum": "AGL"
                 }
             },
             "geometry": {

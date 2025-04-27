@@ -1,7 +1,7 @@
 AC D
 AN Bale-Mulhouse 1
 AH FL100
-AL 1000ft GND
+AL 1000ft AGL
 DP 47:46:00 N 007:32:00 E
 DP 47:32:20 N 007:42:27 E
 *begin German-French border

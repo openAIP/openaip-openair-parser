@@ -714,7 +714,7 @@ export class AirspaceFactory {
             };
             /*
             Only compare if both lower and upper limit have the same reference datum. If they have different reference datums,
-            e.g GND and MSL, the comparison cannot be done.
+            e.g AGL and AMSL, the comparison cannot be done.
              */
             if (this._airspace.lowerCeiling.referenceDatum === this._airspace.upperCeiling.referenceDatum) {
                 const compareUpper = feeted(this.flToFeet(this._airspace.upperCeiling));

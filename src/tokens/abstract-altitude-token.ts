@@ -132,7 +132,7 @@ abstract class AbstractAltitudeReader implements IAltitudeReader {
 }
 
 /**
- * Reads a default airspace ceiling definition, e.g. "2700ft MSL".
+ * Reads a default airspace ceiling definition, e.g. "2700ft AMSL".
  */
 class AltitudeDefaultReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
@@ -145,7 +145,7 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
     }
 
     read(altitudeString: string): Altitude {
-        // check for "default" altitude definition, e.g. 16500ft MSL or similar
+        // check for "default" altitude definition, e.g. 16500ft AMSL or similar
         const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString);
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);

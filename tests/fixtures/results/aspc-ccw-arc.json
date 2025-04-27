@@ -14,7 +14,7 @@
                 "lowerCeiling": {
                     "value": 4000,
                     "unit": "FT",
-                    "referenceDatum": "MSL"
+                    "referenceDatum": "AMSL"
                 }
             },
             "geometry": {
