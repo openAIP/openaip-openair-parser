@@ -12,6 +12,7 @@
                     "name": "Ground Station Name"
                 },
                 "transponderCode": 7000,
+                "byNotam": false,
                 "activationTimes": [
                     {
                         "start": "2025-01-01T12:00:00.000Z",

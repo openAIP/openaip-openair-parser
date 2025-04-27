@@ -71,7 +71,7 @@ export class Airspace {
     protected _frequency: Partial<Frequency> | undefined = undefined;
     protected _transponderCode: number | undefined = undefined;
     protected _activationTimes: Activation[] | undefined;
-    protected _byNotam: boolean = false;
+    protected _byNotam: boolean | undefined = undefined;
     protected _coordinates: Position[] = [];
 
     set consumedTokens(value: IToken[]) {
@@ -162,11 +162,11 @@ export class Airspace {
         this._activationTimes = value;
     }
 
-    get byNotam(): boolean {
+    get byNotam(): boolean | undefined {
         return this._byNotam;
     }
 
-    set byNotam(value: boolean) {
+    set byNotam(value: boolean | undefined) {
         this._byNotam = value;
     }
 
@@ -201,18 +201,19 @@ export class Airspace {
         }
 
         // set feature properties
-        const properties = cleanObject<AirspaceProperties>({
-            id: this._identifier as string,
-            name: this._name as string,
-            class: this._airspaceClass as string,
-            type: this._type as string,
-            frequency: this._frequency,
-            transponderCode: this._transponderCode,
-            activationTimes: this._activationTimes,
-            byNotam: this._byNotam,
-            upperCeiling: this._upperCeiling as Altitude,
-            lowerCeiling: this._lowerCeiling as Altitude,
-        });
+        const properties: Partial<AirspaceProperties> = {};
+        // base properts for both version 1 and 2
+        properties.id = this._identifier as string;
+        properties.name = this._name as string;
+        properties.class = this._airspaceClass as string;
+        properties.upperCeiling = this._upperCeiling as Altitude;
+        properties.lowerCeiling = this._lowerCeiling as Altitude;
+        // properties for version 2
+        if (this._type != null) properties.type = this._type as string;
+        if (this._frequency != null) properties.frequency = this._frequency;
+        if (this._transponderCode != null) properties.transponderCode = this._transponderCode;
+        if (this._activationTimes != null) properties.activationTimes = this._activationTimes;
+        if (this._byNotam != null) properties.byNotam = this._byNotam;
         // include original OpenAIR airspace definition block
         if (includeOpenair) {
             properties.openair = '';
