@@ -48,8 +48,6 @@ export type Config = {
     outputGeometry?: OutputGeometry;
     // If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size! Defaults to false.
     includeOpenair?: boolean;
-    // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'. Defaults to 'ft'.
-    defaultAltUnit?: AltitudeUnit;
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, keeps defined unit.
     targetAltUnit?: AltitudeUnit | undefined;
     // If true, rounds the altitude values. Defaults to false.
@@ -69,7 +67,6 @@ export const ConfigSchema = z
         fixGeometry: z.boolean().optional(),
         includeOpenair: z.boolean().optional(),
         outputGeometry: z.nativeEnum(OutputGeometryEnum).optional(),
-        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean().optional(),
     })
@@ -116,7 +113,6 @@ export class Parser {
             const tokenizer = new Tokenizer({
                 airspaceClasses: this._config.airspaceClasses,
                 unlimited: this._config.unlimited,
-                defaultAltUnit: this._config.defaultAltUnit,
                 targetAltUnit: this._config.targetAltUnit,
                 roundAltValues: this._config.roundAltValues,
                 extendedFormat: this._config.extendedFormat,

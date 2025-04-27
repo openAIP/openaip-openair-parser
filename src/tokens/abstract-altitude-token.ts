@@ -10,8 +10,6 @@ type Metadata = { altitude: Altitude };
 
 export type Config = BaseLineConfig & {
     unlimited: number;
-    // Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
-    defaultAltUnit: AltitudeUnit;
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not set, does not convert units.
     targetAltUnit?: AltitudeUnit | undefined;
     // If true, rounds the altitude values. Defaults to false. This parameter is most useful when used with unit conversion, e.g. m -> feet.
@@ -24,7 +22,6 @@ export const ConfigSchema = z
     .object({
         tokenTypes: z.array(z.string().nonempty()),
         unlimited: z.number(),
-        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
         extendedFormat: z.boolean(),
@@ -39,7 +36,6 @@ interface IAltitudeReader {
 
 type AbstractAltitudeReaderConfig = {
     unlimited: number;
-    defaultAltUnit: AltitudeUnit;
     targetAltUnit?: AltitudeUnit | undefined;
     roundAltValues: boolean;
 };
@@ -47,7 +43,6 @@ type AbstractAltitudeReaderConfig = {
 const AbstractAltitudeReaderConfigSchema = z
     .object({
         unlimited: z.number(),
-        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
     })
@@ -60,7 +55,6 @@ const AbstractAltitudeReaderConfigSchema = z
 export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> {
     static type: TokenType = 'BASE_ALTITUDE';
     protected _unlimited: number;
-    protected _defaultAltUnit: AltitudeUnit;
     protected _targetAltUnit: AltitudeUnit | undefined;
     protected _roundAltValues: boolean;
     protected _readers: IAltitudeReader[] = [];
@@ -68,17 +62,15 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { unlimited, tokenTypes, defaultAltUnit, targetAltUnit, roundAltValues, extendedFormat } = config;
+        const { unlimited, tokenTypes, targetAltUnit, roundAltValues, extendedFormat } = config;
         super({ tokenTypes, extendedFormat });
 
         this._unlimited = unlimited;
-        this._defaultAltUnit = defaultAltUnit.toUpperCase() as AltitudeUnit;
         this._targetAltUnit = targetAltUnit ? (targetAltUnit.toUpperCase() as AltitudeUnit) : targetAltUnit;
         this._roundAltValues = roundAltValues;
 
         const readerConfig = {
             unlimited: this._unlimited,
-            defaultAltUnit: this._defaultAltUnit,
             targetAltUnit: this._targetAltUnit,
             roundAltValues: this._roundAltValues,
         };
@@ -111,18 +103,16 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
 abstract class AbstractAltitudeReader implements IAltitudeReader {
     protected _REGEX_ALTITUDE: RegExp;
     protected _unlimited: number;
-    protected _defaultAltUnit: AltitudeUnit;
     protected _targetAltUnit: AltitudeUnit | undefined;
     protected _roundAltValues: boolean;
 
     constructor(config: AbstractAltitudeReaderConfig) {
         validateSchema(config, AbstractAltitudeReaderConfigSchema, { assert: true, name: 'config' });
 
-        const { unlimited, defaultAltUnit, targetAltUnit, roundAltValues } = config || {};
+        const { unlimited, targetAltUnit, roundAltValues } = config || {};
 
         this._REGEX_ALTITUDE = new RegExp('');
         this._unlimited = unlimited;
-        this._defaultAltUnit = defaultAltUnit;
         this._targetAltUnit = targetAltUnit;
         this._roundAltValues = roundAltValues;
     }
@@ -152,8 +142,7 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
         }
         // get altitude parts
         let value = parseFloat(altitudeParts[1]);
-        // use the unit defined in altitude definition or if not set, use the configured default unit
-        let unit = altitudeParts[3] ?? this._defaultAltUnit;
+        let unit = altitudeParts[3];
         const referenceDatum = altitudeParts[4];
         /*
         Convert between altitude units if required. This only happens if a target unit is explicitly specified!

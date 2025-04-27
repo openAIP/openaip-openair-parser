@@ -26,7 +26,6 @@ export class AlToken extends AbstractAltitudeToken {
         const token = new AlToken({
             tokenTypes: this._tokenTypes,
             unlimited: this._unlimited,
-            defaultAltUnit: this._defaultAltUnit,
             targetAltUnit: this._targetAltUnit,
             roundAltValues: this._roundAltValues,
             extendedFormat: this._extendedFormat,

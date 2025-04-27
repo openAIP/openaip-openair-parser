@@ -13,7 +13,6 @@ type DefaultConfig = {
     fixGeometry: boolean;
     outputGeometry: OutputGeometry;
     includeOpenair: boolean;
-    defaultAltUnit: AltitudeUnit;
     targetAltUnit: AltitudeUnit | undefined;
     roundAltValues: boolean;
 };
@@ -65,8 +64,6 @@ export const DefaultParserConfig: DefaultConfig = {
     outputGeometry: 'POLYGON',
     // If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size!
     includeOpenair: false,
-    // By default, parser uses 'ft' (feet) as the default unit if not explicitly defined in AL/AH definitions. Allowed units are: 'ft' and 'm'.
-    defaultAltUnit: AltitudeUnitEnum.ft,
     // Defines the target unit to convert to.  Allowed units are: 'ft' and 'm'. If not specified, parser will not convert units.
     targetAltUnit: undefined,
     // Round altitude values.

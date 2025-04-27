@@ -32,7 +32,6 @@ import { validateSchema } from './validate-schema.js';
 export type Config = {
     airspaceClasses: string[];
     unlimited: number;
-    defaultAltUnit: AltitudeUnit;
     targetAltUnit?: AltitudeUnit | undefined;
     roundAltValues: boolean;
     extendedFormat: boolean;
@@ -44,7 +43,6 @@ export const ConfigSchema = z
     .object({
         airspaceClasses: z.array(z.string().min(1)),
         unlimited: z.number().int(),
-        defaultAltUnit: z.nativeEnum(AltitudeUnitEnum),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
         extendedFormat: z.boolean(),
@@ -76,7 +74,6 @@ export class Tokenizer {
         const {
             airspaceClasses,
             unlimited,
-            defaultAltUnit,
             targetAltUnit,
             roundAltValues,
             extendedFormat,
@@ -98,7 +95,6 @@ export class Tokenizer {
             new AhToken({
                 tokenTypes: TOKEN_TYPES,
                 unlimited,
-                defaultAltUnit,
                 targetAltUnit,
                 roundAltValues,
                 extendedFormat,
@@ -106,7 +102,6 @@ export class Tokenizer {
             new AlToken({
                 tokenTypes: TOKEN_TYPES,
                 unlimited,
-                defaultAltUnit,
                 targetAltUnit,
                 roundAltValues,
                 extendedFormat,

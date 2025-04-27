@@ -26,7 +26,6 @@ export class AhToken extends AbstractAltitudeToken {
         const token = new AhToken({
             tokenTypes: this._tokenTypes,
             unlimited: this._unlimited,
-            defaultAltUnit: this._defaultAltUnit,
             targetAltUnit: this._targetAltUnit,
             roundAltValues: this._roundAltValues,
             extendedFormat: this._extendedFormat,
