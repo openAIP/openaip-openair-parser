@@ -127,7 +127,7 @@ abstract class AbstractAltitudeReader implements IAltitudeReader {
 class AltitudeDefaultReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s*(AMSL|AGL)?$/;
+        this._REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)\s*(AMSL|AGL)?$/;
     }
 
     canHandle(altitudeString: string): boolean {
