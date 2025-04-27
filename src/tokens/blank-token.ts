@@ -25,7 +25,7 @@ export class BlankToken extends AbstractLineToken<undefined> {
         validateSchema(line, z.string(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new BlankToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new BlankToken({ tokenTypes: this._tokenTypes, version: this._version });
         token._tokenized = { line, lineNumber };
 
         return token;

@@ -9,6 +9,7 @@ import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
 import type { ParserError } from './parser-error.js';
+import type { ParserVersion } from './parser-version.enum.js';
 import { Tokenizer } from './tokenizer.js';
 import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -25,14 +26,12 @@ const ParserStateEnum = {
 export type ParserState = (typeof ParserStateEnum)[keyof typeof ParserStateEnum];
 
 export type Config = {
-    //A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
-    airspaceClasses?: string[];
     // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
-    extendedFormat?: boolean;
-    // Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
-    extendedFormatClasses?: string[];
-    // Defines a set of allowed "AY" values if the extended format is used.
-    extendedFormatTypes?: string[];
+    version?: ParserVersion;
+    // Defines a set of allowed "AC" values. Defaults to all ICAO classes.
+    allowedClasses?: string[];
+    // Defines a set of allowed "AY" values if the version 2 is used.
+    allowedTypes?: string[];
     // Defines the flight level that is used instead of an airspace ceiling that is defined as "unlimited". Defaults to 999;
     unlimited?: number;
     // Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
@@ -56,10 +55,9 @@ export type Config = {
 
 export const ConfigSchema = z
     .object({
-        airspaceClasses: z.array(z.string().min(1)).optional(),
-        extendedFormat: z.boolean().optional(),
-        extendedFormatClasses: z.array(z.string().min(1)).optional(),
-        extendedFormatTypes: z.array(z.string().min(1)).optional(),
+        version: z.boolean().optional(),
+        allowedClasses: z.array(z.string().min(1)).optional(),
+        allowedTypes: z.array(z.string().min(1)).optional(),
         unlimited: z.number().int().min(1).optional(),
         geometryDetail: z.number().int().min(1).optional(),
         consumeDuplicateBuffer: z.number().min(0).optional(),
@@ -111,13 +109,12 @@ export class Parser {
             IMPORTANT If syntax errors occur, the parser will return the result of the tokenizer only.
             */
             const tokenizer = new Tokenizer({
-                airspaceClasses: this._config.airspaceClasses,
                 unlimited: this._config.unlimited,
                 targetAltUnit: this._config.targetAltUnit,
                 roundAltValues: this._config.roundAltValues,
-                extendedFormat: this._config.extendedFormat,
-                extendedFormatClasses: this._config.extendedFormatClasses,
-                extendedFormatTypes: this._config.extendedFormatTypes,
+                version: this._config.version,
+                allowedClasses: this._config.allowedClasses,
+                allowedTypes: this._config.allowedTypes,
             });
             const tokens = tokenizer.tokenize(filepath);
 
@@ -202,7 +199,7 @@ export class Parser {
             throw new Error('No parser result found. Parse something first.');
         }
 
-        return geojsonToOpenair(this._geojson, { extendedFormat: this._config.extendedFormat });
+        return geojsonToOpenair(this._geojson, { version: this._config.version });
     }
 
     protected enforceFileExists(filepath: string): void {
@@ -218,7 +215,7 @@ export class Parser {
     protected buildAirspace(): void {
         const factory = new AirspaceFactory({
             geometryDetail: this._config.geometryDetail,
-            extendedFormat: this._config.extendedFormat,
+            version: this._config.version,
         });
         const airspace = factory.createAirspace(this._airspaceTokens);
         if (airspace != null) {

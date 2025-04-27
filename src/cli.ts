@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import { Command } from 'commander';
+import type { ParserVersion } from './parser-version.enum.js';
 import { Parser } from './parser.js';
 import type { ParserResult } from './parser.js';
 
@@ -11,7 +12,10 @@ program
     .option('-o, --output-filepath <outFilepath>', 'The output filename of the generated geojson file')
     .option('-V, --validate', 'If specified, parser will validate geometries.')
     .option('-F, --fix-geometry', 'If specified, parser will try to fix geometries.')
-    .option('-E, --extended-format', 'If set to true, parser expects the extended OpenAIR format. Defaults to false.')
+    .option(
+        '-E, --version <version>',
+        'If set to 2, parser expects the extended OpenAIR format version 2. Defaults to 1.'
+    )
     .parse(process.argv);
 
 interface ProgramOptions {
@@ -19,14 +23,14 @@ interface ProgramOptions {
     outputFilepath: string;
     validate?: boolean;
     fixGeometry?: boolean;
-    extendedFormat?: boolean;
+    version?: ParserVersion;
 }
 
 const options = program.opts<ProgramOptions>();
 const validateGeometry = options.validate ?? false;
 const fixGeometry = options.fixGeometry ?? false;
-const extendedFormat = options.extendedFormat ?? false;
-const parser = new Parser({ validateGeometry, fixGeometry, extendedFormat });
+const version = options.version ?? 1;
+const parser = new Parser({ validateGeometry, fixGeometry, version });
 
 try {
     const result: ParserResult = parser.parse(options.inputFilepath);

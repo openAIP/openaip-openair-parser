@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { Altitude } from '../airspace.js';
 import { AltitudeReferenceDatumEnum, type AltitudeReferenceDatum } from '../altitude-reference-datum.enum.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from '../altitude-unit.enum.js';
+import { ParserVersionEnum, type ParserVersion } from '../parser-version.enum.js';
 import { feetToMeters, metersToFeet } from '../unit-conversion.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig } from './abstract-line-token.js';
@@ -15,8 +16,7 @@ export type Config = BaseLineConfig & {
     targetAltUnit?: AltitudeUnit | undefined;
     // If true, rounds the altitude values. Defaults to false. This parameter is most useful when used with unit conversion, e.g. m -> feet.
     roundAltValues: boolean;
-    // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
-    extendedFormat: boolean;
+    version: ParserVersion;
 };
 
 export const ConfigSchema = z
@@ -25,7 +25,7 @@ export const ConfigSchema = z
         unlimited: z.number(),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
-        extendedFormat: z.boolean(),
+        version: z.nativeEnum(ParserVersionEnum),
     })
     .strict()
     .describe('ConfigSchema');
@@ -63,8 +63,8 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { unlimited, tokenTypes, targetAltUnit, roundAltValues, extendedFormat } = config;
-        super({ tokenTypes, extendedFormat });
+        const { unlimited, tokenTypes, targetAltUnit, roundAltValues, version } = config;
+        super({ tokenTypes, version });
 
         this._unlimited = unlimited;
         this._targetAltUnit = targetAltUnit ? (targetAltUnit.toUpperCase() as AltitudeUnit) : targetAltUnit;

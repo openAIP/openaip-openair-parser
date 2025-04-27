@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
+import { ParserVersionEnum, type ParserVersion } from '../parser-version.enum.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
@@ -7,29 +8,20 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 type Metadata = { class: string };
 
 export type Config = BaseLineConfig & {
-    // A list of allowed AC classes. If AC class found in AC definition is not found in this list, the parser will throw an error.
-    airspaceClasses?: string[];
-    // Defines a set of allowed "AC" values if the extended format is used. Defaults to all ICAO classes.
-    extendedFormatClasses?: string[];
+    // Defines a set of allowed "AC" values. Defaults to all ICAO classes.
+    allowedClasses?: string[];
     tokenTypes: TokenType[];
-    extendedFormat: boolean;
+    version: ParserVersion;
 };
 
 export const ConfigSchema = z
     .object({
         airspaceClasses: z.array(z.string().nonempty()).optional(),
-        extendedFormatClasses: z.array(z.string().nonempty()).optional(),
+        allowedClasses: z.array(z.string().nonempty()).optional(),
         tokenTypes: z.array(z.string().nonempty()),
-        extendedFormat: z.boolean(),
+        version: z.nativeEnum(ParserVersionEnum),
     })
     .strict()
-    // enforce that both extended classes and types are defined if extended format should be parsed
-    .refine((data) => {
-        if (data.extendedFormat && data.extendedFormatClasses == null) {
-            throw new Error('Extended format requires accepted classes to be defined.');
-        }
-        return true;
-    })
     .describe('ConfigSchema');
 
 /**
@@ -37,18 +29,16 @@ export const ConfigSchema = z
  */
 export class AcToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AC;
-    protected _airspaceClasses: string[] = [];
-    protected _extendedFormatClasses: string[] = [];
+    protected _allowedClasses: string[] = [];
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { airspaceClasses, tokenTypes, extendedFormat, extendedFormatClasses } = config;
+        const { tokenTypes, version, allowedClasses } = config;
 
-        super({ tokenTypes, extendedFormat });
+        super({ tokenTypes, version });
 
-        this._airspaceClasses = airspaceClasses || [];
-        this._extendedFormatClasses = extendedFormatClasses || [];
+        this._allowedClasses = allowedClasses || [];
     }
 
     canHandle(line: string): boolean {
@@ -64,9 +54,8 @@ export class AcToken extends AbstractLineToken<Metadata> {
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
         const token = new AcToken({
-            airspaceClasses: this._airspaceClasses,
-            extendedFormatClasses: this._extendedFormatClasses,
-            extendedFormat: this._extendedFormat,
+            allowedClasses: this._allowedClasses,
+            version: this._version,
             tokenTypes: this._tokenTypes,
         });
 
@@ -75,17 +64,9 @@ export class AcToken extends AbstractLineToken<Metadata> {
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartClass = line.replace(/^AC\s+/, '');
-
-        if (this._extendedFormat === true) {
-            // check restricted classes if using original format
-            if (this._extendedFormatClasses.includes(linePartClass) === false) {
-                throw new ParserError({ lineNumber, errorMessage: `Unknown extended airspace class '${line}'` });
-            }
-        } else {
-            // check restricted classes if using original format
-            if (this._airspaceClasses.includes(linePartClass) === false) {
-                throw new ParserError({ lineNumber, errorMessage: `Unknown airspace class '${line}'` });
-            }
+        // check restricted classes if using original format
+        if (this._allowedClasses.includes(linePartClass) === false) {
+            throw new ParserError({ lineNumber, errorMessage: `Unknown airspace class '${line}'` });
         }
         token._tokenized = { line, lineNumber, metadata: { class: linePartClass } };
 
@@ -95,8 +76,8 @@ export class AcToken extends AbstractLineToken<Metadata> {
     getAllowedNextTokens(): TokenType[] {
         // defines allowed tokens in the original format
         let allowedNextTokens: TokenType[] = [TokenTypeEnum.COMMENT, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
-        // inject extended format tokens if required
-        if (this._extendedFormat === true) {
+        // inject version 2 tokens if required
+        if (this._version === ParserVersionEnum.VERSION_2) {
             allowedNextTokens = allowedNextTokens.concat([TokenTypeEnum.AI, TokenTypeEnum.AY]);
         }
 

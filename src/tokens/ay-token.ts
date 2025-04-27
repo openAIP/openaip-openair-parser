@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
+import { ParserVersionEnum, type ParserVersion } from '../parser-version.enum.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
@@ -7,23 +8,24 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 type Metadata = { type: string };
 
 export type Config = BaseLineConfig & {
-    // Defines a set of allowed "AY" values if the extended format is used.
-    extendedFormatTypes: string[];
+    allowedTypes: string[];
     tokenTypes: TokenType[];
-    extendedFormat: boolean;
+    version: ParserVersion;
 };
 
 export const ConfigSchema = z
     .object({
-        extendedFormatTypes: z.array(z.string().nonempty()),
+        allowedTypes: z.array(z.string().nonempty()),
         tokenTypes: z.array(z.string().nonempty()),
-        extendedFormat: z.boolean(),
+        version: z.nativeEnum(ParserVersionEnum),
     })
     .strict()
-    // enforce that both extended types are defined if extended format should be parsed
     .refine((data) => {
-        if (data.extendedFormat && data.extendedFormatTypes == null) {
-            throw new Error('Extended format requires accepted types to be defined.');
+        if (
+            (data.version === ParserVersionEnum.VERSION_2 && data.allowedTypes == null) ||
+            data.allowedTypes.length === 0
+        ) {
+            throw new Error('Version 2 format requires accepted types to be defined.');
         }
         return true;
     })
@@ -34,14 +36,14 @@ export const ConfigSchema = z
  */
 export class AyToken extends AbstractLineToken<Metadata> {
     static type: TokenType = TokenTypeEnum.AY;
-    protected _extendedFormatTypes: string[] = [];
+    protected _allowedTypes: string[] = [];
 
     constructor(config: Config) {
-        const { tokenTypes, extendedFormatTypes, extendedFormat } = config;
+        const { tokenTypes, allowedTypes, version } = config;
 
-        super({ tokenTypes, extendedFormat });
+        super({ tokenTypes, version });
 
-        this._extendedFormatTypes = extendedFormatTypes;
+        this._allowedTypes = allowedTypes;
     }
 
     canHandle(line: string): boolean {
@@ -57,9 +59,9 @@ export class AyToken extends AbstractLineToken<Metadata> {
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
         const token = new AyToken({
-            extendedFormatTypes: this._extendedFormatTypes,
+            allowedTypes: this._allowedTypes,
             tokenTypes: this._tokenTypes,
-            extendedFormat: this._extendedFormat,
+            version: this._version,
         });
         // keep original line
         token._line = line;
@@ -67,7 +69,7 @@ export class AyToken extends AbstractLineToken<Metadata> {
         line = line.replace(/\s?\*.*/, '');
         const linePartType = line.replace(/^AY\s+/, '');
         // if config defines a list of allowed types, verify that used type is in this list
-        if (this._extendedFormatTypes?.length > 0 && this._extendedFormatTypes.includes(linePartType) === false) {
+        if (this._allowedTypes?.length > 0 && this._allowedTypes.includes(linePartType) === false) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown extended airspace type '${line}'` });
         }
         token._tokenized = { line, lineNumber, metadata: { type: linePartType } };
@@ -76,7 +78,6 @@ export class AyToken extends AbstractLineToken<Metadata> {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        // no extended format option handling, AY token only in extended format
         return [TokenTypeEnum.COMMENT, TokenTypeEnum.AI, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
     }
 }

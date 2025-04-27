@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ParserVersionEnum } from '../parser-version.enum.js';
 import { validateSchema } from '../validate-schema.js';
 import type { IToken } from './abstract-line-token.js';
 import { AbstractLineToken } from './abstract-line-token.js';
@@ -24,7 +25,7 @@ export class AnToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AnToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new AnToken({ tokenTypes: this._tokenTypes, version: this._version });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -43,8 +44,8 @@ export class AnToken extends AbstractLineToken<Metadata> {
             TokenTypeEnum.AH,
             TokenTypeEnum.SKIPPED,
         ];
-        // inject extended format tokens if required
-        if (this._extendedFormat === true) {
+        // inject version 2 tokens if required
+        if (this._version === ParserVersionEnum.VERSION_2) {
             allowedNextTokens = allowedNextTokens.concat([
                 TokenTypeEnum.AI,
                 TokenTypeEnum.AF,

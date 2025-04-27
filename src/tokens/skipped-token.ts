@@ -26,7 +26,7 @@ export class SkippedToken extends CommentToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new SkippedToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new SkippedToken({ tokenTypes: this._tokenTypes, version: this._version });
         // keep original line
         token._line = line;
         token._tokenized = { line, lineNumber };

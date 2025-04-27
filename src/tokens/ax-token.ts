@@ -24,7 +24,7 @@ export class AxToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AxToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new AxToken({ tokenTypes: this._tokenTypes, version: this._version });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -41,7 +41,6 @@ export class AxToken extends AbstractLineToken<Metadata> {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        // no extended format option handling, AX token only in extended format
         return [
             TokenTypeEnum.COMMENT,
             TokenTypeEnum.AG,

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ParserVersionEnum, type ParserVersion } from '../parser-version.enum.js';
 import { validateSchema } from '../validate-schema.js';
 import { type TokenType } from './token-type.enum.js';
 
@@ -24,14 +25,13 @@ export interface IToken {
 export type Config = {
     // list of all known token types
     tokenTypes: TokenType[];
-    // If "true" the parser will be able to parse the extended OpenAIR-Format that contains the additional tags.
-    extendedFormat: boolean;
+    version: ParserVersion;
 };
 
 export const ConfigSchema = z
     .object({
         tokenTypes: z.array(z.string().nonempty()),
-        extendedFormat: z.boolean(),
+        version: z.nativeEnum(ParserVersionEnum),
     })
     .strict()
     .describe('ConfigSchema');
@@ -39,17 +39,17 @@ export const ConfigSchema = z
 export abstract class AbstractLineToken<M> implements IToken {
     static type: TokenType = 'BASE_LINE';
     protected _tokenTypes: TokenType[];
-    protected _extendedFormat: boolean;
+    protected _version: ParserVersion;
     protected _tokenized: Tokenized<M> | undefined;
     protected _line: string | undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { tokenTypes, extendedFormat } = config;
+        const { tokenTypes, version } = config;
 
         this._tokenTypes = tokenTypes;
-        this._extendedFormat = extendedFormat;
+        this._version = version;
     }
 
     /**

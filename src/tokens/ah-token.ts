@@ -28,7 +28,7 @@ export class AhToken extends AbstractAltitudeToken {
             unlimited: this._unlimited,
             targetAltUnit: this._targetAltUnit,
             roundAltValues: this._roundAltValues,
-            extendedFormat: this._extendedFormat,
+            version: this._version,
         });
         // keep original line
         token._line = line;

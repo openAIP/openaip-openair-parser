@@ -33,7 +33,7 @@ export class AaToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AaToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new AaToken({ tokenTypes: this._tokenTypes, version: this.version });
         // keep original line
         token._line = line;
         // remove inline comments

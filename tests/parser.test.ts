@@ -6,6 +6,7 @@ import { describe, expect, test } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
 import { Parser } from '../src/parser';
+import { ParserVersionEnum } from '../src/parser-version.enum.js';
 
 describe('test parse complete airspace definition blocks', () => {
     test('handle skipped tokens', () => {
@@ -164,10 +165,10 @@ describe('test parse complete airspace definition blocks', () => {
     });
 });
 
-describe('test extended format', () => {
-    test('parse extended format tags', () => {
+describe('test version 2', () => {
+    test('parse commands', () => {
         const expectedJson = loadParserJsonResult('aspc-extended-format-tags.json');
-        const openairParser = new Parser({ extendedFormat: true });
+        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
         const { success } = openairParser.parse('./tests/fixtures/extended-format-tags.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
@@ -179,9 +180,9 @@ describe('test extended format', () => {
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
-    test('parse extended format activation times', () => {
+    test('parse activation times', () => {
         const expectedJson = loadParserJsonResult('aspc-activation-window-extended-format.json');
-        const openairParser = new Parser({ extendedFormat: true });
+        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
         const { success, error } = openairParser.parse('./tests/fixtures/activation-window-extended-format.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
@@ -340,9 +341,9 @@ describe('test parse invalid airspace definition blocks', () => {
     });
 });
 
-describe('test parse invalid airspace extended format definition blocks', () => {
+describe('test parse invalid airspace version 2 definition blocks', () => {
     test('single airspace with AG and missing AF tag', () => {
-        const openairParser = new Parser({ extendedFormat: true });
+        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
         const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-ag-but-missing-af.txt');
 
         expect(success).toBe(false);
@@ -350,7 +351,7 @@ describe('test parse invalid airspace extended format definition blocks', () => 
         expect(error.message).toEqual("Error found at line 5: Token 'AG' is present but token 'AF' is missing.");
     });
     test('single airspace with invalid AX tag', () => {
-        const openairParser = new Parser({ extendedFormat: true });
+        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
         const { success, error } = openairParser.parse('./tests/fixtures/invalid-transponder-code.txt');
 
         expect(success).toBe(false);
@@ -360,7 +361,7 @@ describe('test parse invalid airspace extended format definition blocks', () => 
         );
     });
     test('single airspace with missing AL and AH tags', () => {
-        const openairParser = new Parser({ extendedFormat: true });
+        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
         const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-missing-ah-al-tag.txt');
 
         expect(success).toBe(false);
@@ -369,8 +370,8 @@ describe('test parse invalid airspace extended format definition blocks', () => 
             'Error found at line 3: Airspace definition block is missing required tokens: AL, AH, AY'
         );
     });
-    test('single airspace in extended format with missing AY tag', () => {
-        const openairParser = new Parser({ extendedFormat: true });
+    test('single airspace with missing AY tag', () => {
+        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
         const { success, error } = openairParser.parse(
             './tests/fixtures/single-airspace-extended-format-missing-AY-tag.txt'
         );
@@ -381,8 +382,8 @@ describe('test parse invalid airspace extended format definition blocks', () => 
             'Error found at line 1: Airspace definition block is missing required tokens: AY'
         );
     });
-    test('airspace with invalid activation times in extended format', () => {
-        const openairParser = new Parser({ extendedFormat: true });
+    test('airspace with invalid activation times', () => {
+        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
         const { success, error } = openairParser.parse(
             './tests/fixtures/invalid-activation-window-times-extended-format.txt'
         );

@@ -23,7 +23,7 @@ export class AiToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AiToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new AiToken({ tokenTypes: this._tokenTypes, version: this._version });
         // keep original line
         token._line = line;
         // remove inline comments
@@ -35,7 +35,6 @@ export class AiToken extends AbstractLineToken<Metadata> {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        // no extended format option handling, AG token only in extended format
         return [
             TokenTypeEnum.COMMENT,
             TokenTypeEnum.AN,

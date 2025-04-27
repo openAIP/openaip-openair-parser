@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { Airspace, type Altitude } from './airspace.js';
 import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error';
+import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { AaToken } from './tokens/aa-token.js';
 import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -40,13 +41,13 @@ import { validateSchema } from './validate-schema.js';
 
 export type Config = {
     geometryDetail: number;
-    extendedFormat: boolean;
+    version: ParserVersion;
 };
 
 export const ConfigSchema = z
     .object({
         geometryDetail: z.number().int().min(50),
-        extendedFormat: z.boolean(),
+        version: z.nativeEnum(ParserVersionEnum),
     })
     .strict()
     .describe('ConfigSchema');
@@ -58,7 +59,7 @@ type AirwayStructure = {
 
 export class AirspaceFactory {
     protected _geometryDetail: number;
-    protected _extendedFormat: boolean;
+    protected _version: ParserVersion;
     protected _tokens: IToken[] = [];
     protected _airspace: Airspace;
     protected _currentLineNumber: number | undefined = undefined;
@@ -70,11 +71,11 @@ export class AirspaceFactory {
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { geometryDetail, extendedFormat } = config;
+        const { geometryDetail, version } = config;
 
         this._airspace = new Airspace();
         this._geometryDetail = geometryDetail;
-        this._extendedFormat = extendedFormat;
+        this._version = version;
     }
 
     createAirspace(tokens: IToken[]): Airspace | undefined {
@@ -196,7 +197,7 @@ export class AirspaceFactory {
                 break;
             case EofToken.type:
                 break;
-            // extended format tokens
+            // version 2 tokens
             case AiToken.type:
                 this.handleAiToken(token as AiToken);
                 break;
@@ -289,8 +290,8 @@ export class AirspaceFactory {
     protected validateTokenInventory(): void {
         // tokens that are always required, no matter if "standard" or "extended" format is used
         const requiredTokens = [AcToken.type, AnToken.type, AlToken.type, AhToken.type];
-        // if the extended format is used, add the extended format tokens to the required tokens list
-        if (this._extendedFormat === true) {
+        // if version 2 is used, add the version 2 tokens to the required tokens list
+        if (this._version === ParserVersionEnum.VERSION_2) {
             // AY token is required, all others are optional
             requiredTokens.push(AyToken.type);
         }
@@ -316,7 +317,7 @@ export class AirspaceFactory {
                 errorMessage: `Airspace definition block is missing required tokens: ${missingTokens.join(', ')}`,
             });
         }
-        // handle optional extended format tokens AF, AG (if present)
+        // handle optional version 2 tokens AF, AG (if present)
         const afToken = this._tokens.find((token) => token.type === AfToken.type);
         const agToken = this._tokens.find((token) => token.type === AgToken.type);
         // AG is optional and requires AF to be present

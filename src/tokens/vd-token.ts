@@ -24,7 +24,7 @@ export class VdToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new VdToken({ tokenTypes: this._tokenTypes, extendedFormat: this._extendedFormat });
+        const token = new VdToken({ tokenTypes: this._tokenTypes, version: this._version });
         // keep original line
         token._line = line;
         // remove inline comments

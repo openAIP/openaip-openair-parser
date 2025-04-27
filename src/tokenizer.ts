@@ -3,6 +3,7 @@ import LineByLine from 'n-readlines';
 import { z } from 'zod';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error.js';
+import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { AaToken } from './tokens/aa-token.js';
 import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -34,9 +35,9 @@ export type Config = {
     unlimited: number;
     targetAltUnit?: AltitudeUnit | undefined;
     roundAltValues: boolean;
-    extendedFormat: boolean;
-    extendedFormatClasses: string[];
-    extendedFormatTypes: string[];
+    version: ParserVersion;
+    allowedClasses: string[];
+    allowedTypes: string[];
 };
 
 export const ConfigSchema = z
@@ -45,9 +46,9 @@ export const ConfigSchema = z
         unlimited: z.number().int(),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
-        extendedFormat: z.boolean(),
-        extendedFormatClasses: z.array(z.string().min(1)),
-        extendedFormatTypes: z.array(z.string().min(1)),
+        version: z.nativeEnum(ParserVersionEnum),
+        allowedClasses: z.array(z.string().min(1)),
+        allowedTypes: z.array(z.string().min(1)),
     })
     .strict()
     .describe('ConfigSchema');
@@ -76,51 +77,51 @@ export class Tokenizer {
             unlimited,
             targetAltUnit,
             roundAltValues,
-            extendedFormat,
-            extendedFormatClasses,
-            extendedFormatTypes,
+            version,
+            allowedClasses,
+            allowedTypes,
         } = config;
         this._config = config;
         this.tokenizers = [
-            new CommentToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new SkippedToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new BlankToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new CommentToken({ tokenTypes: TOKEN_TYPES, version }),
+            new SkippedToken({ tokenTypes: TOKEN_TYPES, version }),
+            new BlankToken({ tokenTypes: TOKEN_TYPES, version }),
             new AcToken({
                 tokenTypes: TOKEN_TYPES,
                 airspaceClasses,
-                extendedFormat,
-                extendedFormatClasses,
+                version,
+                allowedClasses,
             }),
-            new AnToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new AnToken({ tokenTypes: TOKEN_TYPES, version }),
             new AhToken({
                 tokenTypes: TOKEN_TYPES,
                 unlimited,
                 targetAltUnit,
                 roundAltValues,
-                extendedFormat,
+                version,
             }),
             new AlToken({
                 tokenTypes: TOKEN_TYPES,
                 unlimited,
                 targetAltUnit,
                 roundAltValues,
-                extendedFormat,
+                version,
             }),
-            new DpToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new VdToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new VxToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new VwToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new DcToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new DbToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new DaToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new DyToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            // extended format tokens
-            new AiToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new AyToken({ tokenTypes: TOKEN_TYPES, extendedFormat, extendedFormatTypes }),
-            new AfToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new AgToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new AxToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
-            new AaToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
+            new DpToken({ tokenTypes: TOKEN_TYPES, version }),
+            new VdToken({ tokenTypes: TOKEN_TYPES, version }),
+            new VxToken({ tokenTypes: TOKEN_TYPES, version }),
+            new VwToken({ tokenTypes: TOKEN_TYPES, version }),
+            new DcToken({ tokenTypes: TOKEN_TYPES, version }),
+            new DbToken({ tokenTypes: TOKEN_TYPES, version }),
+            new DaToken({ tokenTypes: TOKEN_TYPES, version }),
+            new DyToken({ tokenTypes: TOKEN_TYPES, version }),
+            // version 2 tokens
+            new AiToken({ tokenTypes: TOKEN_TYPES, version }),
+            new AyToken({ tokenTypes: TOKEN_TYPES, version, allowedTypes }),
+            new AfToken({ tokenTypes: TOKEN_TYPES, version }),
+            new AgToken({ tokenTypes: TOKEN_TYPES, version }),
+            new AxToken({ tokenTypes: TOKEN_TYPES, version }),
+            new AaToken({ tokenTypes: TOKEN_TYPES, version }),
         ];
     }
 
@@ -165,7 +166,7 @@ export class Tokenizer {
             new EofToken({
                 tokenTypes: TOKEN_TYPES,
                 lastLineNumber: this._currentLineNumber,
-                extendedFormat: this._config.extendedFormat,
+                version: this._config.version,
             })
         );
 

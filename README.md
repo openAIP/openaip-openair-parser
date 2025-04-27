@@ -2,9 +2,9 @@
 
 A highly configurable [OpenAIR](http://www.winpilot.com/usersguide/userairspace.asp) parser for Node. The parser can also
 be configured to validate and fix defined geometries. The parser supports parsing the **original** v1 and the **extended** v2 OpenAIR format.
-For more informations on the v2 extended format, please see the Naviter format specification here: [https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md).
+For more informations on the v2 format, please see the Naviter format specification here: [https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md).
 
-### Reads **original OpenAIR** airspace definitions with `extendedFormat: false`:
+### Reads **original OpenAIR version 1** airspace definitions with `version: 1`:
 
 ```text
 AC R
@@ -63,7 +63,7 @@ Outputs GeoJSON FeatureCollection:
 }
 ```
 
-### Reads **extended OpenAIR** airspace definitions with `extendedFormat: true`:
+### Reads **extended OpenAIR Version 2** airspace definitions with `version: 2`:
 
 ```text
 AC D
@@ -149,8 +149,9 @@ const Parser = require('@openaip/openair-parser');
  The default parser configuration for reference.
  */
 const config = {
-    // Defines allowed airspace classes used with the AC token. This configuration option only applies if the
-    // standard "non-extended" format is used, i.e. with the config parameter "extendedFormat: false".
+    // Defines the OpenAIR format version 2. Defaults to strict version 2 parsing.
+    version: 2,
+    // Defines allowed airspace classes used with the AC token.
     airspaceClasses: [
         // default ICAO classes
         'A',
@@ -160,26 +161,12 @@ const config = {
         'E',
         'F',
         'G',
-        // classes commonly found in openair files
-        'R',
-        'Q',
-        'P',
-        'GP',
-        'WAVE',
-        'W',
-        'GLIDING',
-        'RMZ',
-        'TMZ',
-        'CTR',
+        'UNCLASSIFIED',
     ],
-    // If "true" the parser will try to parse the extended OpenAIR-Format that contains additional tags
-    // "AY", "AF", "AG", "TP" and "AI". If true, config parameters "allowedClassValues" and "allowedTypeValues" are
-    // mandatory.
-    extendedFormat: false,
-    // defines a set of allowed values if the extended format is used -  default ICAO classes.
-    extendedFormatClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'UNCLASSIFIED'],
-    // Defines a set of allowed "AY" values if the extended format is used. Otherwise, allows all used types.
-    extendedFormatTypes: [],
+    // defines a set of allowed values -  default ICAO classes.
+    allowedClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'UNCLASSIFIED'],
+    // Defines a set of allowed "AY" values if version 2 is used. If empty, allows all used types.
+    allowedTypes: [],
     // flight level value to set for upper ceilings defined as "UNLIMITED"
     unlimited: 999,
     // defines the level of detail (smoothness) of arc/circular geometries
@@ -204,7 +191,7 @@ await parser.parse('./path/to/openair-file.txt');
 const geojson = parser.toGeojson();
 ```
 
-# Extended OpenAIR Format
+# Version 2: Extended OpenAIR Format
 
 The **original** OpenAIR format specification has multiple shortcomings to meet today's demand to reflect the various types of existing airspaces
 and provide additional metadata. To overcome these shortcomings, an **extended** OpenAIR format is introduced that has several new tags.

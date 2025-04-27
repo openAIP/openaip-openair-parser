@@ -1,15 +1,15 @@
-import { randomUUID } from 'node:crypto';
 import type { FeatureCollection, LineString, Polygon, Position } from 'geojson';
 import { sprintf } from 'sprintf-js';
 import { z } from 'zod';
-import type { AirspaceProperties } from './airspace.js';
+import type { Activation, AirspaceProperties } from './airspace.js';
 import { AltitudeReferenceDatumEnum } from './altitude-reference-datum.enum.js';
+import { DefaultParserConfig } from './default-parser-config.js';
+import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { validateSchema } from './validate-schema.js';
 
-export type Options = { extendedFormat?: boolean };
+export type Options = { version?: ParserVersion };
 export const OptionsSchema = z.object({
-    // if true, exports to extended format. If read from original format, it will only add the "AI" tag.
-    extendedFormat: z.boolean().optional(),
+    version: z.nativeEnum(ParserVersionEnum).optional(),
 });
 
 /**
@@ -29,8 +29,8 @@ export function geojsonToOpenair(
     );
     validateSchema(options, OptionsSchema, { assert: true, name: 'options' });
 
-    const defaultOptions = { extendedFormat: false };
-    const { extendedFormat } = Object.assign(defaultOptions, options);
+    const defaultOptions = { version: DefaultParserConfig.version };
+    const { version } = Object.assign(defaultOptions, options);
     const openair = [];
 
     for (const geojson of featureCollection.features) {
@@ -43,11 +43,10 @@ export function geojsonToOpenair(
             type,
             frequency,
             transponderCode,
+            activationTimes,
         } = geojson.properties;
         const { value: frequencyValue, name: frequencyName } = frequency || {};
 
-        // if extended format is set as output format, at least inject an AI token if not exists
-        const aiValue = id ?? randomUUID();
         const { type: geomType, coordinates: geomCoordinates } = geojson.geometry;
         let coordinates: Position[];
         // unwrap polygon coordinates that are wrapped in array
@@ -58,31 +57,35 @@ export function geojsonToOpenair(
             coordinates = geomCoordinates;
         }
         // add the version header comment depending on which version is used
-        if (extendedFormat === true) {
+        if (version === ParserVersionEnum.VERSION_2) {
             openair.push(`* Version 2.0, Copyright © ${new Date().getFullYear()}, Naviter d.o.o. All Rights Reserved`);
         } else {
             openair.push(`* Version 1.0, Copyright © ${new Date().getFullYear()}, Naviter d.o.o. All Rights Reserved`);
         }
         openair.push('');
-        // AC
+        // AC: Version 1 / Version 2 - required command
         openair.push(`AC ${airspaceClass}`);
-        // AY (extended format) - optional tag
-        if (extendedFormat && type != null) openair.push(`AY ${type}`);
-        // AN
+        // AY: Version 2 - required command
+        if (version === ParserVersionEnum.VERSION_2 && type != null) openair.push(`AY ${type}`);
+        // AN: Version 1 / Version 2 - required command
         openair.push(`AN ${name.toUpperCase()}`);
-        // AI (extended format) - required tag
-        if (extendedFormat) openair.push(`AI ${aiValue}`);
-        // AF (extended format) - optional tag
-        if (extendedFormat && frequencyValue != null) openair.push(`AF ${frequencyValue}`);
-        // AG (extended format) - optional tag
-        if (extendedFormat && frequencyName != null) openair.push(`AG ${frequencyName}`);
-        // AX (extended format) - optional tag
-        if (extendedFormat && transponderCode != null) openair.push(`AX ${transponderCode}`);
-        // AL
+        // AF: Version 2 - optional command
+        if (version === ParserVersionEnum.VERSION_2 && frequencyValue != null) openair.push(`AF ${frequencyValue}`);
+        // AG: Version 2 - optional command
+        if (version === ParserVersionEnum.VERSION_2 && frequencyName != null) openair.push(`AG ${frequencyName}`);
+        // AX: Version 2 - optional command
+        if (version === ParserVersionEnum.VERSION_2 && transponderCode != null) openair.push(`AX ${transponderCode}`);
+        // AA Version 2 - optional command
+        if (version === ParserVersionEnum.VERSION_2 && Array.isArray(activationTimes) && activationTimes?.length > 0) {
+            for (const time of activationTimes) {
+                openair.push(`AA ${toActivationTime(time)}`);
+            }
+        }
+        // AL: Version 1 / Version 2 - required command
         openair.push(`AL ${toAltLimit(lowerCeiling)}`);
-        // AH
+        // AH: Version 1 / Version 2 - required command
         openair.push(`AH ${toAltLimit(upperCeiling)}`);
-        // DPs
+        // DPs: Version 1 / Version 2 - required commands
         for (const coord of coordinates) {
             openair.push(`DP ${toCoordinate(coord)}`);
         }
@@ -91,6 +94,24 @@ export function geojsonToOpenair(
     }
 
     return openair;
+}
+
+function toActivationTime(activation: Activation): string {
+    const { start, end } = activation;
+    const activationTimeParts = [];
+    if (start == null) {
+        activationTimeParts.push('NONE');
+    } else {
+        activationTimeParts.push(new Date(start).toISOString());
+    }
+
+    if (end == null) {
+        activationTimeParts.push('NONE');
+    } else {
+        activationTimeParts.push(new Date(end).toISOString());
+    }
+
+    return activationTimeParts.join('/');
 }
 
 function toCoordinate(value: Position): string {

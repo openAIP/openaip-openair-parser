@@ -30,9 +30,9 @@ export class EofToken extends AbstractLineToken<undefined> {
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { tokenTypes, extendedFormat, lastLineNumber } = config;
+        const { tokenTypes, version, lastLineNumber } = config;
 
-        super({ tokenTypes, extendedFormat });
+        super({ tokenTypes, version });
 
         this._lastLineNumber = lastLineNumber;
     }
