@@ -701,11 +701,11 @@ export class AirspaceFactory {
                 const { unit, value } = ceiling;
 
                 switch (unit) {
-                    case AltitudeUnitEnum.m:
+                    case AltitudeUnitEnum.METER:
                         feeted.value = metersToFeet(value);
-                        feeted.unit = AltitudeUnitEnum.ft;
+                        feeted.unit = AltitudeUnitEnum.FEET;
                         break;
-                    case AltitudeUnitEnum.ft:
+                    case AltitudeUnitEnum.FEET:
                     default:
                     // nothing to do
                 }

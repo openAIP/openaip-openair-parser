@@ -218,11 +218,11 @@ describe('test optional configuration parameters', () => {
         const geojson = openairParser.toGeojson();
 
         expect(success).toBe(true);
-        expect(geojson?.features?.[0]?.properties?.upperCeiling?.unit).toEqual('FL');
-        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual('M');
+        expect(geojson?.features?.[0]?.properties?.upperCeiling?.unit).toEqual(AltitudeUnitEnum.FLIGHT_LEVEL);
+        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual(AltitudeUnitEnum.METER);
     });
     test('correct limit validation when converting from ft to m', () => {
-        const openairParser = new Parser({ targetAltUnit: AltitudeUnitEnum.m });
+        const openairParser = new Parser({ targetAltUnit: AltitudeUnitEnum.METER });
         const { success } = openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
         const geojson = openairParser.toGeojson();
 

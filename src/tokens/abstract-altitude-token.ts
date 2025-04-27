@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Altitude } from '../airspace.js';
+import { AltitudeReferenceDatumEnum, type AltitudeReferenceDatum } from '../altitude-reference-datum.enum.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from '../altitude-unit.enum.js';
 import { feetToMeters, metersToFeet } from '../unit-conversion.js';
 import { validateSchema } from '../validate-schema.js';
@@ -89,7 +90,6 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
         validateSchema(altitudeString, z.string().nonempty(), { assert: true, name: 'altitudeString' });
 
         // trim and convert to upper case
-        altitudeString = altitudeString.trim().toUpperCase();
         for (const reader of this._readers) {
             if (reader.canHandle(altitudeString)) {
                 return reader.read(altitudeString);
@@ -119,6 +119,33 @@ abstract class AbstractAltitudeReader implements IAltitudeReader {
 
     abstract canHandle(altitudeString: string): boolean;
     abstract read(altitudeString: string): Altitude;
+
+    protected toAltitudeUnit(value: string): AltitudeUnit {
+        switch (value) {
+            case 'FT':
+            case 'ft':
+                return AltitudeUnitEnum.FEET;
+            case 'M':
+            case 'm':
+                return AltitudeUnitEnum.METER;
+            default:
+                throw new Error(`Unknown altitude unit '${value}'`);
+        }
+    }
+
+    protected toAltitudeReferenceDatum(value: string): AltitudeReferenceDatum {
+        switch (value) {
+            case 'AMSL':
+                return AltitudeReferenceDatumEnum.MAIN_SEA_LEVEL;
+            case 'GND':
+            case 'AGL':
+                return AltitudeReferenceDatumEnum.GROUND;
+            case 'STD':
+                return AltitudeReferenceDatumEnum.STANDARD_ATMOSPHERE;
+            default:
+                throw new Error(`Unknown reference datum '${value}'`);
+        }
+    }
 }
 
 /**
@@ -127,7 +154,7 @@ abstract class AbstractAltitudeReader implements IAltitudeReader {
 class AltitudeDefaultReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)\s*(AMSL|AGL)?$/;
+        this._REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)\s*(AMSL|AGL)$/;
     }
 
     canHandle(altitudeString: string): boolean {
@@ -136,14 +163,14 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
 
     read(altitudeString: string): Altitude {
         // check for "default" altitude definition, e.g. 16500ft AMSL or similar
-        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString);
+        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString.trim());
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
         }
         // get altitude parts
         let value = parseFloat(altitudeParts[1]);
-        let unit = altitudeParts[3];
-        const referenceDatum = altitudeParts[4];
+        let unit: AltitudeUnit = this.toAltitudeUnit(altitudeParts[3]);
+        const referenceDatum: AltitudeReferenceDatum = this.toAltitudeReferenceDatum(altitudeParts[4]);
         /*
         Convert between altitude units if required. This only happens if a target unit is explicitly specified!
 
@@ -159,17 +186,18 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
         }
         // round values if requested
         value = this._roundAltValues ? parseInt(Math.round(value).toString()) : value;
+        // convert OpenAIR redference datum to ouptut reference datum
 
         return { value, unit, referenceDatum };
     }
 
-    protected convertUnits(value: number, baseUnit: string, targetUnit: string): number {
+    protected convertUnits(value: number, baseUnit: AltitudeUnit, targetUnit: AltitudeUnit): number {
         if (baseUnit === targetUnit) return value;
 
         let convValue;
-        if (baseUnit === AltitudeUnitEnum.ft && targetUnit === AltitudeUnitEnum.m) {
+        if (baseUnit === AltitudeUnitEnum.FEET && targetUnit === AltitudeUnitEnum.METER) {
             convValue = feetToMeters(value);
-        } else if (baseUnit === AltitudeUnitEnum.m && targetUnit === AltitudeUnitEnum.ft) {
+        } else if (baseUnit === AltitudeUnitEnum.METER && targetUnit === AltitudeUnitEnum.FEET) {
             convValue = metersToFeet(value);
         } else {
             throw new Error(`Unit conversion between '${baseUnit}' and '${targetUnit}' not supported`);
@@ -194,14 +222,14 @@ class AltitudeFlightLevelReader extends AbstractAltitudeReader {
 
     read(altitudeString: string): Altitude {
         // check flight level altitude definition
-        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString);
+        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString.trim());
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
         }
         // get altitude parts
         const value = parseInt(altitudeParts[1]);
-        const unit = 'FL';
-        const referenceDatum = 'STD';
+        const unit = AltitudeUnitEnum.FLIGHT_LEVEL;
+        const referenceDatum = AltitudeReferenceDatumEnum.STANDARD_ATMOSPHERE;
 
         return { value, unit, referenceDatum };
     }
@@ -221,11 +249,11 @@ class AltitudeSurfaceReader extends AbstractAltitudeReader {
     }
 
     read(altitudeString: string): Altitude {
-        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString);
+        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString.trim());
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
         }
-        const referenceDatum = altitudeParts[0];
+        const referenceDatum: AltitudeReferenceDatum = this.toAltitudeReferenceDatum(altitudeParts[0]);
 
         return { value: 0, unit: 'FT', referenceDatum };
     }
@@ -246,6 +274,10 @@ class AltitudeUnlimitedReader extends AbstractAltitudeReader {
     }
 
     read(altitudeString: string): Altitude {
-        return { value: this._unlimited, unit: 'FL', referenceDatum: 'STD' };
+        // unlimited ceiling definition is converted to "unlimited" value, e.g. "FL999"
+        const unit = AltitudeUnitEnum.FLIGHT_LEVEL;
+        const referenceDatum = AltitudeReferenceDatumEnum.STANDARD_ATMOSPHERE;
+
+        return { value: this._unlimited, unit, referenceDatum };
     }
 }

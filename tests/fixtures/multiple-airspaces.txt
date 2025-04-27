@@ -71,8 +71,8 @@ DP 35:08:28 N 138:41:31 E
 * till 08-Sep-2021
 AC R
 AN Shizuhama TMP Training Area
-AL 6000ft
-AH 11000 ft
+AL 6000ft AMSL
+AH 11000 ft AMSL
 * Test block breaking comment
 DP 35:08:28 N 138:41:31 E
 DP 35:08:12 N 138:34:49 E
@@ -98,8 +98,8 @@ DY 44:19:30 N 005:05:00 E
 * till 08-Sep-2021
 AC R
 AN Shizuhama TMP Training Area
-AL 6000ALT
-AH 11000 ALT
+AL 6000ft AMSL
+AH 11000ft AMSL
 DP 35:08:28 N 138:41:31 E
 DP 35:08:12 N 138:34:49 E
 * Test block breaking comment

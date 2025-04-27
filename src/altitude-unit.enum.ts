@@ -1,6 +1,7 @@
 export const AltitudeUnitEnum = {
-    ft: 'FT',
-    m: 'M',
+    FLIGHT_LEVEL: 'FL',
+    FEET: 'FT',
+    METER: 'M',
 } as const;
 
 export type AltitudeUnit = (typeof AltitudeUnitEnum)[keyof typeof AltitudeUnitEnum];

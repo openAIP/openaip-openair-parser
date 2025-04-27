@@ -3,6 +3,7 @@ import type { FeatureCollection, LineString, Polygon, Position } from 'geojson';
 import { sprintf } from 'sprintf-js';
 import { z } from 'zod';
 import type { AirspaceProperties } from './airspace.js';
+import { AltitudeReferenceDatumEnum } from './altitude-reference-datum.enum.js';
 import { validateSchema } from './validate-schema.js';
 
 export type Options = { extendedFormat?: boolean };
@@ -56,7 +57,13 @@ export function geojsonToOpenair(
             // line string coordinates are already unwrapped
             coordinates = geomCoordinates;
         }
-
+        // add the version header comment depending on which version is used
+        if (extendedFormat === true) {
+            openair.push(`* Version 2.0, Copyright © ${new Date().getFullYear()}, Naviter d.o.o. All Rights Reserved`);
+        } else {
+            openair.push(`* Version 1.0, Copyright © ${new Date().getFullYear()}, Naviter d.o.o. All Rights Reserved`);
+        }
+        openair.push('');
         // AC
         openair.push(`AC ${airspaceClass}`);
         // AY (extended format) - optional tag
@@ -124,10 +131,17 @@ function toAltLimit(value: { value: number; unit: string; referenceDatum: string
         altLimit = `FL${altValue}`;
     } else {
         // handle GND values
-        if (referenceDatum === 'GND' && altValue === 0) {
-            altLimit = referenceDatum;
+        if (referenceDatum === AltitudeReferenceDatumEnum.GROUND && altValue === 0) {
+            altLimit = 'GND';
         } else {
-            altLimit = `${altValue}${unit} ${referenceDatum}`;
+            // handle MSL values
+            if (referenceDatum === AltitudeReferenceDatumEnum.MAIN_SEA_LEVEL) {
+                altLimit = `${altValue}${unit} AMSL`;
+            } else if (referenceDatum === AltitudeReferenceDatumEnum.GROUND) {
+                altLimit = `${altValue}${unit} AGL`;
+            } else {
+                altLimit = `${altValue}${unit} ${referenceDatum}`;
+            }
         }
     }
 

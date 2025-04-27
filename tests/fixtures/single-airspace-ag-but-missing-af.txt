@@ -4,7 +4,7 @@ AN EKR506 RODSAND II *NOTAM ACC CPH*
 * only callsign for frequency is provided but not frequency itself, parser must throw error
 AG ACC CPH
 AL GND
-AH 2700 ft
+AH 2700 ft AMSL
 DP  54:39:57 N  011:26:57 E
 DP  54:35:57 N  011:39:05 E
 DP  54:29:18 N  011:34:56 E

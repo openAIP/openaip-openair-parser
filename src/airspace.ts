@@ -2,6 +2,8 @@ import { feature as createFeature, lineString as createLinestring, polygon as cr
 import type { Feature, LineString, Polygon, Position } from 'geojson';
 import * as uuid from 'uuid';
 import { z } from 'zod';
+import type { AltitudeReferenceDatum } from './altitude-reference-datum.enum.js';
+import type { AltitudeUnit } from './altitude-unit.enum.js';
 import { cleanObject } from './clean-object.js';
 import * as geojsonPolygon from './geojson-polygon.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
@@ -29,7 +31,7 @@ export const AsGeojsonConfigSchema = z
     .strict()
     .describe('AsGeojsonConfigSchema');
 
-export type Altitude = { value: number; unit: string; referenceDatum: string };
+export type Altitude = { value: number; unit: AltitudeUnit; referenceDatum: AltitudeReferenceDatum };
 
 export type Frequency = { value: string; name?: string };
 

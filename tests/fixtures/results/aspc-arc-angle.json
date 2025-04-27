@@ -370,7 +370,7 @@
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "MSL"
+                    "referenceDatum": "GND"
                 }
             },
             "geometry": {
@@ -601,7 +601,7 @@
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "MSL"
+                    "referenceDatum": "GND"
                 }
             },
             "geometry": {
