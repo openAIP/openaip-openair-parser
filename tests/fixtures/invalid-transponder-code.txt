@@ -1,7 +1,6 @@
 AC D
 AY TMA
 AN TMA Todendorf-Putlos
-AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AH 40000ft AMSL
 AL GND
 AF 123.505

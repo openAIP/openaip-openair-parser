@@ -1,23 +1,60 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import appRoot from 'app-root-path';
-import type { FeatureCollection } from 'geojson';
 import { describe, expect, test } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
 import { Parser } from '../src/parser';
 import { ParserVersionEnum } from '../src/parser-version.enum.js';
 
-describe('test parse complete airspace definition blocks', () => {
+const ALLOWED_CLASSES_VERSION_1 = [
+    // default ICAO classes
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    // classes commonly found in openair files
+    'R',
+    'Q',
+    'P',
+    'GP',
+    'WAVE',
+    'W',
+    'GLIDING',
+    'RMZ',
+    'TMZ',
+    'CTR',
+];
+
+describe('Test parse airspace definition blocks', () => {
     test('handle skipped tokens', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+
+        expect(() => {
+            openairParser.parse('./tests/fixtures/skipped-tokens.txt');
+        }).not.toThrow();
+    });
+    test('handle skipped tokens', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
 
         expect(() => {
             openairParser.parse('./tests/fixtures/skipped-tokens.txt');
         }).not.toThrow();
     });
     test('handle ignored lines', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/ignored-only.txt');
         const geojson = openairParser.toGeojson();
 
@@ -26,8 +63,11 @@ describe('test parse complete airspace definition blocks', () => {
     });
     test('handle inline comments', () => {
         const expectedJson = loadParserJsonResult('handle-inline-comments.json');
-        const openairParser = new Parser();
-        const { success } = openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success, error } = openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
@@ -38,7 +78,10 @@ describe('test parse complete airspace definition blocks', () => {
     });
     test('parse airspace with simple polygon geometry', () => {
         const expectedJson = loadParserJsonResult('aspc-with-simple-polygon.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/polygon-airspace.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
@@ -52,7 +95,11 @@ describe('test parse complete airspace definition blocks', () => {
     });
     test('parse airspace with simple polygon geometry into LINESTRING geometry', () => {
         const expectedJson = loadParserJsonResult('simple-poly-to-linestring.json');
-        const openairParser = new Parser({ outputGeometry: OutputGeometryEnum.LINESTRING });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            outputGeometry: OutputGeometryEnum.LINESTRING,
+        });
         const { success } = openairParser.parse('./tests/fixtures/polygon-airspace.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
@@ -66,7 +113,10 @@ describe('test parse complete airspace definition blocks', () => {
     });
     test('parse airspace with circular geometry', () => {
         const expectedJson = loadParserJsonResult('aspc-with-circular-geometry.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/circular-airspace.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
@@ -78,7 +128,10 @@ describe('test parse complete airspace definition blocks', () => {
     });
     test('parse airspace with clockwise arc geometry', () => {
         const expectedJson = loadParserJsonResult('aspc-clockwise-arc.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/arc-clockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
@@ -90,7 +143,10 @@ describe('test parse complete airspace definition blocks', () => {
     });
     test('parse airspace with counter-clockwise arc geometry', () => {
         const expectedJson = loadParserJsonResult('aspc-ccw-arc.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/arc-counterclockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
@@ -102,76 +158,88 @@ describe('test parse complete airspace definition blocks', () => {
     });
     test('parse airspace with arc/angle geometry', () => {
         const expectedJson = loadParserJsonResult('aspc-arc-angle.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/arc-angle-airspace.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        (geojson as FeatureCollection).features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with clockwise and counter-clockwise arc definition', () => {
         const expectedJson = loadParserJsonResult('aspc-cw-ccw-start.json');
-        const openairParser = new Parser({ validateGeometry: false, fixGeometry: false });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise-airspace.txt');
         const geojson = openairParser.toGeojson();
-
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        (geojson as FeatureCollection).features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with arc definition', () => {
         const expectedJson = loadParserJsonResult('aspc-arc-start.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/arc-first-airspace.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        (geojson as FeatureCollection).features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
     test('parse multiple airspace definition blocks', () => {
         const expectedJson = loadParserJsonResult('aspc-multiple-blocks.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
         expectedJson.features.map((value) => delete value.id);
-        (geojson as FeatureCollection).features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
     test('parse custom airway definition', () => {
         const expectedJson = loadParserJsonResult('aspc-awy.json');
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/airway.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
-        expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.geometry);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
 });
 
-describe('test version 2', () => {
+describe('Format Version 2: Test parse airspace definition blocks', () => {
     test('parse commands', () => {
         const expectedJson = loadParserJsonResult('aspc-extended-format-tags.json');
-        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
+        const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/extended-format-tags.txt');
         const geojson = openairParser.toGeojson();
-        // remove unnecessary props from expected json
+        // remove unnecessary props from expected json - only check properties
         expectedJson.features.map((value) => delete value.id);
         expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
@@ -182,8 +250,8 @@ describe('test version 2', () => {
     });
     test('parse activation times', () => {
         const expectedJson = loadParserJsonResult('aspc-activation-window-extended-format.json');
-        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
-        const { success, error } = openairParser.parse('./tests/fixtures/activation-window-extended-format.txt');
+        const openairParser = new Parser();
+        const { success } = openairParser.parse('./tests/fixtures/activation-window-extended-format.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
@@ -196,9 +264,12 @@ describe('test version 2', () => {
     });
 });
 
-describe('test optional configuration parameters', () => {
+describe('Test optional configuration parameters', () => {
     test('do not round altitude value', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/round-altitude-values.txt');
         const geojson = openairParser.toGeojson();
 
@@ -206,7 +277,11 @@ describe('test optional configuration parameters', () => {
         expect(geojson.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1607.611551);
     });
     test('round altitude value', () => {
-        const openairParser = new Parser({ roundAltValues: true });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            roundAltValues: true,
+        });
         const { success } = openairParser.parse('./tests/fixtures/round-altitude-values.txt');
         const geojson = openairParser.toGeojson();
 
@@ -214,7 +289,10 @@ describe('test optional configuration parameters', () => {
         expect(geojson?.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1608);
     });
     test('keep units if no target altitude unit is specified', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success } = openairParser.parse('./tests/fixtures/meter-altitude-unit.txt');
         const geojson = openairParser.toGeojson();
 
@@ -223,7 +301,11 @@ describe('test optional configuration parameters', () => {
         expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual(AltitudeUnitEnum.METER);
     });
     test('correct limit validation when converting from ft to m', () => {
-        const openairParser = new Parser({ targetAltUnit: AltitudeUnitEnum.METER });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            targetAltUnit: AltitudeUnitEnum.METER,
+        });
         const { success } = openairParser.parse('./tests/fixtures/check-limits-unit-conversion.txt');
         const geojson = openairParser.toGeojson();
 
@@ -232,9 +314,12 @@ describe('test optional configuration parameters', () => {
     });
 });
 
-describe('test parse invalid airspace definition blocks', () => {
+describe('Test parse invalid airspace definition blocks', () => {
     test('single airspace with missing AC tag', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-without-ac-tag.txt');
 
         expect(success).toBe(false);
@@ -244,7 +329,10 @@ describe('test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace with invalid coordinates', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/invalid-coordinates-airspace.txt');
 
         expect(success).toBe(false);
@@ -254,7 +342,10 @@ describe('test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace with intersection', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
 
         expect(success).toBe(false);
@@ -265,7 +356,11 @@ describe('test parse invalid airspace definition blocks', () => {
     });
     test('airspace with intersection converted into LINESTRING geometry return geometry', () => {
         const expectedJson = loadParserJsonResult('invalid-intersect-to-linestring.json');
-        const openairParser = new Parser({ outputGeometry: OutputGeometryEnum.LINESTRING });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            outputGeometry: OutputGeometryEnum.LINESTRING,
+        });
         const { success } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
         const geojson = openairParser.toGeojson();
         // remove feature id for comparison
@@ -276,7 +371,11 @@ describe('test parse invalid airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('airspace with insufficient coordinates fails even if fix geometry is set', () => {
-        const openairParser = new Parser({ fixGeometry: true });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/insufficient-coordinates-airspace.txt');
 
         expect(success).toBe(false);
@@ -286,21 +385,33 @@ describe('test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace with invalid geometry with self intersection can be fixed', () => {
-        const openairParser = new Parser({ fixGeometry: true });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
 
         expect(success).toBe(true);
         expect(error).toBeUndefined();
     });
     test('airspace with invalid geometry with self intersection passes if not validated', () => {
-        const openairParser = new Parser({ fixGeometry: false, validateGeometry: false });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+            validateGeometry: false,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/self-intersecting-airspaces.txt');
 
         expect(success).toBe(true);
         expect(error).toBeUndefined();
     });
     test('airspace with empty name', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/empty-name.txt');
 
         expect(success).toBe(false);
@@ -310,7 +421,10 @@ describe('test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace with duplicate ceiling definitions are rejected', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/duplicate-ceiling-definitions.txt');
 
         expect(success).toBe(false);
@@ -320,7 +434,10 @@ describe('test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace start and end coordinates are not equal', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
 
         expect(success).toBe(false);
@@ -330,7 +447,10 @@ describe('test parse invalid airspace definition blocks', () => {
         );
     });
     test('parse laser beam airspace with too small circular geometry', () => {
-        const openairParser = new Parser();
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
         const { success, error } = openairParser.parse('./tests/fixtures/laser-beam-airspace.txt');
 
         expect(success).toBe(false);
@@ -341,9 +461,9 @@ describe('test parse invalid airspace definition blocks', () => {
     });
 });
 
-describe('test parse invalid airspace version 2 definition blocks', () => {
+describe('Version 2: Test parse invalid airspace definition blocks', () => {
     test('single airspace with AG and missing AF tag', () => {
-        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
+        const openairParser = new Parser();
         const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-ag-but-missing-af.txt');
 
         expect(success).toBe(false);
@@ -351,17 +471,17 @@ describe('test parse invalid airspace version 2 definition blocks', () => {
         expect(error.message).toEqual("Error found at line 5: Token 'AG' is present but token 'AF' is missing.");
     });
     test('single airspace with invalid AX tag', () => {
-        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
+        const openairParser = new Parser();
         const { success, error } = openairParser.parse('./tests/fixtures/invalid-transponder-code.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error.message).toEqual(
-            "Error found at line 9: Error found at line 9: Invalid transponder code string 'AX 7891'"
+            "Error found at line 8: Error found at line 8: Invalid transponder code string 'AX 7891'"
         );
     });
     test('single airspace with missing AL and AH tags', () => {
-        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
+        const openairParser = new Parser();
         const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-missing-ah-al-tag.txt');
 
         expect(success).toBe(false);
@@ -371,7 +491,7 @@ describe('test parse invalid airspace version 2 definition blocks', () => {
         );
     });
     test('single airspace with missing AY tag', () => {
-        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
+        const openairParser = new Parser();
         const { success, error } = openairParser.parse(
             './tests/fixtures/single-airspace-extended-format-missing-AY-tag.txt'
         );
@@ -383,7 +503,7 @@ describe('test parse invalid airspace version 2 definition blocks', () => {
         );
     });
     test('airspace with invalid activation times', () => {
-        const openairParser = new Parser({ version: ParserVersionEnum.VERSION_2 });
+        const openairParser = new Parser();
         const { success, error } = openairParser.parse(
             './tests/fixtures/invalid-activation-window-times-extended-format.txt'
         );
@@ -391,14 +511,18 @@ describe('test parse invalid airspace version 2 definition blocks', () => {
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error.message).toEqual(
-            "Error found at line 10: Error found at line 10: Invalid activation times format 'AA 2025-01-02T14:00Z/2025-01-01T15:00Z'. Start date must be before end date."
+            "Error found at line 9: Error found at line 9: Invalid activation times format 'AA 2025-01-02T14:00Z/2025-01-01T15:00Z'. Start date must be before end date."
         );
     });
 });
 
-describe('test parse invalid airspace definition blocks and fix geometry', () => {
+describe('Test parse invalid airspace definition blocks and fix geometry', () => {
     test('airspace with invalid geometry with self intersection can be fixed and is not Multipolygon', () => {
-        const openairParser = new Parser({ fixGeometry: true });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+        });
         const { success } = openairParser.parse('./tests/fixtures/do-not-split-into-multipolygon.txt');
         const { features } = openairParser.toGeojson();
         const { geometry } = features[0];
@@ -407,7 +531,11 @@ describe('test parse invalid airspace definition blocks and fix geometry', () =>
         expect(geometry.type).toEqual('Polygon');
     });
     test('airspace fix start and end coordinates if not equal', () => {
-        const openairParser = new Parser({ fixGeometry: true });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+        });
         const { success } = openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
         const { features } = openairParser.toGeojson();
         const { geometry } = features[0];
@@ -417,11 +545,15 @@ describe('test parse invalid airspace definition blocks and fix geometry', () =>
     });
 });
 
-describe('test formats', () => {
+describe('Test output formats', () => {
     test('check correct openair output', () => {
         // read from expected file and remove last "blank line" in file (automatically added by IDE)
         const expected = fs.readFileSync('./tests/fixtures/formats/expected-output-openair.txt', 'utf-8').split('\n');
-        const openairParser = new Parser({ fixGeometry: true });
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+        });
         const { success } = openairParser.parse('./tests/fixtures/formats/in-output-openair.txt');
         const openair = openairParser.toOpenair();
 

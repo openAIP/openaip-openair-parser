@@ -9,7 +9,7 @@ import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
 import type { ParserError } from './parser-error.js';
-import type { ParserVersion } from './parser-version.enum.js';
+import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { Tokenizer } from './tokenizer.js';
 import type { IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -55,7 +55,7 @@ export type Config = {
 
 export const ConfigSchema = z
     .object({
-        version: z.boolean().optional(),
+        version: z.nativeEnum(ParserVersionEnum).optional(),
         allowedClasses: z.array(z.string().min(1)).optional(),
         allowedTypes: z.array(z.string().min(1)).optional(),
         unlimited: z.number().int().min(1).optional(),

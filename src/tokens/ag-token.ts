@@ -16,7 +16,7 @@ export class AgToken extends AbstractLineToken<Metadata> {
         // IMPORTANT only validate string - string MAY be empty
         validateSchema(line, z.string(), { assert: true, name: 'line' });
 
-        // is AI line e.g. "AI f012e054-e9a4-43dd-87be-eb88b3088439"
+        // is AG line e.g. "AG INNSBRUCK RADAR"
         return /^AG\s+.*$/.test(line);
     }
 

@@ -69,7 +69,6 @@ Outputs GeoJSON FeatureCollection:
 AC D
 AY TMA
 AN TMA Todendorf-Putlos
-AI b3836bab-6bc3-48c1-b918-01c2559e26fa
 AF 123.505
 AG Todendorf Information
 AX 7000

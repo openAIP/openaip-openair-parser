@@ -10,7 +10,6 @@ import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
 import { AgToken } from './tokens/ag-token.js';
 import { AhToken } from './tokens/ah-token.js';
-import { AiToken } from './tokens/ai-token.js';
 import { AlToken } from './tokens/al-token.js';
 import { AnToken } from './tokens/an-token.js';
 import { AxToken } from './tokens/ax-token.js';
@@ -31,7 +30,6 @@ import { VxToken } from './tokens/vx-token.js';
 import { validateSchema } from './validate-schema.js';
 
 export type Config = {
-    airspaceClasses: string[];
     unlimited: number;
     targetAltUnit?: AltitudeUnit | undefined;
     roundAltValues: boolean;
@@ -42,7 +40,6 @@ export type Config = {
 
 export const ConfigSchema = z
     .object({
-        airspaceClasses: z.array(z.string().min(1)),
         unlimited: z.number().int(),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
@@ -73,7 +70,6 @@ export class Tokenizer {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
         const {
-            airspaceClasses,
             unlimited,
             targetAltUnit,
             roundAltValues,
@@ -88,7 +84,6 @@ export class Tokenizer {
             new BlankToken({ tokenTypes: TOKEN_TYPES, version }),
             new AcToken({
                 tokenTypes: TOKEN_TYPES,
-                airspaceClasses,
                 version,
                 allowedClasses,
             }),
@@ -116,7 +111,6 @@ export class Tokenizer {
             new DaToken({ tokenTypes: TOKEN_TYPES, version }),
             new DyToken({ tokenTypes: TOKEN_TYPES, version }),
             // version 2 tokens
-            new AiToken({ tokenTypes: TOKEN_TYPES, version }),
             new AyToken({ tokenTypes: TOKEN_TYPES, version, allowedTypes }),
             new AfToken({ tokenTypes: TOKEN_TYPES, version }),
             new AgToken({ tokenTypes: TOKEN_TYPES, version }),

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import { Command } from 'commander';
-import type { ParserVersion } from './parser-version.enum.js';
+import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { Parser } from './parser.js';
 import type { ParserResult } from './parser.js';
 
@@ -29,7 +29,7 @@ interface ProgramOptions {
 const options = program.opts<ProgramOptions>();
 const validateGeometry = options.validate ?? false;
 const fixGeometry = options.fixGeometry ?? false;
-const version = options.version ?? 1;
+const version = options.version ?? ParserVersionEnum.VERSION_2;
 const parser = new Parser({ validateGeometry, fixGeometry, version });
 
 try {

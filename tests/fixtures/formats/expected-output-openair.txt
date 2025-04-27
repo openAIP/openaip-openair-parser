@@ -1,3 +1,5 @@
+* Version 1.0, Copyright © 2025, Naviter d.o.o. All Rights Reserved
+
 AC P
 AN PYRENNEES
 AL GND
