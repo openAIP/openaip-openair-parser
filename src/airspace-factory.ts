@@ -19,7 +19,6 @@ import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
 import { AgToken } from './tokens/ag-token.js';
 import { AhToken } from './tokens/ah-token.js';
-import { AiToken } from './tokens/ai-token.js';
 import { AlToken } from './tokens/al-token.js';
 import { AnToken } from './tokens/an-token.js';
 import { AxToken } from './tokens/ax-token.js';
@@ -198,9 +197,6 @@ export class AirspaceFactory {
             case EofToken.type:
                 break;
             // version 2 tokens
-            case AiToken.type:
-                this.handleAiToken(token as AiToken);
-                break;
             case AyToken.type:
                 this.handleAyToken(token as AyToken);
                 break;
@@ -587,13 +583,6 @@ export class AirspaceFactory {
     protected handleCommentToken(token: CommentToken): void {}
 
     protected handleBlankToken(token: BlankToken): void {}
-
-    protected handleAiToken(token: AiToken): void {
-        const { metadata } = token.tokenized;
-        const { identifier } = metadata;
-
-        this._airspace.identifier = identifier;
-    }
 
     protected handleAyToken(token: AyToken): void {
         const { metadata } = token.tokenized;
