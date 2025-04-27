@@ -197,7 +197,7 @@ const config = {
     roundAltValues: false,
 };
 
-// TODO change: default alt unit and target alt unit are not supported anymore -> parsers takes units "as is", e.g m and ft in geosjon output
+// TODO change: default alt unit is not supported anymore -> parsers takes units "as is", e.g m and ft in geosjon output and do NOT allow unset units!
 
 const parser = new Parser(config);
 await parser.parse('./path/to/openair-file.txt');
