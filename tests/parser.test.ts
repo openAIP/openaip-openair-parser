@@ -262,6 +262,20 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
+    test('parse activation time by NOTAM', () => {
+        const expectedJson = loadParserJsonResult('result-activation-times-none.json');
+        const openairParser = new Parser();
+        const { success } = openairParser.parse('./tests/fixtures/activation-times-none.txt');
+        const geojson = openairParser.toGeojson();
+        // remove unnecessary props from expected json
+        expectedJson.features.map((value) => delete value.id);
+        expectedJson.features.map((value) => delete value.geometry);
+        geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.geometry);
+
+        expect(success).toBe(true);
+        expect(geojson).toEqual(expectedJson);
+    });
 });
 
 describe('Test optional configuration parameters', () => {
@@ -512,6 +526,16 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
         expect(error).toBeDefined();
         expect(error.message).toEqual(
             "Error found at line 9: Error found at line 9: Invalid activation times format 'AA 2025-01-02T14:00Z/2025-01-01T15:00Z'. Start date must be before end date."
+        );
+    });
+    test('airspace with invalid activation times with none/none', () => {
+        const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/activation-times-invalid-with-none.txt');
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            'Error found at line 9: Additional activation times are not allowed with BY NOTAM activation.'
         );
     });
 });

@@ -49,6 +49,7 @@ export type AirspaceProperties = {
     lowerCeiling: Altitude;
     frequency?: Partial<Frequency>;
     transponderCode?: number;
+    byNotam: boolean;
     activationTimes?: Activation[];
     openair?: string;
 };
@@ -70,6 +71,7 @@ export class Airspace {
     protected _frequency: Partial<Frequency> | undefined = undefined;
     protected _transponderCode: number | undefined = undefined;
     protected _activationTimes: Activation[] | undefined;
+    protected _byNotam: boolean = false;
     protected _coordinates: Position[] = [];
 
     set consumedTokens(value: IToken[]) {
@@ -160,6 +162,14 @@ export class Airspace {
         this._activationTimes = value;
     }
 
+    get byNotam(): boolean {
+        return this._byNotam;
+    }
+
+    set byNotam(value: boolean) {
+        this._byNotam = value;
+    }
+
     asGeoJson(config: AsGeojsonConfig): AirspaceFeature {
         validateSchema(config, AsGeojsonConfigSchema, { assert: true, name: 'config' });
 
@@ -199,6 +209,7 @@ export class Airspace {
             frequency: this._frequency,
             transponderCode: this._transponderCode,
             activationTimes: this._activationTimes,
+            byNotam: this._byNotam,
             upperCeiling: this._upperCeiling as Altitude,
             lowerCeiling: this._lowerCeiling as Altitude,
         });

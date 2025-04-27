@@ -13,7 +13,7 @@ import { Airspace, type Altitude } from './airspace.js';
 import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error';
 import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
-import { AaToken } from './tokens/aa-token.js';
+import { AaToken, BY_NOTAM_ACTIVATION } from './tokens/aa-token.js';
 import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
@@ -624,6 +624,18 @@ export class AirspaceFactory {
         const { metadata } = token.tokenized;
         const { activation } = metadata;
 
+        // handle NONE/NONE activation
+        if (activation === BY_NOTAM_ACTIVATION) {
+            // if there is also another activation time, throw an error
+            if (this._airspace.activationTimes != null && this._airspace.activationTimes.length > 0) {
+                throw new ParserError({
+                    lineNumber: this._currentLineNumber,
+                    errorMessage: 'Additional activation times are not allowed with BY NOTAM activation.',
+                });
+            }
+            this._airspace.byNotam = true
+            return;
+        }
         // initialize activation times if not already done
         if (this._airspace.activationTimes == null) {
             this._airspace.activationTimes = [];

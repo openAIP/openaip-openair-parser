@@ -73,6 +73,10 @@ AF 123.505
 AG Todendorf Information
 AX 7000
 AH 40000ft AMSL
+AA 2025-01-01T12:00Z/2025-01-01T13:00Z
+AA 2025-01-02T14:00Z/2025-01-01T15:00Z
+AA NONE/2025-02-02T12:00Z
+AA 2025-03-03T12:00/NONE
 AL GND
 DP 54:25:00 N 010:40:00 E
 DP 54:25:00 N 010:50:00 E
@@ -111,7 +115,23 @@ Outputs GeoJSON FeatureCollection:
                     "value": 0,
                     "unit": "FT",
                     "referenceDatum": "GND"
-                }
+                },
+                "activationTimes": [
+                    {
+                        "start": "2025-01-01T12:00:00.000Z",
+                        "end": "2025-01-01T13:00:00.000Z"
+                    },
+                    {
+                        "start": "2025-01-01T14:00:00.000Z",
+                        "end": "2025-01-01T15:00:00.000Z"
+                    },
+                    {
+                        "end": "2025-02-02T12:00:00.000Z"
+                    },
+                    {
+                        "start": "2025-03-03T11:00:00.000Z"
+                    }
+                ]
             },
             "geometry": {
                 "type": "Polygon",

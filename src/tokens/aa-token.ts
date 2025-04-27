@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { cleanObject } from '../clean-object.js';
 import { ParserError } from '../parser-error';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
+
+export const BY_NOTAM_ACTIVATION = 'BY_NOTAM';
 
 type Activation = {
     // ISO 8601 date-time format
@@ -12,7 +13,7 @@ type Activation = {
     end?: string;
 };
 
-type Metadata = { activation: Activation };
+type Metadata = { activation: Activation | typeof BY_NOTAM_ACTIVATION };
 
 /**
  * Tokenizes "AA" token value which is a sequence of at least one AA command and possible
@@ -61,10 +62,18 @@ export class AaToken extends AbstractLineToken<Metadata> {
                 errorMessage: `Invalid activation times format '${line}'. Start date must be before end date.`,
             });
         }
+        const time: Partial<Activation> = {};
+        if (startDate != null) {
+            time.start = startDate;
+        }
+        if (endDate != null) {
+            time.end = endDate;
+        }
+        const activation = startDate == null && endDate == null ? BY_NOTAM_ACTIVATION : time;
         token._tokenized = {
             line,
             lineNumber,
-            metadata: { activation: cleanObject({ start: startDate, end: endDate }) },
+            metadata: { activation },
         };
 
         return token;
