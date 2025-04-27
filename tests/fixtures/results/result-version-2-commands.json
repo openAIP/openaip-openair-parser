@@ -8,6 +8,7 @@
                 "class": "D",
                 "type": "TMA",
                 "transponderCode": 7000,
+                "byNotam": false,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
@@ -30,6 +31,7 @@
                     "value": "123.505"
                 },
                 "transponderCode": 7000,
+                "byNotam": false,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
@@ -53,6 +55,7 @@
                     "name": "Ground Station Name"
                 },
                 "transponderCode": 7000,
+                "byNotam": false,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
@@ -75,6 +78,7 @@
                     "name": "Ground Station Name",
                     "value": "123.505"
                 },
+                "byNotam": false,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
@@ -98,6 +102,7 @@
                     "value": "123.505"
                 },
                 "transponderCode": 7000,
+                "byNotam": false,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
@@ -121,6 +126,7 @@
                     "name": "Ground Station Name"
                 },
                 "transponderCode": 7000,
+                "byNotam": false,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
@@ -144,6 +150,7 @@
                     "name": "Ground Station Name"
                 },
                 "transponderCode": 7000,
+                "byNotam": false,
                 "activationTimes": [
                     {
                         "start": "2025-01-01T12:00:00.000Z",
@@ -183,6 +190,7 @@
                     "name": "Todendorf Information"
                 },
                 "transponderCode": 7000,
+                "byNotam": false,
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",

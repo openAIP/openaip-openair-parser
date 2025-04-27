@@ -69,9 +69,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -84,11 +85,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/polygon.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
-        expectedJson.features.map((value) => delete value.id);
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -102,11 +102,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/polygon.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
-        expectedJson.features.map((value) => delete value.id);
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -119,9 +118,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/circular.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -134,9 +134,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/arc-clockwise.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -149,9 +150,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/arc-counterclockwise.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -164,9 +166,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/arc-angle.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -177,11 +180,12 @@ describe('Test parse airspace definition blocks', () => {
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise-airspace.txt');
+        const { success } = openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -194,9 +198,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/arc-first.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -209,9 +214,10 @@ describe('Test parse airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -227,6 +233,7 @@ describe('Test parse airspace definition blocks', () => {
         // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -235,28 +242,30 @@ describe('Test parse airspace definition blocks', () => {
 
 describe('Format Version 2: Test parse airspace definition blocks', () => {
     test('parse commands', () => {
-        const expectedJson = loadParserJsonResult('result-extended-format-tags.json');
+        const expectedJson = loadParserJsonResult('result-version-2-commands.json');
         const openairParser = new Parser();
-        const { success } = openairParser.parse('./tests/fixtures/extended-format-tags.txt');
+        const { success } = openairParser.parse('./tests/fixtures/version-2-commands.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json - only check properties
         expectedJson.features.map((value) => delete value.id);
         expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
         geojson.features.map((value) => delete value.geometry);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
     test('parse activation times', () => {
-        const expectedJson = loadParserJsonResult('result-activation-window-extended-format.json');
+        const expectedJson = loadParserJsonResult('result-activation-times.json');
         const openairParser = new Parser();
-        const { success } = openairParser.parse('./tests/fixtures/activation-window-extended-format.txt');
+        const { success } = openairParser.parse('./tests/fixtures/activation-times.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
         expectedJson.features.map((value) => delete value.id);
         expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
         geojson.features.map((value) => delete value.geometry);
 
         expect(success).toBe(true);
@@ -271,6 +280,7 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         expectedJson.features.map((value) => delete value.id);
         expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
         geojson.features.map((value) => delete value.geometry);
 
         expect(success).toBe(true);
@@ -377,9 +387,10 @@ describe('Test parse invalid airspace definition blocks', () => {
         });
         const { success } = openairParser.parse('./tests/fixtures/self-intersecting.txt');
         const geojson = openairParser.toGeojson();
-        // remove feature id for comparison
+        // remove properties for comparison
         expectedJson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -486,7 +497,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
     });
     test('single airspace with invalid AX tag', () => {
         const openairParser = new Parser();
-        const { success, error } = openairParser.parse('./tests/fixtures/invalid-transponder-code.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/transponder-code-invalid.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();

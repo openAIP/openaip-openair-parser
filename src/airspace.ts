@@ -41,7 +41,7 @@ export type Activation = {
 };
 
 export type AirspaceProperties = {
-    id?: string;
+    id: string;
     name: string;
     type?: string;
     class: string;
@@ -49,7 +49,7 @@ export type AirspaceProperties = {
     lowerCeiling: Altitude;
     frequency?: Partial<Frequency>;
     transponderCode?: number;
-    byNotam: boolean;
+    byNotam?: boolean;
     activationTimes?: Activation[];
     openair?: string;
 };
@@ -73,6 +73,10 @@ export class Airspace {
     protected _activationTimes: Activation[] | undefined;
     protected _byNotam: boolean | undefined = undefined;
     protected _coordinates: Position[] = [];
+
+    constructor() {
+        this._identifier = uuid.v4();
+    }
 
     set consumedTokens(value: IToken[]) {
         this._consumedTokens = value;
@@ -228,7 +232,7 @@ export class Airspace {
                 ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, consumeDuplicateBuffer })
                 : createLinestring(this._coordinates).geometry;
         // create a GeoJSON feature from the geometry
-        const feature = createFeature<Polygon | LineString, AirspaceProperties>(airspaceGeometry, properties, {
+        const feature = createFeature<Polygon | LineString, AirspaceProperties>(airspaceGeometry, properties as AirspaceProperties, {
             id: uuid.v4(),
         });
 

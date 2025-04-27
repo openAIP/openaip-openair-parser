@@ -83,6 +83,10 @@ export class AirspaceFactory {
         this.reset();
         this._tokens = tokens;
         this._airspace = new Airspace();
+        // if version 2 is used, set byNotam to false by default
+        if (this._version === ParserVersionEnum.VERSION_2) {
+            this._airspace.byNotam = false;
+        }
         // validate all tokens are correct and that we are able to build an airspace from them
         this.validateTokens();
 
@@ -633,7 +637,7 @@ export class AirspaceFactory {
                     errorMessage: 'Additional activation times are not allowed with BY NOTAM activation.',
                 });
             }
-            this._airspace.byNotam = true
+            this._airspace.byNotam = true;
             return;
         }
         // initialize activation times if not already done
