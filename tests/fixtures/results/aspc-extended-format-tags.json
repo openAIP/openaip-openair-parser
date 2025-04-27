@@ -12,12 +12,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -32,12 +32,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -52,12 +52,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -72,12 +72,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -95,12 +95,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -119,12 +119,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -142,12 +142,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -166,12 +166,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -190,12 +190,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -230,12 +230,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         },
@@ -254,12 +254,12 @@
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             }
         }

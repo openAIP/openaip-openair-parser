@@ -35,12 +35,12 @@ Outputs GeoJSON FeatureCollection:
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             },
             "geometry": {
@@ -106,12 +106,12 @@ Outputs GeoJSON FeatureCollection:
                 "upperCeiling": {
                     "value": 40000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             },
             "geometry": {

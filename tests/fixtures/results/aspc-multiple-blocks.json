@@ -14,7 +14,7 @@
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             },
             "geometry": {
@@ -44,7 +44,7 @@
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             },
             "geometry": {
@@ -74,7 +74,7 @@
                 "lowerCeiling": {
                     "value": 0,
                     "unit": "FT",
-                    "referenceDatum": "AGL"
+                    "referenceDatum": "GND"
                 }
             },
             "geometry": {
@@ -204,12 +204,12 @@
                 "upperCeiling": {
                     "value": 11000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 6000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 }
             },
             "geometry": {
@@ -236,12 +236,12 @@
                 "upperCeiling": {
                     "value": 11000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 6000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 }
             },
             "geometry": {
@@ -327,12 +327,12 @@
                 "upperCeiling": {
                     "value": 11000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 },
                 "lowerCeiling": {
                     "value": 6000,
                     "unit": "FT",
-                    "referenceDatum": "AMSL"
+                    "referenceDatum": "MSL"
                 }
             },
             "geometry": {
