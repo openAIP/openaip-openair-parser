@@ -82,7 +82,6 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
             targetAltUnit: this._targetAltUnit,
             roundAltValues: this._roundAltValues,
         };
-        /** @type {typedefs.openaip.OpenairParser.AltitudeReader[]} */
         this._readers = [
             new AltitudeDefaultReader(readerConfig),
             new AltitudeFlightLevelReader(readerConfig),
@@ -138,7 +137,7 @@ abstract class AbstractAltitudeReader implements IAltitudeReader {
 class AltitudeDefaultReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s*(MSL|AMSL|ALT|GND|GROUND|AGL|SURFACE|SFC|SRFC)?$/;
+        this._REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)?\s*(AMSL|AGL)?$/;
     }
 
     canHandle(altitudeString: string): boolean {
@@ -155,8 +154,7 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
         let value = parseFloat(altitudeParts[1]);
         // use the unit defined in altitude definition or if not set, use the configured default unit
         let unit = altitudeParts[3] ?? this._defaultAltUnit;
-        const referenceDatum = this.harmonizeReference(altitudeParts[4]);
-
+        const referenceDatum = altitudeParts[4];
         /*
         Convert between altitude units if required. This only happens if a target unit is explicitly specified!
 
@@ -190,34 +188,10 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
 
         return convValue;
     }
-
-    /**
-     * Harmonizes various Openair related reference datum definitions and returns internally used reference datum.
-     * If NO reference datum is given, default is to use "MSL"!
-     */
-    protected harmonizeReference(reference: string | null): string {
-        switch (reference) {
-            case 'GND':
-            case 'GROUND':
-            case 'AGL':
-            case 'SURFACE':
-            case 'SFC':
-            case 'SRFC':
-                return 'GND';
-            // if no reference datum is defined, always use MSL
-            case 'MSL':
-            case 'AMSL':
-            case 'ALT':
-            default:
-                return 'MSL';
-        }
-    }
 }
 
 /**
  * Reads a flight level airspace ceiling definition, e.g. FL80.
- *
- * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeFlightLevelReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
@@ -246,13 +220,11 @@ class AltitudeFlightLevelReader extends AbstractAltitudeReader {
 
 /**
  * Reads a surface airspace ceiling definition, e.g. GND.
- *
- * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeSurfaceReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^(MSL|GND|GROUND|AGL|SURFACE|SFC|SRFC)$/;
+        this._REGEX_ALTITUDE = /^(GND)$/;
     }
 
     canHandle(altitudeString: string): boolean {
@@ -264,11 +236,7 @@ class AltitudeSurfaceReader extends AbstractAltitudeReader {
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
         }
-        let referenceDatum = altitudeParts[0];
-        if (referenceDatum !== 'MSL') {
-            // always use GND
-            referenceDatum = 'GND';
-        }
+        const referenceDatum = altitudeParts[0];
 
         return { value: 0, unit: 'FT', referenceDatum };
     }
@@ -276,14 +244,12 @@ class AltitudeSurfaceReader extends AbstractAltitudeReader {
 
 /**
  * Reads unlimited ceiling airspace definitions.
- *
- * @type {typedefs.openaip.OpenairParser.AltitudeReader}
  */
 class AltitudeUnlimitedReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
         // unlimited ceiling definition
-        this._REGEX_ALTITUDE = /^(UNLIMITED|UNLIM|UNL|UNLTD)$/;
+        this._REGEX_ALTITUDE = /^(UNL)$/;
     }
 
     canHandle(altitudeString: string): boolean {

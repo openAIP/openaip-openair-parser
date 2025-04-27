@@ -15,7 +15,7 @@ export class AhToken extends AbstractAltitudeToken {
         // IMPORTANT only validate string - string MAY be empty
         validateSchema(line, z.string(), { assert: true, name: 'line' });
 
-        // is AH line e.g. "AH 40000ft MSL"
+        // is AH line e.g. "AH 40000ft AMSL"
         return /^AH\s+.*$/.test(line);
     }
 

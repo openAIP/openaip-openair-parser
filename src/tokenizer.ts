@@ -66,7 +66,6 @@ export class Tokenizer {
     protected tokenizers: IToken[];
     // previous processed token, used to validate correct token order
     protected _tokens: IToken[] = [];
-    /** @type {typedefs.openaip.OpenairParser.Token} */
     protected _prevToken: IToken | undefined = undefined;
     protected _currentLineNumber = 0;
     protected _currentLineString: string | undefined = undefined;
@@ -85,7 +84,6 @@ export class Tokenizer {
             extendedFormatTypes,
         } = config;
         this._config = config;
-        /** @type {typedefs.openaip.OpenairParser.Token[]} */
         this.tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),
             new SkippedToken({ tokenTypes: TOKEN_TYPES, extendedFormat }),

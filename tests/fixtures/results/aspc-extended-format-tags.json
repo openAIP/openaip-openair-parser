@@ -1,227 +1,267 @@
 {
+    "type": "FeatureCollection",
     "features": [
         {
+            "type": "Feature",
             "properties": {
-                "class": "D",
                 "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
                 "name": "TMA Todendorf-Putlos",
-                "transponderCode": 7000,
+                "class": "D",
                 "type": "TMA",
+                "transponderCode": 7000,
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
-                "class": "D",
                 "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
                 "name": "TMA Todendorf-Putlos",
-                "transponderCode": 7000,
+                "class": "D",
                 "type": "TMA",
+                "transponderCode": 7000,
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
-                "class": "D",
                 "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
                 "name": "TMA Todendorf-Putlos",
-                "transponderCode": 7000,
+                "class": "D",
                 "type": "TMA",
+                "transponderCode": 7000,
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
-                "class": "D",
                 "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
                 "name": "TMA Todendorf-Putlos",
-                "transponderCode": 7000,
+                "class": "D",
                 "type": "TMA",
+                "transponderCode": 7000,
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+                "name": "TMA Todendorf-Putlos",
                 "class": "D",
+                "type": "TMA",
                 "frequency": {
                     "value": "123.505"
                 },
-                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
-                "name": "TMA Todendorf-Putlos",
                 "transponderCode": 7000,
-                "type": "TMA",
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
-                "class": "D",
-                "frequency": {
-                    "name": "Ground Station Name",
-                    "value": "123.505"
-                },
                 "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
                 "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "value": "123.505",
+                    "name": "Ground Station Name"
+                },
                 "transponderCode": 7000,
-                "type": "TMA",
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
-                }
-            },
-            "type": "Feature"
-        },
-        {
-            "properties": {
-                "class": "D",
-                "frequency": {
-                    "name": "Ground Station Name",
-                    "value": "123.505"
+                    "referenceDatum": "MSL"
                 },
-                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
                 "lowerCeiling": {
-                    "referenceDatum": "GND",
+                    "value": 0,
                     "unit": "FT",
-                    "value": 0
-                },
-                "name": "TMA Todendorf-Putlos",
-                "type": "TMA",
-                "upperCeiling": {
-                    "referenceDatum": "MSL",
-                    "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+                "name": "TMA Todendorf-Putlos",
                 "class": "D",
+                "type": "TMA",
                 "frequency": {
                     "name": "Ground Station Name",
                     "value": "123.505"
                 },
-                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
-                "name": "TMA Todendorf-Putlos",
-                "transponderCode": 7000,
-                "type": "TMA",
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+                "name": "TMA Todendorf-Putlos",
                 "class": "D",
+                "type": "TMA",
                 "frequency": {
                     "name": "Ground Station Name",
                     "value": "123.505"
                 },
-                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
-                "name": "TMA Todendorf-Putlos",
                 "transponderCode": 7000,
-                "type": "TMA",
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
         },
         {
+            "type": "Feature",
             "properties": {
-                "class": "D",
-                "frequency": {
-                    "name": "Todendorf Information",
-                    "value": "123.505"
-                },
                 "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "lowerCeiling": {
-                    "referenceDatum": "GND",
-                    "unit": "FT",
-                    "value": 0
-                },
                 "name": "TMA Todendorf-Putlos",
-                "transponderCode": 7000,
+                "class": "D",
                 "type": "TMA",
+                "frequency": {
+                    "value": "123.505",
+                    "name": "Ground Station Name"
+                },
+                "transponderCode": 7000,
                 "upperCeiling": {
-                    "referenceDatum": "MSL",
+                    "value": 40000,
                     "unit": "FT",
-                    "value": 40000
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
                 }
-            },
-            "type": "Feature"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+                "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "value": "123.505",
+                    "name": "Ground Station Name"
+                },
+                "transponderCode": 7000,
+                "activationTimes": [
+                    {
+                        "start": "2025-01-01T12:00:00.000Z",
+                        "end": "2025-01-01T13:00:00.000Z"
+                    },
+                    {
+                        "start": "2025-01-01T14:00:00.000Z",
+                        "end": "2025-01-01T15:00:00.000Z"
+                    },
+                    {
+                        "end": "2025-02-02T12:00:00.000Z"
+                    },
+                    {
+                        "start": "2025-03-03T11:00:00.000Z"
+                    }
+                ],
+                "upperCeiling": {
+                    "value": 40000,
+                    "unit": "FT",
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
+                }
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+                "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "value": "123.505",
+                    "name": "Todendorf Information"
+                },
+                "transponderCode": 7000,
+                "upperCeiling": {
+                    "value": 40000,
+                    "unit": "FT",
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
+                }
+            }
         }
-    ],
-    "type": "FeatureCollection"
+    ]
 }

@@ -389,6 +389,18 @@ describe('test parse invalid airspace extended format definition blocks', () => 
             'Error found at line 1: Airspace definition block is missing required tokens: AY'
         );
     });
+    test('airspace with invalid activation times in extended format', () => {
+        const openairParser = new Parser({ extendedFormat: true });
+        const { success, error } = openairParser.parse(
+            './tests/fixtures/invalid-activation-window-times-extended-format.txt'
+        );
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            "Error found at line 10: Error found at line 10: Invalid activation times format 'AA 2025-01-02T14:00Z/2025-01-01T15:00Z'. Start date must be before end date."
+        );
+    });
 });
 
 describe('test parse invalid airspace definition blocks and fix geometry', () => {
