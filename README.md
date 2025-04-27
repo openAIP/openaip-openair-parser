@@ -185,6 +185,7 @@ const config = {
 };
 
 // TODO change: default alt unit is not supported anymore -> parsers takes units "as is", e.g m and ft in geosjon output and do NOT allow unset units!
+// TODO AI does not exist anymore
 
 const parser = new Parser(config);
 await parser.parse('./path/to/openair-file.txt');
@@ -197,10 +198,6 @@ The **original** OpenAIR format specification has multiple shortcomings to meet 
 and provide additional metadata. To overcome these shortcomings, an **extended** OpenAIR format is introduced that has several new tags.
 
 ### Extended Format Tags:
-
-#### AI
-
-An optional tag that specifies a unique identifier string for each airspace, e.g. a [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier). The _AI_ value must stay the same for each airspace throughout different versions if the file. The _AI_ tag must be placed either before or directly after the _AN_ tag. Placing the _AI_ tag before the _AN_ tag is preferred
 
 #### AY
 

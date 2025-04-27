@@ -78,6 +78,6 @@ export class AyToken extends AbstractLineToken<Metadata> {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return [TokenTypeEnum.COMMENT, TokenTypeEnum.AI, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
+        return [TokenTypeEnum.COMMENT, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
     }
 }

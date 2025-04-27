@@ -78,7 +78,7 @@ export class AcToken extends AbstractLineToken<Metadata> {
         let allowedNextTokens: TokenType[] = [TokenTypeEnum.COMMENT, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
         // inject version 2 tokens if required
         if (this._version === ParserVersionEnum.VERSION_2) {
-            allowedNextTokens = allowedNextTokens.concat([TokenTypeEnum.AI, TokenTypeEnum.AY]);
+            allowedNextTokens = allowedNextTokens.concat([TokenTypeEnum.AY]);
         }
 
         return allowedNextTokens;

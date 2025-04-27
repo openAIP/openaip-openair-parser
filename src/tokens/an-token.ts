@@ -47,7 +47,6 @@ export class AnToken extends AbstractLineToken<Metadata> {
         // inject version 2 tokens if required
         if (this._version === ParserVersionEnum.VERSION_2) {
             allowedNextTokens = allowedNextTokens.concat([
-                TokenTypeEnum.AI,
                 TokenTypeEnum.AF,
                 TokenTypeEnum.AG,
                 TokenTypeEnum.AX,

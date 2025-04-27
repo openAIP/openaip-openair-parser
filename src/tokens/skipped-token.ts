@@ -49,7 +49,6 @@ export class SkippedToken extends CommentToken {
             TokenTypeEnum.DC,
             TokenTypeEnum.EOF,
             TokenTypeEnum.SKIPPED,
-            TokenTypeEnum.AI,
             TokenTypeEnum.AY,
             TokenTypeEnum.AF,
             TokenTypeEnum.AG,

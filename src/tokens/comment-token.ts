@@ -50,7 +50,6 @@ export class CommentToken extends AbstractLineToken<undefined> {
             TokenTypeEnum.AX,
             TokenTypeEnum.AA,
             TokenTypeEnum.AY,
-            TokenTypeEnum.AI,
             TokenTypeEnum.AF,
             TokenTypeEnum.AG,
             TokenTypeEnum.EOF,
