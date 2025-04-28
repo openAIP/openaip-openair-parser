@@ -17,7 +17,20 @@
             "role": "Lead developer"
         }
     ],
-    "main": "index.js",
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/esm/index.js",
+    "types": "./dist/types/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -31,40 +44,52 @@
     },
     "homepage": "https://github.com/openAIP/openaip-openair-parser#readme",
     "scripts": {
+        "build:cjs": "tsc -p tsconfig.cjs.json",
+        "build:esm": "tsc -p tsconfig.esm.json && npm run rename:esm",
+        "build": "npm run clean && npm run build:cjs && npm run build:esm",
+        "clean": "rimraf dist",
+        "rename:esm": "/bin/bash ./prepare-esm.sh",
+        "prepack": "npm run clean && npm run build",
+        "sca:watch:types": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run tsc:run'",
+        "sca:watch:lint": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run lint'",
         "test": "vitest run --coverage",
-        "lint": "eslint -c .eslintrc.js .",
+        "tsc:run": "tsc --noEmit",
+        "lint": "eslint src --cache",
+        "format": "prettier --write src/ tests/",
         "run-security-audit": "npm audit --omit=dev",
-        "format": "prettier --plugin-search-dir . --write .",
-        "update-packages": "ncu --target minor --upgrade --reject jsts && npm install && npm audit fix"
+        "update-packages": "ncu --target minor --upgrade && npm install && npm audit fix",
+        "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
     },
     "dependencies": {
-        "@mapbox/geojson-rewind": "^0.5.2",
-        "@openaip/coordinate-parser": "^0.13.0",
-        "@turf/turf": "^6.5.0",
-        "check-types": "^11.2.3",
-        "clean-deep": "^3.4.0",
-        "jsts": "<=2.6.1",
+        "@openaip/coordinate-parser": "^0.15.0",
+        "@placemarkio/check-geojson": "^0.1.14",
+        "@turf/turf": "^7.2.0",
+        "@types/n-readlines": "^1.0.6",
+        "@types/sprintf-js": "^1.1.4",
+        "commander": "^13.1.0",
         "n-readlines": "^1.0.3",
         "sprintf-js": "^1.1.3",
-        "uuid": "^8.3.2"
+        "uuid": "^11.1.0",
+        "zod": "^3.24.3"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.26.10",
-        "@types/check-types": "^7.3.7",
-        "@types/uuid": "^8.3.4",
-        "@vitest/coverage-v8": "^2.1.9",
-        "@vitest/ui": "^2.1.9",
-        "commander": "^2.20.3",
-        "eslint": "^8.57.0",
-        "eslint-config-prettier": "^9.1.0",
-        "eslint-plugin-import": "^2.31.0",
-        "eslint-plugin-only-warn": "^1.1.0",
-        "eslint-plugin-prettier": "^5.2.3",
-        "nodemon": "^3.1.9",
-        "npm-check-updates": "^16.14.20",
+        "@eslint/js": "^9.25.1",
+        "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+        "@types/luxon": "^3.6.2",
+        "@types/node": "^22.15.2",
+        "@vitest/coverage-v8": "^3.1.2",
+        "@vitest/ui": "^3.1.2",
+        "app-root-path": "^3.1.0",
+        "chokidar-cli": "^3.0.0",
+        "depcheck": "^1.4.7",
+        "eslint": "^9.25.1",
+        "eslint-plugin-security": "^3.0.1",
+        "npm-check-updates": "^17.1.18",
         "prettier": "^3.5.3",
-        "version-bump-prompt": "^6.1.0",
-        "vite": "^5.4.14",
-        "vitest": "^2.1.9"
+        "rimraf": "^6.0.1",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.31.0",
+        "vite": "^6.3.3",
+        "vitest": "^3.1.2"
     }
 }

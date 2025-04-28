@@ -1,9 +1,0 @@
-* Comments and some blank lines
-*
-
-AC R
-AN ED-R3 Geesthacht H24
-AH 2200ft MSL
-AL GND
-V X=53:24:25 N 010:25:10 E
-DC 1.10

@@ -1,3 +1,0 @@
-/**
- * @namespace typedefs.openaip.OpenairParser
- */

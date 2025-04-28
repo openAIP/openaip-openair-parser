@@ -1,6 +1,0 @@
-AC Q
-AN Lampedusa(LaserBeam)
-AL SFC
-AH UNL
-V X=35:31:06 N 012:37:50 E
-DC 0.00161
