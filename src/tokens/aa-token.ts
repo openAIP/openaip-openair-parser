@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon';
 import { z } from 'zod';
 import { ParserError } from '../parser-error';
 import { validateSchema } from '../validate-schema.js';
@@ -54,11 +53,8 @@ export class AaToken extends AbstractLineToken<Metadata> {
                 errorMessage: `Invalid activation times format found at '${line}'. Start and end must be in ISO 8601 date-time format or NONE.`,
             });
         }
-        const startDate =
-            start === 'NONE' ? undefined : DateTime.fromISO(start).setZone('UTC').toISO({ suppressMilliseconds: true });
-
-        const endDate =
-            end === 'NONE' ? undefined : DateTime.fromISO(end).setZone('UTC').toISO({ suppressMilliseconds: true });
+        const startDate = start === 'NONE' ? undefined : this.removeMilliseconds(start);
+        const endDate = end === 'NONE' ? undefined : this.removeMilliseconds(end);
         // validate start and end, start must be before end
         if (startDate != null && endDate != null && startDate >= endDate) {
             throw new ParserError({
@@ -88,6 +84,12 @@ export class AaToken extends AbstractLineToken<Metadata> {
             return true;
         }
         try {
+            // parse the activation time as ISO 8601 date-time format that MUST be in UTC, i.e "ZULU" time
+            // e.g. "2023-12-16T12:00Z" or "2023-12-16T12:00:00Z"
+            const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z$/;
+            if (iso8601Regex.test(activationTime) === false) {
+                return false;
+            }
             // try to parse the activation time as ISO 8601 date-time format
             const date = new Date(activationTime);
 
@@ -95,6 +97,11 @@ export class AaToken extends AbstractLineToken<Metadata> {
         } catch (err) {
             return false;
         }
+    }
+
+    private removeMilliseconds(isoString: string): string {
+        const date = new Date(isoString);
+        return date.toISOString().replace(/\.\d{3}Z$/, 'Z');
     }
 
     getAllowedNextTokens(): TokenType[] {
