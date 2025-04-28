@@ -450,12 +450,25 @@ describe('Test parse invalid airspace definition blocks', () => {
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success, error } = openairParser.parse('./tests/fixtures/duplicate-ceiling-definitions.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/ceiling-definitions-duplicate.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error.message).toEqual(
             "Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4"
+        );
+    });
+    test('airspace with ceiling definitions where AL is greater than AH are rejected', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success, error } = openairParser.parse('./tests/fixtures/ceiling-definitions-al-greater-ah.txt');
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            "Error found at line 10: Lower limit must be less than upper limit"
         );
     });
     test('airspace start and end coordinates are not equal', () => {
