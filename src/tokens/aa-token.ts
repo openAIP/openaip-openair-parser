@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { z } from 'zod';
 import { ParserError } from '../parser-error';
 import { validateSchema } from '../validate-schema.js';
@@ -53,8 +54,11 @@ export class AaToken extends AbstractLineToken<Metadata> {
                 errorMessage: `Invalid activation times format found at '${line}'. Start and end must be in ISO 8601 date-time format or NONE.`,
             });
         }
-        const startDate = start === 'NONE' ? undefined : new Date(start).toISOString();
-        const endDate = end === 'NONE' ? undefined : new Date(end).toISOString();
+        const startDate =
+            start === 'NONE' ? undefined : DateTime.fromISO(start).setZone('UTC').toISO({ suppressMilliseconds: true });
+
+        const endDate =
+            end === 'NONE' ? undefined : DateTime.fromISO(end).setZone('UTC').toISO({ suppressMilliseconds: true });
         // validate start and end, start must be before end
         if (startDate != null && endDate != null && startDate >= endDate) {
             throw new ParserError({

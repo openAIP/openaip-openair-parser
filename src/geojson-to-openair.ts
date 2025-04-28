@@ -99,16 +99,19 @@ export function geojsonToOpenair(
 function toActivationTime(activation: Activation): string {
     const { start, end } = activation;
     const activationTimeParts = [];
+
     if (start == null) {
         activationTimeParts.push('NONE');
     } else {
-        activationTimeParts.push(new Date(start).toISOString());
+        // The date is already in ISO format with Z suffix, just replace milliseconds with Z
+        activationTimeParts.push(start.replace(/\.\d{3}Z$/, 'Z'));
     }
 
     if (end == null) {
         activationTimeParts.push('NONE');
     } else {
-        activationTimeParts.push(new Date(end).toISOString());
+        // The date is already in ISO format with Z suffix, just replace milliseconds with Z
+        activationTimeParts.push(end.replace(/\.\d{3}Z$/, 'Z'));
     }
 
     return activationTimeParts.join('/');
