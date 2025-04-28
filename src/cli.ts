@@ -8,14 +8,11 @@ import type { ParserResult } from './parser.js';
 const program = new Command();
 
 program
-    .option('-f, --input-filepath <inFilepath>', 'The input file path to the openAIR file')
-    .option('-o, --output-filepath <outFilepath>', 'The output filename of the generated geojson file')
-    .option('-V, --validate', 'If specified, parser will validate geometries.')
-    .option('-F, --fix-geometry', 'If specified, parser will try to fix geometries.')
-    .option(
-        '-E, --version <version>',
-        'If set to 2, parser expects the extended OpenAIR format version 2. Defaults to 1.'
-    )
+    .option('--input-filepath <inFilepath>', 'The input file path to the openAIR file')
+    .option('--output-filepath <outFilepath>', 'The output filename of the generated geojson file')
+    .option('--validate', 'If specified, parser will validate geometries.')
+    .option('--fix-geometry', 'If specified, parser will try to fix geometries.')
+    .option('--version <version>', 'Specify OpenAIR format version to parse. Defaults to 2.')
     .parse(process.argv);
 
 interface ProgramOptions {

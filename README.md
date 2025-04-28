@@ -219,6 +219,28 @@ if (success === true) {
 }
 ```
 
+# CLI
+
+```bash
+node cli.js -h
+
+Usage: cli [options]
+
+Options:
+
+--input-filepath <inFilepath>    The input file path tothe openAIR file.
+--output-filepath <outFilepath>  The output filename ofthe generated geojson file.
+--validate                       If set to true,validates geometries. Defaults to true.
+--fix-geometry                   If set to true, tries tofix geometries. Note that this may change the originalairspace geometry! Defaults to false.
+--version <version>              Specify OpenAIR formatversion to parse. Defaults to 2.
+```
+
+Simple command line usage:
+
+```bash
+node cli.js --input-filepath ./tests/fixtures/full-airspaces.txt --output-filepath test.json
+```
+
 # Version 2: Extended OpenAIR Format
 
 The original OpenAIR `version 1` format specification has multiple shortcomings to meet today's demand to reflect the various types of existing airspaces
