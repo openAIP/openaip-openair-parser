@@ -208,7 +208,7 @@ if (success === true) {
     const {
         // the name of the airspace where the error occurred
         name,
-        // the line number where the error occured
+        // the line number where the error occurred
         lineNumber,
         // the fully build error message for this error
         errorMessage,
@@ -221,19 +221,15 @@ if (success === true) {
 
 # CLI
 
-```bash
-node cli.js -h
-
-Usage: cli [options]
+CLI tooling is available. Following options exists:
 
 Options:
 
---input-filepath <inFilepath>    The input file path tothe openAIR file.
---output-filepath <outFilepath>  The output filename ofthe generated geojson file.
---validate                       If set to true,validates geometries. Defaults to true.
---fix-geometry                   If set to true, tries tofix geometries. Note that this may change the originalairspace geometry! Defaults to false.
---version <version>              Specify OpenAIR formatversion to parse. Defaults to 2.
-```
+    --input-filepath <inFilepath>    The input file path to the openAIR file.
+    --output-filepath <outFilepath>  The output filename of the generated geojson file.
+    --validate                       If set to true, validates geometries. Defaults to true.
+    --fix-geometry                   If set to true, tries to fix geometries. Note that this may change the original airspace geometry! Defaults to false.
+    --version <version>              Specify OpenAIR format version to parse. Defaults to 2.
 
 Simple command line usage:
 
@@ -302,7 +298,7 @@ possible. An altitude definition `2000 MSL` will now result in a parser error!
 #### Strict Altitude Reference Parsing
 
 The parser now only allows the defined set of altitude references defined in the `version 2` format definition (this is the same as in `version 1`). Please see the set of defined
-altitude references here for [lower altitude](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md#al-lower-alitutde-limit) and [upper altitude](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md#ah-upper-alitutde-limit).
+altitude references here for [lower altitude](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md#al-lower-altitude-limit) and [upper altitude](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md#ah-upper-altitude-limit).
 
 #### Removed Support For The AI Command
 
@@ -325,4 +321,4 @@ This project is licensed under the MIT License - see the [license.txt](license.t
 
 # Issues
 
-If you find a bug or have a feature request, please open an issue on the [GitHub repository](https://github.com/openaip/openair-parser/issues).
+If you find a bug or have a feature request, please open an issue on the [GitHub repository](https://github.com/openAIP/openaip-openair-parser/issues).
