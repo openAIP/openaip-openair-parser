@@ -29,6 +29,7 @@ Outputs GeoJSON FeatureCollection:
         {
             "type": "Feature",
             "properties": {
+                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
                 "name": "ED-R10B Todendorf-Putlos MON-SAT+",
                 "class": "R",
                 "upperCeiling": {
@@ -265,6 +266,10 @@ AA NONE/NONE
 
 The new version 2 of the OpenAIR Parser is a complete rewrite with lots of improvements and fixes but it also introduces **several breaking changes**! Please note the following most relevant changes:
 
+#### Use Version 2 By Default
+
+The parser is now configured to use `version 2` by default. If you want to parse `version 1` OpenAIR files, configure the parser explicitly to fallback to `version 1` parsing.
+
 #### Strict Altitude Unit Parsing
 
 The parser is now very strict and will not implicitly assume a default altitude unit. It will now reject parsing if an unknown altitude syntax is encountered. For example,
@@ -276,7 +281,7 @@ possible. An altitude definition `2000 MSL` will now result in a parser error!
 The parser now only allows the defined set of altitude references defined in the `version 2` format definition (this is the same as in `version 1`). Please see the set of defined
 altitude references here for [lower altitude](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md#al-lower-alitutde-limit) and [upper altitude](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md#ah-upper-alitutde-limit).
 
-#### Removed support for the AI command
+#### Removed Support For The AI Command
 
 The support for the AI command has been removed. This was introduced to help automated systems to track changes to internal airspaces done in external files by
 injecting a unique identifier into each exported OpenAIR airspace definition. Although very helpful in some (primarily automation related) use-cases, this command
