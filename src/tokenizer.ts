@@ -186,7 +186,7 @@ export class Tokenizer {
         return this._tokens;
     }
 
-    protected async enforceFileExists(filepath: string): Promise<void> {
+    protected enforceFileExists(filepath: string): void {
         const exists = fs.existsSync(filepath);
         if (!exists) {
             throw new Error(`Failed to read file ${filepath}`);
