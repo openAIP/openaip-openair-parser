@@ -344,7 +344,7 @@ describe('Test parse invalid airspace definition blocks', () => {
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-without-ac.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/without-ac.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
@@ -467,16 +467,14 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
-            "Error found at line 10: Lower limit must be less than upper limit"
-        );
+        expect(error.message).toEqual('Error found at line 10: Lower limit must be less than upper limit');
     });
     test('airspace start and end coordinates are not equal', () => {
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success, error } = openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/start-end-coordinates-not-equal.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
@@ -520,7 +518,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
     });
     test('single airspace with missing AL and AH tags', () => {
         const openairParser = new Parser();
-        const { success, error } = openairParser.parse('./tests/fixtures/single-airspace-missing-ah-al.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/missing-ah-al.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
@@ -530,9 +528,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
     });
     test('single airspace with missing AY tag', () => {
         const openairParser = new Parser();
-        const { success, error } = openairParser.parse(
-            './tests/fixtures/single-airspace-extended-format-missing-AY.txt'
-        );
+        const { success, error } = openairParser.parse('./tests/fixtures/missing-AY.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
@@ -582,12 +578,21 @@ describe('Test parse invalid airspace definition blocks and fix geometry', () =>
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
             fixGeometry: true,
         });
-        const { success } = openairParser.parse('./tests/fixtures/airspace-start-end-coordinates-not-equal.txt');
+        const { success } = openairParser.parse('./tests/fixtures/start-end-coordinates-not-equal.txt');
         const { features } = openairParser.toGeojson();
         const { geometry } = features[0];
 
         expect(success).toBe(true);
         expect(geometry.type).toEqual('Polygon');
+    });
+    // DEBUG remove this test
+    test('DEBUG - INTERSECTION TEST', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_2,
+        });
+        const { success, error } = openairParser.parse('./tests/fixtures/debug-intersect.txt');
+
+        expect(success).toBe(true);
     });
 });
 
