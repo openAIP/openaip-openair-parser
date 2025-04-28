@@ -69,14 +69,7 @@ export class Tokenizer {
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const {
-            unlimited,
-            targetAltUnit,
-            roundAltValues,
-            version,
-            allowedClasses,
-            allowedTypes,
-        } = config;
+        const { unlimited, targetAltUnit, roundAltValues, version, allowedClasses, allowedTypes } = config;
         this._config = config;
         this.tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES, version }),
@@ -154,6 +147,7 @@ export class Tokenizer {
                 });
             }
             this._tokens.push(token);
+            this._prevToken = token;
         }
         // finalize by adding EOF token
         this._tokens.push(
@@ -163,6 +157,31 @@ export class Tokenizer {
                 version: this._config.version,
             })
         );
+
+        /*
+        IMPORTANT Scan tokens and remove all arc "start" and "end" DP tokens to avoid self-intersections
+
+        If center point is not correctly defined, arcs will almost always self-intersect because the defined DP start-/endpoints
+        will NOT match the calculated arc start-/endpoint. To avoid self-intersections, remove each DP before and after an arc definition
+        to force usage of the arc start-/endpoint calculated by the parser.
+
+        IMPROVE This could be done better but currently I have no idea how...
+        */
+
+        for (const token of this._tokens) {
+            if (token instanceof DpToken) {
+                const prevToken = this._tokens[this._tokens.indexOf(token) - 1];
+                const nextToken = this._tokens[this._tokens.indexOf(token) + 1];
+                if (
+                    prevToken instanceof DaToken ||
+                    prevToken instanceof DbToken ||
+                    nextToken instanceof DaToken ||
+                    nextToken instanceof DbToken
+                ) {
+                    this._tokens.splice(this._tokens.indexOf(token), 1);
+                }
+            }
+        }
 
         return this._tokens;
     }

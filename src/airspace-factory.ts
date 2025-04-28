@@ -485,18 +485,10 @@ export class AirspaceFactory {
             steps: this._geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
-
-        // IMPORTANT if center point is not correctly defined, arcs will almost always self-intersect because the
-        //  DP start-/endpoint will NOT match the calculated arc start-/endpoint. To avoid self-intersections, replace last arc start-/endpoint
-        //  with the originally defined start-/endpoint. This could be done better but currently I have no idea how...
-        geometry.coordinates.shift();
-        geometry.coordinates.pop();
-        geometry.coordinates = [startCoord, ...geometry.coordinates, endCoord];
-
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
         /*
-        When creating circles and arcs, there may be self-intersections if the defined coordinatesof center and start-/endpoints and radius
+        When creating circles and arcs, there may be self-intersections if the defined coordinates of center and start-/endpoints and radius
         do not match exactly. These self-intersecting coordinates are usually very close together and when removed, the airspace
         geometry basically does not change at all. To mitigate returning invalid geometries, remove duplicates with a specified buffer
         after the circle is created.
