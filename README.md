@@ -116,6 +116,7 @@ Outputs GeoJSON FeatureCollection:
                     "unit": "FT",
                     "referenceDatum": "GND"
                 },
+                "byNotam": false,
                 "activationTimes": [
                     {
                         "start": "2025-01-01T12:00:00.000Z",
@@ -245,7 +246,7 @@ An optional command that specifies the required/recommended transponder setting 
 
 #### AA
 
-Allows definition of activation times. Use [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) time interval format to express the time when the airspace is active. Only the time interval format is allowed and must be specified in UTC (Zulu) time, no local or time offsets are supproted. `NONE` token can be used to indicate the unspecified start or end time of the airspace activation. Use `NONE/NONE` exclusively to indicate that this airspace activation is not yet known and is announced later, e.g. _by a NOTAM_.
+Allows definition of activation times. Use [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) time interval format to express the time when the airspace is active. Only the time interval format is allowed and must be specified in UTC (Zulu) time, no local or time offsets are supported. `NONE` token can be used to indicate the unspecified start or end time of the airspace activation. Use `NONE/NONE` exclusively to indicate that this airspace activation is not yet known and is announced later, e.g. _by a NOTAM_.
 
 Define activation times:
 
@@ -262,7 +263,7 @@ Or indicate activation by NOTAM:
 AA NONE/NONE
 ```
 
-# Migration from OpenAIR Parser Version 2
+# Migration to OpenAIR Parser Version 2
 
 The new version 2 of the OpenAIR Parser is a complete rewrite with lots of improvements and fixes but it also introduces **several breaking changes**! Please note the following most relevant changes:
 
@@ -273,7 +274,7 @@ The parser is now configured to use `version 2` by default. If you want to parse
 #### Strict Altitude Unit Parsing
 
 The parser is now very strict and will not implicitly assume a default altitude unit. It will now reject parsing if an unknown altitude syntax is encountered. For example,
-in `version 1` the parser implicitly assumend `FEET` as the default altitude unit when the unit was not set on an altitude definition, e.g. `2000 MSL`. This is no longer
+in `version 1` the parser implicitly assumed `FEET` as the default altitude unit when the unit was not set on an altitude definition, e.g. `2000 MSL`. This is no longer
 possible. An altitude definition `2000 MSL` will now result in a parser error!
 
 #### Strict Altitude Reference Parsing
@@ -285,9 +286,21 @@ altitude references here for [lower altitude](https://github.com/naviter/seeyou_
 
 The support for the AI command has been removed. This was introduced to help automated systems to track changes to internal airspaces done in external files by
 injecting a unique identifier into each exported OpenAIR airspace definition. Although very helpful in some (primarily automation related) use-cases, this command
-would put too much maintanance overhead on airspace source file maintainers with very little benefit and thus has been removed.
+would put too much maintenance overhead on airspace source file maintainers with very little benefit and thus has been removed.
 
 #### Activation Times
 
-The new `version 2` adds support for activation times. If specified, the activation times are availabe as an array of `{ start: string, end: string }` literals an the
-airspace feature properties. Additionally, the properties will contain a new field `byNotam` which will be set to true if `NONE/NONE` is exclusively used in the OpenAIR definition. If `byNotam`is `true`, the `activationTimes` property will not be present!
+The new `version 2` adds support for activation times. If specified, the activation times are available as an array of `{ start: string, end: string }` literals in the
+airspace feature properties. Additionally, the properties will contain a new field `byNotam` which will be set to true if `NONE/NONE` is exclusively used in the OpenAIR definition. If `byNotam` is `true`, the `activationTimes` property will not be present!
+
+# Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+# License
+
+This project is licensed under the MIT License - see the [license.txt](license.txt) file for details.
+
+# Issues
+
+If you find a bug or have a feature request, please open an issue on the [GitHub repository](https://github.com/openaip/openair-parser/issues).
