@@ -199,7 +199,7 @@ const config = {
 };
 
 const parser = new Parser(config);
-const { success, error} = parser.parse('./path/to/openair-file.txt');
+const { success, error } = parser.parse('./path/to/openair-file.txt');
 if (success === true) {
     // get parse OpenAIR definitions as validated GeoJSON feature collection
     const geojson = parser.toGeojson();
