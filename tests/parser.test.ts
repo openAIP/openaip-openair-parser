@@ -62,12 +62,12 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson.features.length).toEqual(0);
     });
     test('handle inline comments', () => {
-        const expectedJson = loadParserJsonResult('handle-inline-comments-result.json');
+        const expectedJson = loadParserJsonResult('inline-comments-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
+        const { success } = openairParser.parse('./tests/fixtures/inline-comments.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
 
@@ -93,7 +93,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with simple polygon geometry into LINESTRING geometry', () => {
-        const expectedJson = loadParserJsonResult('simple-poly-to-linestring-result.json');
+        const expectedJson = loadParserJsonResult('polygon-to-linestring-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
