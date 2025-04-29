@@ -585,15 +585,6 @@ describe('Test parse invalid airspace definition blocks and fix geometry', () =>
         expect(success).toBe(true);
         expect(geometry.type).toEqual('Polygon');
     });
-    // DEBUG remove this test
-    test('DEBUG - INTERSECTION TEST', () => {
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_2,
-        });
-        const { success, error } = openairParser.parse('./tests/fixtures/debug-intersect.txt');
-
-        expect(success).toBe(true);
-    });
 });
 
 describe('Test output formats', () => {

@@ -198,7 +198,7 @@ export class AirspaceFactory {
                 this.handleDbToken(token as DbToken, context);
                 break;
             case DaToken.type:
-                this.handleDaToken(token as DaToken);
+                this.handleDaToken(token as DaToken, context);
                 break;
             case BlankToken.type:
                 this.handleBlankToken(token as BlankToken);
@@ -456,6 +456,10 @@ export class AirspaceFactory {
 
     /**
      * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
+     * Note that arc definitions, when combined with a "direction switch", i.e. the delta between the bearing of the last
+     * arc segment and the next defined non-arc coordinate is greater than 160 degrees, tend to result in a
+     * self intersecting geometry. To mitigate this error and get a valid polygon, the logic will remove the originally
+     * defined arc endpoint DPToken!
      */
     protected handleDbToken(token: DbToken, context: Context): void {
         const { lineNumber } = token.tokenized;
@@ -474,7 +478,6 @@ export class AirspaceFactory {
             endCoord = this.toArrayLike(startCoordinate);
             startCoord = this.toArrayLike(endCoordinate);
         }
-
         // get required bearings
         const startBearing = calcBearing(centerCoord, startCoord);
         const endBearing = calcBearing(centerCoord, endCoord);
@@ -493,51 +496,20 @@ export class AirspaceFactory {
         });
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
+        // add arc coordinates to the airspace coordinates
         this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
-
-        // get the next two DP tokens if possible
-        let nextTokenIndex = currentTokenIndex + 1;
-        let dpTokensChecked = 0;
-        const nextDpTokens: DpToken[] = [];
-        while (nextTokenIndex < this._tokens.length && dpTokensChecked < 2) {
-            const nextToken = this._tokens[nextTokenIndex];
-            nextTokenIndex++;
-            // Skip comment and blank line tokens
-            if (nextToken.type === CommentToken.type || nextToken.type === BlankToken.type) {
-                continue;
-            }
-            // Break if we encounter anything other than a DP token
-            if (nextToken.type !== TokenTypeEnum.DP) {
-                break;
-            }
-            const dpToken = nextToken as DpToken;
-            nextDpTokens.push(dpToken);
-            dpTokensChecked++;
-        }
-
-        // check if we have a sharp direction change in bearing in between the tokens - if so, the first token has to be removed
-        if (nextDpTokens.length === 2) {
-            const lastArcCoordinate = arcCoordinates[arcCoordinates.length - 1];
-            const lastArcBearing = calcBearing(arcCoordinates[arcCoordinates.length - 2], lastArcCoordinate);
-            // calculate bearing between the two DP tokens
-            const nextTokensBearing = calcBearing(
-                this.toArrayLike(nextDpTokens[0].tokenized.metadata.coordinate),
-                this.toArrayLike(nextDpTokens[1].tokenized.metadata.coordinate)
-            );
-            const bearingDelta = Math.abs(nextTokensBearing - lastArcBearing);
-            if (bearingDelta > 160) {
-                this._tokens.splice(this._tokens.indexOf(nextDpTokens[0]), 1);
-            }
-        }
+        // fix "switch direction" arc definition that may result in self-intersecting polygon
+        this.fixSwitchDirectionArc(arcCoordinates, currentTokenIndex);
     }
 
     /**
      * Creates an arc geometry from the last VToken coordinate and a DaToken that contains arc definition as
      * radius, angleStart and angleEnd.
      */
-    protected handleDaToken(token: DaToken): void {
+    protected handleDaToken(token: DaToken, context: Context): void {
         const { lineNumber, metadata: metadataDaToken } = token.tokenized;
         const { radius, startBearing, endBearing } = metadataDaToken.arcDef;
+        const { currentTokenIndex } = context;
         let angleStart = startBearing;
         let angleEnd = endBearing;
         // by default, arcs are defined clockwise and usually no VD token is present
@@ -569,10 +541,12 @@ export class AirspaceFactory {
             steps: this._geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
-
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
+        // add arc coordinates to the airspace coordinates
         this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        // fix "switch direction" arc definition that may result in self-intersecting polygon
+        this.fixSwitchDirectionArc(arcCoordinates, currentTokenIndex);
     }
 
     protected getBuildDbArcCoordinates(token: DbToken): {
@@ -789,62 +763,47 @@ export class AirspaceFactory {
     }
 
     /**
-     * Calculates the destination point given a starting point, bearing, and a short distance (< 500m).
-     * Uses a flat-Earth approximation, suitable for short distances.
-     * Position coordinates are expected and returned in [longitude, latitude] order.
-     *
-     * @param startCoord The starting position as [longitude, latitude] in degrees.
-     * @param bearingDegrees The bearing in degrees, measured clockwise from North (0° is North, 90° is East).
-     * @param offsetMeters The distance to travel along the bearing in meters (assumed to be small, e.g., < 500m).
-     * @returns The calculated destination position as [longitude, latitude] in degrees.
+     * Will fix "switch-direction" arc and mitigate self intersection errors if possible.
      */
-    protected calculateOffsetPoint(startCoord: Position, bearingDegrees: number, offsetMeters: number): Position {
-        // Extract start longitude and latitude, adhering to [longitude, latitude] order
-        const startLon = startCoord[0];
-        const startLat = startCoord[1];
-
-        // Handle the simple case of zero offset distance
-        if (offsetMeters === 0) {
-            // Return a new tuple with the same coordinates
-            return [startLon, startLat];
+    private fixSwitchDirectionArc(arcCoordinates: Position[], currentTokenIndex: number): void {
+        /*
+        Handle edge-case "switch-direction" arc definition that may result in self-intersecting polygon.
+        The logic will only consider the next two DpTokens if possible. If not available, nothing is fixed
+        and the user is responsible for fixing the geometry.
+        */
+        let nextTokenIndex = currentTokenIndex + 1;
+        let dpTokensChecked = 0;
+        const nextDpTokens: DpToken[] = [];
+        while (nextTokenIndex < this._tokens.length && dpTokensChecked < 2) {
+            const nextToken = this._tokens[nextTokenIndex];
+            nextTokenIndex++;
+            // skip comment and blank line tokens
+            if (nextToken.type === CommentToken.type || nextToken.type === BlankToken.type) {
+                continue;
+            }
+            // break if we encounter anything other than a DP token
+            if (nextToken.type !== TokenTypeEnum.DP) {
+                break;
+            }
+            const dpToken = nextToken as DpToken;
+            nextDpTokens.push(dpToken);
+            dpTokensChecked++;
         }
-
-        // --- Constants ---
-        const DEG_TO_RAD = Math.PI / 180;
-        const METERS_PER_DEGREE_LATITUDE = 111132; // Approx meters/degree latitude
-        const METERS_PER_DEGREE_LONGITUDE_FACTOR = 111320; // Approx meters/degree longitude at equator
-
-        // --- Convert start latitude and bearing to radians ---
-        // Latitude (index 1) is needed for longitude scaling and doesn't change much over short distances
-        const startLatRad = startLat * DEG_TO_RAD;
-        const bearingRadFromNorth = bearingDegrees * DEG_TO_RAD;
-
-        // --- Calculate standard mathematical angle (0 rad = East, counter-clockwise) ---
-        const mathAngleRad = Math.PI / 2 - bearingRadFromNorth;
-
-        // --- Calculate North-South (dy) and East-West (dx) offsets in meters ---
-        const offsetY_meters = offsetMeters * Math.sin(mathAngleRad); // North offset (+N)
-        const offsetX_meters = offsetMeters * Math.cos(mathAngleRad); // East offset (+E)
-
-        // --- Convert meter offsets to degree offsets ---
-        // Latitude offset in degrees
-        const offsetLatDegrees = offsetY_meters / METERS_PER_DEGREE_LATITUDE;
-
-        // Calculate meters per degree longitude at the starting latitude
-        const metersPerDegreeLongitude = METERS_PER_DEGREE_LONGITUDE_FACTOR * Math.cos(startLatRad);
-
-        // Longitude offset in degrees (check for division by zero near poles)
-        const offsetLonDegrees = metersPerDegreeLongitude > 1e-6 ? offsetX_meters / metersPerDegreeLongitude : 0;
-
-        // --- Calculate final coordinates ---
-        const finalLat = startLat + offsetLatDegrees;
-        const finalLon = startLon + offsetLonDegrees;
-
-        // --- Normalize final longitude to the standard [-180, 180] degree range ---
-        const normalizedLon = ((finalLon + 540) % 360) - 180;
-
-        // --- Return the calculated position as [longitude, latitude] tuple ---
-        return [normalizedLon, finalLat];
+        // check if we have a "switch direction" arc definition
+        if (nextDpTokens.length === 2) {
+            const lastArcCoordinate = arcCoordinates[arcCoordinates.length - 1];
+            const lastArcBearing = calcBearing(arcCoordinates[arcCoordinates.length - 2], lastArcCoordinate);
+            // calculate bearing between the two DP tokens
+            const nextTokensBearing = calcBearing(
+                this.toArrayLike(nextDpTokens[0].tokenized.metadata.coordinate),
+                this.toArrayLike(nextDpTokens[1].tokenized.metadata.coordinate)
+            );
+            const bearingDelta = Math.abs(nextTokensBearing - lastArcBearing);
+            // bearing delta greater than 160 is considered a "switch direction" arc definition
+            if (bearingDelta > 160) {
+                this._tokens.splice(this._tokens.indexOf(nextDpTokens[0]), 1);
+            }
+        }
     }
 
     protected reset() {
