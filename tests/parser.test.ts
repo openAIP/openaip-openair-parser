@@ -70,7 +70,7 @@ describe('Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/airspace-inline-comments.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -86,7 +86,7 @@ describe('Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/polygon.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -103,7 +103,7 @@ describe('Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/polygon.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -119,7 +119,7 @@ describe('Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/circular.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -127,15 +127,15 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with clockwise arc geometry', () => {
-        const expectedJson = loadParserJsonResult('result-clockwise-arc.json');
+        const expectedJson = loadParserJsonResult('result-arc-cw.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-clockwise.txt');
+        const { success } = openairParser.parse('./tests/fixtures/arc-cw.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -143,31 +143,45 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with counter-clockwise arc geometry', () => {
-        const expectedJson = loadParserJsonResult('result-ccw-arc.json');
+        const expectedJson = loadParserJsonResult('result-arc-ccw.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-counterclockwise.txt');
+        const { success } = openairParser.parse('./tests/fixtures/arc-ccw.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
-    test('parse airspace with arc/angle geometry', () => {
-        const expectedJson = loadParserJsonResult('result-arc-angle.json');
+    test('parse airspace with arc with angle clockwise', () => {
+        const expectedJson = loadParserJsonResult('result-arc-angle-cw.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-angle.txt');
+        const { success } = openairParser.parse('./tests/fixtures/arc-angle-cw.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete value.properties.id);
+
+        expect(success).toBe(true);
+        expect(geojson).toEqual(expectedJson);
+    });
+    test('parse airspace with arc with angle counter-clockwise', () => {
+        const expectedJson = loadParserJsonResult('result-arc-angle-ccw.json');
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success } = openairParser.parse('./tests/fixtures/arc-angle-ccw.txt');
+        const geojson = openairParser.toGeojson();
+        // remove properties for comparison
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -175,15 +189,15 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with clockwise and counter-clockwise arc definition', () => {
-        const expectedJson = loadParserJsonResult('result-cw-ccw-start.json');
+        const expectedJson = loadParserJsonResult('result-arc-cw-ccw.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-clockwise-counterclockwise.txt');
+        const { success } = openairParser.parse('./tests/fixtures/arc-cw-ccw.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -199,7 +213,7 @@ describe('Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/arc-first.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -215,7 +229,7 @@ describe('Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -231,7 +245,7 @@ describe('Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/airway.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
@@ -247,7 +261,7 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/version-2-commands.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json - only check properties
-        expectedJson.features.map((value) => delete value.id);
+
         expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
@@ -262,7 +276,7 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/activation-times.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
-        expectedJson.features.map((value) => delete value.id);
+
         expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
@@ -277,7 +291,7 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/activation-times-none.txt');
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from expected json
-        expectedJson.features.map((value) => delete value.id);
+
         expectedJson.features.map((value) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
@@ -388,7 +402,7 @@ describe('Test parse invalid airspace definition blocks', () => {
         const { success } = openairParser.parse('./tests/fixtures/self-intersecting.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
-        expectedJson.features.map((value) => delete value.id);
+
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete value.properties.id);
 
