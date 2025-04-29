@@ -62,7 +62,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson.features.length).toEqual(0);
     });
     test('handle inline comments', () => {
-        const expectedJson = loadParserJsonResult('result-handle-inline-comments.json');
+        const expectedJson = loadParserJsonResult('handle-inline-comments-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -78,7 +78,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with simple polygon geometry', () => {
-        const expectedJson = loadParserJsonResult('result-with-simple-polygon.json');
+        const expectedJson = loadParserJsonResult('polygon-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -93,7 +93,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with simple polygon geometry into LINESTRING geometry', () => {
-        const expectedJson = loadParserJsonResult('result-simple-poly-to-linestring.json');
+        const expectedJson = loadParserJsonResult('simple-poly-to-linestring-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -109,7 +109,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with circular geometry', () => {
-        const expectedJson = loadParserJsonResult('result-with-circular-geometry.json');
+        const expectedJson = loadParserJsonResult('circular-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -124,7 +124,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with clockwise arc geometry', () => {
-        const expectedJson = loadParserJsonResult('result-arc-cw.json');
+        const expectedJson = loadParserJsonResult('arc-cw-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -139,7 +139,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with counter-clockwise arc geometry', () => {
-        const expectedJson = loadParserJsonResult('result-arc-ccw.json');
+        const expectedJson = loadParserJsonResult('arc-ccw-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -154,7 +154,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with arc with angle clockwise', () => {
-        const expectedJson = loadParserJsonResult('result-arc-angle-cw.json');
+        const expectedJson = loadParserJsonResult('arc-angle-cw-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -169,7 +169,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with arc with angle counter-clockwise', () => {
-        const expectedJson = loadParserJsonResult('result-arc-angle-ccw.json');
+        const expectedJson = loadParserJsonResult('arc-angle-ccw-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -184,7 +184,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace with arc with angle and only single VX', () => {
-        const expectedJson = loadParserJsonResult('result-arc-angle-single-vx.json');
+        const expectedJson = loadParserJsonResult('arc-angle-single-vx-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -199,7 +199,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with clockwise and counter-clockwise arc definition', () => {
-        const expectedJson = loadParserJsonResult('result-arc-cw-ccw.json');
+        const expectedJson = loadParserJsonResult('arc-cw-ccw-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -214,7 +214,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse airspace starting with arc definition', () => {
-        const expectedJson = loadParserJsonResult('result-arc-start.json');
+        const expectedJson = loadParserJsonResult('arc-first-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -229,7 +229,7 @@ describe('Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse custom airway definition', () => {
-        const expectedJson = loadParserJsonResult('result-awy.json');
+        const expectedJson = loadParserJsonResult('awy-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -248,7 +248,7 @@ describe('Test parse airspace definition blocks', () => {
 
 describe('Format Version 2: Test parse airspace definition blocks', () => {
     test('parse commands', () => {
-        const expectedJson = loadParserJsonResult('result-version-2-commands.json');
+        const expectedJson = loadParserJsonResult('version-2-commands-result.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/version-2-commands.txt');
         const geojson = openairParser.toGeojson();
@@ -263,7 +263,7 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse activation times', () => {
-        const expectedJson = loadParserJsonResult('result-activation-times.json');
+        const expectedJson = loadParserJsonResult('activation-times-result.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/activation-times.txt');
         const geojson = openairParser.toGeojson();
@@ -278,7 +278,7 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse activation time by NOTAM', () => {
-        const expectedJson = loadParserJsonResult('result-activation-times-none.json');
+        const expectedJson = loadParserJsonResult('activation-times-none-result.json');
         const openairParser = new Parser();
         const { success } = openairParser.parse('./tests/fixtures/activation-times-none.txt');
         const geojson = openairParser.toGeojson();
@@ -383,13 +383,13 @@ describe('Test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace with intersection converted into LINESTRING geometry return geometry', () => {
-        const expectedJson = loadParserJsonResult('result-invalid-intersect-to-linestring.json');
+        const expectedJson = loadParserJsonResult('convert-self-intersecting-to-linestring-result.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
             outputGeometry: OutputGeometryEnum.LINESTRING,
         });
-        const { success } = openairParser.parse('./tests/fixtures/self-intersecting.txt');
+        const { success } = openairParser.parse('./tests/fixtures/convert-self-intersecting-to-linestring.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
@@ -609,7 +609,7 @@ describe('Test output formats', () => {
 });
 
 function loadParserJsonResult(filename: string) {
-    const filePath = path.resolve(`${appRoot}/tests/fixtures/results/${filename}`);
+    const filePath = path.resolve(`${appRoot}/tests/fixtures/${filename}`);
     const fileContent = fs.readFileSync(filePath);
 
     return JSON.parse(fileContent.toString());
