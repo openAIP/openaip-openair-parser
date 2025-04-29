@@ -1,41 +1,29 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "id": "8db1e622-6241-47fa-b43f-79ab7703ddc0",
-      "properties": {
-        "name": "TMA Todendorf-Putlos",
-        "class": "D",
-        "type": "TMA",
-        "frequency": {
-          "value": "123.505",
-          "name": "Ground Station Name"
-        },
-        "transponderCode": 7000,
-        "byNotam": true,
-        "upperCeiling": {
-          "value": 40000,
-          "unit": "FT",
-          "referenceDatum": "MSL"
-        },
-        "lowerCeiling": {
-          "value": 0,
-          "unit": "FT",
-          "referenceDatum": "GND"
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "value": "123.505",
+                    "name": "Ground Station Name"
+                },
+                "transponderCode": 7000,
+                "byNotam": true,
+                "upperCeiling": {
+                    "value": 40000,
+                    "unit": "FT",
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
+                }
+            }
         }
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [10.66667, 54.41667],
-            [10.83333, 54.41667],
-            [10.88333, 54.43333],
-            [10.66667, 54.41667]
-          ]
-        ]
-      }
-    }
-  ]
+    ]
 }
