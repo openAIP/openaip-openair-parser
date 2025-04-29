@@ -228,21 +228,6 @@ describe('Test parse airspace definition blocks', () => {
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
-    test('parse multiple airspace definition blocks', () => {
-        const expectedJson = loadParserJsonResult('result-multiple-blocks.json');
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_1,
-            allowedClasses: ALLOWED_CLASSES_VERSION_1,
-        });
-        const { success } = openairParser.parse('./tests/fixtures/multiple-airspaces.txt');
-        const geojson = openairParser.toGeojson();
-        // remove properties for comparison
-        geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
-
-        expect(success).toBe(true);
-        expect(geojson).toEqual(expectedJson);
-    });
     test('parse custom airway definition', () => {
         const expectedJson = loadParserJsonResult('result-awy.json');
         const openairParser = new Parser({

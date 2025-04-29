@@ -57,10 +57,6 @@ type AirwayStructure = {
     segments: Position[];
 };
 
-type Context = {
-    currentTokenIndex: number;
-};
-
 export class AirspaceFactory {
     protected _geometryDetail: number;
     protected _version: ParserVersion;
@@ -100,7 +96,7 @@ export class AirspaceFactory {
             const { lineNumber } = token.tokenized as Tokenized;
             this._currentLineNumber = lineNumber;
             // process the next token
-            this.consumeToken(token, { currentTokenIndex: i });
+            this.consumeToken(token);
             // if the previously processed token is not an ignored token, set the "hasBuildTokens" flag
             if (token.isIgnoredToken() === false) {
                 this._hasBuildTokens = true;
@@ -158,7 +154,7 @@ export class AirspaceFactory {
         return (airwayPolygon as Polygon).coordinates.flat();
     }
 
-    protected consumeToken(token: IToken, context: Context): void {
+    protected consumeToken(token: IToken): void {
         const type = token.type;
         const { lineNumber } = token.tokenized as Tokenized;
         switch (type) {
@@ -196,10 +192,10 @@ export class AirspaceFactory {
                 this.handleDcToken(token as DcToken);
                 break;
             case DbToken.type:
-                this.handleDbToken(token as DbToken, context);
+                this.handleDbToken(token as DbToken);
                 break;
             case DaToken.type:
-                this.handleDaToken(token as DaToken, context);
+                this.handleDaToken(token as DaToken);
                 break;
             case BlankToken.type:
                 this.handleBlankToken(token as BlankToken);
@@ -457,21 +453,20 @@ export class AirspaceFactory {
 
     /**
      * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
-     * Note that arc definitions, when combined with a "direction switch", i.e. the delta between the bearing of the last
-     * arc segment and the next defined non-arc coordinate is greater than 160 degrees, tend to result in a
-     * self intersecting geometry. To mitigate this error and get a valid polygon, the logic will remove the originally
-     * defined arc endpoint DPToken!
+     * Note that arc definitions tend to be very sensitive to the defined coordinates and radius.
+     * If the coordinates are not exactly matching, the resulting geometry may be invalid due to self-intersections.
+     * The use logic creates an arc-like geometry that is not exactly matching the defined coordinates but
+     * adjusting the used radius along the arc segments to smoothly transition to the defined end coordinate.
      */
-    protected handleDbToken(token: DbToken, context: Context): void {
+    protected handleDbToken(token: DbToken): void {
         const { lineNumber } = token.tokenized;
         const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDbArcCoordinates(token);
-        const { currentTokenIndex } = context;
-
         // calculate line arc
         const centerCoord = this.toArrayLike(centerCoordinate);
         let startCoord;
         let endCoord;
-        if (clockwise) {
+
+        if (clockwise === true) {
             startCoord = this.toArrayLike(startCoordinate);
             endCoord = this.toArrayLike(endCoordinate);
         } else {
@@ -479,9 +474,6 @@ export class AirspaceFactory {
             endCoord = this.toArrayLike(startCoordinate);
             startCoord = this.toArrayLike(endCoordinate);
         }
-        // get required bearings
-        const startBearing = calcBearing(centerCoord, startCoord);
-        const endBearing = calcBearing(centerCoord, endCoord);
         // get the radius in kilometers
         const radiusKm = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
         if (radiusKm == null || radiusKm === 0) {
@@ -490,39 +482,33 @@ export class AirspaceFactory {
                 errorMessage: 'Arc definition is invalid. Calculated arc radius is 0.',
             });
         }
-
         const arcCoordinates = this.createAdjustedArc(startCoord, centerCoord, endCoord, {
             steps: this._geometryDetail,
         });
-
-        // // calculate the line arc
-        // const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
-        //     steps: this._geometryDetail,
-        //     // units can't be set => will result in error "options is invalid" => bug?
-        // });
-        // // if counter-clockwise, reverse coordinate list order
+        // if counter-clockwise, reverse coordinate list order
         const arcCoords = clockwise ? arcCoordinates : arcCoordinates.reverse();
         // add arc coordinates to the airspace coordinates
         this._airspace.coordinates = this._airspace.coordinates.concat(arcCoords);
     }
 
     /**
+     * TODO rewrite token  logic o use the same logic as in DbToken
+     *
      * Creates an arc geometry from the last VToken coordinate and a DaToken that contains arc definition as
      * radius, angleStart and angleEnd.
      */
-    protected handleDaToken(token: DaToken, context: Context): void {
+    protected handleDaToken(token: DaToken): void {
         const { lineNumber, metadata: metadataDaToken } = token.tokenized;
         const { radius, startBearing, endBearing } = metadataDaToken.arcDef;
-        const { currentTokenIndex } = context;
         let angleStart = startBearing;
         let angleEnd = endBearing;
+
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
         const vdToken = this.getNextToken<VdToken>(token, VdToken.type, false);
         // get preceding VxToken => defines the arc center
         const vxToken = this.getNextToken<VxToken>(token, VxToken.type, false);
-
         if (vdToken != null) {
             clockwise = vdToken.tokenized.metadata.clockwise;
         }
@@ -538,6 +524,10 @@ export class AirspaceFactory {
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         const centerCoord = this.toArrayLike(vxTokenCoordinate);
+        const arcCoordinates = this.createAdjustedArc(startCoord, centerCoord, endCoord, {
+            steps: this._geometryDetail,
+        });
+
         // get the radius in kilometers
         const radiusKm = radius * 1.852;
         // calculate the line arc
@@ -545,12 +535,13 @@ export class AirspaceFactory {
             steps: this._geometryDetail,
             // units can't be set => will result in error "options is invalid" => bug?
         });
-        // if counter-clockwise, reverse coordinate list order
-        const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        // add arc coordinates to the airspace coordinates
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
-        // fix "switch direction" arc definition that may result in self-intersecting polygon
-        this.fixSwitchDirectionArc(arcCoordinates, currentTokenIndex);
+        // // if counter-clockwise, reverse coordinate list order
+        // throw new Error('blub!');
+        // const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
+        // // add arc coordinates to the airspace coordinates
+        // this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        // // fix "switch direction" arc definition that may result in self-intersecting polygon
+        // this.fixSwitchDirectionArc(arcCoordinates, currentTokenIndex);
     }
 
     protected getBuildDbArcCoordinates(token: DbToken): {
