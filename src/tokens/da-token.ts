@@ -4,11 +4,9 @@ import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 type Metadata = {
-    arcDef: {
-        radius: number;
-        startBearing: number;
-        endBearing: number;
-    };
+    radius: number;
+    startBearing: number;
+    endBearing: number;
 };
 
 /**
@@ -39,21 +37,17 @@ export class DaToken extends AbstractLineToken<Metadata> {
         const arcParts = arcPartsDefinition.split(',');
         arcParts.map((value) => value.trim());
         const [radius, angleStart, angleEnd] = arcParts;
-        const as = parseFloat(angleStart);
-        const ae = parseFloat(angleEnd);
         // angle to bearing
-        const startBearing = this.toBearing(as);
-        const endBearing = this.toBearing(ae);
+        const startBearing = this.toBearing(parseFloat(angleStart));
+        const endBearing = this.toBearing(parseFloat(angleEnd));
         // convert angles to bearings
         token._tokenized = {
             line,
             lineNumber,
             metadata: {
-                arcDef: {
-                    radius: parseFloat(radius),
-                    startBearing: startBearing,
-                    endBearing: endBearing,
-                },
+                radius: parseFloat(radius),
+                startBearing: startBearing,
+                endBearing: endBearing,
             },
         };
 

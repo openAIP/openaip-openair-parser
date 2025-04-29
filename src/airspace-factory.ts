@@ -451,110 +451,36 @@ export class AirspaceFactory {
         this._airspace.coordinates = refinedCoordinates;
     }
 
-    /**
-     * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
-     * Note that arc definitions tend to be very sensitive to the defined coordinates and radius.
-     * If the coordinates are not exactly matching, the resulting geometry may be invalid due to self-intersections.
-     * The use logic creates an arc-like geometry that is not exactly matching the defined coordinates but
-     * adjusting the used radius along the arc segments to smoothly transition to the defined end coordinate.
-     */
     protected handleDbToken(token: DbToken): void {
-        const { lineNumber } = token.tokenized;
         const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDbArcCoordinates(token);
-        // calculate line arc
-        const centerCoord = this.toArrayLike(centerCoordinate);
-        let startCoord;
-        let endCoord;
-
-        if (clockwise === true) {
-            startCoord = this.toArrayLike(startCoordinate);
-            endCoord = this.toArrayLike(endCoordinate);
-        } else {
-            // flip coordinates
-            endCoord = this.toArrayLike(startCoordinate);
-            startCoord = this.toArrayLike(endCoordinate);
-        }
-        // get the radius in kilometers
-        const radiusKm = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
-        if (radiusKm == null || radiusKm === 0) {
-            throw new ParserError({
-                lineNumber,
-                errorMessage: 'Arc definition is invalid. Calculated arc radius is 0.',
-            });
-        }
-        const arcCoordinates = this.createAdjustedArc(startCoord, centerCoord, endCoord, {
+        const arcCenterCoordinate: Position = centerCoordinate;
+        // build the adjusted arc-like geometry
+        const arcCoordinates = this.createAdjustedArc(startCoordinate, arcCenterCoordinate, endCoordinate, clockwise, {
             steps: this._geometryDetail,
         });
-        // if counter-clockwise, reverse coordinate list order
-        const arcCoords = clockwise ? arcCoordinates : arcCoordinates.reverse();
         // add arc coordinates to the airspace coordinates
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoords);
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
     }
 
-    /**
-     * TODO rewrite token  logic o use the same logic as in DbToken
-     *
-     * Creates an arc geometry from the last VToken coordinate and a DaToken that contains arc definition as
-     * radius, angleStart and angleEnd.
-     */
     protected handleDaToken(token: DaToken): void {
-        const { lineNumber, metadata: metadataDaToken } = token.tokenized;
-        const { radius, startBearing, endBearing } = metadataDaToken.arcDef;
-        let angleStart = startBearing;
-        let angleEnd = endBearing;
-
-        // by default, arcs are defined clockwise and usually no VD token is present
-        let clockwise = true;
-        // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken = this.getNextToken<VdToken>(token, VdToken.type, false);
-        // get preceding VxToken => defines the arc center
-        const vxToken = this.getNextToken<VxToken>(token, VxToken.type, false);
-        if (vdToken != null) {
-            clockwise = vdToken.tokenized.metadata.clockwise;
-        }
-        // if counter-clockwise, flip start/end bearing
-        if (clockwise === false) {
-            angleStart = endBearing;
-            angleEnd = startBearing;
-        }
-        if (vxToken == null) {
-            throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
-        }
-        const { metadata: metadataVxToken } = vxToken.tokenized;
-        const { coordinate: vxTokenCoordinate } = metadataVxToken;
-
-        const centerCoord = this.toArrayLike(vxTokenCoordinate);
-        const arcCoordinates = this.createAdjustedArc(startCoord, centerCoord, endCoord, {
+        const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDaArcCoordinates(token);
+        // build the adjusted arc-like geometry
+        const arcCoordinates = this.createAdjustedArc(startCoordinate, centerCoordinate, endCoordinate, clockwise, {
             steps: this._geometryDetail,
         });
-
-        // get the radius in kilometers
-        const radiusKm = radius * 1.852;
-        // calculate the line arc
-        const { geometry } = createArc(centerCoord, radiusKm, angleStart, angleEnd, {
-            steps: this._geometryDetail,
-            // units can't be set => will result in error "options is invalid" => bug?
-        });
-        // // if counter-clockwise, reverse coordinate list order
-        // throw new Error('blub!');
-        // const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        // // add arc coordinates to the airspace coordinates
-        // this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
-        // // fix "switch direction" arc definition that may result in self-intersecting polygon
-        // this.fixSwitchDirectionArc(arcCoordinates, currentTokenIndex);
+        // add arc coordinates to the airspace coordinates
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
     }
 
     protected getBuildDbArcCoordinates(token: DbToken): {
-        centerCoordinate: Coordinate;
-        startCoordinate: Coordinate;
-        endCoordinate: Coordinate;
+        centerCoordinate: Position;
+        startCoordinate: Position;
+        endCoordinate: Position;
         clockwise: boolean;
     } {
         // Current "token" is the DbToken => defines arc start/end coordinates
         const { lineNumber, metadata: metadataDbToken } = token.tokenized;
-        const { coordinates: dbTokenCoordinates } = metadataDbToken;
-        const [dbTokenStartCoordinate, dbTokenEndCoordinate] = dbTokenCoordinates;
-
+        const { startCoordinate, endCoordinate } = metadataDbToken;
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
@@ -562,7 +488,6 @@ export class AirspaceFactory {
         if (vdToken) {
             clockwise = vdToken.tokenized.metadata.clockwise;
         }
-
         // get preceding VxToken => defines the arc center
         const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.type, false) as VxToken;
         if (vxToken == null) {
@@ -572,9 +497,45 @@ export class AirspaceFactory {
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         return {
-            centerCoordinate: vxTokenCoordinate,
-            startCoordinate: dbTokenStartCoordinate,
-            endCoordinate: dbTokenEndCoordinate,
+            centerCoordinate: this.toArrayLike(vxTokenCoordinate),
+            startCoordinate: this.toArrayLike(startCoordinate),
+            endCoordinate: this.toArrayLike(endCoordinate),
+            clockwise,
+        };
+    }
+
+    protected getBuildDaArcCoordinates(token: DaToken): {
+        centerCoordinate: Position;
+        startCoordinate: Position;
+        endCoordinate: Position;
+        clockwise: boolean;
+    } {
+        // Current "token" is the DaToken => defines arc start/end coordinates
+        const { lineNumber, metadata: metadataDaToken } = token.tokenized;
+        const { radius, startBearing, endBearing } = metadataDaToken;
+        // by default, arcs are defined clockwise and usually no VD token is present
+        let clockwise = true;
+        // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
+        const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.type, false) as VdToken;
+        if (vdToken) {
+            clockwise = vdToken.tokenized.metadata.clockwise;
+        }
+        // get preceding VxToken => defines the arc center
+        const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.type, false) as VxToken;
+        if (vxToken == null) {
+            throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
+        }
+        const { metadata: metadataVxToken } = vxToken.tokenized;
+        const { coordinate: vxTokenCoordinate } = metadataVxToken;
+        // calculate start and end coordinates using bearing and radius and center coordinate
+        const startCoordinate = destination(this.toArrayLike(vxTokenCoordinate), radius, startBearing).geometry
+            .coordinates;
+        const endCoordinate = destination(this.toArrayLike(vxTokenCoordinate), radius, endBearing).geometry.coordinates;
+
+        return {
+            centerCoordinate: this.toArrayLike(vxTokenCoordinate),
+            startCoordinate,
+            endCoordinate,
             clockwise,
         };
     }
@@ -758,80 +719,40 @@ export class AirspaceFactory {
     }
 
     /**
-     * Will fix "switch-direction" arc and mitigate self intersection errors if possible.
-     */
-    private fixSwitchDirectionArc(arcCoordinates: Position[], currentTokenIndex: number): void {
-        /*
-        Handle edge-case "switch-direction" arc definition that may result in self-intersecting polygon.
-        The logic will only consider the next two DpTokens if possible. If not available, nothing is fixed
-        and the user is responsible for fixing the geometry.
-        */
-        let nextTokenIndex = currentTokenIndex + 1;
-        let dpTokensChecked = 0;
-        const nextDpTokens: DpToken[] = [];
-        while (nextTokenIndex < this._tokens.length && dpTokensChecked < 2) {
-            const nextToken = this._tokens[nextTokenIndex];
-            nextTokenIndex++;
-            // skip comment and blank line tokens
-            if (nextToken.type === CommentToken.type || nextToken.type === BlankToken.type) {
-                continue;
-            }
-            // break if we encounter anything other than a DP token
-            if (nextToken.type !== TokenTypeEnum.DP) {
-                break;
-            }
-            const dpToken = nextToken as DpToken;
-            nextDpTokens.push(dpToken);
-            dpTokensChecked++;
-        }
-        // check if we have a "switch direction" arc definition
-        if (nextDpTokens.length === 2) {
-            const lastArcCoordinate = arcCoordinates[arcCoordinates.length - 1];
-            const lastArcBearing = calcBearing(arcCoordinates[arcCoordinates.length - 2], lastArcCoordinate);
-            // calculate bearing between the two DP tokens
-            const nextTokensBearing = calcBearing(
-                this.toArrayLike(nextDpTokens[0].tokenized.metadata.coordinate),
-                this.toArrayLike(nextDpTokens[1].tokenized.metadata.coordinate)
-            );
-            const bearingDelta = Math.abs(nextTokensBearing - lastArcBearing);
-            // bearing delta greater than 160 is considered a "switch direction" arc definition
-            if (bearingDelta > 160) {
-                this._tokens.splice(this._tokens.indexOf(nextDpTokens[0]), 1);
-            }
-        }
-    }
-
-    /**
      * Creates an arc-like LineString geometry with a smooth transition to the end coordinate.
      * The arc starts with the radius defined by the distance from start to center,
      * then gradually adjusts to meet the exact end coordinate in the final quarter of the arc.
-     *
-     * @param startCoord Starting coordinate [lon, lat]
-     * @param centerCoord Center coordinate [lon, lat]
-     * @param endCoord End coordinate [lon, lat]
-     * @param options Additional options for arc creation
-     * @returns LineString coordinates array of [lon, lat] positions
      */
     protected createAdjustedArc(
-        startCoord: Position,
-        centerCoord: Position,
-        endCoord: Position,
+        startCoordinate: Position,
+        centerCoordinate: Position,
+        endCoordinate: Position,
+        clockwise: boolean,
         options: { steps?: number } = {}
     ): Position[] {
-        const { steps = 32 } = options;
-
+        const defaultOptions = { steps: 100 };
+        const { steps } = { ...defaultOptions, ...options };
+        const arcCenterCoordinate: Position = centerCoordinate;
+        let arcStartCoordinate: Position;
+        let arcEndCoordinate: Position;
+        // handle clockwise/anti-clockwise arc definition
+        if (clockwise === true) {
+            arcStartCoordinate = startCoordinate;
+            arcEndCoordinate = endCoordinate;
+        } else {
+            // flip coordinates if CCW
+            arcEndCoordinate = startCoordinate;
+            arcStartCoordinate = endCoordinate;
+        }
         // Calculate initial arc parameters
-        const startBearing = calcBearing(centerCoord, startCoord);
-        const endBearing = calcBearing(centerCoord, endCoord);
-        const startRadius = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
-        const endRadius = calcDistance(centerCoord, endCoord, { units: 'kilometers' });
-
+        const startBearing = calcBearing(arcCenterCoordinate, arcStartCoordinate);
+        const endBearing = calcBearing(arcCenterCoordinate, arcEndCoordinate);
+        const startRadius = calcDistance(arcCenterCoordinate, arcStartCoordinate, { units: 'kilometers' });
+        const endRadius = calcDistance(arcCenterCoordinate, arcEndCoordinate, { units: 'kilometers' });
         // Generate points along the arc
         const coordinates: Position[] = [];
-        const totalSteps = Math.max(8, steps); // Ensure minimum number of steps
-
-        for (let i = 0; i <= totalSteps; i++) {
-            const fraction = i / totalSteps;
+        for (let i = 0; i <= steps; i++) {
+            const fraction = i / steps;
             // Use a smooth transition curve for the radius in the final quarter
             let currentRadius = startRadius;
             if (fraction > 0.75) {
@@ -840,17 +761,18 @@ export class AirspaceFactory {
                 const smoothFraction = transitionFraction * transitionFraction * (3 - 2 * transitionFraction); // Smooth step function
                 currentRadius = startRadius + (endRadius - startRadius) * smoothFraction;
             }
-
             // Calculate current bearing
             const bearing = startBearing + (endBearing - startBearing) * fraction;
-
             // Create arc point at current bearing and radius
-            const arcPoint = destination(centerCoord, currentRadius, bearing, { units: 'kilometers' });
+            const arcPoint = destination(arcCenterCoordinate, currentRadius, bearing, { units: 'kilometers' });
             coordinates.push(arcPoint.geometry.coordinates);
         }
-
         // Ensure the last point exactly matches the target
-        coordinates[coordinates.length - 1] = endCoord;
+        coordinates[coordinates.length - 1] = arcEndCoordinate;
+        // reverse coordinates if counter-clockwise
+        if (clockwise === false) {
+            coordinates.reverse();
+        }
 
         return coordinates;
     }

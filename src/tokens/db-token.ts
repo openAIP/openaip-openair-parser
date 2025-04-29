@@ -6,7 +6,7 @@ import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
-type Metadata = { coordinates: Coordinate[] };
+type Metadata = { startCoordinate: Coordinate; endCoordinate: Coordinate };
 
 /**
  * Tokenizes "DB" airspace arc endpoints definition.
@@ -36,19 +36,24 @@ export class DbToken extends AbstractLineToken<Metadata> {
         const endpoints = linePartEndpoints.split(',');
         endpoints.map((value) => value.trim());
         // transform each endpoint coordinate string into coordinate object
-        const coord: Coordinate[] = [];
-        for (const coordinate of endpoints) {
-            try {
-                const parser = new CoordinateParser();
-                const parsedCoordinate: Coordinate = parser.parse(coordinate.trim());
-                coord.push(parsedCoordinate);
-            } catch (e) {
-                throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
-            }
+        const metadata: Partial<Metadata> = {};
+        try {
+            const [startCoordinateString, endCoordinateString] = endpoints;
+            metadata.startCoordinate = this.getCoordinate(startCoordinateString);
+            metadata.endCoordinate = this.getCoordinate(endCoordinateString);
+        } catch (e) {
+            throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { coordinates: coord } };
+        token._tokenized = { line, lineNumber, metadata: metadata as Metadata };
 
         return token;
+    }
+
+    getCoordinate(coordinateString: string): Coordinate {
+        const parser = new CoordinateParser();
+        const parsedCoordinate: Coordinate = parser.parse(coordinateString.trim());
+
+        return parsedCoordinate;
     }
 
     getAllowedNextTokens(): TokenType[] {
