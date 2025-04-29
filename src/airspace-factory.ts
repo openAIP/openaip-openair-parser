@@ -2,7 +2,6 @@ import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js'
 import {
     bearing as calcBearing,
     distance as calcDistance,
-    lineArc as createArc,
     buffer as createBuffer,
     circle as createCircle,
     lineString as createLineString,
@@ -478,7 +477,7 @@ export class AirspaceFactory {
         endCoordinate: Position;
         clockwise: boolean;
     } {
-        // Current "token" is the DbToken => defines arc start/end coordinates
+        // current "token" is the DbToken => defines arc start/end coordinates
         const { lineNumber, metadata: metadataDbToken } = token.tokenized;
         const { startCoordinate, endCoordinate } = metadataDbToken;
         // by default, arcs are defined clockwise and usually no VD token is present
@@ -510,7 +509,7 @@ export class AirspaceFactory {
         endCoordinate: Position;
         clockwise: boolean;
     } {
-        // Current "token" is the DaToken => defines arc start/end coordinates
+        // current "token" is the DaToken => defines arc start/end coordinates
         const { lineNumber, metadata: metadataDaToken } = token.tokenized;
         const { radius, startBearing, endBearing } = metadataDaToken;
         // by default, arcs are defined clockwise and usually no VD token is present
@@ -744,30 +743,31 @@ export class AirspaceFactory {
             arcEndCoordinate = startCoordinate;
             arcStartCoordinate = endCoordinate;
         }
-        // Calculate initial arc parameters
+        // calculate initial arc parameters
         const startBearing = calcBearing(arcCenterCoordinate, arcStartCoordinate);
         const endBearing = calcBearing(arcCenterCoordinate, arcEndCoordinate);
         const startRadius = calcDistance(arcCenterCoordinate, arcStartCoordinate, { units: 'kilometers' });
         const endRadius = calcDistance(arcCenterCoordinate, arcEndCoordinate, { units: 'kilometers' });
-        // Generate points along the arc
+        // generate points along the arc
         const coordinates: Position[] = [];
         for (let i = 0; i <= steps; i++) {
             const fraction = i / steps;
             // Use a smooth transition curve for the radius in the final quarter
             let currentRadius = startRadius;
             if (fraction > 0.75) {
-                // Smoothly transition from start radius to end radius
-                const transitionFraction = (fraction - 0.75) * 4; // Normalize to 0-1 for last quarter
-                const smoothFraction = transitionFraction * transitionFraction * (3 - 2 * transitionFraction); // Smooth step function
+                // Smoothly transition from start radius to end radius -  normalize to 0-1 for last quarter
+                const transitionFraction = (fraction - 0.75) * 4;
+                // smooth step function
+                const smoothFraction = transitionFraction * transitionFraction * (3 - 2 * transitionFraction);
                 currentRadius = startRadius + (endRadius - startRadius) * smoothFraction;
             }
-            // Calculate current bearing
+            // calculate current bearing
             const bearing = startBearing + (endBearing - startBearing) * fraction;
-            // Create arc point at current bearing and radius
+            // create arc point at current bearing and radius
             const arcPoint = destination(arcCenterCoordinate, currentRadius, bearing, { units: 'kilometers' });
             coordinates.push(arcPoint.geometry.coordinates);
         }
-        // Ensure the last point exactly matches the target
+        // ensure the last point exactly matches the target
         coordinates[coordinates.length - 1] = arcEndCoordinate;
         // reverse coordinates if counter-clockwise
         if (clockwise === false) {
