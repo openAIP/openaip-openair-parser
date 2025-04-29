@@ -31,7 +31,7 @@ import { DcToken } from './tokens/dc-token.js';
 import { DpToken } from './tokens/dp-token.js';
 import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
-import type { TokenType } from './tokens/token-type.enum.js';
+import { TokenTypeEnum, type TokenType } from './tokens/token-type.enum.js';
 import { VdToken } from './tokens/vd-token.js';
 import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
@@ -487,14 +487,29 @@ export class AirspaceFactory {
         });
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
-        /*
-        When creating circles and arcs, there may be self-intersections if the defined coordinates of center and start-/endpoints and radius
-        do not match exactly. These self-intersecting coordinates are usually very close together and when removed, the airspace
-        geometry basically does not change at all. To mitigate returning invalid geometries, remove duplicates with a specified buffer
-        after the circle is created.
-        */
-        const refinedCoordinates = this.removeNearestCoordinates(arcCoordinates, { minAllowedDistance: 200 });
-        this._airspace.coordinates = this._airspace.coordinates.concat(refinedCoordinates);
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        // iterate over next tokens until a DP token is found - if DP token has the same coordinate as the arc endpoint, skip it and
+        // continue to the next DP token that is not the same as the arc endpoint
+        // Calculate the last arc bearing using the last two points of the arc
+        const lastArcCoordinate = arcCoordinates[arcCoordinates.length - 1];
+        const lastArcBearing = calcBearing(arcCoordinates[arcCoordinates.length - 2], lastArcCoordinate);
+        let nextToken = this.getNextToken<DpToken>(token, TokenTypeEnum.DP, true);
+        while (nextToken) {
+            const nextTokenCoordinate = this.toArrayLike(nextToken.tokenized.metadata.coordinate);
+            if (nextTokenCoordinate !== arcCoordinates[arcCoordinates.length - 1]) {
+                const distance = calcDistance(lastArcCoordinate, nextTokenCoordinate, { units: 'kilometers' });
+                const bearing = calcBearing(endCoord, nextTokenCoordinate);
+                const nextCoordinateBearing = Math.abs(bearing - lastArcBearing);
+                if (distance < 0.5 && nextCoordinateBearing > 170) {
+                    // get bearing between center and last arc coordinate
+                    const offsetBearing = calcBearing(centerCoord, lastArcCoordinate);
+                    const offsetPoint = this.calculateOffsetPoint(lastArcCoordinate, offsetBearing, 1000);
+                    this._airspace.coordinates.push(offsetPoint);
+                }
+                break;
+            }
+            nextToken = this.getNextToken(nextToken, TokenTypeEnum.DP, true);
+        }
     }
 
     /**
@@ -752,6 +767,65 @@ export class AirspaceFactory {
         }
 
         return processed;
+    }
+
+    /**
+     * Calculates the destination point given a starting point, bearing, and a short distance (< 500m).
+     * Uses a flat-Earth approximation, suitable for short distances.
+     * Position coordinates are expected and returned in [longitude, latitude] order.
+     *
+     * @param startCoord The starting position as [longitude, latitude] in degrees.
+     * @param bearingDegrees The bearing in degrees, measured clockwise from North (0° is North, 90° is East).
+     * @param offsetMeters The distance to travel along the bearing in meters (assumed to be small, e.g., < 500m).
+     * @returns The calculated destination position as [longitude, latitude] in degrees.
+     */
+    protected calculateOffsetPoint(startCoord: Position, bearingDegrees: number, offsetMeters: number): Position {
+        // Extract start longitude and latitude, adhering to [longitude, latitude] order
+        const startLon = startCoord[0];
+        const startLat = startCoord[1];
+
+        // Handle the simple case of zero offset distance
+        if (offsetMeters === 0) {
+            // Return a new tuple with the same coordinates
+            return [startLon, startLat];
+        }
+
+        // --- Constants ---
+        const DEG_TO_RAD = Math.PI / 180;
+        const METERS_PER_DEGREE_LATITUDE = 111132; // Approx meters/degree latitude
+        const METERS_PER_DEGREE_LONGITUDE_FACTOR = 111320; // Approx meters/degree longitude at equator
+
+        // --- Convert start latitude and bearing to radians ---
+        // Latitude (index 1) is needed for longitude scaling and doesn't change much over short distances
+        const startLatRad = startLat * DEG_TO_RAD;
+        const bearingRadFromNorth = bearingDegrees * DEG_TO_RAD;
+
+        // --- Calculate standard mathematical angle (0 rad = East, counter-clockwise) ---
+        const mathAngleRad = Math.PI / 2 - bearingRadFromNorth;
+
+        // --- Calculate North-South (dy) and East-West (dx) offsets in meters ---
+        const offsetY_meters = offsetMeters * Math.sin(mathAngleRad); // North offset (+N)
+        const offsetX_meters = offsetMeters * Math.cos(mathAngleRad); // East offset (+E)
+
+        // --- Convert meter offsets to degree offsets ---
+        // Latitude offset in degrees
+        const offsetLatDegrees = offsetY_meters / METERS_PER_DEGREE_LATITUDE;
+
+        // Calculate meters per degree longitude at the starting latitude
+        const metersPerDegreeLongitude = METERS_PER_DEGREE_LONGITUDE_FACTOR * Math.cos(startLatRad);
+
+        // Longitude offset in degrees (check for division by zero near poles)
+        const offsetLonDegrees = metersPerDegreeLongitude > 1e-6 ? offsetX_meters / metersPerDegreeLongitude : 0;
+
+        // --- Calculate final coordinates ---
+        const finalLat = startLat + offsetLatDegrees;
+        const finalLon = startLon + offsetLonDegrees;
+
+        // --- Normalize final longitude to the standard [-180, 180] degree range ---
+        const normalizedLon = ((finalLon + 540) % 360) - 180;
+
+        // --- Return the calculated position as [longitude, latitude] tuple ---
+        return [normalizedLon, finalLat];
     }
 
     protected reset() {
