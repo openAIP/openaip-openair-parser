@@ -204,7 +204,7 @@ describe('Test parse airspace definition blocks', () => {
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-cw-ccw.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/arc-cw-ccw.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
@@ -219,7 +219,7 @@ describe('Test parse airspace definition blocks', () => {
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-first.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/arc-first.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
