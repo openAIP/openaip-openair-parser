@@ -56,6 +56,10 @@ type AirwayStructure = {
     segments: Position[];
 };
 
+type Context = {
+    currentTokenIndex: number;
+};
+
 export class AirspaceFactory {
     protected _geometryDetail: number;
     protected _version: ParserVersion;
@@ -90,11 +94,12 @@ export class AirspaceFactory {
         // validate all tokens are correct and that we are able to build an airspace from them
         this.validateTokens();
 
-        for (const token of tokens) {
+        for (let i = 0; i < tokens.length; i++) {
+            const token = tokens[i];
             const { lineNumber } = token.tokenized as Tokenized;
             this._currentLineNumber = lineNumber;
             // process the next token
-            this.consumeToken(token);
+            this.consumeToken(token, { currentTokenIndex: i });
             // if the previously processed token is not an ignored token, set the "hasBuildTokens" flag
             if (token.isIgnoredToken() === false) {
                 this._hasBuildTokens = true;
@@ -152,7 +157,7 @@ export class AirspaceFactory {
         return (airwayPolygon as Polygon).coordinates.flat();
     }
 
-    protected consumeToken(token: IToken): void {
+    protected consumeToken(token: IToken, context: Context): void {
         const type = token.type;
         const { lineNumber } = token.tokenized as Tokenized;
         switch (type) {
@@ -190,7 +195,7 @@ export class AirspaceFactory {
                 this.handleDcToken(token as DcToken);
                 break;
             case DbToken.type:
-                this.handleDbToken(token as DbToken);
+                this.handleDbToken(token as DbToken, context);
                 break;
             case DaToken.type:
                 this.handleDaToken(token as DaToken);
@@ -452,9 +457,10 @@ export class AirspaceFactory {
     /**
      * Creates an arc geometry from the last VToken coordinate and a DbToken endpoint coordinates.
      */
-    protected handleDbToken(token: DbToken): void {
+    protected handleDbToken(token: DbToken, context: Context): void {
         const { lineNumber } = token.tokenized;
         const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDbArcCoordinates(token);
+        const { currentTokenIndex } = context;
 
         // calculate line arc
         const centerCoord = this.toArrayLike(centerCoordinate);
@@ -488,27 +494,40 @@ export class AirspaceFactory {
         // if counter-clockwise, reverse coordinate list order
         const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
         this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
-        // iterate over next tokens until a DP token is found - if DP token has the same coordinate as the arc endpoint, skip it and
-        // continue to the next DP token that is not the same as the arc endpoint
-        // Calculate the last arc bearing using the last two points of the arc
-        const lastArcCoordinate = arcCoordinates[arcCoordinates.length - 1];
-        const lastArcBearing = calcBearing(arcCoordinates[arcCoordinates.length - 2], lastArcCoordinate);
-        let nextToken = this.getNextToken<DpToken>(token, TokenTypeEnum.DP, true);
-        while (nextToken) {
-            const nextTokenCoordinate = this.toArrayLike(nextToken.tokenized.metadata.coordinate);
-            if (nextTokenCoordinate !== arcCoordinates[arcCoordinates.length - 1]) {
-                const distance = calcDistance(lastArcCoordinate, nextTokenCoordinate, { units: 'kilometers' });
-                const bearing = calcBearing(endCoord, nextTokenCoordinate);
-                const nextCoordinateBearing = Math.abs(bearing - lastArcBearing);
-                if (distance < 0.5 && nextCoordinateBearing > 170) {
-                    // get bearing between center and last arc coordinate
-                    const offsetBearing = calcBearing(centerCoord, lastArcCoordinate);
-                    const offsetPoint = this.calculateOffsetPoint(lastArcCoordinate, offsetBearing, 1000);
-                    this._airspace.coordinates.push(offsetPoint);
-                }
+
+        // get the next two DP tokens if possible
+        let nextTokenIndex = currentTokenIndex + 1;
+        let dpTokensChecked = 0;
+        const nextDpTokens: DpToken[] = [];
+        while (nextTokenIndex < this._tokens.length && dpTokensChecked < 2) {
+            const nextToken = this._tokens[nextTokenIndex];
+            nextTokenIndex++;
+            // Skip comment and blank line tokens
+            if (nextToken.type === CommentToken.type || nextToken.type === BlankToken.type) {
+                continue;
+            }
+            // Break if we encounter anything other than a DP token
+            if (nextToken.type !== TokenTypeEnum.DP) {
                 break;
             }
-            nextToken = this.getNextToken(nextToken, TokenTypeEnum.DP, true);
+            const dpToken = nextToken as DpToken;
+            nextDpTokens.push(dpToken);
+            dpTokensChecked++;
+        }
+
+        // check if we have a sharp direction change in bearing in between the tokens - if so, the first token has to be removed
+        if (nextDpTokens.length === 2) {
+            const lastArcCoordinate = arcCoordinates[arcCoordinates.length - 1];
+            const lastArcBearing = calcBearing(arcCoordinates[arcCoordinates.length - 2], lastArcCoordinate);
+            // calculate bearing between the two DP tokens
+            const nextTokensBearing = calcBearing(
+                this.toArrayLike(nextDpTokens[0].tokenized.metadata.coordinate),
+                this.toArrayLike(nextDpTokens[1].tokenized.metadata.coordinate)
+            );
+            const bearingDelta = Math.abs(nextTokensBearing - lastArcBearing);
+            if (bearingDelta > 160) {
+                this._tokens.splice(this._tokens.indexOf(nextDpTokens[0]), 1);
+            }
         }
     }
 
