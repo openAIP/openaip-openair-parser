@@ -6,6 +6,7 @@ import {
     buffer as createBuffer,
     circle as createCircle,
     lineString as createLineString,
+    destination,
 } from '@turf/turf';
 import type { Polygon, Position } from 'geojson';
 import { z } from 'zod';
@@ -489,17 +490,20 @@ export class AirspaceFactory {
                 errorMessage: 'Arc definition is invalid. Calculated arc radius is 0.',
             });
         }
-        // calculate the line arc
-        const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
+
+        const arcCoordinates = this.createAdjustedArc(startCoord, centerCoord, endCoord, {
             steps: this._geometryDetail,
-            // units can't be set => will result in error "options is invalid" => bug?
         });
-        // if counter-clockwise, reverse coordinate list order
-        const arcCoordinates = clockwise ? geometry.coordinates : geometry.coordinates.reverse();
+
+        // // calculate the line arc
+        // const { geometry } = createArc(centerCoord, radiusKm, startBearing, endBearing, {
+        //     steps: this._geometryDetail,
+        //     // units can't be set => will result in error "options is invalid" => bug?
+        // });
+        // // if counter-clockwise, reverse coordinate list order
+        const arcCoords = clockwise ? arcCoordinates : arcCoordinates.reverse();
         // add arc coordinates to the airspace coordinates
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
-        // fix "switch direction" arc definition that may result in self-intersecting polygon
-        this.fixSwitchDirectionArc(arcCoordinates, currentTokenIndex);
+        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoords);
     }
 
     /**
@@ -804,6 +808,60 @@ export class AirspaceFactory {
                 this._tokens.splice(this._tokens.indexOf(nextDpTokens[0]), 1);
             }
         }
+    }
+
+    /**
+     * Creates an arc-like LineString geometry with a smooth transition to the end coordinate.
+     * The arc starts with the radius defined by the distance from start to center,
+     * then gradually adjusts to meet the exact end coordinate in the final quarter of the arc.
+     *
+     * @param startCoord Starting coordinate [lon, lat]
+     * @param centerCoord Center coordinate [lon, lat]
+     * @param endCoord End coordinate [lon, lat]
+     * @param options Additional options for arc creation
+     * @returns LineString coordinates array of [lon, lat] positions
+     */
+    protected createAdjustedArc(
+        startCoord: Position,
+        centerCoord: Position,
+        endCoord: Position,
+        options: { steps?: number } = {}
+    ): Position[] {
+        const { steps = 32 } = options;
+
+        // Calculate initial arc parameters
+        const startBearing = calcBearing(centerCoord, startCoord);
+        const endBearing = calcBearing(centerCoord, endCoord);
+        const startRadius = calcDistance(centerCoord, startCoord, { units: 'kilometers' });
+        const endRadius = calcDistance(centerCoord, endCoord, { units: 'kilometers' });
+
+        // Generate points along the arc
+        const coordinates: Position[] = [];
+        const totalSteps = Math.max(8, steps); // Ensure minimum number of steps
+
+        for (let i = 0; i <= totalSteps; i++) {
+            const fraction = i / totalSteps;
+            // Use a smooth transition curve for the radius in the final quarter
+            let currentRadius = startRadius;
+            if (fraction > 0.75) {
+                // Smoothly transition from start radius to end radius
+                const transitionFraction = (fraction - 0.75) * 4; // Normalize to 0-1 for last quarter
+                const smoothFraction = transitionFraction * transitionFraction * (3 - 2 * transitionFraction); // Smooth step function
+                currentRadius = startRadius + (endRadius - startRadius) * smoothFraction;
+            }
+
+            // Calculate current bearing
+            const bearing = startBearing + (endBearing - startBearing) * fraction;
+
+            // Create arc point at current bearing and radius
+            const arcPoint = destination(centerCoord, currentRadius, bearing, { units: 'kilometers' });
+            coordinates.push(arcPoint.geometry.coordinates);
+        }
+
+        // Ensure the last point exactly matches the target
+        coordinates[coordinates.length - 1] = endCoord;
+
+        return coordinates;
     }
 
     protected reset() {
