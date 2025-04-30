@@ -159,7 +159,7 @@ describe('Test parse airspace definition blocks', () => {
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success } = openairParser.parse('./tests/fixtures/arc-angle-cw.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/arc-angle-cw.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
