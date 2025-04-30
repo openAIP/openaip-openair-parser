@@ -175,9 +175,9 @@ export class Airspace {
     }
 
     addCoordinates(coordinates: Position[]): void {
-        // only use 6 decimal places for coordinates
+        // only use 6 decimal places for coordinates -actuall
         coordinates = coordinates.map((coordinate) => {
-            return [parseFloat(coordinate[0].toFixed(7)), parseFloat(coordinate[1].toFixed(7))];
+            return [parseFloat(coordinate[0].toFixed(6)), parseFloat(coordinate[1].toFixed(6))];
         });
         // check if coordinates are already in the list
         this._coordinates.push(...coordinates);
