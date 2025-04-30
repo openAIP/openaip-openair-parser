@@ -1,3 +1,4 @@
+import { start } from 'repl';
 import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
 import {
     bearing as calcBearing,
@@ -732,22 +733,26 @@ export class AirspaceFactory {
         const defaultOptions = { steps: 100 };
         const { steps } = { ...defaultOptions, ...options };
         const arcCenterCoordinate: Position = centerCoordinate;
-        let arcStartCoordinate: Position;
-        let arcEndCoordinate: Position;
-        // handle clockwise/anti-clockwise arc definition
-        if (clockwise === true) {
-            arcStartCoordinate = startCoordinate;
-            arcEndCoordinate = endCoordinate;
+        const startBearing = calcBearing(arcCenterCoordinate, startCoordinate);
+        let endBearing = calcBearing(arcCenterCoordinate, endCoordinate);
+        const startRadius = calcDistance(arcCenterCoordinate, startCoordinate, { units: 'kilometers' });
+        const endRadius = calcDistance(arcCenterCoordinate, endCoordinate, { units: 'kilometers' });
+
+        // Normalize end bearing for proper arc calculation
+        if (clockwise) {
+            // For clockwise, if end bearing is less than start bearing, add 360 to end bearing
+            // This ensures we go the long way around clockwise
+            if (endBearing < startBearing) {
+                endBearing += 360;
+            }
         } else {
-            // flip coordinates if CCW
-            arcEndCoordinate = startCoordinate;
-            arcStartCoordinate = endCoordinate;
+            // For counter-clockwise, if end bearing is greater than start bearing, subtract 360 from end bearing
+            // This ensures we go the long way around counter-clockwise
+            if (endBearing > startBearing) {
+                endBearing -= 360;
+            }
         }
-        // calculate initial arc parameters
-        const startBearing = calcBearing(arcCenterCoordinate, arcStartCoordinate);
-        const endBearing = calcBearing(arcCenterCoordinate, arcEndCoordinate);
-        const startRadius = calcDistance(arcCenterCoordinate, arcStartCoordinate, { units: 'kilometers' });
-        const endRadius = calcDistance(arcCenterCoordinate, arcEndCoordinate, { units: 'kilometers' });
+
         // generate points along the arc
         const coordinates: Position[] = [];
         for (let i = 0; i <= steps; i++) {
@@ -761,18 +766,17 @@ export class AirspaceFactory {
                 const smoothFraction = transitionFraction * transitionFraction * (3 - 2 * transitionFraction);
                 currentRadius = startRadius + (endRadius - startRadius) * smoothFraction;
             }
-            // calculate current bearing
-            const bearing = startBearing + (endBearing - startBearing) * fraction;
+            // calculate current bearing and normalize it to -180 to 180 range
+            let bearing = startBearing + (endBearing - startBearing) * fraction;
+            if (bearing > 180) bearing -= 360;
+            if (bearing < -180) bearing += 360;
+
             // create arc point at current bearing and radius
             const arcPoint = destination(arcCenterCoordinate, currentRadius, bearing, { units: 'kilometers' });
             coordinates.push(arcPoint.geometry.coordinates);
         }
         // ensure the last point exactly matches the target
-        coordinates[coordinates.length - 1] = arcEndCoordinate;
-        // reverse coordinates if counter-clockwise
-        if (clockwise === false) {
-            coordinates.reverse();
-        }
+        coordinates[coordinates.length - 1] = endCoordinate;
 
         return coordinates;
     }
