@@ -738,16 +738,16 @@ export class AirspaceFactory {
         const startRadius = calcDistance(arcCenterCoordinate, startCoordinate, { units: 'kilometers' });
         const endRadius = calcDistance(arcCenterCoordinate, endCoordinate, { units: 'kilometers' });
 
-        // Normalize end bearing for proper arc calculation
+        // normalize end bearing for proper arc calculation
         if (clockwise) {
-            // For clockwise, if end bearing is less than start bearing, add 360 to end bearing
-            // This ensures we go the long way around clockwise
+            // for clockwise, if end bearing is less than start bearing, add 360 to end bearing
+            // this ensures we go the long way around clockwise
             if (endBearing < startBearing) {
                 endBearing += 360;
             }
         } else {
-            // For counter-clockwise, if end bearing is greater than start bearing, subtract 360 from end bearing
-            // This ensures we go the long way around counter-clockwise
+            // for counter-clockwise, if end bearing is greater than start bearing, subtract 360 from end bearing
+            // this ensures we go the long way around counter-clockwise
             if (endBearing > startBearing) {
                 endBearing -= 360;
             }
@@ -757,10 +757,10 @@ export class AirspaceFactory {
         const coordinates: Position[] = [];
         for (let i = 0; i <= steps; i++) {
             const fraction = i / steps;
-            // Use a smooth transition curve for the radius in the final quarter
+            // use a smooth transition curve for the radius in the final quarter
             let currentRadius = startRadius;
             if (fraction > 0.75) {
-                // Smoothly transition from start radius to end radius -  normalize to 0-1 for last quarter
+                // smoothly transition from start radius to end radius -  normalize to 0-1 for last quarter
                 const transitionFraction = (fraction - 0.75) * 4;
                 // smooth step function
                 const smoothFraction = transitionFraction * transitionFraction * (3 - 2 * transitionFraction);
@@ -770,7 +770,6 @@ export class AirspaceFactory {
             let bearing = startBearing + (endBearing - startBearing) * fraction;
             if (bearing > 180) bearing -= 360;
             if (bearing < -180) bearing += 360;
-
             // create arc point at current bearing and radius
             const arcPoint = destination(arcCenterCoordinate, currentRadius, bearing, { units: 'kilometers' });
             coordinates.push(arcPoint.geometry.coordinates);
