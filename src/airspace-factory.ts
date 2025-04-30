@@ -119,10 +119,11 @@ export class AirspaceFactory {
                     errorMessage: 'Airway definition is missing required tokens.',
                 });
             }
-            this._airspace.coordinates = this.buildCoordinatesFromAirway({
+            const airwayCoordinates = this.buildCoordinatesFromAirway({
                 width: airwayWidth,
                 segments: airwaySegments as Position[],
             });
+            this._airspace.addCoordinates(airwayCoordinates);
         }
 
         return this._hasBuildTokens ? this._airspace : undefined;
@@ -447,7 +448,7 @@ export class AirspaceFactory {
             refinedCoordinates.push(refinedCoordinates[0]);
         }
         // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
-        this._airspace.coordinates = refinedCoordinates;
+        this._airspace.addCoordinates(refinedCoordinates);
     }
 
     protected handleDbToken(token: DbToken): void {
@@ -458,7 +459,7 @@ export class AirspaceFactory {
             steps: this._geometryDetail,
         });
         // add arc coordinates to the airspace coordinates
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        this._airspace.addCoordinates(arcCoordinates);
     }
 
     protected handleDaToken(token: DaToken): void {
@@ -468,7 +469,7 @@ export class AirspaceFactory {
             steps: this._geometryDetail,
         });
         // add arc coordinates to the airspace coordinates
-        this._airspace.coordinates = this._airspace.coordinates.concat(arcCoordinates);
+        this._airspace.addCoordinates(arcCoordinates);
     }
 
     protected getBuildDbArcCoordinates(token: DbToken): {

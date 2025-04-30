@@ -174,6 +174,15 @@ export class Airspace {
         this._byNotam = value;
     }
 
+    addCoordinates(coordinates: Position[]): void {
+        // only use 6 decimal places for coordinates
+        coordinates = coordinates.map((coordinate) => {
+            return [parseFloat(coordinate[0].toFixed(7)), parseFloat(coordinate[1].toFixed(7))];
+        });
+        // check if coordinates are already in the list
+        this._coordinates.push(...coordinates);
+    }
+
     asGeoJson(config: AsGeojsonConfig): AirspaceFeature {
         validateSchema(config, AsGeojsonConfigSchema, { assert: true, name: 'config' });
 
@@ -232,9 +241,13 @@ export class Airspace {
                 ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, consumeDuplicateBuffer })
                 : createLinestring(this._coordinates).geometry;
         // create a GeoJSON feature from the geometry
-        const feature = createFeature<Polygon | LineString, AirspaceProperties>(airspaceGeometry, properties as AirspaceProperties, {
-            id: uuid.v4(),
-        });
+        const feature = createFeature<Polygon | LineString, AirspaceProperties>(
+            airspaceGeometry,
+            properties as AirspaceProperties,
+            {
+                id: uuid.v4(),
+            }
+        );
 
         return feature;
     }
