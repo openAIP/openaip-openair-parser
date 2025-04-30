@@ -389,7 +389,7 @@ describe('Test parse invalid airspace definition blocks', () => {
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
             outputGeometry: OutputGeometryEnum.LINESTRING,
         });
-        const { success } = openairParser.parse('./tests/fixtures/convert-self-intersecting-to-linestring.txt');
+        const { success } = openairParser.parse('./tests/fixtures/self-intersecting.txt');
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
@@ -593,13 +593,13 @@ describe('Test parse invalid airspace definition blocks and fix geometry', () =>
 describe('Test output formats', () => {
     test('check correct openair output', () => {
         // read from expected file and remove last "blank line" in file (automatically added by IDE)
-        const expected = fs.readFileSync('./tests/fixtures/formats/expected-output-openair.txt', 'utf-8').split('\n');
+        const expected = fs.readFileSync('./tests/fixtures/expected-output-openair.txt', 'utf-8').split('\n');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
             fixGeometry: true,
         });
-        const { success } = openairParser.parse('./tests/fixtures/formats/in-output-openair.txt');
+        const { success } = openairParser.parse('./tests/fixtures/in-output-openair.txt');
         const openair = openairParser.toOpenair();
 
         expect(success).toBe(true);
