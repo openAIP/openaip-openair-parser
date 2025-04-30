@@ -527,9 +527,13 @@ export class AirspaceFactory {
         const { metadata: metadataVxToken } = vxToken.tokenized;
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
         // calculate start and end coordinates using bearing and radius and center coordinate
-        const startCoordinate = destination(this.toArrayLike(vxTokenCoordinate), radius, startBearing).geometry
-            .coordinates;
-        const endCoordinate = destination(this.toArrayLike(vxTokenCoordinate), radius, endBearing).geometry.coordinates;
+        const radiusKm = radius / 1000;
+        const startCoordinate = destination(this.toArrayLike(vxTokenCoordinate), radiusKm, startBearing, {
+            units: 'kilometers',
+        }).geometry.coordinates;
+        const endCoordinate = destination(this.toArrayLike(vxTokenCoordinate), radiusKm, endBearing, {
+            units: 'kilometers',
+        }).geometry.coordinates;
 
         return {
             centerCoordinate: this.toArrayLike(vxTokenCoordinate),

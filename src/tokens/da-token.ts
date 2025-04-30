@@ -4,6 +4,7 @@ import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 type Metadata = {
+    // radius in meters
     radius: number;
     startBearing: number;
     endBearing: number;
@@ -40,12 +41,14 @@ export class DaToken extends AbstractLineToken<Metadata> {
         // angle to bearing
         const startBearing = this.toBearing(parseFloat(angleStart));
         const endBearing = this.toBearing(parseFloat(angleEnd));
+        // convert radius to meters
+        const radiusM = parseFloat(radius) * 1852;
         // convert angles to bearings
         token._tokenized = {
             line,
             lineNumber,
             metadata: {
-                radius: parseFloat(radius),
+                radius: radiusM,
                 startBearing: startBearing,
                 endBearing: endBearing,
             },
