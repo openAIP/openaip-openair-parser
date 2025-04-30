@@ -1,4 +1,3 @@
-import { start } from 'repl';
 import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
 import {
     bearing as calcBearing,
@@ -32,7 +31,7 @@ import { DcToken } from './tokens/dc-token.js';
 import { DpToken } from './tokens/dp-token.js';
 import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
-import { TokenTypeEnum, type TokenType } from './tokens/token-type.enum.js';
+import { type TokenType } from './tokens/token-type.enum.js';
 import { VdToken } from './tokens/vd-token.js';
 import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
@@ -752,7 +751,6 @@ export class AirspaceFactory {
                 endBearing -= 360;
             }
         }
-
         // generate points along the arc
         const coordinates: Position[] = [];
         for (let i = 0; i <= steps; i++) {
