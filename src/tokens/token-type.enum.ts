@@ -8,7 +8,6 @@ export const TokenTypeEnum = {
     AC: 'AC',
     AY: 'AY',
     AN: 'AN',
-    AI: 'AI',
     AF: 'AF',
     AG: 'AG',
     AL: 'AL',
