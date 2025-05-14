@@ -47,6 +47,7 @@ export class AgToken extends AbstractLineToken<Metadata> {
             TokenTypeEnum.SKIPPED,
             TokenTypeEnum.VD,
             TokenTypeEnum.AA,
+            TokenTypeEnum.AX,
         ];
     }
 }
