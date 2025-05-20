@@ -342,7 +342,7 @@ export class Airspace {
         return airspacePolygon;
     }
 
-    protected validateAirspacePolygon(polygon: Polygon) {
+    protected validateAirspacePolygon(polygon: Polygon): { isValid: boolean; selfIntersections?: Position[] } {
         let selfIntersections = undefined;
         let isValid: boolean = false;
         try {
@@ -355,7 +355,7 @@ export class Airspace {
             }
         }
 
-        return cleanObject({ isValid, selfIntersections });
+        return { isValid, selfIntersections };
     }
 
     protected isCompleteProperties() {

@@ -11,9 +11,11 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "useUnknownInCatchVariables": false,
+        "noImplicitAny": true,
+        "noUnusedParameters": false,
         "moduleResolution": "node",
         "rootDir": "./src",
-        "baseUrl": "."
+        "baseUrl": ".",
     },
     "include": [
         "src"

@@ -699,7 +699,7 @@ export class AirspaceFactory {
     protected removeNearestCoordinates(coordinates: Position[], config: { minAllowedDistance?: number }): Position[] {
         const defaultConfig = { minAllowedDistance: 200 };
         const { minAllowedDistance } = { ...defaultConfig, ...config };
-        const processed = [];
+        const processed: Position[] = [];
         for (const coord of coordinates) {
             const exists = processed.find((value) => {
                 // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
