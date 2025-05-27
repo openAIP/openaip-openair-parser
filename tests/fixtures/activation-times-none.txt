@@ -6,7 +6,7 @@ AL GND
 AF 123.505
 AX 7000
 * indicate by NOTAM activation times
-AA NONE/NONE
+AA NONE
 AG Ground Station Name
 DP 54:25:00 N 010:40:00 E
 DP 54:25:00 N 010:50:00 E

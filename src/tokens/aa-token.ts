@@ -26,7 +26,7 @@ export class AaToken extends AbstractLineToken<Metadata> {
         // IMPORTANT only validate string - string MAY be empty
         validateSchema(line, z.string(), { assert: true, name: 'line' });
 
-        // is AA line e.g. "AA 2023-12-16T12:00Z/2023-12-16T13:00Z" or "NONE/2023-12-16T13:00Z" or "AA 2023-12-16T12:00Z/NONE" or "NONE/NONE"
+        // is AA line e.g. "AA 2023-12-16T12:00Z/2023-12-16T13:00Z" or "NONE/2023-12-16T13:00Z" or "AA 2023-12-16T12:00Z/NONE" or "NONE"
         return /^AA\s+.*$/.test(line);
     }
 
@@ -42,6 +42,15 @@ export class AaToken extends AbstractLineToken<Metadata> {
         const linePartActivationWindow = line.replace(/^AA\s+/, '');
         // split activation window into start and end
         const activationParts = linePartActivationWindow.split('/');
+        // handle "NONE" case
+        if (activationParts.length === 1 && activationParts[0] === 'NONE') {
+            token._tokenized = {
+                line,
+                lineNumber,
+                metadata: { activation: BY_NOTAM_ACTIVATION },
+            };
+            return token;
+        }
         const start = activationParts[0];
         const end = activationParts[1];
         // validate activation times string
@@ -55,6 +64,12 @@ export class AaToken extends AbstractLineToken<Metadata> {
         }
         const startDate = start === 'NONE' ? undefined : this.removeMilliseconds(start);
         const endDate = end === 'NONE' ? undefined : this.removeMilliseconds(end);
+        if (startDate == null && endDate == null) {
+            throw new ParserError({
+                lineNumber,
+                errorMessage: `Invalid activation times format found at '${line}'. At least one of the start or end must be specified or only NONE.`,
+            });
+        }
         // validate start and end, start must be before end
         if (startDate != null && endDate != null && startDate >= endDate) {
             throw new ParserError({
@@ -69,11 +84,10 @@ export class AaToken extends AbstractLineToken<Metadata> {
         if (endDate != null) {
             time.end = endDate;
         }
-        const activation = startDate == null && endDate == null ? BY_NOTAM_ACTIVATION : time;
         token._tokenized = {
             line,
             lineNumber,
-            metadata: { activation },
+            metadata: { activation: time },
         };
 
         return token;

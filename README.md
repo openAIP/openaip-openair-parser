@@ -264,7 +264,7 @@ An optional command that specifies the required/recommended transponder setting 
 
 #### AA
 
-Allows definition of activation times. Use [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) time interval format to express the time when the airspace is active. Only the time interval format is allowed and must be specified in UTC (Zulu) time, no local or time offsets are supported. `NONE` token can be used to indicate the unspecified start or end time of the airspace activation. Use `NONE/NONE` exclusively to indicate that this airspace activation is not yet known and is announced later, e.g. _by a NOTAM_.
+Allows definition of activation times. Use [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) time interval format to express the time when the airspace is active. Only the time interval format is allowed and must be specified in UTC (Zulu) time, no local or time offsets are supported. `NONE` token can be used to indicate the unspecified start or end time of the airspace activation. Use `NONE` exclusively to indicate that this airspace activation is not yet known and is announced later, e.g. _by a NOTAM_.
 
 Define activation times:
 
@@ -278,7 +278,7 @@ AA 2025-03-03T12:00/NONE
 Or indicate activation by NOTAM:
 
 ```text
-AA NONE/NONE
+AA NONE
 ```
 
 # Migration to OpenAIR Parser Version 2
@@ -309,7 +309,7 @@ would put too much maintenance overhead on airspace source file maintainers with
 #### Activation Times
 
 The new `version 2` adds support for activation times. If specified, the activation times are available as an array of `{ start: string, end: string }` literals in the
-airspace feature properties. Additionally, the properties will contain a new field `byNotam` which will be set to true if `NONE/NONE` is exclusively used in the OpenAIR definition. If `byNotam` is `true`, the `activationTimes` property will not be present!
+airspace feature properties. Additionally, the properties will contain a new field `byNotam` which will be set to true if `NONE` is exclusively used in the OpenAIR definition. If `byNotam` is `true`, the `activationTimes` property will not be present!
 
 # Contributing
 

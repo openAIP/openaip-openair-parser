@@ -549,7 +549,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
             "Error found at line 9: Error found at line 9: Invalid activation times format 'AA 2025-01-02T14:00Z/2025-01-01T15:00Z'. Start date must be before end date."
         );
     });
-    test('airspace with invalid activation times with none/none', () => {
+    test('airspace with invalid activation times with none', () => {
         const openairParser = new Parser();
         const { success, error } = openairParser.parse('./tests/fixtures/activation-times-invalid-with-none.txt');
 
@@ -557,6 +557,16 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
         expect(error).toBeDefined();
         expect(error.message).toEqual(
             'Error found at line 9: Additional activation times are not allowed with BY NOTAM activation.'
+        );
+    });
+    test('airspace with invalid activation times with deprecated none/none', () => {
+        const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/activation-times-invalid-with-none-none.txt');
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            `Error found at line 8: Error found at line 8: Invalid activation times format found at 'AA NONE/NONE'. At least one of the start or end must be specified or only NONE.`
         );
     });
 });

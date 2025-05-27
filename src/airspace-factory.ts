@@ -588,7 +588,7 @@ export class AirspaceFactory {
         const { metadata } = token.tokenized;
         const { activation } = metadata;
 
-        // handle NONE/NONE activation
+        // handle NONE activation
         if (activation === BY_NOTAM_ACTIVATION) {
             // if there is also another activation time, throw an error
             if (this._airspace.activationTimes != null && this._airspace.activationTimes.length > 0) {
