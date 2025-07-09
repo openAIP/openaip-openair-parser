@@ -213,7 +213,7 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
 class AltitudeFlightLevelReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^FL\s*(\d{2,})?$/;
+        this._REGEX_ALTITUDE = /^FL\s*(\d{2,})$/;
     }
 
     canHandle(altitudeString: string): boolean {

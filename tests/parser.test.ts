@@ -569,6 +569,16 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
             `Error found at line 8: Error found at line 8: Invalid activation times format found at 'AA NONE/NONE'. At least one of the start or end must be specified or only NONE.`
         );
     });
+    test('airspace with invalid flight level declaration missing number', () => {
+        const openairParser = new Parser();
+        const { success, error } = openairParser.parse('./tests/fixtures/flight-level-missing-number.txt');
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error.message).toEqual(
+            `Error found at line 6: Error found at line 6: Unknown altitude definition 'FL'`
+        );
+    });
 });
 
 describe('Test parse invalid airspace definition blocks and fix geometry', () => {
