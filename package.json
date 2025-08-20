@@ -1,6 +1,6 @@
 {
     "name": "@openaip/openair-parser",
-    "version": "2.3.2",
+    "version": "2.3.1",
     "description": "OpenAIR format parser. Parses openAIR formatted string and outputs it in JSON or GeoJSON.",
     "keywords": [
         "openaip",
@@ -18,16 +18,18 @@
         }
     ],
     "type": "module",
+    "main": "./dist/cjs/index.cjs",
     "module": "./dist/esm/index.mjs",
+    "types": "./dist/esm/index.d.mts",
     "exports": {
         "./package.json": "./package.json",
         ".": {
             "import": {
-                "types": "./dist/esm/types/index.d.mts",
+                "types": "./dist/esm/index.d.mts",
                 "default": "./dist/esm/index.mjs"
             },
             "require": {
-                "types": "./dist/cjs/types/index.d.cts",
+                "types": "./dist/cjs/index.d.cts",
                 "default": "./dist/cjs/index.cjs"
             }
         }
