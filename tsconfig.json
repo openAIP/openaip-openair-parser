@@ -4,8 +4,6 @@
             "esnext"
         ],
         "target": "ES2022",
-        "declaration": true,
-        "declarationDir": "./dist/types",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,

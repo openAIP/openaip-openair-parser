@@ -1,4 +1,4 @@
-import type { Coordinate } from '@openaip/coordinate-parser/dist/types/types.js';
+import type { Coordinate } from '@openaip/coordinate-parser/dist/esm/types.js';
 import {
     bearing as calcBearing,
     distance as calcDistance,
