@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ParserError } from '../parser-error';
+import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractAltitudeToken } from './abstract-altitude-token';
 import type { IToken } from './abstract-line-token.js';

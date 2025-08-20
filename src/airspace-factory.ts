@@ -11,7 +11,7 @@ import type { Polygon, Position } from 'geojson';
 import { z } from 'zod';
 import { Airspace, type Altitude } from './airspace.js';
 import { AltitudeUnitEnum } from './altitude-unit.enum.js';
-import { ParserError } from './parser-error';
+import { ParserError } from './parser-error.js';
 import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { AaToken, BY_NOTAM_ACTIVATION } from './tokens/aa-token.js';
 import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
