@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
-import { AbstractAltitudeToken } from './abstract-altitude-token';
+import { AbstractAltitudeToken } from './abstract-altitude-token.js';
 import type { IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
