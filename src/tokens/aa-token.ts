@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
-import { AbstractLineToken, type IToken } from './abstract-line-token';
+import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
 
 export const BY_NOTAM_ACTIVATION = 'BY_NOTAM';
