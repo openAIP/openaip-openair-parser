@@ -1,5 +1,5 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
-import type { Coordinate } from '@openaip/coordinate-parser/dist/esm/types';
+import type { Coordinate } from '@openaip/coordinate-parser/types';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
