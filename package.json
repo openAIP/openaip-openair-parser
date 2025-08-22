@@ -60,8 +60,6 @@
         "build:cjs": "tsc -p tsconfig.cjs.json",
         "build": "npm run build:cjs && npm run build:esm && node prepare-dist.js && /bin/bash ./prepare-esm.sh",
         "clean": "rimraf dist",
-        "rename:esm": "/bin/bash ./prepare-esm.sh",
-        "prepack": "npm run clean && npm run build",
         "sca:watch:types": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run tsc:run'",
         "sca:watch:lint": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run lint'",
         "test": "vitest run --coverage",
