@@ -4,7 +4,6 @@ import * as uuid from 'uuid';
 import { z } from 'zod';
 import type { AltitudeReferenceDatum } from './altitude-reference-datum.enum.js';
 import type { AltitudeUnit } from './altitude-unit.enum.js';
-import { cleanObject } from './clean-object.js';
 import * as geojsonPolygon from './geojson-polygon.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
 import { ParserError } from './parser-error.js';
