@@ -39,7 +39,11 @@ try {
     fs.writeFileSync(options.outputFilepath, Buffer.from(JSON.stringify(geojson, null, 2), 'utf-8'));
     console.log(`Successfully parsed ${geojson.features.length} airspaces`);
     process.exit(0);
-} catch (error) {
-    console.log(error.message);
+} catch (err) {
+    let errorMessage = 'Unknown error occured';
+    if (err instanceof Error) {
+        errorMessage = err.message;
+    }
+    console.log(errorMessage);
     process.exit(1);
 }
