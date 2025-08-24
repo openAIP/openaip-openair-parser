@@ -3,10 +3,6 @@
 A highly configurable [OpenAIR](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md) parser for Node. The parser can also
 be configured to validate and fix the parsed airspace geometries. Both the original `version 1` and the extended `version 2` of the OpenAIR format are supported.
 
-### ESM only package
-
-This is an ESM only package that requires Node 22 thus allowing CommonJS consumers to `require` it if necessary.
-
 ### Reads original OpenAIR version 1 airspace definitions:
 
 ```text
@@ -163,6 +159,9 @@ Outputs GeoJSON FeatureCollection:
 ```shell
 npm install @openaip/openair-parser
 ```
+### ESM only package
+
+This is an ESM only package that requires Node 22 thus allowing CommonJS consumers to `require` it if necessary.
 
 # Usage
 
