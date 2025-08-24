@@ -1,11 +1,25 @@
 {
-    "extends": "./tsconfig.json",
     "compilerOptions": {
+        "target": "ES2023",
         "module": "commonjs",
         "moduleResolution": "node",
-        "target": "ES2023",
         "outDir": "./dist/cjs",
         "declaration": true,
-        "declarationDir": "./dist/cjs"
-    }
+        "declarationDir": "./dist/cjs",
+        "esModuleInterop": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "noUnusedParameters": false,
+        "rootDir": "./src",
+        "baseUrl": ".",
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
 }

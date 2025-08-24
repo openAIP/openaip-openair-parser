@@ -1,19 +1,22 @@
 {
     "compilerOptions": {
         "lib": [
-            "esnext"
+            "ES2023"
         ],
-        "module": "nodenext",
-        "moduleResolution": "nodenext",
         "esModuleInterop": true,
         "strict": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "useUnknownInCatchVariables": false,
         "noImplicitAny": true,
         "noUnusedParameters": false,
         "rootDir": "./src",
         "baseUrl": ".",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "target": "ES2023",
+        "outDir": "./dist",
+        "declaration": true,
+        "declarationDir": "./dist",
     },
     "include": [
         "src"

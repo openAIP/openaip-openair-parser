@@ -19,26 +19,11 @@
     ],
     "type": "module",
     "exports": {
-        ".": {
-            "import": {
-                "types": "./dist/esm/index.d.ts",
-                "default": "./dist/esm/index.js"
-            },
-            "require": {
-                "types": "./dist/cjs/index.d.cts",
-                "default": "./dist/cjs/index.cjs"
-            }
-        },
-        "./*": {
-            "import": {
-                "types": "./dist/esm/*.d.ts",
-                "default": "./dist/esm/*.js"
-            },
-            "require": {
-                "types": "./dist/cjs/*.d.cts",
-                "default": "./dist/cjs/*.cjs"
-            }
-        }
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+    },
+    "engines": {
+        "node": ">=22.0.0"
     },
     "files": [
         "dist"
@@ -56,9 +41,7 @@
     },
     "homepage": "https://github.com/openAIP/openaip-openair-parser#readme",
     "scripts": {
-        "build:esm": "tsc -p tsconfig.esm.json",
-        "build:cjs": "tsc -p tsconfig.cjs.json",
-        "build": "npm run build:cjs && npm run build:esm && node prepare-dist.js && /bin/bash ./prepare-esm.sh",
+        "build": "npm run clean && tsc -p tsconfig.json",
         "clean": "rimraf dist",
         "sca:watch:types": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run tsc:run'",
         "sca:watch:lint": "npx chokidar '**/*.js' '**/*.ts' -c 'npm run lint'",
