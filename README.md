@@ -159,7 +159,7 @@ Outputs GeoJSON FeatureCollection:
 ```shell
 npm install @openaip/openair-parser
 ```
-### ESM only package
+#### ESM only package
 
 This is an ESM only package that requires Node 22 thus allowing CommonJS consumers to `require` it if necessary.
 
