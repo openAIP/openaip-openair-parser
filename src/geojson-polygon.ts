@@ -189,7 +189,11 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
             }
             return envelope(createFeatureCollection(pointFeatures)).geometry;
         } catch (err) {
-            throw new Error(err.message);
+            let errorMessage = 'Unknown error occured.';
+            if (err instanceof Error) {
+                errorMessage = err.message;
+            }
+            throw new Error(errorMessage);
         }
     }
 }

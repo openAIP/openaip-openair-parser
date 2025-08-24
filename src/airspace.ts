@@ -272,7 +272,11 @@ export class Airspace {
             airspacePolygon = geojsonPolygon.removeDuplicatePoints(airspacePolygon, { consumeDuplicateBuffer });
             airspacePolygon = geojsonPolygon.removeIntermediatePoints(airspacePolygon);
             airspacePolygon = geojsonPolygon.withRightHandRule(airspacePolygon);
-        } catch (e) {
+        } catch (err) {
+            let errorMessage = 'Unknown error occured.';
+            if (err instanceof Error) {
+                errorMessage = err.message;
+            }
             // Geometry creation errors may happen here already as it is NOT possible to create certain invalid
             //  polygon geometries, i.e. too few points, start and end points do not match - if "fix geometry" flag
             // is active catch build errors and directly create a fixed polygon. In the main "fix" step below, the
@@ -280,21 +284,21 @@ export class Airspace {
             if (fixGeometry === true) {
                 try {
                     airspacePolygon = geojsonPolygon.createFixedPolygon(this._coordinates);
-                } catch (e) {
-                    if (e instanceof SyntaxError) {
+                } catch (err) {
+                    if (err instanceof SyntaxError) {
                         throw new ParserError({
                             lineNumber,
-                            errorMessage: e.message,
+                            errorMessage: err.message,
                             geometry: this.asLineStringGeometry(),
                         });
                     } else {
-                        throw e;
+                        throw err;
                     }
                 }
             } else {
                 throw new ParserError({
                     lineNumber,
-                    errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} is invalid. ${e.message}`,
+                    errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} is invalid. ${errorMessage}`,
                     geometry: this.asLineStringGeometry(),
                 });
             }
@@ -303,15 +307,15 @@ export class Airspace {
         if (fixGeometry === true) {
             try {
                 airspacePolygon = geojsonPolygon.createFixedPolygon(airspacePolygon.coordinates[0]);
-            } catch (e) {
-                if (e instanceof SyntaxError) {
+            } catch (err) {
+                if (err instanceof SyntaxError) {
                     throw new ParserError({
                         lineNumber,
-                        errorMessage: e.message,
+                        errorMessage: err.message,
                         geometry: this.asLineStringGeometry(),
                     });
                 } else {
-                    throw e;
+                    throw err;
                 }
             }
         }
@@ -348,8 +352,11 @@ export class Airspace {
             geojsonPolygon.validate(polygon);
             isValid = true;
         } catch (err) {
-            const message = err?.message || 'Unknown geometry error.';
-            if (message.includes('Geometry is invalid due to self intersection') === true) {
+            let errorMessage = 'Unknown geometry error occured.';
+            if (err instanceof Error) {
+                errorMessage = err.message;
+            }
+            if (errorMessage.includes('Geometry is invalid due to self intersection') === true) {
                 selfIntersections = geojsonPolygon.getSelfIntersections(polygon);
             }
         }
@@ -376,7 +383,7 @@ export class Airspace {
         try {
             // return as GeoJSON line feature
             return createLinestring(this._coordinates).geometry;
-        } catch (e) {
+        } catch (err) {
             // possible that geometry cannot be created due to too few points
             return undefined;
         }

@@ -54,7 +54,7 @@
         "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
     },
     "dependencies": {
-        "@openaip/coordinate-parser": "^0.21.0",
+        "@openaip/coordinate-parser": "file:openaip-coordinate-parser-0.20.1.tgz",
         "@placemarkio/check-geojson": "^0.1.14",
         "@turf/turf": "^7.2.0",
         "@types/n-readlines": "^1.0.6",

@@ -36,7 +36,7 @@ export class VxToken extends AbstractLineToken<Metadata> {
         try {
             const parser = new CoordinateParser();
             coordinate = parser.parse(linePartCoordinate.trim());
-        } catch (e) {
+        } catch (err) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
         token._tokenized = { line, lineNumber, metadata: { coordinate } };

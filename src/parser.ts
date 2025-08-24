@@ -8,7 +8,7 @@ import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
 import { DefaultParserConfig } from './default-parser-config.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
-import type { ParserError } from './parser-error.js';
+import { ParserError } from './parser-error.js';
 import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { Tokenizer } from './tokenizer.js';
 import type { IToken } from './tokens/abstract-line-token.js';
@@ -168,10 +168,17 @@ export class Parser {
 
             return result as ParserResult;
         } catch (err) {
-            return {
-                success: false,
-                error: err,
-            };
+            if (err instanceof ParserError) {
+                return {
+                    success: false,
+                    error: err,
+                };
+            } else {
+                return {
+                    success: false,
+                    error: new ParserError({ errorMessage: 'Unhandled parser error' }),
+                };
+            }
         }
     }
 

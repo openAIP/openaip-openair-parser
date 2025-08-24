@@ -41,7 +41,7 @@ export class DbToken extends AbstractLineToken<Metadata> {
             const [startCoordinateString, endCoordinateString] = endpoints;
             metadata.startCoordinate = this.getCoordinate(startCoordinateString);
             metadata.endCoordinate = this.getCoordinate(endCoordinateString);
-        } catch (e) {
+        } catch (err) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
         token._tokenized = { line, lineNumber, metadata: metadata as Metadata };

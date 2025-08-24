@@ -39,11 +39,11 @@ export class AlToken extends AbstractAltitudeToken {
         let altitude;
         try {
             altitude = this.getAltitude(linePartAltitude);
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                throw new ParserError({ lineNumber, errorMessage: e.message });
+        } catch (err) {
+            if (err instanceof SyntaxError) {
+                throw new ParserError({ lineNumber, errorMessage: err.message });
             } else {
-                throw e;
+                throw err;
             }
         }
         token._tokenized = { line, lineNumber, metadata: { altitude } };

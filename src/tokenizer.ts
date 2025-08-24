@@ -140,10 +140,14 @@ export class Tokenizer {
             let token: IToken;
             try {
                 token = lineTokenizer.tokenize(this._currentLineString, this._currentLineNumber);
-            } catch (e) {
+            } catch (err) {
+                let errorMessage = 'Unknown error occured';
+                if (err instanceof Error) {
+                    errorMessage = err.message;
+                }
                 throw new ParserError({
                     lineNumber: this._currentLineNumber,
-                    errorMessage: e.message,
+                    errorMessage,
                 });
             }
             this._tokens.push(token);
