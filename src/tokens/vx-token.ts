@@ -1,10 +1,10 @@
 import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
+import type { Coordinate } from '@openaip/coordinate-parser/types';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
-import type { Coordinate } from '@openaip/coordinate-parser/types';
 
 type Metadata = { coordinate: Coordinate };
 
