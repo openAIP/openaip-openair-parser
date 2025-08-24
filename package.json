@@ -17,13 +17,22 @@
             "role": "Lead developer"
         }
     ],
-    "type": "module",
-    "exports": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js"
-    },
     "engines": {
         "node": ">=22.0.0"
+    },
+    "type": "module",
+    "main": "./dist/index.js",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "import": "./dist/*.js",
+            "default": "./dist/*.js"
+        }
     },
     "files": [
         "dist"
@@ -54,7 +63,7 @@
         "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
     },
     "dependencies": {
-        "@openaip/coordinate-parser": "file:openaip-coordinate-parser-0.20.1.tgz",
+        "@openaip/coordinate-parser": "^0.24.0",
         "@placemarkio/check-geojson": "^0.1.14",
         "@turf/turf": "^7.2.0",
         "@types/n-readlines": "^1.0.6",
@@ -66,7 +75,7 @@
         "zod": "^3.25.76"
     },
     "devDependencies": {
-        "@eslint/js": "^9.33.0",
+        "@eslint/js": "^9.34.0",
         "@ianvs/prettier-plugin-sort-imports": "^4.6.2",
         "@types/luxon": "^3.7.1",
         "@types/node": "^22.17.2",
@@ -75,7 +84,7 @@
         "app-root-path": "^3.1.0",
         "chokidar-cli": "^3.0.0",
         "depcheck": "^1.4.7",
-        "eslint": "^9.33.0",
+        "eslint": "^9.34.0",
         "eslint-plugin-security": "^3.0.1",
         "npm-check-updates": "^17.1.18",
         "prettier": "^3.6.2",
