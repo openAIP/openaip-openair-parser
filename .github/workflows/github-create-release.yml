@@ -32,7 +32,7 @@ jobs:
     publish:
         permissions:
             contents: write
-        name: "Publish package"
+        name: "Build and publish package"
         needs: run-tests
         runs-on: ubuntu-22.04
         steps:
@@ -58,6 +58,8 @@ jobs:
                   echo "${{secrets.NPMRC}}" >> ~/.npmrc
             - name: Install packages
               run: npm install
+            - name: NPM build package
+              run: npm run build
             - name: Bump package version
               id: bump-version
               uses: phips28/gh-action-bump-version@master
