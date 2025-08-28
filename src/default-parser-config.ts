@@ -15,6 +15,8 @@ type DefaultConfig = {
     targetAltUnit: AltitudeUnit | undefined;
     roundAltValues: boolean;
     includeOpenair: boolean;
+    useWorkers: boolean | 'auto';
+    simplifyToleranceMeters: number;
 };
 
 export const DefaultParserConfig: DefaultConfig = {
@@ -43,4 +45,8 @@ export const DefaultParserConfig: DefaultConfig = {
     roundAltValues: false,
     // If true, the GeoJSON output will contain the original openair airspace definition block for each airspace. Note that this will considerably increase JSON object size!
     includeOpenair: false,
+    // Controls worker usage for large files: 'auto' uses file size threshold; true forces workers; false disables workers
+    useWorkers: 'auto',
+    // When > 0, simplifies output geometry using Turf with given tolerance in meters
+    simplifyToleranceMeters: 0,
 } as const;

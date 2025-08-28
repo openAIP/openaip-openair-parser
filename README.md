@@ -230,6 +230,8 @@ Options:
     --output-filepath <outFilepath>  The output filename of the generated geojson file.
     --validate                       If set to true, validates geometries. Defaults to true.
     --fix-geometry                   If set to true, tries to fix geometries. Note that this may change the original airspace geometry! Defaults to false.
+    --simplify <meters>              Simplify geometries using tolerance in meters (default: 0 = disabled).
+    --workers <mode>                 Worker mode: auto|on|off (default: auto). See "Parallel Processing" below.
     --version <version>              Specify OpenAIR format version to parse. Defaults to 2.
 
 Simple command line usage:
@@ -237,6 +239,61 @@ Simple command line usage:
 ```bash
 node cli.js --input-filepath ./tests/fixtures/full-airspaces.txt --output-filepath test.json
 ```
+
+## Parallel Processing and Workers
+
+The parser supports concurrent processing of large files. There are two execution modes and an async API:
+
+- Config `useWorkers`:
+  - `auto` (default): uses a 15 MB size threshold to enable concurrent processing.
+  - `true`: forces concurrent processing.
+  - `false`: disables concurrent processing.
+
+- Synchronous `parse()` (Node.js):
+  - Concurrent mode uses AC-delimited chunking with in-process conversion (no threads). This keeps `parse()` synchronous and avoids worker deadlocks.
+
+- Asynchronous `parseAsync()` (Node.js):
+  - Runs true parallelism via `worker_threads` and returns a Promise with the `ParserResult`.
+
+- CLI toggle:
+  - `--workers <mode>` where `<mode>` is `auto`, `on` or `off`. Example:
+
+```bash
+node cli.js --input-filepath big.txt --output-filepath out.json --workers on
+```
+
+### Browser usage (bundler example)
+
+In browsers, you can offload AC-delimited conversion to a Web Worker. This package includes a worker module at `src/workers/airspace-browser-worker.ts` and a helper in `src/concurrency/convert-blocks.ts`.
+
+Example with a bundler that supports `new URL(..., import.meta.url)` for worker modules:
+
+```ts
+import { convertBlocksInBrowser } from '@openaip/openair-parser/dist/concurrency/convert-blocks.js';
+
+// tasks: array of { id: number, lines: { line: string; lineNumber: number }[] }
+// config: same shape as Parser config subset used for conversion
+const features = await convertBlocksInBrowser(tasks, {
+  version: 2,
+  allowedClasses: ['A','B','C','D','E','F','G','UNCLASSIFIED'],
+  allowedTypes: [],
+  unlimited: 999,
+  targetAltUnit: undefined,
+  roundAltValues: false,
+  geometryDetail: 100,
+  validateGeometry: true,
+  fixGeometry: false,
+  includeOpenair: false,
+  outputGeometry: 'POLYGON',
+  consumeDuplicateBuffer: 0,
+  simplifyToleranceMeters: 0,
+});
+
+// features is an array of GeoJSON Feature<Polygon | LineString>
+```
+
+Note: You are responsible for preparing `tasks` (splitting your input by AC boundaries and preserving original lines and line numbers).
+
 
 # Version 2: Extended OpenAIR Format
 

@@ -12,6 +12,8 @@ program
     .option('--output-filepath <outFilepath>', 'The output filename of the generated geojson file')
     .option('--validate', 'If specified, parser will validate geometries.')
     .option('--fix-geometry', 'If specified, parser will try to fix geometries.')
+    .option('--simplify <meters>', 'Simplify geometries using tolerance in meters', (value) => parseFloat(value))
+    .option('--workers <mode>', 'Worker mode: auto|on|off (default: auto)')
     .option('--version <version>', 'Specify OpenAIR format version to parse. Defaults to 2.')
     .parse(process.argv);
 
@@ -21,13 +23,27 @@ interface ProgramOptions {
     validate?: boolean;
     fixGeometry?: boolean;
     version?: ParserVersion;
+    simplify?: number;
+    workers?: string;
 }
 
 const options = program.opts<ProgramOptions>();
 const validateGeometry = options.validate ?? false;
 const fixGeometry = options.fixGeometry ?? false;
 const version = options.version ?? ParserVersionEnum.VERSION_2;
-const parser = new Parser({ validateGeometry, fixGeometry, version });
+const simplifyToleranceMeters =
+    options.simplify != null && Number.isFinite(options.simplify) && options.simplify >= 0 ? options.simplify : 0;
+function normalizeWorkersMode(mode: string | undefined): boolean | 'auto' {
+    if (mode == null) return 'auto';
+    const m = String(mode).toLowerCase();
+    if (m === 'auto') return 'auto';
+    if (m === 'on' || m === 'true' || m === 'yes') return true;
+    if (m === 'off' || m === 'false' || m === 'no') return false;
+    return 'auto';
+}
+
+const useWorkers = normalizeWorkersMode(options.workers);
+const parser = new Parser({ validateGeometry, fixGeometry, version, simplifyToleranceMeters, useWorkers });
 
 try {
     const result: ParserResult = parser.parse(options.inputFilepath);

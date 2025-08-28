@@ -1,4 +1,4 @@
-import { feature as createFeature, lineString as createLinestring, polygon as createPolygon } from '@turf/turf';
+import { feature as createFeature, lineString as createLinestring, polygon as createPolygon, simplify as turfSimplify } from '@turf/turf';
 import type { Feature, LineString, Polygon, Position } from 'geojson';
 import * as uuid from 'uuid';
 import { z } from 'zod';
@@ -17,6 +17,7 @@ export type AsGeojsonConfig = {
     includeOpenair: boolean;
     outputGeometry: OutputGeometry;
     consumeDuplicateBuffer: number;
+    simplifyToleranceMeters?: number;
 };
 
 export const AsGeojsonConfigSchema = z
@@ -26,6 +27,7 @@ export const AsGeojsonConfigSchema = z
         includeOpenair: z.boolean(),
         outputGeometry: z.enum(['POLYGON', 'LINESTRING']),
         consumeDuplicateBuffer: z.number().min(0),
+        simplifyToleranceMeters: z.number().min(0).optional(),
     })
     .strict()
     .describe('AsGeojsonConfigSchema');
@@ -185,7 +187,7 @@ export class Airspace {
     asGeoJson(config: AsGeojsonConfig): AirspaceFeature {
         validateSchema(config, AsGeojsonConfigSchema, { assert: true, name: 'config' });
 
-        const { validateGeometry, fixGeometry, includeOpenair, outputGeometry, consumeDuplicateBuffer } = config;
+        const { validateGeometry, fixGeometry, includeOpenair, outputGeometry, consumeDuplicateBuffer, simplifyToleranceMeters } = config;
         // first token is always an AcToken
         const acToken: AcToken = this._consumedTokens[0] as AcToken;
         const { lineNumber } = acToken.tokenized;
@@ -235,10 +237,25 @@ export class Airspace {
             }
         }
         // build the GeoJSON geometry object
-        const airspaceGeometry =
+        let airspaceGeometry =
             outputGeometry === OutputGeometryEnum.POLYGON
                 ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, consumeDuplicateBuffer })
                 : createLinestring(this._coordinates).geometry;
+        // Optionally simplify the geometry using Turf. Tolerance is in meters; convert to degrees approximately.
+        if ((simplifyToleranceMeters ?? 0) > 0) {
+            const M_PER_DEG = 111320; // approximate at equator
+            const toleranceDeg = (simplifyToleranceMeters as number) / M_PER_DEG;
+            const tmp = createFeature<Polygon | LineString, any>(airspaceGeometry, {} as any);
+            const simplified = turfSimplify(tmp, { tolerance: toleranceDeg, highQuality: true });
+            // ensure polygon rings are closed
+            if (simplified.geometry.type === 'Polygon') {
+                const coords = simplified.geometry.coordinates[0];
+                if (coords.length > 0 && (coords[0][0] !== coords[coords.length - 1][0] || coords[0][1] !== coords[coords.length - 1][1])) {
+                    coords.push(coords[0]);
+                }
+            }
+            airspaceGeometry = simplified.geometry as Polygon | LineString;
+        }
         // create a GeoJSON feature from the geometry
         const feature = createFeature<Polygon | LineString, AirspaceProperties>(
             airspaceGeometry,
