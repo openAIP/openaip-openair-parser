@@ -83,7 +83,6 @@ export class Parser {
     protected _airspaces: Airspace[] = [];
     protected _currentState: ParserState = ParserStateEnum.START;
     protected _currentToken: IToken | undefined = undefined;
-    protected _airspaceTokens: IToken[] = [];
     protected _geojson: FeatureCollection<Polygon | LineString, AirspaceProperties> | undefined = undefined;
 
     constructor(config?: Config) {
@@ -118,6 +117,7 @@ export class Parser {
             });
             const tokens = tokenizer.tokenize(filepath);
 
+            let airspaceTokens: IToken[] = [];
             // iterate over tokens and create airspaces
             for (let i = 0; i < tokens.length; i++) {
                 this._currentToken = tokens[i];
@@ -130,7 +130,8 @@ export class Parser {
                     if (this._currentState === ParserStateEnum.READ) {
                         // each new AC line will trigger an airspace build if parser is in READ state
                         // this is needed for files that do not have blanks between definition blocks but comments
-                        this.buildAirspace();
+                        this.buildAirspace(airspaceTokens);
+                        airspaceTokens = [];
                     }
                 }
 
@@ -138,15 +139,16 @@ export class Parser {
                 if (this._currentToken instanceof EofToken) {
                     // if EOF is reached and parser is in READ state, check if we have any unprocessed airspace tokens
                     // and if so, build the airspace
-                    if (this._currentState === ParserStateEnum.READ && this._airspaceTokens.length > 0) {
-                        this.buildAirspace();
+                    if (this._currentState === ParserStateEnum.READ && airspaceTokens.length > 0) {
+                        this.buildAirspace(airspaceTokens);
+                        airspaceTokens = [];
                         continue;
                     }
                 }
 
                 this._currentState = ParserStateEnum.READ;
                 // in all other cases, push token to airspace tokens list and continue
-                this._airspaceTokens.push(this._currentToken);
+                airspaceTokens.push(this._currentToken);
             }
 
             // create airspaces as a GeoJSON feature collection and store them internally
@@ -217,27 +219,24 @@ export class Parser {
     }
 
     /**
-     * Builds airspace from the current list of airspace tokens.
+     * Builds airspace from a given list of airspace tokens.
      */
-    protected buildAirspace(): void {
+    protected buildAirspace(airspaceTokens: IToken[]): void {
         const factory = new AirspaceFactory({
             geometryDetail: this._config.geometryDetail,
             version: this._config.version,
         });
-        const airspace = factory.createAirspace(this._airspaceTokens);
+        const airspace = factory.createAirspace(airspaceTokens);
         if (airspace != null) {
             // push new airspace to list
             this._airspaces.push(airspace);
         }
-        // reset read airspace tokens
-        this._airspaceTokens = [];
     }
 
     protected reset() {
         this._currentState = ParserStateEnum.START;
         this._airspaces = [];
         this._currentToken = undefined;
-        this._airspaceTokens = [];
         this._geojson = undefined;
     }
 }
