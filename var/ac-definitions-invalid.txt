@@ -1,6 +1,0 @@
-* some invalid AC definitions to test the AC token
-
-AC r
-AC RMZ
-AC TMZ
-AC R (with invalid comment)
