@@ -322,7 +322,7 @@ import { Worker } from 'node:worker_threads';
  */
 function createWorker(filepath, config) {
     return new Promise((resolve, reject) => {
-        const worker = new Worker('./src/worker.js', {
+        const worker = new Worker('./worker.js', {
             workerData: { filepath, config },
         });
         worker.on('message', (message) => {
