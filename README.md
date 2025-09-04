@@ -246,7 +246,7 @@ import { Parser } from '@openaip/openair-parser';
 import { processWithWorkers } from './worker-manager.js';
 
 /**
- * Split large files into multiple files with a number of defined airspace definition blocks
+ * Split large file into multiple files with a number of defined airspace definition blocks
  * separated by "AC" command.
  * The number of smaller temporary files is directly related to the size of 'blocksPerFile'.
  * Each file equals one worker. Choose 'blocksPerFile' carefully!
