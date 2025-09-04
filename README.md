@@ -337,6 +337,25 @@ function createWorker(filepath, config) {
         });
     });
 }
+
+/**
+ * Distributes processing of a list of files to workers and returns the end result as a GeoJSON
+ * FeatureCollection.
+ */
+export async function processWithWorkers(filepaths, config) {
+    try {
+        const workerPromises = filepaths.map((filepath) => createWorker(filepath, config));
+        const results = await Promise.all(workerPromises);
+
+        return {
+            type: 'FeatureCollection',
+            features: results.flat(),
+        };
+    } catch (error) {
+        console.error('Error processing with workers:', error);
+        throw error;
+    }
+}
 ```
 
 #### worker.js
