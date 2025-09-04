@@ -159,6 +159,7 @@ Outputs GeoJSON FeatureCollection:
 ```shell
 npm install @openaip/openair-parser
 ```
+
 #### ESM only package
 
 This is an ESM only package that requires Node 22 thus allowing CommonJS consumers to `require` it if necessary.
@@ -216,7 +217,160 @@ if (success === true) {
         // a LineString geometry that can be used to visualize the invalid geometry
         geometry,
         // if self intersections are found, they are presented as an array of "[lon, lat]"
-        selfIntersections } = error;
+        selfIntersections,
+    } = error;
+}
+```
+
+## Considerations when parsing big OpenAIR files
+
+OpenAIR files come in different file sizes and some of them are several MBs in size. The parser is able to parse those files in an
+efficient way but it will take a considerable amount of time for big files while blocking the main thread.
+To drastically reduce the processing time for those files and also parse in a non-blocking way,
+Node's **worker threads** or the browser's **web workers** can be used.
+
+### Non-blocking parsing with Node worker threads
+
+Improved parsing logic using Node worker threads. Big files are split into multiple smaller files with a
+defined set of airspace definition blocks. Each file is then handed over to a dedicated worker that will
+parse the file using the OpenAIP OpenAIR parser.
+
+#### main.js
+
+This is where the main logic and your parsing takes place.
+
+```javascript
+import fs from 'node:fs';
+import readline from 'readline';
+import { Parser } from '@openaip/openair-parser';
+import { processWithWorkers } from './worker-manager.js';
+
+/**
+ * Split large files into multiple files with a number of defined airspace definition blocks
+ * separated by "AC" command.
+ * The number of smaller temporary files is directly related to the size of 'blocksPerFile'.
+ * Each file equals one worker. Choose 'blocksPerFile' carefully!
+ */
+async function splitFileIntoBlocks(filepath, blocksPerFile = 500) {
+    const fileStream = fs.createReadStream(filepath);
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+    });
+
+    let currentBlock = '';
+    let blockCount = 0;
+    let fileIndex = 1;
+    const splitFiles = [];
+    for await (const line of rl) {
+        if (line.trim().startsWith('AC')) {
+            if (currentBlock) {
+                if (blockCount >= blocksPerFile) {
+                    const splitFilePath = `./var/airspace_${fileIndex}.txt`;
+                    splitFiles.push(splitFilePath);
+                    fs.writeFileSync(splitFilePath, currentBlock);
+                    fileIndex++;
+                    blockCount = 0;
+                    currentBlock = '';
+                }
+                blockCount++;
+            }
+        }
+        currentBlock += line + '\n';
+    }
+    // write remaining blocks to file
+    if (currentBlock) {
+        const splitFilePath = `./var/airspace_${fileIndex}.txt`;
+        splitFiles.push(splitFilePath);
+        fs.writeFileSync(splitFilePath, currentBlock);
+    }
+
+    return splitFiles;
+}
+
+async function main() {
+    // filepath to the huge source OpenAIR file
+    const filepath = './var/huge-openair-file.txt';
+    const config = {
+        // adjust config to your needs
+        fixGeometry: true,
+    };
+
+    try {
+        // split the file into smaller chunks
+        const splitFiles = await splitFileIntoBlocks(filepath);
+        // process all files with workers and receive a GeoJSON FeatureCollection
+        const featureCollection = await processWithWorkers(splitFiles, config);
+        // clean up split files
+        splitFiles.forEach((file) => fs.unlinkSync(file));
+    } catch (error) {
+        console.error('Error in worker processing:', error);
+    }
+}
+```
+
+#### worker-manager.js
+
+Simple wrapper for worker related util functions
+
+```javascript
+import { Worker } from 'node:worker_threads';
+
+/**
+ * Initializes a defined worker with required configuration and awaits the
+ * worker response.
+ */
+function createWorker(filepath, config) {
+    return new Promise((resolve, reject) => {
+        const worker = new Worker('./src/worker.js', {
+            workerData: { filepath, config },
+        });
+        worker.on('message', (message) => {
+            const { result } = message;
+            resolve(result);
+        });
+        worker.on('error', reject);
+        worker.on('exit', (code) => {
+            if (code !== 0) {
+                reject(new Error(`Worker stopped with exit code ${code}`));
+            }
+        });
+    });
+}
+```
+
+#### worker.js
+
+Worker file that will parse a single file with the OpenAIR parser.
+
+```javascript
+import { parentPort, workerData } from 'worker_threads';
+import { Parser } from '@openaip/openair-parser';
+
+// 'workerData' is the data passed from the main thread
+const { filepath, config } = workerData;
+
+function parseOpenairFile(filepath) {
+    const parser = new Parser({
+        // adjust parser config depending on what is passed in with 'config'
+        fixGeometry: config.fixGeometry,
+    });
+    // parse the temporary 'smaller' file
+    const result = parser.parse(filepath);
+    if (result.success === true) {
+        const collection = parser.toGeojson();
+
+        return collection.features;
+    } else {
+        throw Error(result.error);
+    }
+}
+
+const result = parseOpenairFile(filepath);
+
+// send the result back to the main thread
+if (parentPort) {
+    parentPort.postMessage({ result });
 }
 ```
 
@@ -242,7 +396,7 @@ node cli.js --input-filepath ./tests/fixtures/full-airspaces.txt --output-filepa
 
 The original OpenAIR `version 1` format specification has multiple shortcomings to meet today's demand to reflect the various types of existing airspaces
 and provide additional metadata on them. To overcome some of these shortcomings, a joint effort has been made to move forward and define an advanced OpenAIR `version 2` format
-that introduces several new commands. Please find the full [OpenAIR](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md) here which is maintained
+that introduces several new commands. Please find the full [OpenAIR format specification](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md) here which is maintained
 by Naviter.
 
 ### Version 2 Format Commands:
