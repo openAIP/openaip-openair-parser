@@ -10,7 +10,7 @@ type Metadata = { radius: number };
  * Tokenizes "DC" airspace circle radius definition.
  */
 export class DcToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.DC;
+    public static TYPE: TokenType = TokenTypeEnum.DC;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

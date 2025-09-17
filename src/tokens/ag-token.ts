@@ -10,7 +10,7 @@ type Metadata = { name: string };
  * Tokenizes "AG" ground station call-sign for given AF frequency.
  */
 export class AgToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.AG;
+    public static TYPE: TokenType = TokenTypeEnum.AG;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

@@ -7,7 +7,7 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
  * Handles blank lines. Each blank line is considered to separate each airspace definition block.
  */
 export class BlankToken extends AbstractLineToken<undefined> {
-    static TYPE: TokenType = TokenTypeEnum.BLANK;
+    public static TYPE: TokenType = TokenTypeEnum.BLANK;
 
     isIgnoredToken(): boolean {
         return true;

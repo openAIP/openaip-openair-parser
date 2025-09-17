@@ -9,7 +9,7 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
  * Tokenizes "AH" airspace upper ceiling definitions.
  */
 export class AhToken extends AbstractAltitudeToken {
-    static TYPE: TokenType = TokenTypeEnum.AH;
+    public static TYPE: TokenType = TokenTypeEnum.AH;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

@@ -54,7 +54,7 @@ const AbstractAltitudeReaderConfigSchema = z
  * Tokenizes "AH/AL" airspace ceiling definitions.
  */
 export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = 'BASE_ALTITUDE';
+    public static TYPE: TokenType = 'BASE_ALTITUDE';
     protected unlimited: number;
     protected targetAltUnit: AltitudeUnit | undefined;
     protected roundAltValues: boolean;

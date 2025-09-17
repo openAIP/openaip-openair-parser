@@ -10,7 +10,7 @@ type Metadata = { frequency: string };
  * Tokenizes "AF" token value which is a frequency string "123.456"
  */
 export class AfToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.AF;
+    public static TYPE: TokenType = TokenTypeEnum.AF;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

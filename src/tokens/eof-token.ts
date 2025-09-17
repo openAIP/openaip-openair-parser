@@ -24,7 +24,7 @@ export const ConfigSchema = z
  * is finished. Marks the end of the parsed file.
  */
 export class EofToken extends AbstractLineToken<undefined> {
-    static TYPE: TokenType = TokenTypeEnum.EOF;
+    public static TYPE: TokenType = TokenTypeEnum.EOF;
     protected lastLineNumber: number;
 
     constructor(config: Config) {

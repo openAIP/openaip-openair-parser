@@ -12,7 +12,7 @@ type Metadata = { coordinate: Coordinate };
  * Tokenizes "DP" airspace polygon coordinate definition.
  */
 export class DpToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.DP;
+    public static TYPE: TokenType = TokenTypeEnum.DP;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

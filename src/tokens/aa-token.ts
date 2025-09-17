@@ -20,7 +20,7 @@ type Metadata = { activation: Activation | typeof BY_NOTAM_ACTIVATION };
  * subsequent AA commands directly following the first AA command.
  */
 export class AaToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.AA;
+    public static TYPE: TokenType = TokenTypeEnum.AA;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

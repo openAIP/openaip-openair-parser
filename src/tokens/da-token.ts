@@ -14,7 +14,7 @@ type Metadata = {
  * Tokenizes "DA" airspace arc definition token.
  */
 export class DaToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.DA;
+    public static TYPE: TokenType = TokenTypeEnum.DA;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

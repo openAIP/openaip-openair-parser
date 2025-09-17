@@ -10,7 +10,7 @@ type Metadata = { clockwise: boolean };
  * Since the the DB token will get the center point AND start and end coordinates, this token can be omitted.
  */
 export class VdToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.VD;
+    public static TYPE: TokenType = TokenTypeEnum.VD;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

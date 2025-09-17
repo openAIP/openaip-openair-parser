@@ -12,7 +12,7 @@ type Metadata = { startCoordinate: Coordinate; endCoordinate: Coordinate };
  * Tokenizes "DB" airspace arc endpoints definition.
  */
 export class DbToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.DB;
+    public static TYPE: TokenType = TokenTypeEnum.DB;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

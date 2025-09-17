@@ -10,7 +10,7 @@ type Metadata = { width: number };
  * Tokenizes "V W=" airway width in nautical miles.
  */
 export class VwToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.VW;
+    public static TYPE: TokenType = TokenTypeEnum.VW;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

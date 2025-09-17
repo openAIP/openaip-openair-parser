@@ -8,7 +8,7 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
  * Handles skipped tokens.
  */
 export class SkippedToken extends CommentToken {
-    static TYPE: TokenType = TokenTypeEnum.SKIPPED;
+    public static TYPE: TokenType = TokenTypeEnum.SKIPPED;
 
     isIgnoredToken() {
         return true;

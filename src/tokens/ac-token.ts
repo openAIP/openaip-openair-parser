@@ -28,7 +28,7 @@ export const ConfigSchema = z
  * Tokenizes "AC" airspace class definitions.
  */
 export class AcToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.AC;
+    public static TYPE: TokenType = TokenTypeEnum.AC;
     protected allowedClasses: string[] = [];
 
     constructor(config: Config) {

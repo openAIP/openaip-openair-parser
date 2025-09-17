@@ -12,7 +12,7 @@ type Metadata = { coordinate: Coordinate };
  * Tokenizes "V X=" airspace circle center coordinate definition.
  */
 export class VxToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.VX;
+    public static TYPE: TokenType = TokenTypeEnum.VX;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

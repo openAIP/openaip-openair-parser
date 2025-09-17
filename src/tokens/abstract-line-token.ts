@@ -37,6 +37,7 @@ export const ConfigSchema = z
     .describe('ConfigSchema');
 
 export abstract class AbstractLineToken<M> implements IToken {
+    // this is defined in each class but to retrieve the actual value later, use the getter "type"
     public static TYPE: TokenType = 'BASE_LINE';
     public tokenTypes: TokenType[];
     public line: string | undefined;

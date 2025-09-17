@@ -35,7 +35,7 @@ export const ConfigSchema = z
  * Tokenizes "AY" airspace type definitions.
  */
 export class AyToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.AY;
+    public static TYPE: TokenType = TokenTypeEnum.AY;
     protected allowedTypes: string[] = [];
 
     constructor(config: Config) {

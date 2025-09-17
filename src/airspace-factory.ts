@@ -158,64 +158,64 @@ export class AirspaceFactory {
         const type = token.type;
         const { lineNumber } = token.toTokenized();
         switch (type) {
-            case CommentToken.type:
+            case CommentToken.TYPE:
                 this.handleCommentToken(token as CommentToken);
                 break;
-            case AcToken.type:
+            case AcToken.TYPE:
                 this.handleAcToken(token as AcToken);
                 break;
-            case AnToken.type:
+            case AnToken.TYPE:
                 this.handleAnToken(token as AnToken);
                 break;
-            case AhToken.type:
+            case AhToken.TYPE:
                 this.handleAhToken(token as AhToken);
                 break;
-            case AlToken.type:
+            case AlToken.TYPE:
                 this.handleAlToken(token as AlToken);
                 break;
-            case DpToken.type:
+            case DpToken.TYPE:
                 this.handleDpToken(token as DpToken);
                 break;
-            case DyToken.type:
+            case DyToken.TYPE:
                 this.handleDyToken(token as DyToken);
                 break;
-            case VdToken.type:
+            case VdToken.TYPE:
                 this.handleVdToken(token as VdToken);
                 break;
-            case VxToken.type:
+            case VxToken.TYPE:
                 this.handleVxToken(token as VxToken);
                 break;
-            case VwToken.type:
+            case VwToken.TYPE:
                 this.handleVwToken(token as VwToken);
                 break;
-            case DcToken.type:
+            case DcToken.TYPE:
                 this.handleDcToken(token as DcToken);
                 break;
-            case DbToken.type:
+            case DbToken.TYPE:
                 this.handleDbToken(token as DbToken);
                 break;
-            case DaToken.type:
+            case DaToken.TYPE:
                 this.handleDaToken(token as DaToken);
                 break;
-            case BlankToken.type:
+            case BlankToken.TYPE:
                 this.handleBlankToken(token as BlankToken);
                 break;
-            case EofToken.type:
+            case EofToken.TYPE:
                 break;
             // version 2 tokens
-            case AyToken.type:
+            case AyToken.TYPE:
                 this.handleAyToken(token as AyToken);
                 break;
-            case AfToken.type:
+            case AfToken.TYPE:
                 this.handleAfToken(token as AfToken);
                 break;
-            case AgToken.type:
+            case AgToken.TYPE:
                 this.handleAgToken(token as AgToken);
                 break;
-            case AxToken.type:
+            case AxToken.TYPE:
                 this.handleAxToken(token as AxToken);
                 break;
-            case AaToken.type:
+            case AaToken.TYPE:
                 this.handleAaToken(token as AaToken);
                 break;
             default:
@@ -245,13 +245,13 @@ export class AirspaceFactory {
             // only using "look ahead" logic. Otherwise, additional "look behind" must be implemented that would
             // increase processing time.
             if (startingAcTagFound === false && currentToken.isIgnoredToken() === false) {
-                if (currentToken.type === AcToken.type) {
+                if (currentToken.type === AcToken.TYPE) {
                     startingAcTagFound = true;
                 } else {
                     throw new ParserError({
                         lineNumber: currentTokenLineNumber,
                         errorMessage: `The first token must be of type '${
-                            AcToken.type
+                            AcToken.TYPE
                         }'. Token '${currentToken.type}' found on line ${currentTokenLineNumber}.`,
                     });
                 }
@@ -291,11 +291,11 @@ export class AirspaceFactory {
      */
     protected validateTokenInventory(): void {
         // tokens that are always required, no matter if "standard" or "extended" format is used
-        const requiredTokens = [AcToken.type, AnToken.type, AlToken.type, AhToken.type];
+        const requiredTokens = [AcToken.TYPE, AnToken.TYPE, AlToken.TYPE, AhToken.TYPE];
         // if version 2 is used, add the version 2 tokens to the required tokens list
         if (this.version === ParserVersionEnum.VERSION_2) {
             // AY token is required, all others are optional
-            requiredTokens.push(AyToken.type);
+            requiredTokens.push(AyToken.TYPE);
         }
         const requiredTokensInventory: TokenType[] = [];
         let definitionBlockStart: number | undefined = undefined;
@@ -320,13 +320,13 @@ export class AirspaceFactory {
             });
         }
         // handle optional version 2 tokens AF, AG (if present)
-        const afToken = this.tokens.find((token) => token.type === AfToken.type);
-        const agToken = this.tokens.find((token) => token.type === AgToken.type);
+        const afToken = this.tokens.find((token) => token.type === AfToken.TYPE);
+        const agToken = this.tokens.find((token) => token.type === AgToken.TYPE);
         // AG is optional and requires AF to be present
         if (!afToken && agToken) {
             throw new ParserError({
-                lineNumber: (agToken.toTokenized()).lineNumber,
-                errorMessage: `Token '${AgToken.type}' is present but token '${AfToken.type}' is missing.`,
+                lineNumber: agToken.toTokenized().lineNumber,
+                errorMessage: `Token '${AgToken.TYPE}' is present but token '${AfToken.TYPE}' is missing.`,
             });
         }
     }
@@ -419,7 +419,7 @@ export class AirspaceFactory {
     protected handleDcToken(token: DcToken): void {
         const { lineNumber, metadata } = token.toTokenized();
         const { radius } = metadata;
-        const precedingVxToken = this.getNextToken<VxToken>(token, VxToken.type, false);
+        const precedingVxToken = this.getNextToken<VxToken>(token, VxToken.TYPE, false);
 
         if (precedingVxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
@@ -484,12 +484,12 @@ export class AirspaceFactory {
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.type, false) as VdToken;
+        const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.TYPE, false) as VdToken;
         if (vdToken) {
             clockwise = vdToken.toTokenized().metadata.clockwise;
         }
         // get preceding VxToken => defines the arc center
-        const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.type, false) as VxToken;
+        const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.TYPE, false) as VxToken;
         if (vxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
@@ -516,12 +516,12 @@ export class AirspaceFactory {
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
-        const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.type, false) as VdToken;
+        const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.TYPE, false) as VdToken;
         if (vdToken) {
             clockwise = vdToken.toTokenized().metadata.clockwise;
         }
         // get preceding VxToken => defines the arc center
-        const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.type, false) as VxToken;
+        const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.TYPE, false) as VxToken;
         if (vxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }

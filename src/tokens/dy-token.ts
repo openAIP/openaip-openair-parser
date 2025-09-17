@@ -12,7 +12,7 @@ type Metadata = { coordinate: Coordinate };
  * Tokenizes "DY" airway segment coordinate definition.
  */
 export class DyToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.DY;
+    public static TYPE: TokenType = TokenTypeEnum.DY;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty

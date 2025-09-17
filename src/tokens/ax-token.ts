@@ -10,7 +10,7 @@ type Metadata = { code: number };
  * Tokenizes "AX" token value which is a transponder code string "7000"
  */
 export class AxToken extends AbstractLineToken<Metadata> {
-    static TYPE: TokenType = TokenTypeEnum.AX;
+    public static TYPE: TokenType = TokenTypeEnum.AX;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
