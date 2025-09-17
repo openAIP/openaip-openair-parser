@@ -72,7 +72,7 @@ describe('Test parse airspace definition blocks', () => {
         // remove properties for comparison
 
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -87,7 +87,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -103,7 +103,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -118,7 +118,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -133,7 +133,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -148,7 +148,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -163,7 +163,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -178,7 +178,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -193,7 +193,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -208,7 +208,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -223,7 +223,7 @@ describe('Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -239,7 +239,7 @@ describe('Test parse airspace definition blocks', () => {
         // remove unnecessary props from received json
 
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -254,10 +254,10 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from received json - only check properties
 
-        expectedJson.features.map((value) => delete value.geometry);
+        expectedJson.features.map((value: any) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
-        geojson.features.map((value) => delete value.geometry);
+        geojson.features.map((value) => delete (value.properties as any).id);
+        geojson.features.map((value: any) => delete value.geometry);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -269,10 +269,10 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from received json
 
-        expectedJson.features.map((value) => delete value.geometry);
+        expectedJson.features.map((value: any) => delete value.geometry);
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
-        geojson.features.map((value) => delete value.geometry);
+        geojson.features.map((value) => delete (value.properties as any).id);
+        geojson.features.map((value: any) => delete value.geometry);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -284,8 +284,8 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove unnecessary props from received json
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
-        geojson.features.map((value) => delete value.geometry);
+        geojson.features.map((value) => delete (value.properties as any).id);
+        geojson.features.map((value: any) => delete value.geometry);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -352,7 +352,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 3: The first token must be of type 'AC'. Token 'AN' found on line 3."
         );
     });
@@ -365,7 +365,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 14: Error found at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:'"
         );
     });
@@ -378,7 +378,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 1: Geometry of airspace 'ED-R10B Todendorf-Putlos MON-SAT+' starting on line 1 is invalid due to self intersection."
         );
     });
@@ -393,7 +393,7 @@ describe('Test parse invalid airspace definition blocks', () => {
         const geojson = openairParser.toGeojson();
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete value.properties.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
@@ -408,7 +408,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 1: Geometry of airspace 'CTR TOO-FEW-POINTS' starting on line 1 has insufficient number of coordinates: 3"
         );
     });
@@ -444,7 +444,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 3: Token 'AC' on line 1 does not allow subsequent token 'AH' on line 3"
         );
     });
@@ -457,7 +457,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 4: Token 'AL' on line 3 does not allow subsequent token 'AL' on line 4"
         );
     });
@@ -470,7 +470,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual('Error found at line 10: Lower limit must be less than upper limit');
+        expect(error?.message).toEqual('Error found at line 10: Lower limit must be less than upper limit');
     });
     test('airspace start and end coordinates are not equal', () => {
         const openairParser = new Parser({
@@ -481,7 +481,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent."
         );
     });
@@ -494,7 +494,7 @@ describe('Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             'Error found at line 6: The polygon dimensions are too small to create a polygon.'
         );
     });
@@ -507,7 +507,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual("Error found at line 5: Token 'AG' is present but token 'AF' is missing.");
+        expect(error?.message).toEqual("Error found at line 5: Token 'AG' is present but token 'AF' is missing.");
     });
     test('single airspace with invalid AX tag', () => {
         const openairParser = new Parser();
@@ -515,7 +515,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 8: Error found at line 8: Invalid transponder code string 'AX 7891'"
         );
     });
@@ -525,7 +525,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             'Error found at line 3: Airspace definition block is missing required tokens: AL, AH, AY'
         );
     });
@@ -535,7 +535,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             'Error found at line 1: Airspace definition block is missing required tokens: AY'
         );
     });
@@ -545,7 +545,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             "Error found at line 9: Error found at line 9: Invalid activation times format 'AA 2025-01-02T14:00Z/2025-01-01T15:00Z'. Start date must be before end date."
         );
     });
@@ -555,7 +555,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             'Error found at line 9: Additional activation times are not allowed with BY NOTAM activation.'
         );
     });
@@ -565,7 +565,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
+        expect(error?.message).toEqual(
             `Error found at line 8: Error found at line 8: Invalid activation times format found at 'AA NONE/NONE'. At least one of the start or end must be specified or only NONE.`
         );
     });
@@ -575,9 +575,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error.message).toEqual(
-            `Error found at line 6: Error found at line 6: Unknown altitude definition 'FL'`
-        );
+        expect(error?.message).toEqual(`Error found at line 6: Error found at line 6: Unknown altitude definition 'FL'`);
     });
 });
 
