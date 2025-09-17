@@ -28,8 +28,8 @@ export const ConfigSchema = z
  * Tokenizes "AC" airspace class definitions.
  */
 export class AcToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.AC;
-    protected _allowedClasses: string[] = [];
+    static TYPE: TokenType = TokenTypeEnum.AC;
+    protected allowedClasses: string[] = [];
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -38,7 +38,7 @@ export class AcToken extends AbstractLineToken<Metadata> {
 
         super({ tokenTypes, version });
 
-        this._allowedClasses = allowedClasses || [];
+        this.allowedClasses = allowedClasses || [];
     }
 
     canHandle(line: string): boolean {
@@ -54,21 +54,21 @@ export class AcToken extends AbstractLineToken<Metadata> {
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
         const token = new AcToken({
-            allowedClasses: this._allowedClasses,
-            version: this._version,
-            tokenTypes: this._tokenTypes,
+            allowedClasses: this.allowedClasses,
+            version: this.version,
+            tokenTypes: this.tokenTypes,
         });
 
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartClass = line.replace(/^AC\s+/, '');
         // check restricted classes if using original format
-        if (this._allowedClasses.includes(linePartClass) === false) {
+        if (this.allowedClasses.includes(linePartClass) === false) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown airspace class '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { class: linePartClass } };
+        token.tokenized = { line, lineNumber, metadata: { class: linePartClass } };
 
         return token;
     }
@@ -77,7 +77,7 @@ export class AcToken extends AbstractLineToken<Metadata> {
         // defines allowed tokens in the original format
         let allowedNextTokens: TokenType[] = [TokenTypeEnum.COMMENT, TokenTypeEnum.AN, TokenTypeEnum.SKIPPED];
         // inject version 2 tokens if required
-        if (this._version === ParserVersionEnum.VERSION_2) {
+        if (this.version === ParserVersionEnum.VERSION_2) {
             allowedNextTokens = allowedNextTokens.concat([TokenTypeEnum.AY]);
         }
 

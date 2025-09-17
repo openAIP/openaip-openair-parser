@@ -10,7 +10,7 @@ type Metadata = { frequency: string };
  * Tokenizes "AF" token value which is a frequency string "123.456"
  */
 export class AfToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.AF;
+    static TYPE: TokenType = TokenTypeEnum.AF;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -24,9 +24,9 @@ export class AfToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AfToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new AfToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartFrequency = line.replace(/^AF\s+/, '');
@@ -35,7 +35,7 @@ export class AfToken extends AbstractLineToken<Metadata> {
         if (isValidFrequency === false) {
             throw new ParserError({ lineNumber, errorMessage: `Invalid frequency string '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { frequency: linePartFrequency } };
+        token.tokenized = { line, lineNumber, metadata: { frequency: linePartFrequency } };
 
         return token;
     }

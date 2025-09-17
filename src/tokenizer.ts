@@ -58,19 +58,19 @@ const TOKEN_TYPES = Object.values(TokenTypeEnum) as TokenType[];
  * and created tokens. The tokenizer will throw a syntax error on the first error that is encountered.
  */
 export class Tokenizer {
-    protected _config: Config;
+    public readonly config: Config;
     protected tokenizers: IToken[];
     // previous processed token, used to validate correct token order
-    protected _tokens: IToken[] = [];
-    protected _prevToken: IToken | undefined = undefined;
-    protected _currentLineNumber = 0;
-    protected _currentLineString: string | undefined = undefined;
+    protected tokens: IToken[] = [];
+    protected prevToken: IToken | undefined = undefined;
+    protected currentLineNumber = 0;
+    protected currentLineString: string | undefined = undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
         const { unlimited, targetAltUnit, roundAltValues, version, allowedClasses, allowedTypes } = config;
-        this._config = config;
+        this.config = config;
         this.tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES, version }),
             new SkippedToken({ tokenTypes: TOKEN_TYPES, version }),
@@ -123,46 +123,46 @@ export class Tokenizer {
         const liner: LineByLine = new LineByLine(filepath);
         let line: Buffer | false;
         while ((line = liner.next()) !== false) {
-            this._currentLineNumber++;
+            this.currentLineNumber++;
             // call trim to also remove newlines
-            this._currentLineString = line.toString().trim();
+            this.currentLineString = line.toString().trim();
 
             // find the tokenizer that can handle the current line
-            const lineTokenizer = this.tokenizers.find((value) => value.canHandle(this._currentLineString as string));
+            const lineTokenizer = this.tokenizers.find((value) => value.canHandle(this.currentLineString as string));
             if (lineTokenizer == null) {
                 // fail hard if unable to find a tokenizer for a specific line
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
-                    errorMessage: `Failed to read line ${this._currentLineNumber}. Unknown syntax.`,
+                    lineNumber: this.currentLineNumber,
+                    errorMessage: `Failed to read line ${this.currentLineNumber}. Unknown syntax.`,
                 });
             }
 
             let token: IToken;
             try {
-                token = lineTokenizer.tokenize(this._currentLineString, this._currentLineNumber);
+                token = lineTokenizer.tokenize(this.currentLineString, this.currentLineNumber);
             } catch (err) {
                 let errorMessage = 'Unknown error occured';
                 if (err instanceof Error) {
                     errorMessage = err.message;
                 }
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
+                    lineNumber: this.currentLineNumber,
                     errorMessage,
                 });
             }
-            this._tokens.push(token);
-            this._prevToken = token;
+            this.tokens.push(token);
+            this.prevToken = token;
         }
         // finalize by adding EOF token
-        this._tokens.push(
+        this.tokens.push(
             new EofToken({
                 tokenTypes: TOKEN_TYPES,
-                lastLineNumber: this._currentLineNumber,
-                version: this._config.version,
+                lastLineNumber: this.currentLineNumber,
+                version: this.config.version,
             })
         );
 
-        return this._tokens;
+        return this.tokens;
     }
 
     protected enforceFileExists(filepath: string): void {
@@ -173,9 +173,9 @@ export class Tokenizer {
     }
 
     protected reset(): void {
-        this._tokens = [];
-        this._prevToken = undefined;
-        this._currentLineNumber = 0;
-        this._currentLineString = undefined;
+        this.tokens = [];
+        this.prevToken = undefined;
+        this.currentLineNumber = 0;
+        this.currentLineString = undefined;
     }
 }

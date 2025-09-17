@@ -10,7 +10,7 @@ type Metadata = { name: string };
  * Tokenizes "AG" ground station call-sign for given AF frequency.
  */
 export class AgToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.AG;
+    static TYPE: TokenType = TokenTypeEnum.AG;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -24,13 +24,13 @@ export class AgToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AgToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new AgToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartName = line.replace(/^AG\s+/, '');
-        token._tokenized = { line, lineNumber, metadata: { name: linePartName } };
+        token.tokenized = { line, lineNumber, metadata: { name: linePartName } };
 
         return token;
     }

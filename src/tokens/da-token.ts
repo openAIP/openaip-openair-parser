@@ -14,7 +14,7 @@ type Metadata = {
  * Tokenizes "DA" airspace arc definition token.
  */
 export class DaToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.DA;
+    static TYPE: TokenType = TokenTypeEnum.DA;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -28,9 +28,9 @@ export class DaToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DaToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new DaToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const arcPartsDefinition = line.replace(/^DA\s+/, '');
@@ -44,7 +44,7 @@ export class DaToken extends AbstractLineToken<Metadata> {
         // convert radius to meters
         const radiusM = parseFloat(radius) * 1852;
         // convert angles to bearings
-        token._tokenized = {
+        token.tokenized = {
             line,
             lineNumber,
             metadata: {

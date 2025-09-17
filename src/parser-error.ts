@@ -34,11 +34,11 @@ export const ConfigSchema = z
     .describe('ConfigSchema');
 
 export class ParserError extends Error {
-    protected _name: string;
-    protected _lineNumber?: number;
-    protected _errorMessage: string;
-    protected _geometry?: Polygon | LineString | undefined;
-    protected _selfIntersections?: Position[] = undefined;
+    public readonly name: string;
+    public readonly lineNumber?: number;
+    public readonly errorMessage: string;
+    public readonly geometry?: Polygon | LineString | undefined;
+    public readonly selfIntersections?: Position[] = undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -48,31 +48,11 @@ export class ParserError extends Error {
         const message = lineNumber == null ? errorMessage : `Error found at line ${lineNumber}: ${errorMessage}`;
         super(message);
 
-        this._name = 'ParserError';
-        this._lineNumber = lineNumber;
-        this._errorMessage = message;
-        this._geometry = geometry;
-        this._selfIntersections = selfIntersections;
-    }
-
-    get name(): string {
-        return this._name;
-    }
-
-    get lineNumber(): number | undefined {
-        return this._lineNumber;
-    }
-
-    get errorMessage(): string {
-        return this._errorMessage;
-    }
-
-    get geometry(): Polygon | LineString | undefined {
-        return this._geometry;
-    }
-
-    get selfIntersections(): Position[] | undefined {
-        return this._selfIntersections;
+        this.name = 'ParserError';
+        this.lineNumber = lineNumber;
+        this.errorMessage = message;
+        this.geometry = geometry;
+        this.selfIntersections = selfIntersections;
     }
 
     toString(): string {

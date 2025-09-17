@@ -18,7 +18,7 @@
         }
     ],
     "engines": {
-        "node": ">=22.0.0"
+        "node": ">=22.18.0"
     },
     "type": "module",
     "main": "./dist/index.js",
@@ -58,6 +58,9 @@
         "tsc:run": "tsc --noEmit",
         "lint": "eslint src --cache",
         "format": "prettier --write src/ tests/",
+        "release:patch": "npm version --sign-git-tag patch && git push && git push origin --tags",
+        "release:minor": "npm version --sign-git-tag minor && git push && git push origin --tags",
+        "release:major": "npm version --sign-git-tag major && git push && git push origin --tags",
         "run-security-audit": "npm audit --omit=dev",
         "update-packages": "ncu --target minor --upgrade && npm install && npm audit fix",
         "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"

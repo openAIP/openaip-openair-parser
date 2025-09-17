@@ -11,7 +11,7 @@ type Metadata = { name: string };
  * Tokenizes "AN" airspace name definitions.
  */
 export class AnToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.AN;
+    static TYPE: TokenType = TokenTypeEnum.AN;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -25,13 +25,13 @@ export class AnToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AnToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new AnToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartName = line.replace(/^AN\s+/, '');
-        token._tokenized = { line, lineNumber, metadata: { name: linePartName } };
+        token.tokenized = { line, lineNumber, metadata: { name: linePartName } };
 
         return token;
     }
@@ -45,7 +45,7 @@ export class AnToken extends AbstractLineToken<Metadata> {
             TokenTypeEnum.SKIPPED,
         ];
         // inject version 2 tokens if required
-        if (this._version === ParserVersionEnum.VERSION_2) {
+        if (this.version === ParserVersionEnum.VERSION_2) {
             allowedNextTokens = allowedNextTokens.concat([
                 TokenTypeEnum.AF,
                 TokenTypeEnum.AG,

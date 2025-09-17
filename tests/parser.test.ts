@@ -593,7 +593,7 @@ describe('Test parse invalid airspace definition blocks and fix geometry', () =>
         const { geometry } = features[0];
 
         expect(success).toBe(true);
-        expect(geometry.type).toEqual('Polygon');
+        expect(geometry.TYPE).toEqual('Polygon');
     });
     test('airspace fix start and end coordinates if not equal', () => {
         const openairParser = new Parser({
@@ -606,7 +606,7 @@ describe('Test parse invalid airspace definition blocks and fix geometry', () =>
         const { geometry } = features[0];
 
         expect(success).toBe(true);
-        expect(geometry.type).toEqual('Polygon');
+        expect(geometry.TYPE).toEqual('Polygon');
     });
 });
 

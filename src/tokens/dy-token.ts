@@ -12,7 +12,7 @@ type Metadata = { coordinate: Coordinate };
  * Tokenizes "DY" airway segment coordinate definition.
  */
 export class DyToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.DY;
+    static TYPE: TokenType = TokenTypeEnum.DY;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -26,9 +26,9 @@ export class DyToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DyToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new DyToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         // extract coordinate pair
@@ -40,7 +40,7 @@ export class DyToken extends AbstractLineToken<Metadata> {
         } catch (err) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { coordinate } };
+        token.tokenized = { line, lineNumber, metadata: { coordinate } };
 
         return token;
     }

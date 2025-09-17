@@ -10,7 +10,7 @@ type Metadata = { clockwise: boolean };
  * Since the the DB token will get the center point AND start and end coordinates, this token can be omitted.
  */
 export class VdToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.VD;
+    static TYPE: TokenType = TokenTypeEnum.VD;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -24,14 +24,14 @@ export class VdToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new VdToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new VdToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         // canHandle function already validated correct clockwise/counter-clockwise definition => only get +/-
         const linePartClockwise = line.replace(/^V\s+D=/, '');
-        token._tokenized = { line, lineNumber, metadata: { clockwise: linePartClockwise === '+' } };
+        token.tokenized = { line, lineNumber, metadata: { clockwise: linePartClockwise === '+' } };
 
         return token;
     }

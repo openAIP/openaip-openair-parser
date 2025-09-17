@@ -8,7 +8,7 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
  * Handles comments, e.g. lines starting with "*".
  */
 export class CommentToken extends AbstractLineToken<undefined> {
-    static type: TokenType = TokenTypeEnum.COMMENT;
+    static TYPE: TokenType = TokenTypeEnum.COMMENT;
 
     isIgnoredToken(): boolean {
         return true;
@@ -26,10 +26,10 @@ export class CommentToken extends AbstractLineToken<undefined> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new CommentToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new CommentToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
-        token._tokenized = { line, lineNumber };
+        token.line = line;
+        token.tokenized = { line, lineNumber };
 
         return token;
     }

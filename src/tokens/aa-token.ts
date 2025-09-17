@@ -20,7 +20,7 @@ type Metadata = { activation: Activation | typeof BY_NOTAM_ACTIVATION };
  * subsequent AA commands directly following the first AA command.
  */
 export class AaToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.AA;
+    static TYPE: TokenType = TokenTypeEnum.AA;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -34,9 +34,9 @@ export class AaToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AaToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new AaToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartActivationWindow = line.replace(/^AA\s+/, '');
@@ -44,7 +44,7 @@ export class AaToken extends AbstractLineToken<Metadata> {
         const activationParts = linePartActivationWindow.split('/');
         // handle "NONE" case
         if (activationParts.length === 1 && activationParts[0] === 'NONE') {
-            token._tokenized = {
+            token.tokenized = {
                 line,
                 lineNumber,
                 metadata: { activation: BY_NOTAM_ACTIVATION },
@@ -84,7 +84,7 @@ export class AaToken extends AbstractLineToken<Metadata> {
         if (endDate != null) {
             time.end = endDate;
         }
-        token._tokenized = {
+        token.tokenized = {
             line,
             lineNumber,
             metadata: { activation: time },

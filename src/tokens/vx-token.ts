@@ -12,7 +12,7 @@ type Metadata = { coordinate: Coordinate };
  * Tokenizes "V X=" airspace circle center coordinate definition.
  */
 export class VxToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.VX;
+    static TYPE: TokenType = TokenTypeEnum.VX;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -26,9 +26,9 @@ export class VxToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new VxToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new VxToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartCoordinate = line.replace(/^V\s+[X]=/, '');
@@ -39,7 +39,7 @@ export class VxToken extends AbstractLineToken<Metadata> {
         } catch (err) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { coordinate } };
+        token.tokenized = { line, lineNumber, metadata: { coordinate } };
 
         return token;
     }

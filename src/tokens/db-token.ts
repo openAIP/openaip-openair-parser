@@ -12,7 +12,7 @@ type Metadata = { startCoordinate: Coordinate; endCoordinate: Coordinate };
  * Tokenizes "DB" airspace arc endpoints definition.
  */
 export class DbToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.DB;
+    static TYPE: TokenType = TokenTypeEnum.DB;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -26,9 +26,9 @@ export class DbToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DbToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new DbToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartEndpoints = line.replace(/^DB\s+/, '');
@@ -44,7 +44,7 @@ export class DbToken extends AbstractLineToken<Metadata> {
         } catch (err) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: metadata as Metadata };
+        token.tokenized = { line, lineNumber, metadata: metadata as Metadata };
 
         return token;
     }

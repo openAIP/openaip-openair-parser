@@ -54,11 +54,11 @@ const AbstractAltitudeReaderConfigSchema = z
  * Tokenizes "AH/AL" airspace ceiling definitions.
  */
 export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = 'BASE_ALTITUDE';
-    protected _unlimited: number;
-    protected _targetAltUnit: AltitudeUnit | undefined;
-    protected _roundAltValues: boolean;
-    protected _readers: IAltitudeReader[] = [];
+    static TYPE: TokenType = 'BASE_ALTITUDE';
+    protected unlimited: number;
+    protected targetAltUnit: AltitudeUnit | undefined;
+    protected roundAltValues: boolean;
+    protected readers: IAltitudeReader[] = [];
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -66,16 +66,16 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
         const { unlimited, tokenTypes, targetAltUnit, roundAltValues, version } = config;
         super({ tokenTypes, version });
 
-        this._unlimited = unlimited;
-        this._targetAltUnit = targetAltUnit ? (targetAltUnit.toUpperCase() as AltitudeUnit) : targetAltUnit;
-        this._roundAltValues = roundAltValues;
+        this.unlimited = unlimited;
+        this.targetAltUnit = targetAltUnit ? (targetAltUnit.toUpperCase() as AltitudeUnit) : targetAltUnit;
+        this.roundAltValues = roundAltValues;
 
         const readerConfig = {
-            unlimited: this._unlimited,
-            targetAltUnit: this._targetAltUnit,
-            roundAltValues: this._roundAltValues,
+            unlimited: this.unlimited,
+            targetAltUnit: this.targetAltUnit,
+            roundAltValues: this.roundAltValues,
         };
-        this._readers = [
+        this.readers = [
             new AltitudeDefaultReader(readerConfig),
             new AltitudeFlightLevelReader(readerConfig),
             new AltitudeSurfaceReader(readerConfig),
@@ -90,7 +90,7 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
         validateSchema(altitudeString, z.string().nonempty(), { assert: true, name: 'altitudeString' });
 
         // trim and convert to upper case
-        for (const reader of this._readers) {
+        for (const reader of this.readers) {
             if (reader.canHandle(altitudeString)) {
                 return reader.read(altitudeString);
             }
@@ -101,20 +101,20 @@ export abstract class AbstractAltitudeToken extends AbstractLineToken<Metadata> 
 }
 
 abstract class AbstractAltitudeReader implements IAltitudeReader {
-    protected _REGEX_ALTITUDE: RegExp;
-    protected _unlimited: number;
-    protected _targetAltUnit: AltitudeUnit | undefined;
-    protected _roundAltValues: boolean;
+    protected REGEX_ALTITUDE: RegExp;
+    protected unlimited: number;
+    protected targetAltUnit: AltitudeUnit | undefined;
+    protected roundAltValues: boolean;
 
     constructor(config: AbstractAltitudeReaderConfig) {
         validateSchema(config, AbstractAltitudeReaderConfigSchema, { assert: true, name: 'config' });
 
         const { unlimited, targetAltUnit, roundAltValues } = config || {};
 
-        this._REGEX_ALTITUDE = new RegExp('');
-        this._unlimited = unlimited;
-        this._targetAltUnit = targetAltUnit;
-        this._roundAltValues = roundAltValues;
+        this.REGEX_ALTITUDE = new RegExp('');
+        this.unlimited = unlimited;
+        this.targetAltUnit = targetAltUnit;
+        this.roundAltValues = roundAltValues;
     }
 
     abstract canHandle(altitudeString: string): boolean;
@@ -154,16 +154,16 @@ abstract class AbstractAltitudeReader implements IAltitudeReader {
 class AltitudeDefaultReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)\s*(AMSL|AGL)$/;
+        this.REGEX_ALTITUDE = /^(\d+(\.\d+)?)\s*(FT|ft|M|m)\s*(AMSL|AGL)$/;
     }
 
     canHandle(altitudeString: string): boolean {
-        return this._REGEX_ALTITUDE.test(altitudeString);
+        return this.REGEX_ALTITUDE.test(altitudeString);
     }
 
     read(altitudeString: string): Altitude {
         // check for "default" altitude definition, e.g. 16500ft AMSL or similar
-        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString.trim());
+        const altitudeParts = this.REGEX_ALTITUDE.exec(altitudeString.trim());
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
         }
@@ -179,13 +179,13 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
         the source used to generate the openAIR file will often define meter values that are "prettified" and when
         converted to feet, they will almost NEVER match the common rounded values like "2500" but rather something like "2478.123".
          */
-        if (this._targetAltUnit != null) {
-            value = this.convertUnits(value, unit, this._targetAltUnit);
+        if (this.targetAltUnit != null) {
+            value = this.convertUnits(value, unit, this.targetAltUnit);
             // switch to new target unit
-            unit = this._targetAltUnit;
+            unit = this.targetAltUnit;
         }
         // round values if requested
-        value = this._roundAltValues ? parseInt(Math.round(value).toString()) : value;
+        value = this.roundAltValues ? parseInt(Math.round(value).toString()) : value;
         // convert OpenAIR redference datum to ouptut reference datum
 
         return { value, unit, referenceDatum };
@@ -213,16 +213,16 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
 class AltitudeFlightLevelReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^FL\s*(\d{2,})$/;
+        this.REGEX_ALTITUDE = /^FL\s*(\d{2,})$/;
     }
 
     canHandle(altitudeString: string): boolean {
-        return this._REGEX_ALTITUDE.test(altitudeString);
+        return this.REGEX_ALTITUDE.test(altitudeString);
     }
 
     read(altitudeString: string): Altitude {
         // check flight level altitude definition
-        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString.trim());
+        const altitudeParts = this.REGEX_ALTITUDE.exec(altitudeString.trim());
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
         }
@@ -241,15 +241,15 @@ class AltitudeFlightLevelReader extends AbstractAltitudeReader {
 class AltitudeSurfaceReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
-        this._REGEX_ALTITUDE = /^(GND)$/;
+        this.REGEX_ALTITUDE = /^(GND)$/;
     }
 
     canHandle(altitudeString: string): boolean {
-        return this._REGEX_ALTITUDE.test(altitudeString);
+        return this.REGEX_ALTITUDE.test(altitudeString);
     }
 
     read(altitudeString: string): Altitude {
-        const altitudeParts = this._REGEX_ALTITUDE.exec(altitudeString.trim());
+        const altitudeParts = this.REGEX_ALTITUDE.exec(altitudeString.trim());
         if (altitudeParts == null) {
             throw new SyntaxError(`Unknown altitude definition '${altitudeString}'`);
         }
@@ -266,11 +266,11 @@ class AltitudeUnlimitedReader extends AbstractAltitudeReader {
     constructor(config: AbstractAltitudeReaderConfig) {
         super(config);
         // unlimited ceiling definition
-        this._REGEX_ALTITUDE = /^(UNL)$/;
+        this.REGEX_ALTITUDE = /^(UNL)$/;
     }
 
     canHandle(altitudeString: string): boolean {
-        return this._REGEX_ALTITUDE.test(altitudeString);
+        return this.REGEX_ALTITUDE.test(altitudeString);
     }
 
     read(altitudeString: string): Altitude {
@@ -278,6 +278,6 @@ class AltitudeUnlimitedReader extends AbstractAltitudeReader {
         const unit = AltitudeUnitEnum.FLIGHT_LEVEL;
         const referenceDatum = AltitudeReferenceDatumEnum.STANDARD_ATMOSPHERE;
 
-        return { value: this._unlimited, unit, referenceDatum };
+        return { value: this.unlimited, unit, referenceDatum };
     }
 }

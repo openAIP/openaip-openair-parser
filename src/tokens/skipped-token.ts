@@ -8,7 +8,7 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
  * Handles skipped tokens.
  */
 export class SkippedToken extends CommentToken {
-    static type: TokenType = TokenTypeEnum.SKIPPED;
+    static TYPE: TokenType = TokenTypeEnum.SKIPPED;
 
     isIgnoredToken() {
         return true;
@@ -26,10 +26,10 @@ export class SkippedToken extends CommentToken {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new SkippedToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new SkippedToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
-        token._tokenized = { line, lineNumber };
+        token.line = line;
+        token.tokenized = { line, lineNumber };
 
         return token;
     }

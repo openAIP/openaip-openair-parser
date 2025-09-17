@@ -10,7 +10,7 @@ type Metadata = { code: number };
  * Tokenizes "AX" token value which is a transponder code string "7000"
  */
 export class AxToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.AX;
+    static TYPE: TokenType = TokenTypeEnum.AX;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -24,9 +24,9 @@ export class AxToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new AxToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new AxToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartCode = line.replace(/^AX\s+/, '');
@@ -35,7 +35,7 @@ export class AxToken extends AbstractLineToken<Metadata> {
         if (isValidCode === false) {
             throw new ParserError({ lineNumber, errorMessage: `Invalid transponder code string '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { code: parseInt(linePartCode) } };
+        token.tokenized = { line, lineNumber, metadata: { code: parseInt(linePartCode) } };
 
         return token;
     }

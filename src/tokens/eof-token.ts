@@ -24,8 +24,8 @@ export const ConfigSchema = z
  * is finished. Marks the end of the parsed file.
  */
 export class EofToken extends AbstractLineToken<undefined> {
-    static type: TokenType = TokenTypeEnum.EOF;
-    protected _lastLineNumber: number;
+    static TYPE: TokenType = TokenTypeEnum.EOF;
+    protected lastLineNumber: number;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -34,7 +34,7 @@ export class EofToken extends AbstractLineToken<undefined> {
 
         super({ tokenTypes, version });
 
-        this._lastLineNumber = lastLineNumber;
+        this.lastLineNumber = lastLineNumber;
     }
 
     canHandle(line: string): boolean {
@@ -55,6 +55,6 @@ export class EofToken extends AbstractLineToken<undefined> {
     }
 
     getTokenized(): Tokenized | undefined {
-        return { line: '', lineNumber: this._lastLineNumber };
+        return { line: '', lineNumber: this.lastLineNumber };
     }
 }

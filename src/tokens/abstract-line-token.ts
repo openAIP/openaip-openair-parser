@@ -11,7 +11,7 @@ export type Tokenized<M = undefined> = {
 export interface IToken {
     type: TokenType;
     line: string | undefined;
-    tokenized: {
+    toTokenized(): {
         line: string;
         lineNumber: number;
         metadata?: unknown;
@@ -37,19 +37,19 @@ export const ConfigSchema = z
     .describe('ConfigSchema');
 
 export abstract class AbstractLineToken<M> implements IToken {
-    static type: TokenType = 'BASE_LINE';
-    protected _tokenTypes: TokenType[];
-    protected _version: ParserVersion;
-    protected _tokenized: Tokenized<M> | undefined;
-    protected _line: string | undefined;
+    public static TYPE: TokenType = 'BASE_LINE';
+    public tokenTypes: TokenType[];
+    public line: string | undefined;
+    protected version: ParserVersion;
+    protected tokenized?: Tokenized<M> | undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
         const { tokenTypes, version } = config;
 
-        this._tokenTypes = tokenTypes;
-        this._version = version;
+        this.tokenTypes = tokenTypes;
+        this.version = version;
     }
 
     /**
@@ -65,18 +65,7 @@ export abstract class AbstractLineToken<M> implements IToken {
 
     get type(): TokenType {
         // this is required to get the static type of the concrete class later
-        return (this.constructor as typeof AbstractLineToken).type;
-    }
-
-    get line(): string | undefined {
-        return this._line;
-    }
-
-    get tokenized(): Tokenized<M> {
-        if (this._tokenized == null) {
-            throw new Error('Tokenized representation is not available. Tokenize the line first.');
-        }
-        return this._tokenized as Tokenized<M>;
+        return (this.constructor as typeof AbstractLineToken).TYPE;
     }
 
     /**
@@ -89,5 +78,12 @@ export abstract class AbstractLineToken<M> implements IToken {
 
     isAllowedNextToken(token: IToken): boolean {
         return this.getAllowedNextTokens().includes(token.type);
+    }
+
+    toTokenized(): Tokenized<M> {
+        if (this.tokenized == null) {
+            throw new Error('Tokenized representation is not available. Tokenize the line first.');
+        }
+        return this.tokenized;
     }
 }

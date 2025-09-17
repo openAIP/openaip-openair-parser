@@ -59,118 +59,22 @@ export type AirspaceFeature = Feature<Polygon | LineString, AirspaceProperties>;
  * Result of a parsed airspace definition block. Can be output as GeoJSON.
  */
 export class Airspace {
-    protected _consumedTokens: IToken[] = [];
-    protected _name: string | undefined = undefined;
+    public consumedTokens: IToken[] = [];
+    public name: string | undefined = undefined;
     // use "airspaceClass" instead of "class" to avoid conflicts with the "class" keyword
-    protected _airspaceClass: string | undefined = undefined;
-    protected _upperCeiling: Altitude | undefined = undefined;
-    protected _lowerCeiling: Altitude | undefined = undefined;
-    protected _identifier: string | undefined = undefined;
-    protected _type: string | undefined = undefined;
-    protected _frequency: Partial<Frequency> | undefined = undefined;
-    protected _transponderCode: number | undefined = undefined;
-    protected _activationTimes: Activation[] | undefined;
-    protected _byNotam: boolean | undefined = undefined;
-    protected _coordinates: Position[] = [];
+    public airspaceClass: string | undefined = undefined;
+    public upperCeiling: Altitude | undefined = undefined;
+    public lowerCeiling: Altitude | undefined = undefined;
+    public readonly identifier: string | undefined = undefined;
+    public type: string | undefined = undefined;
+    public frequency: Partial<Frequency> | undefined = undefined;
+    public transponderCode: number | undefined = undefined;
+    public activationTimes: Activation[] | undefined;
+    public byNotam: boolean | undefined = undefined;
+    public coordinates: Position[] = [];
 
     constructor() {
-        this._identifier = uuid.v4();
-    }
-
-    set consumedTokens(value: IToken[]) {
-        this._consumedTokens = value;
-    }
-
-    get consumedTokens(): IToken[] {
-        return this._consumedTokens;
-    }
-
-    get identifier(): string | undefined {
-        return this._identifier;
-    }
-
-    set identifier(value: string | undefined) {
-        this._identifier = value;
-    }
-
-    get name(): string | undefined {
-        return this._name;
-    }
-
-    set name(value: string | undefined) {
-        this._name = value;
-    }
-
-    get airspaceClass(): string | undefined {
-        return this._airspaceClass;
-    }
-
-    set airspaceClass(value: string | undefined) {
-        this._airspaceClass = value;
-    }
-
-    get upperCeiling(): Altitude | undefined {
-        return this._upperCeiling;
-    }
-
-    set upperCeiling(value: Altitude | undefined) {
-        this._upperCeiling = value;
-    }
-
-    get lowerCeiling(): Altitude | undefined {
-        return this._lowerCeiling;
-    }
-
-    set lowerCeiling(value: Altitude | undefined) {
-        this._lowerCeiling = value;
-    }
-
-    get coordinates(): Position[] {
-        return this._coordinates;
-    }
-
-    set coordinates(value: Position[]) {
-        this._coordinates = value;
-    }
-
-    get type(): string | undefined {
-        return this._type;
-    }
-
-    set type(value: string | undefined) {
-        this._type = value;
-    }
-
-    get frequency(): Partial<Frequency> | undefined {
-        return this._frequency;
-    }
-
-    set frequency(value: Partial<Frequency> | undefined) {
-        this._frequency = value;
-    }
-
-    get transponderCode(): number | undefined {
-        return this._transponderCode;
-    }
-
-    set transponderCode(value: number | undefined) {
-        this._transponderCode = value;
-    }
-
-    get activationTimes(): Activation[] | undefined {
-        return this._activationTimes;
-    }
-
-    set activationTimes(value: Activation[] | undefined) {
-        this._activationTimes = value;
-    }
-
-    get byNotam(): boolean | undefined {
-        return this._byNotam;
-    }
-
-    set byNotam(value: boolean | undefined) {
-        this._byNotam = value;
+        this.identifier = uuid.v4();
     }
 
     addCoordinates(coordinates: Position[]): void {
@@ -179,7 +83,7 @@ export class Airspace {
             return [parseFloat(coordinate[0].toFixed(6)), parseFloat(coordinate[1].toFixed(6))];
         });
         // check if coordinates are already in the list
-        this._coordinates.push(...coordinates);
+        this.coordinates.push(...coordinates);
     }
 
     asGeoJson(config: AsGeojsonConfig): AirspaceFeature {
@@ -187,19 +91,19 @@ export class Airspace {
 
         const { validateGeometry, fixGeometry, includeOpenair, outputGeometry, consumeDuplicateBuffer } = config;
         // first token is always an AcToken
-        const acToken: AcToken = this._consumedTokens[0] as AcToken;
-        const { lineNumber } = acToken.tokenized;
+        const acToken: AcToken = this.consumedTokens[0] as AcToken;
+        const { lineNumber } = acToken.toTokenized();
 
         if (
             // directly error out on definitions with only 2 points or less
-            this._coordinates.length <= 2 ||
+            this.coordinates.length <= 2 ||
             // if 3 points are given and the last point does NOT equal first point, a polygon geometry could be
             // created if "fix geometry" is true, otherwise error out
-            (this._coordinates.length === 3 && this._coordinates[0].join(', ') === this._coordinates[2].join(', '))
+            (this.coordinates.length === 3 && this.coordinates[0].join(', ') === this.coordinates[2].join(', '))
         ) {
             throw new ParserError({
                 lineNumber,
-                errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} has insufficient number of coordinates: ${this._coordinates.length}`,
+                errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} has insufficient number of coordinates: ${this.coordinates.length}`,
                 geometry: this.asLineStringGeometry(),
             });
         }
@@ -207,7 +111,7 @@ export class Airspace {
         if (this.isCompleteProperties() === false) {
             throw new ParserError({
                 lineNumber,
-                errorMessage: `Airspace '${this._name}' starting on line ${lineNumber} is missing required properties`,
+                errorMessage: `Airspace '${this.name}' starting on line ${lineNumber} is missing required properties`,
                 geometry: this.asLineStringGeometry(),
             });
         }
@@ -215,22 +119,22 @@ export class Airspace {
         // set feature properties
         const properties: Partial<AirspaceProperties> = {};
         // base properts for both version 1 and 2
-        properties.id = this._identifier as string;
-        properties.name = this._name as string;
-        properties.class = this._airspaceClass as string;
-        properties.upperCeiling = this._upperCeiling as Altitude;
-        properties.lowerCeiling = this._lowerCeiling as Altitude;
+        properties.id = this.identifier as string;
+        properties.name = this.name as string;
+        properties.class = this.airspaceClass as string;
+        properties.upperCeiling = this.upperCeiling as Altitude;
+        properties.lowerCeiling = this.lowerCeiling as Altitude;
         // properties for version 2
-        if (this._type != null) properties.type = this._type as string;
-        if (this._frequency != null) properties.frequency = this._frequency;
-        if (this._transponderCode != null) properties.transponderCode = this._transponderCode;
-        if (this._activationTimes != null) properties.activationTimes = this._activationTimes;
-        if (this._byNotam != null) properties.byNotam = this._byNotam;
+        if (this.type != null) properties.type = this.type as string;
+        if (this.frequency != null) properties.frequency = this.frequency;
+        if (this.transponderCode != null) properties.transponderCode = this.transponderCode;
+        if (this.activationTimes != null) properties.activationTimes = this.activationTimes;
+        if (this.byNotam != null) properties.byNotam = this.byNotam;
         // include original OpenAIR airspace definition block
         if (includeOpenair) {
             properties.openair = '';
-            for (const token of this._consumedTokens) {
-                const { line } = token.tokenized as Tokenized;
+            for (const token of this.consumedTokens) {
+                const { line } = token.toTokenized();
                 properties.openair += line + '\n';
             }
         }
@@ -238,7 +142,7 @@ export class Airspace {
         const airspaceGeometry =
             outputGeometry === OutputGeometryEnum.POLYGON
                 ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, consumeDuplicateBuffer })
-                : createLinestring(this._coordinates).geometry;
+                : createLinestring(this.coordinates).geometry;
         // create a GeoJSON feature from the geometry
         const feature = createFeature<Polygon | LineString, AirspaceProperties>(
             airspaceGeometry,
@@ -262,13 +166,13 @@ export class Airspace {
             ...config,
         };
         // get the current AcToken and line number
-        const token: IToken = this._consumedTokens[0] as IToken;
-        const lineNumber: number = token.tokenized?.lineNumber as number;
+        const token: IToken = this.consumedTokens[0] as IToken;
+        const lineNumber: number = token.toTokenized().lineNumber as number;
         let airspacePolygon: Polygon;
 
         // create a polygon from the coordinates - run also geometry adjustments that do not alter the geometry
         try {
-            airspacePolygon = createPolygon([this._coordinates]).geometry;
+            airspacePolygon = createPolygon([this.coordinates]).geometry;
             airspacePolygon = geojsonPolygon.removeDuplicatePoints(airspacePolygon, { consumeDuplicateBuffer });
             airspacePolygon = geojsonPolygon.removeIntermediatePoints(airspacePolygon);
             airspacePolygon = geojsonPolygon.withRightHandRule(airspacePolygon);
@@ -283,7 +187,7 @@ export class Airspace {
             // geometry is checked for other issues like self-intersections etc and other fixes are applied.
             if (fixGeometry === true) {
                 try {
-                    airspacePolygon = geojsonPolygon.createFixedPolygon(this._coordinates);
+                    airspacePolygon = geojsonPolygon.createFixedPolygon(this.coordinates);
                 } catch (err) {
                     if (err instanceof SyntaxError) {
                         throw new ParserError({
@@ -298,7 +202,7 @@ export class Airspace {
             } else {
                 throw new ParserError({
                     lineNumber,
-                    errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} is invalid. ${errorMessage}`,
+                    errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid. ${errorMessage}`,
                     geometry: this.asLineStringGeometry(),
                 });
             }
@@ -328,14 +232,14 @@ export class Airspace {
                     // build the self-intersection error message
                     throw new ParserError({
                         lineNumber,
-                        errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} is invalid due to self intersection.`,
+                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid due to self intersection.`,
                         geometry: this.asLineStringGeometry(),
                         selfIntersections,
                     });
                 } else {
                     throw new ParserError({
                         lineNumber,
-                        errorMessage: `Geometry of airspace '${this._name}' starting on line ${lineNumber} is invalid.`,
+                        errorMessage: `Geometry of airspace '${this.name}' starting on line ${lineNumber} is invalid.`,
                         geometry: this.asLineStringGeometry(),
                     });
                 }
@@ -366,11 +270,11 @@ export class Airspace {
 
     protected isCompleteProperties() {
         return (
-            this._name !== undefined &&
-            this._airspaceClass !== undefined &&
-            this._upperCeiling !== undefined &&
-            this._lowerCeiling !== undefined &&
-            this._coordinates.length > 0
+            this.name !== undefined &&
+            this.airspaceClass !== undefined &&
+            this.upperCeiling !== undefined &&
+            this.lowerCeiling !== undefined &&
+            this.coordinates.length > 0
         );
     }
 
@@ -382,7 +286,7 @@ export class Airspace {
     protected asLineStringGeometry(): LineString | undefined {
         try {
             // return as GeoJSON line feature
-            return createLinestring(this._coordinates).geometry;
+            return createLinestring(this.coordinates).geometry;
         } catch (err) {
             // possible that geometry cannot be created due to too few points
             return undefined;

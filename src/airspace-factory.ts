@@ -57,65 +57,65 @@ type AirwayStructure = {
 };
 
 export class AirspaceFactory {
-    protected _geometryDetail: number;
-    protected _version: ParserVersion;
-    protected _tokens: IToken[] = [];
-    protected _airspace: Airspace;
-    protected _currentLineNumber: number | undefined = undefined;
+    protected geometryDetail: number;
+    protected version: ParserVersion;
+    protected tokens: IToken[] = [];
+    protected airspace: Airspace;
+    protected currentLineNumber: number | undefined = undefined;
     // set to true if airspace contains tokens other than "skipped, blanks or comment"
-    protected _hasBuildTokens: boolean = false;
-    protected _isAirway: boolean = false;
-    protected _airway: Partial<AirwayStructure> | undefined = undefined;
+    protected hasBuildTokens: boolean = false;
+    protected isAirway: boolean = false;
+    protected airway: Partial<AirwayStructure> | undefined = undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
         const { geometryDetail, version } = config;
 
-        this._airspace = new Airspace();
-        this._geometryDetail = geometryDetail;
-        this._version = version;
+        this.airspace = new Airspace();
+        this.geometryDetail = geometryDetail;
+        this.version = version;
     }
 
     createAirspace(tokens: IToken[]): Airspace | undefined {
         validateSchema(tokens, z.array(z.instanceof(AbstractLineToken)), { assert: true, name: 'tokens' });
 
         this.reset();
-        this._tokens = tokens;
-        this._airspace = new Airspace();
+        this.tokens = tokens;
+        this.airspace = new Airspace();
         // if version 2 is used, set byNotam to false by default
-        if (this._version === ParserVersionEnum.VERSION_2) {
-            this._airspace.byNotam = false;
+        if (this.version === ParserVersionEnum.VERSION_2) {
+            this.airspace.byNotam = false;
         }
         // validate all tokens are correct and that we are able to build an airspace from them
         this.validateTokens();
 
         for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i];
-            const { lineNumber } = token.tokenized as Tokenized;
-            this._currentLineNumber = lineNumber;
+            const { lineNumber } = token.toTokenized();
+            this.currentLineNumber = lineNumber;
             // process the next token
             this.consumeToken(token);
             // if the previously processed token is not an ignored token, set the "hasBuildTokens" flag
             if (token.isIgnoredToken() === false) {
-                this._hasBuildTokens = true;
+                this.hasBuildTokens = true;
             }
-            this._airspace.consumedTokens.push(token);
+            this.airspace.consumedTokens.push(token);
         }
         // if airspace is build from airway definitions, an additional step is required that creates the actual
         // airspace's polygon geometry
-        if (this._isAirway === true) {
-            if (this._airway == null) {
+        if (this.isAirway === true) {
+            if (this.airway == null) {
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
+                    lineNumber: this.currentLineNumber,
                     errorMessage: 'Airway definition is missing required tokens.',
                 });
             }
-            const airwayWidth = this._airway.width;
-            const airwaySegments = this._airway.segments;
+            const airwayWidth = this.airway.width;
+            const airwaySegments = this.airway.segments;
             if (airwayWidth == null || (airwaySegments != null && airwaySegments.length === 0)) {
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
+                    lineNumber: this.currentLineNumber,
                     errorMessage: 'Airway definition is missing required tokens.',
                 });
             }
@@ -123,10 +123,10 @@ export class AirspaceFactory {
                 width: airwayWidth,
                 segments: airwaySegments as Position[],
             });
-            this._airspace.addCoordinates(airwayCoordinates);
+            this.airspace.addCoordinates(airwayCoordinates);
         }
 
-        return this._hasBuildTokens ? this._airspace : undefined;
+        return this.hasBuildTokens ? this.airspace : undefined;
     }
 
     /**
@@ -140,13 +140,13 @@ export class AirspaceFactory {
         const airwayPolygon = createBuffer(airwayPathFeature, bufferKm, { units: 'kilometers' })?.geometry;
         if (airwayPolygon == null) {
             throw new ParserError({
-                lineNumber: this._currentLineNumber,
+                lineNumber: this.currentLineNumber,
                 errorMessage: 'Airway definition is missing required tokens.',
             });
         }
         if (airwayPolygon.type !== 'Polygon') {
             throw new ParserError({
-                lineNumber: this._currentLineNumber,
+                lineNumber: this.currentLineNumber,
                 errorMessage: `Failed to create polygon from airway definition. Invalid geometry.`,
             });
         }
@@ -156,7 +156,7 @@ export class AirspaceFactory {
 
     protected consumeToken(token: IToken): void {
         const type = token.type;
-        const { lineNumber } = token.tokenized as Tokenized;
+        const { lineNumber } = token.toTokenized();
         switch (type) {
             case CommentToken.type:
                 this.handleCommentToken(token as CommentToken);
@@ -237,9 +237,9 @@ export class AirspaceFactory {
      */
     protected validateTokenOrder(): void {
         let startingAcTagFound = false;
-        for (const [index, currentToken] of this._tokens.entries()) {
-            const maxLookAheadIndex = this._tokens.length - 1;
-            const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).tokenized as Tokenized;
+        for (const [index, currentToken] of this.tokens.entries()) {
+            const maxLookAheadIndex = this.tokens.length - 1;
+            const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).toTokenized();
 
             // Make sure the first relevant token is an AC tag. Starting from this AC tag, the token order can be validated
             // only using "look ahead" logic. Otherwise, additional "look behind" must be implemented that would
@@ -264,15 +264,15 @@ export class AirspaceFactory {
             // don't check last token
             if (index < maxLookAheadIndex) {
                 // get next token, skip ignored tokens
-                let lookAheadToken = this._tokens[lookAheadIndex];
+                let lookAheadToken = this.tokens[lookAheadIndex];
                 while (lookAheadToken.isIgnoredToken() && lookAheadIndex <= maxLookAheadIndex) {
                     lookAheadIndex++;
-                    lookAheadToken = this._tokens[lookAheadIndex];
+                    lookAheadToken = this.tokens[lookAheadIndex];
                 }
 
                 const isAllowedNextToken = currentToken.isAllowedNextToken(lookAheadToken);
                 if (isAllowedNextToken === false) {
-                    const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.tokenized as Tokenized;
+                    const { lineNumber: lookAheadTokenLineNumber } = lookAheadToken.toTokenized();
 
                     throw new ParserError({
                         lineNumber: lookAheadTokenLineNumber,
@@ -293,15 +293,15 @@ export class AirspaceFactory {
         // tokens that are always required, no matter if "standard" or "extended" format is used
         const requiredTokens = [AcToken.type, AnToken.type, AlToken.type, AhToken.type];
         // if version 2 is used, add the version 2 tokens to the required tokens list
-        if (this._version === ParserVersionEnum.VERSION_2) {
+        if (this.version === ParserVersionEnum.VERSION_2) {
             // AY token is required, all others are optional
             requiredTokens.push(AyToken.type);
         }
         const requiredTokensInventory: TokenType[] = [];
         let definitionBlockStart: number | undefined = undefined;
 
-        for (const [index, currentToken] of this._tokens.entries()) {
-            const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).tokenized as Tokenized;
+        for (const [index, currentToken] of this.tokens.entries()) {
+            const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).toTokenized();
             if (index === 0) {
                 // store the airspace definition block start line number for error messages
                 definitionBlockStart = currentTokenLineNumber;
@@ -320,55 +320,55 @@ export class AirspaceFactory {
             });
         }
         // handle optional version 2 tokens AF, AG (if present)
-        const afToken = this._tokens.find((token) => token.type === AfToken.type);
-        const agToken = this._tokens.find((token) => token.type === AgToken.type);
+        const afToken = this.tokens.find((token) => token.type === AfToken.type);
+        const agToken = this.tokens.find((token) => token.type === AgToken.type);
         // AG is optional and requires AF to be present
         if (!afToken && agToken) {
             throw new ParserError({
-                lineNumber: (agToken.tokenized as Tokenized).lineNumber,
+                lineNumber: (agToken.toTokenized()).lineNumber,
                 errorMessage: `Token '${AgToken.type}' is present but token '${AfToken.type}' is missing.`,
             });
         }
     }
 
     protected handleAnToken(token: AnToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { name } = metadata;
 
-        this._airspace.name = name;
+        this.airspace.name = name;
     }
 
     protected handleAcToken(token: AcToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { class: acClass } = metadata;
 
-        this._airspace.airspaceClass = acClass;
+        this.airspace.airspaceClass = acClass;
     }
 
     protected handleAhToken(token: AhToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { altitude } = metadata;
 
-        this._airspace.upperCeiling = altitude;
+        this.airspace.upperCeiling = altitude;
         // check that defined upper limit is actually higher than defined lower limit
         this.enforceSaneLimits();
     }
 
     protected handleAlToken(token: AlToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { altitude } = metadata;
 
-        this._airspace.lowerCeiling = altitude;
+        this.airspace.lowerCeiling = altitude;
         // check that defined lower limit is actually lower than defined upper limit
         this.enforceSaneLimits();
     }
 
     protected handleDpToken(token: DpToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { coordinate } = metadata;
 
         // IMPORTANT subsequently push coordinates
-        this._airspace.coordinates.push(this.toArrayLike(coordinate));
+        this.airspace.coordinates.push(this.toArrayLike(coordinate));
     }
 
     /**
@@ -385,15 +385,15 @@ export class AirspaceFactory {
      * Sets airway width in nautical miles.
      */
     protected handleVwToken(token: VwToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { width } = metadata;
 
         // IMPORTANT indicate that we are building an airspace from airway definition
-        this._isAirway = true;
-        if (this._airway == null) {
-            this._airway = { width };
+        this.isAirway = true;
+        if (this.airway == null) {
+            this.airway = { width };
         } else {
-            this._airway.width = width;
+            this.airway.width = width;
         }
     }
 
@@ -401,23 +401,23 @@ export class AirspaceFactory {
      * Sets airway segment.
      */
     protected handleDyToken(token: DyToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { coordinate } = metadata;
 
-        if (this._airway == null) {
-            this._airway = { segments: [] };
-        } else if (this._airway.segments == null) {
-            this._airway.segments = [];
+        if (this.airway == null) {
+            this.airway = { segments: [] };
+        } else if (this.airway.segments == null) {
+            this.airway.segments = [];
         }
         // IMPORTANT subsequently push airway segment coordinates
-        (this._airway as AirwayStructure).segments.push(this.toArrayLike(coordinate));
+        (this.airway as AirwayStructure).segments.push(this.toArrayLike(coordinate));
     }
 
     /**
      * Creates a circle geometry from the last VToken coordinate and a DcToken radius.
      */
     protected handleDcToken(token: DcToken): void {
-        const { lineNumber, metadata } = token.tokenized;
+        const { lineNumber, metadata } = token.toTokenized();
         const { radius } = metadata;
         const precedingVxToken = this.getNextToken<VxToken>(token, VxToken.type, false);
 
@@ -425,14 +425,14 @@ export class AirspaceFactory {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
         // to create a circle, the center point coordinate from the previous VToken is required
-        const { metadata: vxTokenMetadata } = precedingVxToken.tokenized;
+        const { metadata: vxTokenMetadata } = precedingVxToken.toTokenized();
         const { coordinate } = vxTokenMetadata;
 
         // convert radius in NM to meters
         const radiusM = radius * 1852;
 
         const { geometry } = createCircle(this.toArrayLike(coordinate), radiusM, {
-            steps: this._geometryDetail,
+            steps: this.geometryDetail,
             units: 'meters',
         });
         const [coordinates] = geometry.coordinates;
@@ -448,7 +448,7 @@ export class AirspaceFactory {
             refinedCoordinates.push(refinedCoordinates[0]);
         }
         // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
-        this._airspace.addCoordinates(refinedCoordinates);
+        this.airspace.addCoordinates(refinedCoordinates);
     }
 
     protected handleDbToken(token: DbToken): void {
@@ -456,20 +456,20 @@ export class AirspaceFactory {
         const arcCenterCoordinate: Position = centerCoordinate;
         // build the adjusted arc-like geometry
         const arcCoordinates = this.createAdjustedArc(startCoordinate, arcCenterCoordinate, endCoordinate, clockwise, {
-            steps: this._geometryDetail,
+            steps: this.geometryDetail,
         });
         // add arc coordinates to the airspace coordinates
-        this._airspace.addCoordinates(arcCoordinates);
+        this.airspace.addCoordinates(arcCoordinates);
     }
 
     protected handleDaToken(token: DaToken): void {
         const { centerCoordinate, startCoordinate, endCoordinate, clockwise } = this.getBuildDaArcCoordinates(token);
         // build the adjusted arc-like geometry
         const arcCoordinates = this.createAdjustedArc(startCoordinate, centerCoordinate, endCoordinate, clockwise, {
-            steps: this._geometryDetail,
+            steps: this.geometryDetail,
         });
         // add arc coordinates to the airspace coordinates
-        this._airspace.addCoordinates(arcCoordinates);
+        this.airspace.addCoordinates(arcCoordinates);
     }
 
     protected getBuildDbArcCoordinates(token: DbToken): {
@@ -479,21 +479,21 @@ export class AirspaceFactory {
         clockwise: boolean;
     } {
         // current "token" is the DbToken => defines arc start/end coordinates
-        const { lineNumber, metadata: metadataDbToken } = token.tokenized;
+        const { lineNumber, metadata: metadataDbToken } = token.toTokenized();
         const { startCoordinate, endCoordinate } = metadataDbToken;
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
         const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.type, false) as VdToken;
         if (vdToken) {
-            clockwise = vdToken.tokenized.metadata.clockwise;
+            clockwise = vdToken.toTokenized().metadata.clockwise;
         }
         // get preceding VxToken => defines the arc center
         const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.type, false) as VxToken;
         if (vxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
-        const { metadata: metadataVxToken } = vxToken.tokenized;
+        const { metadata: metadataVxToken } = vxToken.toTokenized();
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
 
         return {
@@ -511,21 +511,21 @@ export class AirspaceFactory {
         clockwise: boolean;
     } {
         // current "token" is the DaToken => defines arc start/end coordinates
-        const { lineNumber, metadata: metadataDaToken } = token.tokenized;
+        const { lineNumber, metadata: metadataDaToken } = token.toTokenized();
         const { radius, startBearing, endBearing } = metadataDaToken;
         // by default, arcs are defined clockwise and usually no VD token is present
         let clockwise = true;
         // get the VdToken => is optional (clockwise) and may not be present but is required for counter-clockwise arcs
         const vdToken: VdToken = this.getNextToken<VdToken>(token, VdToken.type, false) as VdToken;
         if (vdToken) {
-            clockwise = vdToken.tokenized.metadata.clockwise;
+            clockwise = vdToken.toTokenized().metadata.clockwise;
         }
         // get preceding VxToken => defines the arc center
         const vxToken: VxToken = this.getNextToken<VxToken>(token, VxToken.type, false) as VxToken;
         if (vxToken == null) {
             throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
         }
-        const { metadata: metadataVxToken } = vxToken.tokenized;
+        const { metadata: metadataVxToken } = vxToken.toTokenized();
         const { coordinate: vxTokenCoordinate } = metadataVxToken;
         // calculate start and end coordinates using bearing and radius and center coordinate
         const radiusKm = radius / 1000;
@@ -549,62 +549,62 @@ export class AirspaceFactory {
     protected handleBlankToken(token: BlankToken): void {}
 
     protected handleAyToken(token: AyToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { type } = metadata;
 
-        this._airspace.type = type;
+        this.airspace.type = type;
     }
 
     protected handleAfToken(token: AfToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { frequency } = metadata;
 
-        if (this._airspace.frequency == null) {
-            this._airspace.frequency = { value: frequency };
+        if (this.airspace.frequency == null) {
+            this.airspace.frequency = { value: frequency };
         } else {
-            this._airspace.frequency.value = frequency;
+            this.airspace.frequency.value = frequency;
         }
     }
 
     protected handleAgToken(token: AgToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { name } = metadata;
 
-        if (this._airspace.frequency == null) {
-            this._airspace.frequency = { name };
+        if (this.airspace.frequency == null) {
+            this.airspace.frequency = { name };
         } else {
-            this._airspace.frequency.name = name;
+            this.airspace.frequency.name = name;
         }
     }
 
     protected handleAxToken(token: AxToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { code } = metadata;
 
-        this._airspace.transponderCode = code;
+        this.airspace.transponderCode = code;
     }
 
     protected handleAaToken(token: AaToken): void {
-        const { metadata } = token.tokenized;
+        const { metadata } = token.toTokenized();
         const { activation } = metadata;
 
         // handle NONE activation
         if (activation === BY_NOTAM_ACTIVATION) {
             // if there is also another activation time, throw an error
-            if (this._airspace.activationTimes != null && this._airspace.activationTimes.length > 0) {
+            if (this.airspace.activationTimes != null && this.airspace.activationTimes.length > 0) {
                 throw new ParserError({
-                    lineNumber: this._currentLineNumber,
+                    lineNumber: this.currentLineNumber,
                     errorMessage: 'Additional activation times are not allowed with BY NOTAM activation.',
                 });
             }
-            this._airspace.byNotam = true;
+            this.airspace.byNotam = true;
             return;
         }
         // initialize activation times if not already done
-        if (this._airspace.activationTimes == null) {
-            this._airspace.activationTimes = [];
+        if (this.airspace.activationTimes == null) {
+            this.airspace.activationTimes = [];
         }
-        this._airspace.activationTimes.push(activation);
+        this.airspace.activationTimes.push(activation);
     }
 
     protected toArrayLike(coordinate: Coordinate): Position {
@@ -620,11 +620,11 @@ export class AirspaceFactory {
      */
     protected getNextToken<T>(token: IToken, tokenType: TokenType, lookAhead: boolean = true): T | undefined {
         // get index of current token in tokens list
-        let currentIndex = this._tokens.findIndex((value) => value === token);
+        let currentIndex = this.tokens.findIndex((value) => value === token);
 
         if (lookAhead) {
-            for (currentIndex; currentIndex <= this._tokens.length - 1; currentIndex++) {
-                const nextToken = this._tokens[currentIndex];
+            for (currentIndex; currentIndex <= this.tokens.length - 1; currentIndex++) {
+                const nextToken = this.tokens[currentIndex];
 
                 if (nextToken.type === tokenType) {
                     return nextToken as T;
@@ -632,7 +632,7 @@ export class AirspaceFactory {
             }
         } else {
             for (currentIndex; currentIndex >= 0; currentIndex--) {
-                const nextToken = this._tokens[currentIndex];
+                const nextToken = this.tokens[currentIndex];
 
                 if (nextToken.type === tokenType) {
                     return nextToken as T;
@@ -660,7 +660,7 @@ export class AirspaceFactory {
     }
 
     protected enforceSaneLimits() {
-        if (this._airspace.lowerCeiling && this._airspace.upperCeiling) {
+        if (this.airspace.lowerCeiling && this.airspace.upperCeiling) {
             // IMPORTANT "feeted" flight level ceilings must be converted to configured target unit before comparing if specified
             const feeted = function (ceiling: Altitude) {
                 const feeted = ceiling;
@@ -682,13 +682,13 @@ export class AirspaceFactory {
             Only compare if both lower and upper limit have the same reference datum. If they have different reference datums,
             e.g AGL and AMSL, the comparison cannot be done.
              */
-            if (this._airspace.lowerCeiling.referenceDatum === this._airspace.upperCeiling.referenceDatum) {
-                const compareUpper = feeted(this.flToFeet(this._airspace.upperCeiling));
-                const compareLower = feeted(this.flToFeet(this._airspace.lowerCeiling));
+            if (this.airspace.lowerCeiling.referenceDatum === this.airspace.upperCeiling.referenceDatum) {
+                const compareUpper = feeted(this.flToFeet(this.airspace.upperCeiling));
+                const compareLower = feeted(this.flToFeet(this.airspace.lowerCeiling));
 
                 if (compareLower.value > compareUpper.value) {
                     throw new ParserError({
-                        lineNumber: this._currentLineNumber,
+                        lineNumber: this.currentLineNumber,
                         errorMessage: 'Lower limit must be less than upper limit',
                     });
                 }
@@ -714,7 +714,7 @@ export class AirspaceFactory {
         }
         if (processed.length < 4) {
             throw new ParserError({
-                lineNumber: this._currentLineNumber,
+                lineNumber: this.currentLineNumber,
                 errorMessage: 'The polygon dimensions are too small to create a polygon.',
             });
         }
@@ -784,11 +784,11 @@ export class AirspaceFactory {
     }
 
     protected reset() {
-        this._tokens = [];
-        this._airspace = new Airspace();
-        this._currentLineNumber = undefined;
-        this._hasBuildTokens = false;
-        this._isAirway = false;
-        this._airway = undefined;
+        this.tokens = [];
+        this.airspace = new Airspace();
+        this.currentLineNumber = undefined;
+        this.hasBuildTokens = false;
+        this.isAirway = false;
+        this.airway = undefined;
     }
 }

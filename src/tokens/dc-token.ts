@@ -10,7 +10,7 @@ type Metadata = { radius: number };
  * Tokenizes "DC" airspace circle radius definition.
  */
 export class DcToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.DC;
+    static TYPE: TokenType = TokenTypeEnum.DC;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -24,9 +24,9 @@ export class DcToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new DcToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new DcToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartRadius = line.replace(/^DC\s+/, '');
@@ -34,7 +34,7 @@ export class DcToken extends AbstractLineToken<Metadata> {
         if (!isRadius) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown circle radius definition '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { radius: parseFloat(linePartRadius) } };
+        token.tokenized = { line, lineNumber, metadata: { radius: parseFloat(linePartRadius) } };
 
         return token;
     }

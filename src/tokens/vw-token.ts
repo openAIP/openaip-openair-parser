@@ -10,7 +10,7 @@ type Metadata = { width: number };
  * Tokenizes "V W=" airway width in nautical miles.
  */
 export class VwToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.VW;
+    static TYPE: TokenType = TokenTypeEnum.VW;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -24,9 +24,9 @@ export class VwToken extends AbstractLineToken<Metadata> {
         validateSchema(line, z.string().nonempty(), { assert: true, name: 'line' });
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
-        const token = new VwToken({ tokenTypes: this._tokenTypes, version: this._version });
+        const token = new VwToken({ tokenTypes: this.tokenTypes, version: this.version });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartWidth = line.replace(/^V\s+[W]=/, '');
@@ -34,7 +34,7 @@ export class VwToken extends AbstractLineToken<Metadata> {
         if (!isWidth) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown airway width definition '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { width: parseFloat(linePartWidth) } };
+        token.tokenized = { line, lineNumber, metadata: { width: parseFloat(linePartWidth) } };
 
         return token;
     }

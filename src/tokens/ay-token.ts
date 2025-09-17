@@ -35,15 +35,15 @@ export const ConfigSchema = z
  * Tokenizes "AY" airspace type definitions.
  */
 export class AyToken extends AbstractLineToken<Metadata> {
-    static type: TokenType = TokenTypeEnum.AY;
-    protected _allowedTypes: string[] = [];
+    static TYPE: TokenType = TokenTypeEnum.AY;
+    protected allowedTypes: string[] = [];
 
     constructor(config: Config) {
         const { tokenTypes, allowedTypes, version } = config;
 
         super({ tokenTypes, version });
 
-        this._allowedTypes = allowedTypes;
+        this.allowedTypes = allowedTypes;
     }
 
     canHandle(line: string): boolean {
@@ -59,20 +59,20 @@ export class AyToken extends AbstractLineToken<Metadata> {
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
         const token = new AyToken({
-            allowedTypes: this._allowedTypes,
-            tokenTypes: this._tokenTypes,
-            version: this._version,
+            allowedTypes: this.allowedTypes,
+            tokenTypes: this.tokenTypes,
+            version: this.version,
         });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartType = line.replace(/^AY\s+/, '');
         // if config defines a list of allowed types, verify that used type is in this list
-        if (this._allowedTypes?.length > 0 && this._allowedTypes.includes(linePartType) === false) {
+        if (this.allowedTypes?.length > 0 && this.allowedTypes.includes(linePartType) === false) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown extended airspace type '${line}'` });
         }
-        token._tokenized = { line, lineNumber, metadata: { type: linePartType } };
+        token.tokenized = { line, lineNumber, metadata: { type: linePartType } };
 
         return token;
     }

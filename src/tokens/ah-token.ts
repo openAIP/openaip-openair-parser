@@ -9,7 +9,7 @@ import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
  * Tokenizes "AH" airspace upper ceiling definitions.
  */
 export class AhToken extends AbstractAltitudeToken {
-    static type: TokenType = TokenTypeEnum.AH;
+    static TYPE: TokenType = TokenTypeEnum.AH;
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -24,14 +24,14 @@ export class AhToken extends AbstractAltitudeToken {
         validateSchema(lineNumber, z.number(), { assert: true, name: 'lineNumber' });
 
         const token = new AhToken({
-            tokenTypes: this._tokenTypes,
-            unlimited: this._unlimited,
-            targetAltUnit: this._targetAltUnit,
-            roundAltValues: this._roundAltValues,
-            version: this._version,
+            tokenTypes: this.tokenTypes,
+            unlimited: this.unlimited,
+            targetAltUnit: this.targetAltUnit,
+            roundAltValues: this.roundAltValues,
+            version: this.version,
         });
         // keep original line
-        token._line = line;
+        token.line = line;
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartAltitude = line.replace(/^AH\s+/, '');
@@ -45,7 +45,7 @@ export class AhToken extends AbstractAltitudeToken {
                 throw err;
             }
         }
-        token._tokenized = { line, lineNumber, metadata: { altitude } };
+        token.tokenized = { line, lineNumber, metadata: { altitude } };
 
         return token;
     }
