@@ -14,7 +14,7 @@ import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error.js';
 import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { AaToken, BY_NOTAM_ACTIVATION } from './tokens/aa-token.js';
-import { AbstractLineToken, type IToken, type Tokenized } from './tokens/abstract-line-token.js';
+import { AbstractLineToken, type IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
 import { AgToken } from './tokens/ag-token.js';

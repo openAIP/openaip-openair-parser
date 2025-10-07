@@ -174,12 +174,51 @@ import { Parser } from '@openaip/openair-parser';
  The default parser configuration for reference.
  */
 const config = {
-    // Defines the OpenAIR format version 2. Defaults to strict version 2 parsing.
-    version: 2,
+    // Defines the OpenAIR format version. Available versions are '1.0' and '2.0'. Defaults to strict version '2.0' parsing.
+    version: '2.0',
     // Defines a set of allowed values -  default ICAO classes.
-    allowedClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'UNCLASSIFIED'],
+    allowedClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'UNC'],
     // Defines a set of allowed "AY" values if version 2 is used. If empty, allows all used types.
-    allowedTypes: [],
+    allowedTypes: [
+        'ACCSEC',
+        'ADIZ',
+        'ALERT',
+        'ASRA',
+        'ATZ',
+        'AWY',
+        'CTA',
+        'CTR',
+        'CUSTOM',
+        'FIR',
+        'FIS',
+        'GSEC',
+        'HTZ',
+        'LTA',
+        'MATZ',
+        'MTA',
+        'MTR',
+        'N',
+        'NONE',
+        'OFR',
+        'P',
+        'Q',
+        'R',
+        'RMZ',
+        'TFR',
+        'TIA',
+        'TIZ',
+        'TMA',
+        'TMZ',
+        'TRA',
+        'TRAFR',
+        'TRZ',
+        'TSA',
+        'UIR',
+        'UTA',
+        'VFRR',
+        'VFRSEC',
+        'WARNING',
+    ],
     // Flight level value to set for upper ceilings defined as "UNLIMITED"
     unlimited: 999,
     // Defines the level of detail (smoothness) of arc/circular geometries
@@ -193,6 +232,8 @@ const config = {
     // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used
     // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
     outputGeometry: 'POLYGON',
+    // output altitude unit for version 2 is always feet
+    targetAltUnit: 'ft',
     // Round altitude values
     roundAltValues: false,
     // If true, the GeoJSON output will contain the original OpenAIR airspace definition block for each airspace.

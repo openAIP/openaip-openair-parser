@@ -3,13 +3,12 @@ import { sprintf } from 'sprintf-js';
 import { z } from 'zod';
 import type { Activation, AirspaceProperties } from './airspace.js';
 import { AltitudeReferenceDatumEnum } from './altitude-reference-datum.enum.js';
-import { DefaultParserConfig } from './default-parser-config.js';
 import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import { validateSchema } from './validate-schema.js';
 
 export type Options = { version?: ParserVersion };
 export const OptionsSchema = z.object({
-    version: z.nativeEnum(ParserVersionEnum).optional(),
+    version: z.nativeEnum(ParserVersionEnum),
 });
 
 /**
@@ -17,7 +16,7 @@ export const OptionsSchema = z.object({
  */
 export function geojsonToOpenair(
     featureCollection: FeatureCollection<Polygon | LineString, AirspaceProperties>,
-    options?: Options
+    options: Options
 ): string[] {
     validateSchema(
         featureCollection,
@@ -29,8 +28,7 @@ export function geojsonToOpenair(
     );
     validateSchema(options, OptionsSchema, { assert: true, name: 'options' });
 
-    const defaultOptions = { version: DefaultParserConfig.version };
-    const { version } = Object.assign(defaultOptions, options);
+    const { version } = options;
     const openair = [];
 
     for (const geojson of featureCollection.features) {

@@ -316,7 +316,7 @@ describe('Test optional configuration parameters', () => {
         expect(success).toBe(true);
         expect(geojson?.features?.[0]?.properties?.lowerCeiling?.value).toEqual(1608);
     });
-    test('keep units if no target altitude unit is specified', () => {
+    test('convert to default units if no target altitude unit is specified', () => {
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -326,7 +326,7 @@ describe('Test optional configuration parameters', () => {
 
         expect(success).toBe(true);
         expect(geojson?.features?.[0]?.properties?.upperCeiling?.unit).toEqual(AltitudeUnitEnum.FLIGHT_LEVEL);
-        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual(AltitudeUnitEnum.METER);
+        expect(geojson?.features?.[0]?.properties?.lowerCeiling?.unit).toEqual(AltitudeUnitEnum.FEET);
     });
     test('correct limit validation when converting from ft to m', () => {
         const openairParser = new Parser({
@@ -575,7 +575,9 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error?.message).toEqual(`Error found at line 6: Error found at line 6: Unknown altitude definition 'FL'`);
+        expect(error?.message).toEqual(
+            `Error found at line 6: Error found at line 6: Unknown altitude definition 'FL'`
+        );
     });
 });
 

@@ -1,11 +1,11 @@
-import fs from 'node:fs';
 import { featureCollection as createFeatureCollection } from '@turf/turf';
 import type { FeatureCollection, LineString, Polygon } from 'geojson';
+import fs from 'node:fs';
 import { z } from 'zod';
 import { AirspaceFactory } from './airspace-factory.js';
 import type { Airspace, AirspaceProperties } from './airspace.js';
 import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
-import { DefaultParserConfig } from './default-parser-config.js';
+import { defaultConfigFactory } from './default-config-factory.js';
 import { geojsonToOpenair } from './geojson-to-openair.js';
 import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
 import { ParserError } from './parser-error.js';
@@ -88,7 +88,10 @@ export class Parser {
     constructor(config?: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        this.config = { ...DefaultParserConfig, ...config } as Required<Config>;
+        // use version 2.0 by default
+        const parserVersion = config?.version || ParserVersionEnum.VERSION_2;
+        const defaultParserConfig = defaultConfigFactory(parserVersion);
+        this.config = { ...defaultParserConfig, ...config } as Required<Config>;
     }
 
     parse(filepath: string): ParserResult {

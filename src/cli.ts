@@ -1,18 +1,21 @@
 #!/usr/bin/env node
-import fs from 'node:fs';
 import { Command } from 'commander';
+import fs from 'node:fs';
 import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
-import { Parser } from './parser.js';
 import type { ParserResult } from './parser.js';
+import { Parser } from './parser.js';
 
 const program = new Command();
 
 program
-    .option('--input-filepath <inFilepath>', 'The input file path to the openAIR file')
-    .option('--output-filepath <outFilepath>', 'The output filename of the generated geojson file')
+    .requiredOption('--input-filepath <inputFilepath>', 'The input file path to the openAIR file')
+    .requiredOption('--output-filepath <outputFilepath>', 'The output filename of the generated geojson file')
     .option('--validate', 'If specified, parser will validate geometries.')
     .option('--fix-geometry', 'If specified, parser will try to fix geometries.')
-    .option('--version <version>', 'Specify OpenAIR format version to parse. Defaults to 2.')
+    .option(
+        '--version <version>',
+        `Specify OpenAIR format version to parse. Available versions are '${ParserVersionEnum.VERSION_1}' and '${ParserVersionEnum.VERSION_2}' Defaults to '${ParserVersionEnum.VERSION_2}'.`
+    )
     .parse(process.argv);
 
 interface ProgramOptions {
@@ -28,6 +31,8 @@ const validateGeometry = options.validate ?? false;
 const fixGeometry = options.fixGeometry ?? false;
 const version = options.version ?? ParserVersionEnum.VERSION_2;
 const parser = new Parser({ validateGeometry, fixGeometry, version });
+
+console.log(options);
 
 try {
     const result: ParserResult = parser.parse(options.inputFilepath);

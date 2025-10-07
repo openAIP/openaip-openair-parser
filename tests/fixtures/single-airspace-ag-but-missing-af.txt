@@ -1,4 +1,4 @@
-AC UNCLASSIFIED
+AC UNC
 AY TRA
 AN EKR506 RODSAND II *NOTAM ACC CPH*
 * only callsign for frequency is provided but not frequency itself, parser must throw error
