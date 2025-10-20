@@ -507,8 +507,8 @@ describe('Test parse invalid airspace definition blocks', () => {
         });
         const { success, error } = openairParser.parse('./tests/fixtures/coordinate-minutes-60.txt');
         expect(success).toBe(false);
-        expect(error.message).toBeDefined;
-        expect(error.message).toBe(
+        expect(error?.message).toBeDefined;
+        expect(error?.message).toBe(
             "Error found at line 6: Error found at line 6: Unknown coordinate definition 'DP 42:60:57 N 000:60:00 W'"
         );
     });
@@ -521,8 +521,8 @@ describe('Test parse invalid airspace definition blocks', () => {
         });
         const { success, error } = openairParser.parse('./tests/fixtures/coordinate-seconds-60.txt');
         expect(success).toBe(false);
-        expect(error.message).toBeDefined;
-        expect(error.message).toBe(
+        expect(error?.message).toBeDefined;
+        expect(error?.message).toBe(
             "Error found at line 6: Error found at line 6: Unknown coordinate definition 'DP 42:00:60 N 001:00:60 W'"
         );
     });
