@@ -498,6 +498,34 @@ describe('Test parse invalid airspace definition blocks', () => {
             'Error found at line 6: The polygon dimensions are too small to create a polygon.'
         );
     });
+    test('airspace with coordinate minutes set to 60 are rejected', () => {
+        // read from expected file and remove last "blank line" in file (automatically added by IDE)
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+        });
+        const { success, error } = openairParser.parse('./tests/fixtures/coordinate-minutes-60.txt');
+        expect(success).toBe(false);
+        expect(error.message).toBeDefined;
+        expect(error.message).toBe(
+            "Error found at line 6: Error found at line 6: Unknown coordinate definition 'DP 42:60:57 N 000:60:00 W'"
+        );
+    });
+    test('airspace with coordinate seconds set to 60 are rejected', () => {
+        // read from expected file and remove last "blank line" in file (automatically added by IDE)
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            fixGeometry: true,
+        });
+        const { success, error } = openairParser.parse('./tests/fixtures/coordinate-seconds-60.txt');
+        expect(success).toBe(false);
+        expect(error.message).toBeDefined;
+        expect(error.message).toBe(
+            "Error found at line 6: Error found at line 6: Unknown coordinate definition 'DP 42:00:60 N 001:00:60 W'"
+        );
+    });
 });
 
 describe('Version 2: Test parse invalid airspace definition blocks', () => {
