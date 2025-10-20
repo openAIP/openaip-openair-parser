@@ -6,7 +6,7 @@ import {
     type IToken,
     type Tokenized,
 } from './abstract-line-token.js';
-import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
+import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 export type Config = BaseLineConfig & {
     lastLineNumber: number;

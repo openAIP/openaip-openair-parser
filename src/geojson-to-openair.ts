@@ -3,7 +3,7 @@ import { sprintf } from 'sprintf-js';
 import { z } from 'zod';
 import type { Activation, AirspaceProperties } from './airspace.js';
 import { AltitudeReferenceDatumEnum } from './altitude-reference-datum.enum.js';
-import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
+import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 import { validateSchema } from './validate-schema.js';
 
 export type Options = { version?: ParserVersion };

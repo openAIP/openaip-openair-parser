@@ -1,113 +1,125 @@
 name: Create NPM package
 on:
-    push:
-        tags:
-            - v1.**
-            - v2.**
+  push:
+    tags:
+      - v1.**
+      - v2.**
 jobs:
-    preflight:
-        name: "Preflight checks"
-        runs-on: ubuntu-22.04
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v4
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-            - name: "Check package.json version against tag"
-              run: |
-                  # Extract the version from package.json
-                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+  preflight:
+    name: "Preflight checks"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: "Check package.json version against tag"
+        run: |
+          # Extract the version from package.json
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
-                  # Remove the 'releases/v' prefix from the Git tag to get the version
-                  TAG_VERSION=${GITHUB_REF_NAME#v}
+          # Remove the 'releases/v' prefix from the Git tag to get the version
+          TAG_VERSION=${GITHUB_REF_NAME#v}
 
-                  # Compare the versions
-                  if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
-                      echo "❌ Error: The version in package.json ($PACKAGE_VERSION) does not match the Git tag ($TAG_VERSION)."
-                      exit 1
-                  fi
-                  echo "✅ Success: package.json version matches the Git tag."
+          # Compare the versions
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+              echo "❌ Error: The version in package.json ($PACKAGE_VERSION) does not match the Git tag ($TAG_VERSION)."
+              exit 1
+          fi
+          echo "✅ Success: package.json version matches the Git tag."
 
-    run-tests:
-        name: "Run tests"
-        runs-on: ubuntu-22.04
-        needs: preflight
-        services:
-            mongodb:
-                image: mongo:7.0
-                env:
-                    MONGO_INITDB_DATABASE: "testdb"
-                ports:
-                    - 37017:27017
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v4
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-            - name: Clear npm cache
-              run: npm cache clean --force
-            - name: Configure .npmrc
-              run: |
-                  echo "${{secrets.NPMRC}}" >> ~/.npmrc
-            - name: Install packages
-              run: npm install
-            - name: Run tests
-              run: npm run test
-    publish:
-        permissions:
-            contents: write
-        name: "Build and publish package"
-        needs: run-tests
-        runs-on: ubuntu-22.04
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v4
-              env:
-                  GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
-              # IMPORTANT this is important to make sure that tokens are not reused in subsequent steps
-              # -> removing this will cause the "GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}" to
-              # reuse the token from the previous step although defined otherwise
-              with:
-                  persist-credentials: false
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-              env:
-                  GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
-            - name: Clear npm cache
-              run: npm cache clean --force
-            - name: Configure .npmrc
-              run: |
-                  echo "${{secrets.NPMRC}}" >> ~/.npmrc
-            - name: Install packages
-              run: npm install
-            - name: NPM build package
-              run: npm run build
-            - name: Create release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }} # This token is provided by Actions, you do not need to create your own token
-              with:
-                  tag_name: ${{ github.ref_name }}
-                  release_name: Release ${{ github.ref_name }}
-                  body: |
-                      Various fixes and performance improvements.
-                  draft: false
-                  prerelease: false
-            - name: Setup Node for publishing to GitHub Package Registry
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  registry-url: https://npm.pkg.github.com/
-                  scope: '@air-avionics'
-              env:
-                  GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
-            - name: Publish to GitHub Package Registry
-              run: npm publish
-              env:
-                  NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_DEVOPS_PAT}}
+  run-tests:
+    name: "Run tests"
+    runs-on: ubuntu-22.04
+    needs: preflight
+    services:
+      mongodb:
+        image: mongo:7.0
+        env:
+          MONGO_INITDB_DATABASE: "testdb"
+        ports:
+          - 37017:27017
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Configure .npmrc
+        run: |
+          echo "${{secrets.NPMRC}}" >> ~/.npmrc
+      - name: Install packages
+        run: npm install
+      - name: Run tests
+        run: npm run test
+  publish:
+    permissions:
+      contents: write
+    name: "Build and publish package"
+    needs: run-tests
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
+        # IMPORTANT this is important to make sure that tokens are not reused in subsequent steps
+        # -> removing this will cause the "GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}" to
+        # reuse the token from the previous step although defined otherwise
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Configure .npmrc
+        run: |
+          echo "${{secrets.NPMRC}}" >> ~/.npmrc
+      - name: Install packages
+        run: npm install
+      - name: NPM build package
+        run: npm run build
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            Various fixes and performance improvements.
+          draft: false
+          prerelease: false
+      - name: Setup Node for publishing to GitHub Package Registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com/
+          scope: "@openaip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
+      - name: Publish to GitHub Package Registry
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_DEVOPS_PAT}}
+      - name: Setup Node for publishing to NPM registry
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          scope: "@openaip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
+      - name: Publish to NPM Package Registry
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}

@@ -1,8 +1,8 @@
 import z from 'zod';
-import { AltitudeUnitEnum, type AltitudeUnit } from './altitude-unit.enum.js';
+import { type AltitudeUnit, AltitudeUnitEnum } from './altitude-unit.enum.js';
 import type { OutputGeometry } from './output-geometry.enum.js';
-import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
 import type { Config as ParserConfig } from './parser.js';
+import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 import { validateSchema } from './validate-schema.js';
 
 export type DefaultConfig = {

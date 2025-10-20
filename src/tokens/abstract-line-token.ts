@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { ParserVersionEnum, type ParserVersion } from '../parser-version.enum.js';
+import { type ParserVersion, ParserVersionEnum } from '../parser-version.enum.js';
 import { validateSchema } from '../validate-schema.js';
-import { type TokenType } from './token-type.enum.js';
+import type { TokenType } from './token-type.enum.js';
 
 export type Tokenized<M = undefined> = {
     line: string;

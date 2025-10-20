@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
-import { ParserVersionEnum, type ParserVersion } from '../parser-version.enum.js';
+import { type ParserVersion, ParserVersionEnum } from '../parser-version.enum.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig, type IToken } from './abstract-line-token.js';
-import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
+import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 type Metadata = { class: string };
 

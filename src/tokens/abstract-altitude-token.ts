@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import type { Altitude } from '../airspace.js';
-import { AltitudeReferenceDatumEnum, type AltitudeReferenceDatum } from '../altitude-reference-datum.enum.js';
-import { AltitudeUnitEnum, type AltitudeUnit } from '../altitude-unit.enum.js';
-import { ParserVersionEnum, type ParserVersion } from '../parser-version.enum.js';
+import { type AltitudeReferenceDatum, AltitudeReferenceDatumEnum } from '../altitude-reference-datum.enum.js';
+import { type AltitudeUnit, AltitudeUnitEnum } from '../altitude-unit.enum.js';
+import { type ParserVersion, ParserVersionEnum } from '../parser-version.enum.js';
 import { feetToMeters, metersToFeet } from '../unit-conversion.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type Config as BaseLineConfig } from './abstract-line-token.js';
-import { type TokenType } from './token-type.enum.js';
+import type { TokenType } from './token-type.enum.js';
 
 type Metadata = { altitude: Altitude };
 
@@ -111,7 +111,7 @@ abstract class AbstractAltitudeReader implements IAltitudeReader {
 
         const { unlimited, targetAltUnit, roundAltValues } = config || {};
 
-        this.REGEX_ALTITUDE = new RegExp('');
+        this.REGEX_ALTITUDE = /(?:)/;
         this.unlimited = unlimited;
         this.targetAltUnit = targetAltUnit;
         this.roundAltValues = roundAltValues;

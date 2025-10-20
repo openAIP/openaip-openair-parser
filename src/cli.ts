@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
 import fs from 'node:fs';
-import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
+import { Command } from 'commander';
 import type { ParserResult } from './parser.js';
 import { Parser } from './parser.js';
+import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 
 const program = new Command();
 

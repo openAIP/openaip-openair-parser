@@ -5,10 +5,10 @@ import { z } from 'zod';
 import type { AltitudeReferenceDatum } from './altitude-reference-datum.enum.js';
 import type { AltitudeUnit } from './altitude-unit.enum.js';
 import * as geojsonPolygon from './geojson-polygon.js';
-import { OutputGeometryEnum, type OutputGeometry } from './output-geometry.enum.js';
+import { type OutputGeometry, OutputGeometryEnum } from './output-geometry.enum.js';
 import { ParserError } from './parser-error.js';
-import type { IToken, Tokenized } from './tokens/abstract-line-token.js';
-import { AcToken } from './tokens/ac-token.js';
+import type { IToken } from './tokens/abstract-line-token.js';
+import type { AcToken } from './tokens/ac-token.js';
 import { validateSchema } from './validate-schema.js';
 
 export type AsGeojsonConfig = {
@@ -250,7 +250,7 @@ export class Airspace {
     }
 
     protected validateAirspacePolygon(polygon: Polygon): { isValid: boolean; selfIntersections?: Position[] } {
-        let selfIntersections = undefined;
+        let selfIntersections;
         let isValid: boolean = false;
         try {
             geojsonPolygon.validate(polygon);

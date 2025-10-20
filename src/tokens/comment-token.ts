@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { validateSchema } from '../validate-schema.js';
 import type { IToken } from './abstract-line-token.js';
 import { AbstractLineToken } from './abstract-line-token.js';
-import { TokenTypeEnum, type TokenType } from './token-type.enum.js';
+import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 /**
  * Handles comments, e.g. lines starting with "*".

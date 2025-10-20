@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { Airspace, type Altitude } from './airspace.js';
 import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error.js';
-import { ParserVersionEnum, type ParserVersion } from './parser-version.enum.js';
+import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 import { AaToken, BY_NOTAM_ACTIVATION } from './tokens/aa-token.js';
 import { AbstractLineToken, type IToken } from './tokens/abstract-line-token.js';
 import { AcToken } from './tokens/ac-token.js';
@@ -31,7 +31,7 @@ import { DcToken } from './tokens/dc-token.js';
 import { DpToken } from './tokens/dp-token.js';
 import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
-import { type TokenType } from './tokens/token-type.enum.js';
+import type { TokenType } from './tokens/token-type.enum.js';
 import { VdToken } from './tokens/vd-token.js';
 import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
@@ -298,7 +298,7 @@ export class AirspaceFactory {
             requiredTokens.push(AyToken.TYPE);
         }
         const requiredTokensInventory: TokenType[] = [];
-        let definitionBlockStart: number | undefined = undefined;
+        let definitionBlockStart: number | undefined;
 
         for (const [index, currentToken] of this.tokens.entries()) {
             const { lineNumber: currentTokenLineNumber } = (currentToken as IToken).toTokenized();
@@ -662,7 +662,7 @@ export class AirspaceFactory {
     protected enforceSaneLimits() {
         if (this.airspace.lowerCeiling && this.airspace.upperCeiling) {
             // IMPORTANT "feeted" flight level ceilings must be converted to configured target unit before comparing if specified
-            const feeted = function (ceiling: Altitude) {
+            const feeted = (ceiling: Altitude) => {
                 const feeted = ceiling;
                 const { unit, value } = ceiling;
 
