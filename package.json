@@ -66,7 +66,7 @@
         "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
     },
     "dependencies": {
-        "@openaip/coordinate-parser": "^0.29.0",
+        "@openaip/coordinate-parser": "^0.29.1",
         "@placemarkio/check-geojson": "^0.1.14",
         "@turf/turf": "^7.2.0",
         "@types/n-readlines": "^1.0.6",
@@ -86,8 +86,6 @@
         "app-root-path": "^3.1.0",
         "depcheck": "^1.4.7",
         "npm-check-updates": "^17.1.18",
-        "prettier": "^3.6.2",
-        "rimraf": "^6.0.1",
         "typescript": "^5.9.3",
         "vite": "^6.4.1",
         "vitest": "^3.2.4"
