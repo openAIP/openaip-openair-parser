@@ -51,6 +51,7 @@
     "homepage": "https://github.com/openAIP/openaip-openair-parser#readme",
     "scripts": {
         "test": "vitest run --coverage",
+        "test:watch": "vitest run --watch --ui --coverage",
         "build": "npm run tsc:clean && npm run tsc:build",
         "tsc:run": "tsc --noEmit",
         "tsc:clean": "tsc --build --clean",
@@ -66,7 +67,7 @@
         "depcheck": "npx depcheck --oneline --skip-missing=true --ignore-patterns=dist,coverage,*.log"
     },
     "dependencies": {
-        "@openaip/coordinate-parser": "^0.29.1",
+        "@openaip/coordinate-parser": "^0.30.0",
         "@placemarkio/check-geojson": "^0.1.14",
         "@turf/turf": "^7.2.0",
         "@types/n-readlines": "^1.0.6",
@@ -79,7 +80,6 @@
     },
     "devDependencies": {
         "@biomejs/biome": "2.2.6",
-        "@types/luxon": "^3.7.1",
         "@types/node": "^22.18.11",
         "@vitest/coverage-v8": "^3.2.4",
         "@vitest/ui": "^3.2.4",
