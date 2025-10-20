@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Altitude } from '../airspace.js';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractAltitudeToken } from './abstract-altitude-token.js';
@@ -36,7 +37,7 @@ export class AlToken extends AbstractAltitudeToken {
         // remove inline comments
         line = line.replace(/\s?\*.*/, '');
         const linePartAltitude = line.replace(/^AL\s+/, '');
-        let altitude;
+        let altitude: Altitude;
         try {
             altitude = this.getAltitude(linePartAltitude);
         } catch (err) {

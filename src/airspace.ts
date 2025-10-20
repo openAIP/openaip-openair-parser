@@ -135,7 +135,7 @@ export class Airspace {
             properties.openair = '';
             for (const token of this.consumedTokens) {
                 const { line } = token.toTokenized();
-                properties.openair += line + '\n';
+                properties.openair += `${line}\n`;
             }
         }
         // build the GeoJSON geometry object
@@ -250,7 +250,7 @@ export class Airspace {
     }
 
     protected validateAirspacePolygon(polygon: Polygon): { isValid: boolean; selfIntersections?: Position[] } {
-        let selfIntersections;
+        let selfIntersections: Position[] = [];
         let isValid: boolean = false;
         try {
             geojsonPolygon.validate(polygon);
@@ -265,7 +265,14 @@ export class Airspace {
             }
         }
 
-        return { isValid, selfIntersections };
+        const result: { isValid: boolean; selfIntersections?: Position[] } = {
+            isValid,
+        };
+        if (Array.isArray(selfIntersections) && selfIntersections.length > 0) {
+            result.selfIntersections = selfIntersections;
+        }
+
+        return result;
     }
 
     protected isCompleteProperties() {

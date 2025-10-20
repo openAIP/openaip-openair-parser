@@ -194,7 +194,7 @@ class AltitudeDefaultReader extends AbstractAltitudeReader {
     protected convertUnits(value: number, baseUnit: AltitudeUnit, targetUnit: AltitudeUnit): number {
         if (baseUnit === targetUnit) return value;
 
-        let convValue;
+        let convValue: number;
         if (baseUnit === AltitudeUnitEnum.FEET && targetUnit === AltitudeUnitEnum.METER) {
             convValue = feetToMeters(value);
         } else if (baseUnit === AltitudeUnitEnum.METER && targetUnit === AltitudeUnitEnum.FEET) {

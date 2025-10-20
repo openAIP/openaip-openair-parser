@@ -136,7 +136,7 @@ function convertDecToDms(decimal: number, axis: string): string {
     // Take the remaining decimal and multiply by 60. (i.e. .1 * 60 = 6).
     // The resulting number becomes the seconds (6"). Seconds can remain as a decimal.
     const sec = sprintf('%02d', Math.round((degDecimalX60 % 1) * 60));
-    let suffix;
+    let suffix: string;
     if (axis === 'lon') {
         suffix = decimal >= 0 ? 'E' : 'W';
     } else {
@@ -148,7 +148,7 @@ function convertDecToDms(decimal: number, axis: string): string {
 function toAltLimit(value: { value: number; unit: string; referenceDatum: string }): string {
     const { value: altValue, unit, referenceDatum } = value;
 
-    let altLimit;
+    let altLimit: string;
     if (unit === 'FL') {
         altLimit = `FL${altValue}`;
     } else {
