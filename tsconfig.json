@@ -1,5 +1,5 @@
 {
-    "include": ["src/**/*", "tests/**/*"],
+    "include": ["src/**/*"],
     "exclude": ["dist", "node_modules"],
     "compilerOptions": {
         "esModuleInterop": true,
@@ -12,9 +12,10 @@
         "baseUrl": ".",
         "module": "nodenext",
         "moduleResolution": "nodenext",
-        "target": "es6",
+        "target": "esnext",
         "outDir": "./dist",
         "declaration": true,
-        "declarationDir": "./dist"
+        "declarationDir": "./dist",
+        "isolatedModules": true
     }
 }
