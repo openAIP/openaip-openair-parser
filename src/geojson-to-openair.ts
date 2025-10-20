@@ -124,25 +124,42 @@ function toCoordinate(value: Position): string {
 }
 
 function convertDecToDms(decimal: number, axis: string): string {
-    const degFormat = axis === 'lon' ? '%03d' : '%02d';
     //we only handle positive values
     const posDegs = Math.abs(decimal);
     // The whole units of degrees will remain the same (i.e. in 121.135° longitude, start with 121°)
-    const deg = sprintf(degFormat, Math.floor(posDegs));
-    // Multiply the decimal by 60 (i.e. .135 * 60 = 8.1).
+    let deg = Math.floor(posDegs);
     const degDecimalX60 = (posDegs % 1) * 60;
+    let min = Math.floor(degDecimalX60);
+    let sec = Math.round((degDecimalX60 % 1) * 60);
+    // use next higher unit if seconds or minutes are 60 - start with seconds
+    if (sec === 60) {
+        // raise minutes
+        min++;
+        // set seconds back to 0
+        sec = 0;
+    }
+    if (min === 60) {
+        // raise degrees
+        deg++;
+        // set minutes back to 0
+        min = 0;
+    }
+    // build the formatted strings for each unit
+    const degFormat = axis === 'lon' ? '%03d' : '%02d';
+    const degString = sprintf(degFormat, deg);
+    // Multiply the decimal by 60 (i.e. .135 * 60 = 8.1).
     // The whole number becomes the minutes (8').
-    const min = sprintf('%02d', Math.floor(degDecimalX60));
+    const minString = sprintf('%02d', min);
     // Take the remaining decimal and multiply by 60. (i.e. .1 * 60 = 6).
     // The resulting number becomes the seconds (6"). Seconds can remain as a decimal.
-    const sec = sprintf('%02d', Math.round((degDecimalX60 % 1) * 60));
+    const secString = sprintf('%02d', sec);
     let suffix: string;
     if (axis === 'lon') {
         suffix = decimal >= 0 ? 'E' : 'W';
     } else {
         suffix = decimal >= 0 ? 'N' : 'S';
     }
-    return `${deg}:${min}:${sec} ${suffix}`;
+    return `${degString}:${minString}:${secString} ${suffix}`;
 }
 
 function toAltLimit(value: { value: number; unit: string; referenceDatum: string }): string {

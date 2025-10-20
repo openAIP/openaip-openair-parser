@@ -107,7 +107,7 @@ export class AaToken extends AbstractLineToken<Metadata> {
             // try to parse the activation time as ISO 8601 date-time format
             const date = new Date(activationTime);
 
-            return isNaN(date.getTime()) === false;
+            return Number.isNaN(date.getTime()) === false;
         } catch (err) {
             return false;
         }

@@ -122,6 +122,7 @@ export class Tokenizer {
         this.enforceFileExists(filepath);
         const liner: LineByLine = new LineByLine(filepath);
         let line: Buffer | false;
+        // biome-ignore lint/suspicious/noAssignInExpressions: ignore
         while ((line = liner.next()) !== false) {
             this.currentLineNumber++;
             // call trim to also remove newlines

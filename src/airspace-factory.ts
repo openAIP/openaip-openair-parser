@@ -620,7 +620,7 @@ export class AirspaceFactory {
      */
     protected getNextToken<T>(token: IToken, tokenType: TokenType, lookAhead: boolean = true): T | undefined {
         // get index of current token in tokens list
-        let currentIndex = this.tokens.findIndex((value) => value === token);
+        let currentIndex = this.tokens.indexOf(token);
 
         if (lookAhead) {
             for (currentIndex; currentIndex <= this.tokens.length - 1; currentIndex++) {
@@ -671,7 +671,6 @@ export class AirspaceFactory {
                         feeted.value = metersToFeet(value);
                         feeted.unit = AltitudeUnitEnum.FEET;
                         break;
-                    case AltitudeUnitEnum.FEET:
                     default:
                     // nothing to do
                 }

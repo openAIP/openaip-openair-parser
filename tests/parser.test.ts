@@ -4,7 +4,7 @@ import appRoot from 'app-root-path';
 import { describe, expect, test } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
-import { Parser } from '../src/parser';
+import { Parser } from '../src/parser.js';
 import { ParserVersionEnum } from '../src/parser-version.enum.js';
 
 const ALLOWED_CLASSES_VERSION_1 = [
@@ -645,7 +645,6 @@ describe('Test output formats', () => {
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
-            fixGeometry: true,
         });
         const { success } = openairParser.parse('./tests/fixtures/in-output-openair.txt');
         const openair = openairParser.toOpenair();
