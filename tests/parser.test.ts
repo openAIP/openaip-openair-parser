@@ -369,7 +369,7 @@ describe('Test parse invalid airspace definition blocks', () => {
             "Error found at line 14: Error found at line 14: Unknown coordinate definition 'DP 45:49:51 N 008:42:'"
         );
     });
-    test('airspace with intersection', () => {
+    test('airspace with slef-intersection', () => {
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
@@ -379,7 +379,7 @@ describe('Test parse invalid airspace definition blocks', () => {
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error?.message).toEqual(
-            "Error found at line 1: Geometry of airspace 'ED-R10B Todendorf-Putlos MON-SAT+' starting on line 1 is invalid due to self intersection."
+            "Error found at line 1: Geometry of airspace 'PARC/RESERVE  PYRENNEES 1000M/SOL' starting on line 1 is invalid due to self intersection."
         );
     });
     test('airspace with intersection converted into LINESTRING geometry return geometry', () => {
@@ -413,15 +413,21 @@ describe('Test parse invalid airspace definition blocks', () => {
         );
     });
     test('airspace with invalid geometry with self intersection can be fixed', () => {
+        const expectedJson = loadParserJsonResult('fixed-self-intersecting.json');
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
             fixGeometry: true,
         });
         const { success, error } = openairParser.parse('./tests/fixtures/self-intersecting.txt');
-
+        const geojson = openairParser.toGeojson();
+        // remove properties for comparison
+        geojson.features.map((value) => delete value.id);
+        geojson.features.map((value) => delete (value.properties as any).id);
+        
         expect(success).toBe(true);
         expect(error).toBeUndefined();
+        expect(geojson).toEqual(expectedJson);
     });
     test('airspace with invalid geometry with self intersection passes if not validated', () => {
         const openairParser = new Parser({
