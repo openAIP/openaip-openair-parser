@@ -233,7 +233,7 @@ const config = {
     // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
     outputGeometry: 'POLYGON',
     // output altitude unit for version 2 is always feet
-    targetAltUnit: 'ft',
+    targetAltUnit: 'FT',
     // Round altitude values
     roundAltValues: false,
     // If true, the GeoJSON output will contain the original OpenAIR airspace definition block for each airspace.
