@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import LineByLine from 'n-readlines';
 import { z } from 'zod';
 import { type AltitudeUnit, AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error.js';
@@ -120,13 +119,15 @@ export class Tokenizer {
 
         this.reset();
         this.enforceFileExists(filepath);
-        const liner: LineByLine = new LineByLine(filepath);
-        let line: Buffer | false;
-        // biome-ignore lint/suspicious/noAssignInExpressions: ignore
-        while ((line = liner.next()) !== false) {
+
+        // Read file content and split into lines
+        const content = fs.readFileSync(filepath, 'utf-8');
+        const lines = content.split(/\r?\n/);
+
+        for (const line of lines) {
             this.currentLineNumber++;
             // call trim to also remove newlines
-            this.currentLineString = line.toString().trim();
+            this.currentLineString = line.trim();
 
             // find the tokenizer that can handle the current line
             const lineTokenizer = this.tokenizers.find((value) => value.canHandle(this.currentLineString as string));

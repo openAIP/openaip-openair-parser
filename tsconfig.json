@@ -2,6 +2,7 @@
     "include": ["src/**/*"],
     "exclude": ["dist", "node_modules"],
     "compilerOptions": {
+        "types": ["node"],
         "esModuleInterop": true,
         "strict": true,
         "skipLibCheck": true,

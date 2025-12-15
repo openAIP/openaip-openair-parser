@@ -7,7 +7,10 @@ export default defineConfig({
             provider: 'v8',
             reporter: ['lcov', 'text', 'html'],
             // extend the default vitest coverage exclude pattern
-            exclude: [...coverageConfigDefaults.exclude],
+            exclude: ['src/index.ts', ...coverageConfigDefaults.exclude],
         },
+        isolate: true,
+        passWithNoTests: true,
+        fileParallelism: false,
     },
 });

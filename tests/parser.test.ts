@@ -424,7 +424,7 @@ describe('Test parse invalid airspace definition blocks', () => {
         // remove properties for comparison
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete (value.properties as any).id);
-        
+
         expect(success).toBe(true);
         expect(error).toBeUndefined();
         expect(geojson).toEqual(expectedJson);
