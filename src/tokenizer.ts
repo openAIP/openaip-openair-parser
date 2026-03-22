@@ -35,6 +35,7 @@ export type Config = {
     version: ParserVersion;
     allowedClasses: string[];
     allowedTypes: string[];
+    warnIfExpired?: boolean;
 };
 
 export const ConfigSchema = z
@@ -45,6 +46,7 @@ export const ConfigSchema = z
         version: z.nativeEnum(ParserVersionEnum),
         allowedClasses: z.array(z.string().min(1)),
         allowedTypes: z.array(z.string().min(1)),
+        warnIfExpired: z.boolean().optional(),
     })
     .strict()
     .describe('ConfigSchema');
@@ -68,7 +70,8 @@ export class Tokenizer {
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
 
-        const { unlimited, targetAltUnit, roundAltValues, version, allowedClasses, allowedTypes } = config;
+        const { unlimited, targetAltUnit, roundAltValues, version, allowedClasses, allowedTypes, warnIfExpired } =
+            config;
         this.config = config;
         this.tokenizers = [
             new CommentToken({ tokenTypes: TOKEN_TYPES, version }),
@@ -107,7 +110,7 @@ export class Tokenizer {
             new AfToken({ tokenTypes: TOKEN_TYPES, version }),
             new AgToken({ tokenTypes: TOKEN_TYPES, version }),
             new AxToken({ tokenTypes: TOKEN_TYPES, version }),
-            new AaToken({ tokenTypes: TOKEN_TYPES, version }),
+            new AaToken({ tokenTypes: TOKEN_TYPES, version, warnIfExpired }),
         ];
     }
 

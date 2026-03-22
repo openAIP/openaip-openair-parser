@@ -14,6 +14,7 @@ export type DefaultConfig = {
     consumeDuplicateBuffer: number;
     validateGeometry: boolean;
     fixGeometry: boolean;
+    warnIfExpired: boolean;
     outputGeometry: OutputGeometry;
     targetAltUnit: AltitudeUnit | undefined;
     roundAltValues: boolean;
@@ -45,6 +46,8 @@ export function defaultConfigFactory(version: ParserVersion): ParserConfig {
         validateGeometry: true,
         // If true, tries to fix an invalid geometry - note that this potentially alters the original airspace geometry!
         fixGeometry: false,
+        // If true, warn about expired temporary airspaces
+        warnIfExpired: false,
         // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used
         // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
         outputGeometry: 'POLYGON',

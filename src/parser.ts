@@ -42,6 +42,8 @@ export type Config = {
     validateGeometry?: boolean;
     // If true, the build GeoJson features fixed if possible. Note this can potentially alter the original geometry shape. Defaults to false.
     fixGeometry?: boolean;
+    // If true, warn about expired temporary airspaces.
+    warnIfExpired?: boolean;
     // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used to visualize invalid geometry definitions.
     // Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
     outputGeometry?: OutputGeometry;
@@ -63,6 +65,7 @@ export const ConfigSchema = z
         consumeDuplicateBuffer: z.number().min(0).optional(),
         validateGeometry: z.boolean().optional(),
         fixGeometry: z.boolean().optional(),
+        warnIfExpired: z.boolean().optional(),
         includeOpenair: z.boolean().optional(),
         outputGeometry: z.nativeEnum(OutputGeometryEnum).optional(),
         targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
@@ -117,6 +120,7 @@ export class Parser {
                 version: this.config.version,
                 allowedClasses: this.config.allowedClasses,
                 allowedTypes: this.config.allowedTypes,
+                warnIfExpired: this.config.warnIfExpired,
             });
             const tokens = tokenizer.tokenize(filepath);
 

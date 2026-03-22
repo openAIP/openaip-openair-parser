@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import appRoot from 'app-root-path';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
 import { Parser } from '../src/parser.js';
@@ -289,6 +289,18 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
+    });
+    test('parse activation times and warn if expired', () => {
+         const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+         
+        const openairParser = new Parser({ warnIfExpired: true });
+        const { success } = openairParser.parse('./tests/fixtures/version-2-warn-if-expired.txt');
+        
+        expect(success).toBe(true);
+        expect(consoleLogSpy).toHaveBeenCalledTimes(3);
+        expect(consoleLogSpy).toHaveBeenCalledWith(
+            expect.stringContaining('WARN: Expired activation end date')
+        );
     });
 });
 
