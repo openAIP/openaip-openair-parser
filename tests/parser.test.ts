@@ -291,16 +291,14 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         expect(geojson).toEqual(expectedJson);
     });
     test('parse activation times and warn if expired', () => {
-         const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-         
+        const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
         const openairParser = new Parser({ warnIfExpired: true });
         const { success } = openairParser.parse('./tests/fixtures/version-2-warn-if-expired.txt');
-        
+
         expect(success).toBe(true);
         expect(consoleLogSpy).toHaveBeenCalledTimes(3);
-        expect(consoleLogSpy).toHaveBeenCalledWith(
-            expect.stringContaining('WARN: Expired activation end date')
-        );
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('WARN: Expired activation end date'));
     });
 });
 
