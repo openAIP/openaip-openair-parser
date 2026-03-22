@@ -12,7 +12,7 @@ program
     .requiredOption('--output-filepath <outputFilepath>', 'The output filename of the generated geojson file')
     .option('--validate', 'If specified, parser will validate geometries.')
     .option('--fix-geometry', 'If specified, parser will try to fix geometries.')
-    .option('--warn-expired', 'If specified, parser will warn about expired temporary airspaces.')
+    .option('--warn-if-expired', 'If specified, parser will warn about expired temporary airspaces.')
     .option(
         '--version <version>',
         `Specify OpenAIR format version to parse. Available versions are '${ParserVersionEnum.VERSION_1}' and '${ParserVersionEnum.VERSION_2}' Defaults to '${ParserVersionEnum.VERSION_2}'.`

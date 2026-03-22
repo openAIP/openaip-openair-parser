@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
-import { ConfigSchema } from './abstract-altitude-token.js';
-import { AbstractLineToken, type Config, type IToken } from './abstract-line-token.js';
+import { AbstractLineToken, type Config, ConfigSchema, type IToken } from './abstract-line-token.js';
 import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 export const BY_NOTAM_ACTIVATION = 'BY_NOTAM';
@@ -105,9 +104,8 @@ export class AaToken extends AbstractLineToken<Metadata> {
         if (endDate != null) {
             // warn about expired temporary airspaces if configured
             if (this.warnIfExpired === true && this.isExpiredActivationTime(endDate) === true) {
-                console.log(`WARN: Expired activation end date found at '${line}'.`);
+                console.log(`WARN: Expired activation end date '${line}' found at line number ${lineNumber}.`);
             }
-
             time.end = endDate;
         }
 
@@ -124,7 +122,7 @@ export class AaToken extends AbstractLineToken<Metadata> {
         const now = new Date();
         const definedEndData = new Date(endDate);
 
-        return definedEndData > now;
+        return definedEndData < now;
     }
 
     private isValidActivationTime(activationTime: string): boolean {
