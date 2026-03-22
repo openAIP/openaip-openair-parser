@@ -11,6 +11,11 @@ export const OptionsSchema = z.object({
     version: z.nativeEnum(ParserVersionEnum),
 });
 
+const FeatureCollectionSchema = z.object({
+    type: z.literal('FeatureCollection'),
+    features: z.array(z.any()),
+});
+
 /**
  * Converts a GeoJSON FeatureCollection created by parser instance to OpenAir format.
  */
@@ -18,14 +23,7 @@ export function geojsonToOpenair(
     featureCollection: FeatureCollection<Polygon | LineString, AirspaceProperties>,
     options: Options
 ): string[] {
-    validateSchema(
-        featureCollection,
-        z.object({
-            type: z.literal('FeatureCollection'),
-            features: z.array(z.record(z.any())),
-        }),
-        { assert: true, name: 'featureCollection' }
-    );
+    validateSchema(featureCollection, FeatureCollectionSchema, { assert: true, name: 'featureCollection' });
     validateSchema(options, OptionsSchema, { assert: true, name: 'options' });
 
     const { version } = options;
