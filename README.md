@@ -24,42 +24,42 @@ Outputs GeoJSON FeatureCollection:
 
 ```json
 {
-    "type": "FeatureCollection",
-    "features": [
-        {
-            "type": "Feature",
-            "properties": {
-                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "name": "ED-R10B Todendorf-Putlos MON-SAT+",
-                "class": "R",
-                "upperCeiling": {
-                    "value": 40000,
-                    "unit": "FT",
-                    "referenceDatum": "MSL"
-                },
-                "lowerCeiling": {
-                    "value": 0,
-                    "unit": "FT",
-                    "referenceDatum": "GND"
-                }
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [10.666666666666666, 54.416666666666664],
-                        [10.833333333333334, 54.416666666666664],
-                        [10.883333333333333, 54.43333333333333],
-                        [10.883333333333333, 54.325],
-                        [10.683333333333334, 54.25],
-                        [10.666666666666666, 54.25527777777778],
-                        [10.666666666666666, 54.333333333333336],
-                        [10.666666666666666, 54.416666666666664]
-                    ]
-                ]
-            }
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+        "name": "ED-R10B Todendorf-Putlos MON-SAT+",
+        "class": "R",
+        "upperCeiling": {
+          "value": 40000,
+          "unit": "FT",
+          "referenceDatum": "MSL"
+        },
+        "lowerCeiling": {
+          "value": 0,
+          "unit": "FT",
+          "referenceDatum": "GND"
         }
-    ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [10.666666666666666, 54.416666666666664],
+            [10.833333333333334, 54.416666666666664],
+            [10.883333333333333, 54.43333333333333],
+            [10.883333333333333, 54.325],
+            [10.683333333333334, 54.25],
+            [10.666666666666666, 54.25527777777778],
+            [10.666666666666666, 54.333333333333336],
+            [10.666666666666666, 54.416666666666664]
+          ]
+        ]
+      }
+    }
+  ]
 }
 ```
 
@@ -92,65 +92,65 @@ Outputs GeoJSON FeatureCollection:
 
 ```json
 {
-    "type": "FeatureCollection",
-    "features": [
-        {
-            "type": "Feature",
-            "properties": {
-                "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
-                "name": "TMA Todendorf-Putlos",
-                "class": "D",
-                "type": "TMA",
-                "frequency": {
-                    "value": "123.505",
-                    "name": "Todendorf Information"
-                },
-                "transponderCode": 7000,
-                "upperCeiling": {
-                    "value": 40000,
-                    "unit": "FT",
-                    "referenceDatum": "MSL"
-                },
-                "lowerCeiling": {
-                    "value": 0,
-                    "unit": "FT",
-                    "referenceDatum": "GND"
-                },
-                "byNotam": false,
-                "activationTimes": [
-                    {
-                        "start": "2025-01-01T12:00:00Z",
-                        "end": "2025-01-01T13:00:00Z"
-                    },
-                    {
-                        "start": "2025-01-01T14:00:00Z",
-                        "end": "2025-01-01T15:00:00Z"
-                    },
-                    {
-                        "end": "2025-02-02T12:00:00Z"
-                    },
-                    {
-                        "start": "2025-03-03T11:00:00Z"
-                    }
-                ]
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [10.666666666666666, 54.416666666666664],
-                        [10.833333333333334, 54.416666666666664],
-                        [10.883333333333333, 54.43333333333333],
-                        [10.883333333333333, 54.325],
-                        [10.683333333333334, 54.25],
-                        [10.666666666666666, 54.25527777777778],
-                        [10.666666666666666, 54.333333333333336],
-                        [10.666666666666666, 54.416666666666664]
-                    ]
-                ]
-            }
-        }
-    ]
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+        "name": "TMA Todendorf-Putlos",
+        "class": "D",
+        "type": "TMA",
+        "frequency": {
+          "value": "123.505",
+          "name": "Todendorf Information"
+        },
+        "transponderCode": 7000,
+        "upperCeiling": {
+          "value": 40000,
+          "unit": "FT",
+          "referenceDatum": "MSL"
+        },
+        "lowerCeiling": {
+          "value": 0,
+          "unit": "FT",
+          "referenceDatum": "GND"
+        },
+        "byNotam": false,
+        "activationTimes": [
+          {
+            "start": "2025-01-01T12:00:00Z",
+            "end": "2025-01-01T13:00:00Z"
+          },
+          {
+            "start": "2025-01-01T14:00:00Z",
+            "end": "2025-01-01T15:00:00Z"
+          },
+          {
+            "end": "2025-02-02T12:00:00Z"
+          },
+          {
+            "start": "2025-03-03T11:00:00Z"
+          }
+        ]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [10.666666666666666, 54.416666666666664],
+            [10.833333333333334, 54.416666666666664],
+            [10.883333333333333, 54.43333333333333],
+            [10.883333333333333, 54.325],
+            [10.683333333333334, 54.25],
+            [10.666666666666666, 54.25527777777778],
+            [10.666666666666666, 54.333333333333336],
+            [10.666666666666666, 54.416666666666664]
+          ]
+        ]
+      }
+    }
+  ]
 }
 ```
 
@@ -168,98 +168,100 @@ This is an ESM only package that requires Node 22 thus allowing CommonJS consume
 
 ```javascript
 // import parser
-import { Parser } from '@openaip/openair-parser';
+import { Parser } from "@openaip/openair-parser";
 
 /*
  The default parser configuration for reference.
  */
 const config = {
-    // Defines the OpenAIR format version. Available versions are '1.0' and '2.0'. Defaults to strict version '2.0' parsing.
-    version: '2.0',
-    // Defines a set of allowed values -  default ICAO classes.
-    allowedClasses: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'UNC'],
-    // Defines a set of allowed "AY" values if version 2 is used. If empty, allows all used types.
-    allowedTypes: [
-        'ACCSEC',
-        'ADIZ',
-        'ALERT',
-        'ASRA',
-        'ATZ',
-        'AWY',
-        'CTA',
-        'CTR',
-        'CUSTOM',
-        'FIR',
-        'FIS',
-        'GSEC',
-        'HTZ',
-        'LTA',
-        'MATZ',
-        'MTA',
-        'MTR',
-        'N',
-        'NONE',
-        'OFR',
-        'P',
-        'Q',
-        'R',
-        'RMZ',
-        'TFR',
-        'TIA',
-        'TIZ',
-        'TMA',
-        'TMZ',
-        'TRA',
-        'TRAFR',
-        'TRZ',
-        'TSA',
-        'UIR',
-        'UTA',
-        'VFRR',
-        'VFRSEC',
-        'WARNING',
-    ],
-    // Flight level value to set for upper ceilings defined as "UNLIMITED"
-    unlimited: 999,
-    // Defines the level of detail (smoothness) of arc/circular geometries
-    geometryDetail: 100,
-    // If true, validates each built airspace geometry to be valid/simple geometry - also checks for self intersections
-    validateGeometry: true,
-    // If true, uses "convexHull" to fix an invalid geometry - note that this may change the original airspace geometry!
-    fixGeometry: false,
-    // Defines the minimum distance between two points in meters. If two points are closer than this value, they will be merged into one point. Defaults to 0.
-    consumeDuplicateBuffer: 0,
-    // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used
-    // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
-    outputGeometry: 'POLYGON',
-    // output altitude unit for version 2 is always feet
-    targetAltUnit: 'FT',
-    // Round altitude values
-    roundAltValues: false,
-    // If true, the GeoJSON output will contain the original OpenAIR airspace definition block for each airspace.
-    // Note that this will considerably increase JSON object size!
-    includeOpenair: false,
+  // Defines the OpenAIR format version. Available versions are '1.0' and '2.0'. Defaults to strict version '2.0' parsing.
+  version: "2.0",
+  // Defines a set of allowed values -  default ICAO classes.
+  allowedClasses: ["A", "B", "C", "D", "E", "F", "G", "UNC"],
+  // Defines a set of allowed "AY" values if version 2 is used. If empty, allows all used types.
+  allowedTypes: [
+    "ACCSEC",
+    "ADIZ",
+    "ALERT",
+    "ASRA",
+    "ATZ",
+    "AWY",
+    "CTA",
+    "CTR",
+    "CUSTOM",
+    "FIR",
+    "FIS",
+    "GSEC",
+    "HTZ",
+    "LTA",
+    "MATZ",
+    "MTA",
+    "MTR",
+    "N",
+    "NONE",
+    "OFR",
+    "P",
+    "Q",
+    "R",
+    "RMZ",
+    "TFR",
+    "TIA",
+    "TIZ",
+    "TMA",
+    "TMZ",
+    "TRA",
+    "TRAFR",
+    "TRZ",
+    "TSA",
+    "UIR",
+    "UTA",
+    "VFRR",
+    "VFRSEC",
+    "WARNING",
+  ],
+  // Flight level value to set for upper ceilings defined as "UNLIMITED"
+  unlimited: 999,
+  // Defines the level of detail (smoothness) of arc/circular geometries
+  geometryDetail: 100,
+  // If true, validates each built airspace geometry to be valid/simple geometry - also checks for self intersections
+  validateGeometry: true,
+  // If true, uses "convexHull" to fix an invalid geometry - note that this may change the original airspace geometry!
+  fixGeometry: false,
+  // If true, warns about expired temporary airspaces
+  warnIfExpired: false,
+  // Defines the minimum distance between two points in meters. If two points are closer than this value, they will be merged into one point. Defaults to 0.
+  consumeDuplicateBuffer: 0,
+  // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used
+  // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
+  outputGeometry: "POLYGON",
+  // output altitude unit for version 2 is always feet
+  targetAltUnit: "FT",
+  // Round altitude values
+  roundAltValues: false,
+  // If true, the GeoJSON output will contain the original OpenAIR airspace definition block for each airspace.
+  // Note that this will considerably increase JSON object size!
+  includeOpenair: false,
 };
 
 const parser = new Parser(config);
-const { success, error } = parser.parse('./path/to/openair-file.txt');
+const { success, error } = parser.parse("./path/to/openair-file.txt");
 if (success === true) {
-    // get parse OpenAIR definitions as validated GeoJSON feature collection
-    const geojson = parser.toGeojson();
+  // get parse OpenAIR definitions as validated GeoJSON feature collection
+  const geojson = parser.toGeojson();
 } else {
-    // if not successful, the parser will return a ParserError instance
-    const {
-        // the name of the airspace where the error occurred
-        name,
-        // the line number where the error occurred
-        lineNumber,
-        // the fully build error message for this error
-        errorMessage,
-        // a LineString geometry that can be used to visualize the invalid geometry
-        geometry,
-        // if self intersections are found, they are presented as an array of "[lon, lat]"
-        selfIntersections,
-    } = error;
+  // if not successful, the parser will return a ParserError instance
+  const {
+    // the name of the airspace where the error occurred
+    name,
+    // the line number where the error occurred
+    lineNumber,
+    // the fully build error message for this error
+    errorMessage,
+    // a LineString geometry that can be used to visualize the invalid geometry
+    geometry,
+    // if self intersections are found, they are presented as an array of "[lon, lat]"
+    selfIntersections,
+  } = error;
 }
 ```
 
@@ -281,10 +283,10 @@ parse the file using the OpenAIP OpenAIR parser.
 This is where the main logic and your parsing takes place.
 
 ```javascript
-import fs from 'node:fs';
-import readline from 'readline';
-import { Parser } from '@openaip/openair-parser';
-import { processWithWorkers } from './worker-manager.js';
+import fs from "node:fs";
+import readline from "readline";
+import { Parser } from "@openaip/openair-parser";
+import { processWithWorkers } from "./worker-manager.js";
 
 /**
  * Split large file into multiple files with a number of defined airspace definition blocks
@@ -293,60 +295,60 @@ import { processWithWorkers } from './worker-manager.js';
  * Each file equals one worker. Choose 'blocksPerFile' carefully!
  */
 async function splitFileIntoBlocks(filepath, blocksPerFile = 500) {
-    const fileStream = fs.createReadStream(filepath);
-    const rl = readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity,
-    });
+  const fileStream = fs.createReadStream(filepath);
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity,
+  });
 
-    let currentBlock = '';
-    let blockCount = 0;
-    let fileIndex = 1;
-    const splitFiles = [];
-    for await (const line of rl) {
-        if (line.trim().startsWith('AC')) {
-            if (currentBlock) {
-                if (blockCount >= blocksPerFile) {
-                    const splitFilePath = `./var/airspace_${fileIndex}.txt`;
-                    splitFiles.push(splitFilePath);
-                    fs.writeFileSync(splitFilePath, currentBlock);
-                    fileIndex++;
-                    blockCount = 0;
-                    currentBlock = '';
-                }
-                blockCount++;
-            }
+  let currentBlock = "";
+  let blockCount = 0;
+  let fileIndex = 1;
+  const splitFiles = [];
+  for await (const line of rl) {
+    if (line.trim().startsWith("AC")) {
+      if (currentBlock) {
+        if (blockCount >= blocksPerFile) {
+          const splitFilePath = `./var/airspace_${fileIndex}.txt`;
+          splitFiles.push(splitFilePath);
+          fs.writeFileSync(splitFilePath, currentBlock);
+          fileIndex++;
+          blockCount = 0;
+          currentBlock = "";
         }
-        currentBlock += line + '\n';
+        blockCount++;
+      }
     }
-    // write remaining blocks to file
-    if (currentBlock) {
-        const splitFilePath = `./var/airspace_${fileIndex}.txt`;
-        splitFiles.push(splitFilePath);
-        fs.writeFileSync(splitFilePath, currentBlock);
-    }
+    currentBlock += line + "\n";
+  }
+  // write remaining blocks to file
+  if (currentBlock) {
+    const splitFilePath = `./var/airspace_${fileIndex}.txt`;
+    splitFiles.push(splitFilePath);
+    fs.writeFileSync(splitFilePath, currentBlock);
+  }
 
-    return splitFiles;
+  return splitFiles;
 }
 
 async function main() {
-    // filepath to the huge source OpenAIR file
-    const filepath = './var/huge-openair-file.txt';
-    const config = {
-        // adjust config to your needs
-        fixGeometry: true,
-    };
+  // filepath to the huge source OpenAIR file
+  const filepath = "./var/huge-openair-file.txt";
+  const config = {
+    // adjust config to your needs
+    fixGeometry: true,
+  };
 
-    try {
-        // split the file into smaller chunks
-        const splitFiles = await splitFileIntoBlocks(filepath);
-        // process all files with workers and receive a GeoJSON FeatureCollection
-        const featureCollection = await processWithWorkers(splitFiles, config);
-        // clean up split files
-        splitFiles.forEach((file) => fs.unlinkSync(file));
-    } catch (error) {
-        console.error('Error in worker processing:', error);
-    }
+  try {
+    // split the file into smaller chunks
+    const splitFiles = await splitFileIntoBlocks(filepath);
+    // process all files with workers and receive a GeoJSON FeatureCollection
+    const featureCollection = await processWithWorkers(splitFiles, config);
+    // clean up split files
+    splitFiles.forEach((file) => fs.unlinkSync(file));
+  } catch (error) {
+    console.error("Error in worker processing:", error);
+  }
 }
 ```
 
@@ -355,28 +357,28 @@ async function main() {
 Simple wrapper for worker related util functions
 
 ```javascript
-import { Worker } from 'node:worker_threads';
+import { Worker } from "node:worker_threads";
 
 /**
  * Initializes a defined worker with required configuration and awaits the
  * worker response.
  */
 function createWorker(filepath, config) {
-    return new Promise((resolve, reject) => {
-        const worker = new Worker('./worker.js', {
-            workerData: { filepath, config },
-        });
-        worker.on('message', (message) => {
-            const { result } = message;
-            resolve(result);
-        });
-        worker.on('error', reject);
-        worker.on('exit', (code) => {
-            if (code !== 0) {
-                reject(new Error(`Worker stopped with exit code ${code}`));
-            }
-        });
+  return new Promise((resolve, reject) => {
+    const worker = new Worker("./worker.js", {
+      workerData: { filepath, config },
     });
+    worker.on("message", (message) => {
+      const { result } = message;
+      resolve(result);
+    });
+    worker.on("error", reject);
+    worker.on("exit", (code) => {
+      if (code !== 0) {
+        reject(new Error(`Worker stopped with exit code ${code}`));
+      }
+    });
+  });
 }
 
 /**
@@ -384,18 +386,18 @@ function createWorker(filepath, config) {
  * FeatureCollection.
  */
 export async function processWithWorkers(filepaths, config) {
-    try {
-        const workerPromises = filepaths.map((filepath) => createWorker(filepath, config));
-        const results = await Promise.all(workerPromises);
+  try {
+    const workerPromises = filepaths.map((filepath) => createWorker(filepath, config));
+    const results = await Promise.all(workerPromises);
 
-        return {
-            type: 'FeatureCollection',
-            features: results.flat(),
-        };
-    } catch (error) {
-        console.error('Error processing with workers:', error);
-        throw error;
-    }
+    return {
+      type: "FeatureCollection",
+      features: results.flat(),
+    };
+  } catch (error) {
+    console.error("Error processing with workers:", error);
+    throw error;
+  }
 }
 ```
 
@@ -404,33 +406,33 @@ export async function processWithWorkers(filepaths, config) {
 Worker file that will parse a single file with the OpenAIR parser.
 
 ```javascript
-import { parentPort, workerData } from 'worker_threads';
-import { Parser } from '@openaip/openair-parser';
+import { parentPort, workerData } from "worker_threads";
+import { Parser } from "@openaip/openair-parser";
 
 // 'workerData' is the data passed from the main thread
 const { filepath, config } = workerData;
 
 function parseOpenairFile(filepath) {
-    const parser = new Parser({
-        // adjust parser config depending on what is passed in with 'config'
-        fixGeometry: config.fixGeometry,
-    });
-    // parse the temporary 'smaller' file
-    const result = parser.parse(filepath);
-    if (result.success === true) {
-        const collection = parser.toGeojson();
+  const parser = new Parser({
+    // adjust parser config depending on what is passed in with 'config'
+    fixGeometry: config.fixGeometry,
+  });
+  // parse the temporary 'smaller' file
+  const result = parser.parse(filepath);
+  if (result.success === true) {
+    const collection = parser.toGeojson();
 
-        return collection.features;
-    } else {
-        throw Error(result.error);
-    }
+    return collection.features;
+  } else {
+    throw Error(result.error);
+  }
 }
 
 const result = parseOpenairFile(filepath);
 
 // send the result back to the main thread
 if (parentPort) {
-    parentPort.postMessage({ result });
+  parentPort.postMessage({ result });
 }
 ```
 
@@ -444,6 +446,7 @@ Options:
     --output-filepath <outFilepath>  The output filename of the generated geojson file.
     --validate                       If set to true, validates geometries. Defaults to true.
     --fix-geometry                   If set to true, tries to fix geometries. Note that this may change the original airspace geometry! Defaults to false.
+    --warn-expired                   If set to true, warns about expired temporary airspaces.
     --version <version>              Specify OpenAIR format version to parse. Defaults to 2.
 
 Simple command line usage:

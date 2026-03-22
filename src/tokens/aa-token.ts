@@ -1,10 +1,15 @@
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
 import { validateSchema } from '../validate-schema.js';
-import { AbstractLineToken, type IToken } from './abstract-line-token.js';
+import { ConfigSchema } from './abstract-altitude-token.js';
+import { AbstractLineToken, type Config, type IToken } from './abstract-line-token.js';
 import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 export const BY_NOTAM_ACTIVATION = 'BY_NOTAM';
+
+export type AaTokenConfig = Config & {
+    warnIfExpired?: boolean;
+};
 
 type Activation = {
     // ISO 8601 date-time format
@@ -15,12 +20,28 @@ type Activation = {
 
 type Metadata = { activation: Activation | typeof BY_NOTAM_ACTIVATION };
 
+export const AaTokenConfigSchema = ConfigSchema.extend({
+    warnIfExpired: z.boolean().optional(),
+});
+
 /**
  * Tokenizes "AA" token value which is a sequence of at least one AA command and possible
  * subsequent AA commands directly following the first AA command.
  */
 export class AaToken extends AbstractLineToken<Metadata> {
     public static TYPE: TokenType = TokenTypeEnum.AA;
+    public warnIfExpired: boolean;
+
+    constructor(config: AaTokenConfig) {
+        validateSchema(config, AaTokenConfigSchema, { assert: true, name: 'config' });
+
+        const defaultConfig = { warnIfExpired: false };
+        const { warnIfExpired, tokenTypes, version } = { ...defaultConfig, ...config };
+
+        super({ tokenTypes, version });
+
+        this.warnIfExpired = warnIfExpired;
+    }
 
     canHandle(line: string): boolean {
         // IMPORTANT only validate string - string MAY be empty
@@ -82,8 +103,14 @@ export class AaToken extends AbstractLineToken<Metadata> {
             time.start = startDate;
         }
         if (endDate != null) {
+            // warn about expired temporary airspaces if configured
+            if (this.warnIfExpired === true && this.isExpiredActivationTime(endDate) === true) {
+                console.log(`WARN: Expired activation end date found at '${line}'.`);
+            }
+
             time.end = endDate;
         }
+
         token.tokenized = {
             line,
             lineNumber,
@@ -91,6 +118,13 @@ export class AaToken extends AbstractLineToken<Metadata> {
         };
 
         return token;
+    }
+
+    private isExpiredActivationTime(endDate: string): boolean {
+        const now = new Date();
+        const definedEndData = new Date(endDate);
+
+        return definedEndData > now;
     }
 
     private isValidActivationTime(activationTime: string): boolean {

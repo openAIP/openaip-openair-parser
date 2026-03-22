@@ -290,6 +290,11 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
+    test('parse activation times and warn if expired', () => {
+        const openairParser = new Parser({ warnIfExpired: true });
+        const { success } = openairParser.parse('./tests/fixtures/version-2-warn-if-expired.txt');
+        const stop = true;
+    });
 });
 
 describe('Test optional configuration parameters', () => {

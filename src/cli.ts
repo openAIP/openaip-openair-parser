@@ -12,6 +12,7 @@ program
     .requiredOption('--output-filepath <outputFilepath>', 'The output filename of the generated geojson file')
     .option('--validate', 'If specified, parser will validate geometries.')
     .option('--fix-geometry', 'If specified, parser will try to fix geometries.')
+    .option('--warn-expired', 'If specified, parser will warn about expired temporary airspaces.')
     .option(
         '--version <version>',
         `Specify OpenAIR format version to parse. Available versions are '${ParserVersionEnum.VERSION_1}' and '${ParserVersionEnum.VERSION_2}' Defaults to '${ParserVersionEnum.VERSION_2}'.`
@@ -23,14 +24,16 @@ interface ProgramOptions {
     outputFilepath: string;
     validate?: boolean;
     fixGeometry?: boolean;
+    warnIfExpired?: boolean;
     version?: ParserVersion;
 }
 
 const options = program.opts<ProgramOptions>();
 const validateGeometry = options.validate ?? false;
 const fixGeometry = options.fixGeometry ?? false;
+const warnIfExpired = options.warnIfExpired ?? false;
 const version = options.version ?? ParserVersionEnum.VERSION_2;
-const parser = new Parser({ validateGeometry, fixGeometry, version });
+const parser = new Parser({ validateGeometry, fixGeometry, warnIfExpired, version });
 
 console.log(options);
 
