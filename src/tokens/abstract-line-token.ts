@@ -31,7 +31,7 @@ export type Config = {
 export const ConfigSchema = z
     .object({
         tokenTypes: z.array(z.string().nonempty()),
-        version: z.nativeEnum(ParserVersionEnum),
+        version: z.enum(ParserVersionEnum),
     })
     .strict()
     .describe('ConfigSchema');

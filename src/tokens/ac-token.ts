@@ -19,7 +19,7 @@ export const ConfigSchema = z
         airspaceClasses: z.array(z.string().nonempty()).optional(),
         allowedClasses: z.array(z.string().nonempty()).optional(),
         tokenTypes: z.array(z.string().nonempty()),
-        version: z.nativeEnum(ParserVersionEnum),
+        version: z.enum(ParserVersionEnum),
     })
     .strict()
     .describe('ConfigSchema');

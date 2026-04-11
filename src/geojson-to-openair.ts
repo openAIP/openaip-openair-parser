@@ -8,7 +8,7 @@ import { validateSchema } from './validate-schema.js';
 
 export type Options = { version?: ParserVersion };
 export const OptionsSchema = z.object({
-    version: z.nativeEnum(ParserVersionEnum),
+    version: z.enum(ParserVersionEnum),
 });
 
 const FeatureCollectionSchema = z.object({

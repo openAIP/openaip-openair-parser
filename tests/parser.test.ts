@@ -240,7 +240,7 @@ describe('Test parse airspace definition blocks', () => {
 
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete (value.properties as any).id);
-
+        
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });

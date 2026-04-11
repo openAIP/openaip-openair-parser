@@ -41,9 +41,9 @@ export type Config = {
 export const ConfigSchema = z
     .object({
         unlimited: z.number().int(),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
+        targetAltUnit: z.enum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
-        version: z.nativeEnum(ParserVersionEnum),
+        version: z.enum(ParserVersionEnum),
         allowedClasses: z.array(z.string().min(1)),
         allowedTypes: z.array(z.string().min(1)),
         warnIfExpired: z.boolean().optional(),

@@ -26,7 +26,7 @@ export type DefaultConfig = {
  * specification requirements may not be met.
  */
 export function defaultConfigFactory(version: ParserVersion): ParserConfig {
-    validateSchema(version, z.nativeEnum(ParserVersionEnum), { assert: true, name: 'version' });
+    validateSchema(version, z.enum(ParserVersionEnum), { assert: true, name: 'version' });
 
     // defines a set of common config parameters used in both v1 and v2
     const defaultConfig: Partial<DefaultConfig> = {

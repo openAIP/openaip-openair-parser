@@ -23,9 +23,9 @@ export const ConfigSchema = z
     .object({
         tokenTypes: z.array(z.string().nonempty()),
         unlimited: z.number(),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
+        targetAltUnit: z.enum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
-        version: z.nativeEnum(ParserVersionEnum),
+        version: z.enum(ParserVersionEnum),
     })
     .strict()
     .describe('ConfigSchema');
@@ -44,7 +44,7 @@ type AbstractAltitudeReaderConfig = {
 const AbstractAltitudeReaderConfigSchema = z
     .object({
         unlimited: z.number(),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
+        targetAltUnit: z.enum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean(),
     })
     .strict()

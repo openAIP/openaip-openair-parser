@@ -57,7 +57,7 @@ export type Config = {
 
 export const ConfigSchema = z
     .object({
-        version: z.nativeEnum(ParserVersionEnum).optional(),
+        version: z.enum(ParserVersionEnum).optional(),
         allowedClasses: z.array(z.string().min(1)).optional(),
         allowedTypes: z.array(z.string().min(1)).optional(),
         unlimited: z.number().int().min(1).optional(),
@@ -67,8 +67,8 @@ export const ConfigSchema = z
         fixGeometry: z.boolean().optional(),
         warnIfExpired: z.boolean().optional(),
         includeOpenair: z.boolean().optional(),
-        outputGeometry: z.nativeEnum(OutputGeometryEnum).optional(),
-        targetAltUnit: z.nativeEnum(AltitudeUnitEnum).optional(),
+        outputGeometry: z.enum(OutputGeometryEnum).optional(),
+        targetAltUnit: z.enum(AltitudeUnitEnum).optional(),
         roundAltValues: z.boolean().optional(),
     })
     .strict()

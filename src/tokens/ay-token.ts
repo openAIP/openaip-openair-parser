@@ -17,7 +17,7 @@ export const ConfigSchema = z
     .object({
         allowedTypes: z.array(z.string().nonempty()),
         tokenTypes: z.array(z.string().nonempty()),
-        version: z.nativeEnum(ParserVersionEnum),
+        version: z.enum(ParserVersionEnum),
     })
     .strict()
     .refine((data) => {

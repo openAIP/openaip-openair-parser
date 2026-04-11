@@ -46,7 +46,7 @@ export type Config = {
 export const ConfigSchema = z
     .object({
         geometryDetail: z.number().int().min(50),
-        version: z.nativeEnum(ParserVersionEnum),
+        version: z.enum(ParserVersionEnum),
     })
     .strict()
     .describe('ConfigSchema');
@@ -136,7 +136,8 @@ export class AirspaceFactory {
     protected buildCoordinatesFromAirway(ctx: { width: number; segments: Position[] }): Position[] {
         const { width, segments } = ctx;
         const airwayPathFeature = createLineString(segments);
-        const bufferKm = width * 1.852;
+        // buffer radius
+        const bufferKm = (width * 1.852) / 2;
         const airwayPolygon = createBuffer(airwayPathFeature, bufferKm, { units: 'kilometers' })?.geometry;
         if (airwayPolygon == null) {
             throw new ParserError({
