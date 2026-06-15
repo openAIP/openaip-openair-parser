@@ -2,8 +2,7 @@ name: Create NPM package
 on:
   push:
     tags:
-      - v0.**
-      - v1.**
+      - v2.**
 jobs:
   preflight:
     name: "Preflight checks"
