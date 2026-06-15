@@ -2,19 +2,19 @@ name: Create NPM package
 on:
   push:
     tags:
+      - v0.**
       - v1.**
-      - v2.**
 jobs:
   preflight:
     name: "Preflight checks"
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: "Check package.json version against tag"
         run: |
           # Extract the version from package.json
@@ -43,11 +43,11 @@ jobs:
           - 37017:27017
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Clear npm cache
         run: npm cache clean --force
       - name: Configure .npmrc
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
         # IMPORTANT this is important to make sure that tokens are not reused in subsequent steps
@@ -74,9 +74,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMATOR_DEVOPS_PAT }}
       - name: Clear npm cache
@@ -100,9 +100,9 @@ jobs:
           draft: false
           prerelease: false
       - name: Setup Node for publishing to GitHub Package Registry
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://npm.pkg.github.com/
           scope: "@openaip"
         env:
@@ -112,9 +112,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.AUTOMATOR_DEVOPS_PAT}}
       - name: Setup Node for publishing to NPM registry
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           registry-url: https://registry.npmjs.org
           scope: "@openaip"
         env:
