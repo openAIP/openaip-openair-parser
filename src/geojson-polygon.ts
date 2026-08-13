@@ -233,17 +233,35 @@ export function removeDuplicatePoints(polygon: Polygon, config?: { consumeDuplic
         throw new Error('Polygon must at least have four coordinates');
     }
 
-    const processed = [];
-    for (const coord of coordinates) {
-        const exists = processed.find((value) => {
-            // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
-            const minAllowedDistance = consumeDuplicateBuffer / 1000;
-            const distance = calcDistance(value, coord, { units: 'kilometers' });
-
-            return distance <= minAllowedDistance;
-        });
-        if (exists == null) {
+    // duplicate detection buffer in kilometers
+    const bufferKm = consumeDuplicateBuffer / 1000;
+    const processed: Position[] = [];
+    if (bufferKm === 0) {
+        // fast path: with no buffer, duplicates are exact-equal points -> O(N) via a key set
+        // instead of O(N^2) haversine distance computations
+        const seen = new Set<string>();
+        for (const coord of coordinates) {
+            const key = `${coord[0]},${coord[1]}`;
+            if (seen.has(key)) continue;
+            seen.add(key);
             processed.push(coord);
+        }
+    } else {
+        for (const coord of coordinates) {
+            const exists = processed.find((value) => {
+                // cheap bounding-box lower-bound check: if either the north-south or east-west
+                // component alone already exceeds the buffer, the great-circle distance certainly
+                // does too, so the expensive haversine call can be skipped (result is identical)
+                const nsKm = Math.abs(value[1] - coord[1]) * 110.0;
+                if (nsKm > bufferKm) return false;
+                const cosLat = Math.cos((Math.max(Math.abs(value[1]), Math.abs(coord[1])) * Math.PI) / 180);
+                const ewKm = Math.abs(value[0] - coord[0]) * 111.32 * cosLat;
+                if (ewKm > bufferKm) return false;
+                return calcDistance(value, coord, { units: 'kilometers' }) <= bufferKm;
+            });
+            if (exists == null) {
+                processed.push(coord);
+            }
         }
     }
     // make sure that the last coordinate equals the first coordinate - i.e. close the polygon
@@ -276,21 +294,28 @@ export function removeIntermediatePoints(polygon: Polygon, config?: { greedyVari
         greedyVariance: number;
     }) {
         const { coord, coordIdx, coordinateList, greedyVariance } = config;
-        // remove the currently processed coordinate from the list
-        const filteredList = coordinateList.filter((_: any, idx: number) => idx !== coordIdx);
-        for (let i = 0; i < filteredList.length; i++) {
+        const coordLng = coord[0];
+        const coordLat = coord[1];
+        // a coordinate can only be "intermediate" (collinear) between two coordinates that both
+        // precede it in the list - the original `coordIdx > i && coordIdx > i + 1` guard is equivalent
+        // to `i + 1 < coordIdx`, so bound the loop accordingly and skip the per-iteration array allocation
+        for (let i = 0; i + 1 < coordIdx; i++) {
             const coordA = coordinateList[i];
             const coordB = coordinateList[i + 1];
-            // calculate the bearing between the "coord" and the "coordA"
+            // cheap bbox pre-check: if coord lies outside the bbox of the (coordA, coordB) segment it
+            // cannot be between them, so the bearings cannot be ~180° apart - skip the costly calcBearing calls
+            const minX = Math.min(coordA[0], coordB[0]);
+            const maxX = Math.max(coordA[0], coordB[0]);
+            const minY = Math.min(coordA[1], coordB[1]);
+            const maxY = Math.max(coordA[1], coordB[1]);
+            if (coordLng < minX || coordLng > maxX || coordLat < minY || coordLat > maxY) {
+                continue;
+            }
+            // calculate the bearing between the "coord" and the "coordA" / "coordB"
             const bearingA = calcBearing(coord, coordA);
             const bearingB = calcBearing(coord, coordB);
             const bearingDelta = Math.abs(bearingA - bearingB);
-            if (
-                bearingDelta <= 180 + greedyVariance &&
-                bearingDelta >= 180 - greedyVariance &&
-                coordIdx > i &&
-                coordIdx > i + 1
-            ) {
+            if (bearingDelta <= 180 + greedyVariance && bearingDelta >= 180 - greedyVariance) {
                 return true;
             }
         }

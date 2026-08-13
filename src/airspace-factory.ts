@@ -699,14 +699,19 @@ export class AirspaceFactory {
     protected removeNearestCoordinates(coordinates: Position[], config: { minAllowedDistance?: number }): Position[] {
         const defaultConfig = { minAllowedDistance: 200 };
         const { minAllowedDistance } = { ...defaultConfig, ...config };
+        const bufferKm = minAllowedDistance / 1000;
         const processed: Position[] = [];
         for (const coord of coordinates) {
             const exists = processed.find((value) => {
-                // distance that is allowed to be between two coordinates - if below, the coordinate is cosidered a duplicate
-                const bufferDistance = minAllowedDistance / 1000;
-                const distance = calcDistance(value, coord, { units: 'kilometers' });
-
-                return distance <= bufferDistance;
+                // cheap bounding-box lower-bound check: if either the north-south or east-west
+                // component alone already exceeds the buffer, the great-circle distance certainly
+                // does too, so the expensive haversine call can be skipped (result is identical)
+                const nsKm = Math.abs(value[1] - coord[1]) * 110.0;
+                if (nsKm > bufferKm) return false;
+                const cosLat = Math.cos((Math.max(Math.abs(value[1]), Math.abs(coord[1])) * Math.PI) / 180);
+                const ewKm = Math.abs(value[0] - coord[0]) * 111.32 * cosLat;
+                if (ewKm > bufferKm) return false;
+                return calcDistance(value, coord, { units: 'kilometers' }) <= bufferKm;
             });
             if (exists == null) {
                 processed.push(coord);
