@@ -8,6 +8,9 @@ import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 type Metadata = { coordinate: Coordinate };
 
+// CoordinateParser is stateless - reuse a single instance instead of allocating one per line
+const coordinateParser = new CoordinateParser();
+
 /**
  * Tokenizes "DP" airspace polygon coordinate definition.
  */
@@ -15,9 +18,6 @@ export class DpToken extends AbstractLineToken<Metadata> {
     public static TYPE: TokenType = TokenTypeEnum.DP;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is DP line e.g. "DP 54:25:00 N 010:40:00 E"
         return /^DP\s+.*$/.test(line);
     }
@@ -35,8 +35,7 @@ export class DpToken extends AbstractLineToken<Metadata> {
         const linePartCoordinate = line.replace(/^DP\s+/, '');
         let coordinate: Coordinate;
         try {
-            const parser = new CoordinateParser();
-            coordinate = parser.parse(linePartCoordinate.trim());
+            coordinate = coordinateParser.parse(linePartCoordinate.trim());
         } catch (err) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }

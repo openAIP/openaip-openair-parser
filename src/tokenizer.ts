@@ -66,6 +66,12 @@ export class Tokenizer {
     protected prevToken: IToken | undefined = undefined;
     protected currentLineNumber = 0;
     protected currentLineString: string | undefined = undefined;
+    // dispatch maps for O(1) tokenizer lookup by line prefix
+    protected prefixDispatch: Map<string, IToken> = new Map();
+    protected vDispatch: Map<string, IToken> = new Map();
+    protected skippedDispatch: Map<string, IToken> = new Map();
+    protected commentTokenizer: IToken | undefined = undefined;
+    protected blankTokenizer: IToken | undefined = undefined;
 
     constructor(config: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -112,6 +118,76 @@ export class Tokenizer {
             new AxToken({ tokenTypes: TOKEN_TYPES, version }),
             new AaToken({ tokenTypes: TOKEN_TYPES, version, warnIfExpired }),
         ];
+
+        // build prefix -> tokenizer dispatch maps for fast line routing
+        const byType = new Map<TokenType, IToken>();
+        for (const tokenizer of this.tokenizers) {
+            byType.set(tokenizer.type, tokenizer);
+        }
+        const twoLetterPrefixes: Record<string, TokenType> = {
+            AC: TokenTypeEnum.AC,
+            AN: TokenTypeEnum.AN,
+            AH: TokenTypeEnum.AH,
+            AL: TokenTypeEnum.AL,
+            DP: TokenTypeEnum.DP,
+            DC: TokenTypeEnum.DC,
+            DB: TokenTypeEnum.DB,
+            DA: TokenTypeEnum.DA,
+            DY: TokenTypeEnum.DY,
+            AY: TokenTypeEnum.AY,
+            AF: TokenTypeEnum.AF,
+            AG: TokenTypeEnum.AG,
+            AX: TokenTypeEnum.AX,
+            AA: TokenTypeEnum.AA,
+        };
+        for (const [prefix, type] of Object.entries(twoLetterPrefixes)) {
+            const tokenizer = byType.get(type);
+            if (tokenizer != null) this.prefixDispatch.set(prefix, tokenizer);
+        }
+        // "V <letter>=" tokens are dispatched by the variable letter after "V "
+        this.vDispatch.set('D', byType.get(TokenTypeEnum.VD) as IToken);
+        this.vDispatch.set('X', byType.get(TokenTypeEnum.VX) as IToken);
+        this.vDispatch.set('W', byType.get(TokenTypeEnum.VW) as IToken);
+        // "V Z=" is a skipped token
+        this.vDispatch.set('Z', byType.get(TokenTypeEnum.SKIPPED) as IToken);
+        // skipped token prefixes (AT, TO, TC, SP, SB)
+        const skippedTokenizer = byType.get(TokenTypeEnum.SKIPPED) as IToken;
+        for (const prefix of ['AT', 'TO', 'TC', 'SP', 'SB']) {
+            this.skippedDispatch.set(prefix, skippedTokenizer);
+        }
+        this.commentTokenizer = byType.get(TokenTypeEnum.COMMENT);
+        this.blankTokenizer = byType.get(TokenTypeEnum.BLANK);
+    }
+
+    /**
+     * Resolves the tokenizer that is responsible for the given line by prefix dispatch.
+     * Returns undefined if no prefix match is found; callers must fall back to a full scan
+     * to preserve the original "unknown syntax" behavior for malformed lines.
+     */
+    protected resolveTokenizer(line: string): IToken | undefined {
+        if (line.length === 0) {
+            return this.blankTokenizer;
+        }
+        if (line[0] === '*') {
+            return this.commentTokenizer;
+        }
+        if (line.length >= 2) {
+            const prefix = line.slice(0, 2);
+            if (prefix === 'V ') {
+                // skip whitespace after "V " and dispatch by the variable letter (D/X/W/Z)
+                let i = 2;
+                while (i < line.length && line[i] === ' ') {
+                    i++;
+                }
+                return this.vDispatch.get(line[i]);
+            }
+            const skipped = this.skippedDispatch.get(prefix);
+            if (skipped != null) {
+                return skipped;
+            }
+            return this.prefixDispatch.get(prefix);
+        }
+        return undefined;
     }
 
     /**
@@ -132,8 +208,13 @@ export class Tokenizer {
             // call trim to also remove newlines
             this.currentLineString = line.trim();
 
-            // find the tokenizer that can handle the current line
-            const lineTokenizer = this.tokenizers.find((value) => value.canHandle(this.currentLineString as string));
+            // find the tokenizer that can handle the current line - try the fast prefix dispatch
+            // first, then fall back to a full scan to preserve behavior for malformed lines
+            const candidate = this.resolveTokenizer(this.currentLineString as string);
+            const lineTokenizer =
+                candidate != null && candidate.canHandle(this.currentLineString as string)
+                    ? candidate
+                    : this.tokenizers.find((value) => value.canHandle(this.currentLineString as string));
             if (lineTokenizer == null) {
                 // fail hard if unable to find a tokenizer for a specific line
                 throw new ParserError({

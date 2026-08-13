@@ -14,7 +14,7 @@ import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error.js';
 import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 import { AaToken, BY_NOTAM_ACTIVATION } from './tokens/aa-token.js';
-import { AbstractLineToken, type IToken } from './tokens/abstract-line-token.js';
+import { AbstractLineToken, type IToken } from './tokens/abstract-line-token.js';;
 import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
 import { AgToken } from './tokens/ag-token.js';
@@ -37,6 +37,30 @@ import { VwToken } from './tokens/vw-token.js';
 import { VxToken } from './tokens/vx-token.js';
 import { metersToFeet } from './unit-conversion.js';
 import { validateSchema } from './validate-schema.js';
+
+// Earth radius in meters as used by @turf/helpers (6371008.8); kilometers factor for lengthToRadians
+const TURF_EARTH_RADIUS_KM = 6371008.8 / 1000;
+
+/**
+ * Direct geodesic "destination" computation, bit-identical to @turf/destination with
+ * { units: 'kilometers' }, but without allocating a turf Feature per point. Returns [lng, lat].
+ */
+function destinationKm(center: Position, distanceKm: number, bearingDeg: number): Position {
+    const longitude1 = (center[0] % 360) * (Math.PI / 180);
+    const latitude1 = (center[1] % 360) * (Math.PI / 180);
+    const bearingRad = (bearingDeg % 360) * (Math.PI / 180);
+    const radians = distanceKm / TURF_EARTH_RADIUS_KM;
+    const latitude2 = Math.asin(
+        Math.sin(latitude1) * Math.cos(radians) + Math.cos(latitude1) * Math.sin(radians) * Math.cos(bearingRad)
+    );
+    const longitude2 = longitude1 + Math.atan2(
+        Math.sin(bearingRad) * Math.sin(radians) * Math.cos(latitude1),
+        Math.cos(radians) - Math.sin(latitude1) * Math.sin(latitude2)
+    );
+    const lng = (longitude2 % (2 * Math.PI)) * (180 / Math.PI);
+    const lat = (latitude2 % (2 * Math.PI)) * (180 / Math.PI);
+    return [lng, lat];
+}
 
 export type Config = {
     geometryDetail: number;
@@ -779,8 +803,8 @@ export class AirspaceFactory {
             if (bearing > 180) bearing -= 360;
             if (bearing < -180) bearing += 360;
             // create arc point at current bearing and radius
-            const arcPoint = destination(arcCenterCoordinate, currentRadius, bearing, { units: 'kilometers' });
-            coordinates.push(arcPoint.geometry.coordinates);
+            // direct geodesic math - no turf Feature allocation per point
+            coordinates.push(destinationKm(arcCenterCoordinate, currentRadius, bearing));
         }
         // ensure the last point exactly matches the target
         coordinates[coordinates.length - 1] = endCoordinate;

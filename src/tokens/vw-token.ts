@@ -13,9 +13,6 @@ export class VwToken extends AbstractLineToken<Metadata> {
     public static TYPE: TokenType = TokenTypeEnum.VW;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is W line e.g. "V W=2.5"
         return /^V\s+W=.*$/.test(line);
     }

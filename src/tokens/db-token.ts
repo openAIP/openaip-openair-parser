@@ -8,6 +8,9 @@ import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 type Metadata = { startCoordinate: Coordinate; endCoordinate: Coordinate };
 
+// CoordinateParser is stateless - reuse a single instance instead of allocating one per line
+const coordinateParser = new CoordinateParser();
+
 /**
  * Tokenizes "DB" airspace arc endpoints definition.
  */
@@ -15,9 +18,6 @@ export class DbToken extends AbstractLineToken<Metadata> {
     public static TYPE: TokenType = TokenTypeEnum.DB;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is DB line e.g. "DB 52:22:39 N 013:08:15 E , 52:24:33 N 013:11:02 E"
         return /^DB\s+.*$/.test(line);
     }
@@ -50,8 +50,7 @@ export class DbToken extends AbstractLineToken<Metadata> {
     }
 
     getCoordinate(coordinateString: string): Coordinate {
-        const parser = new CoordinateParser();
-        const parsedCoordinate: Coordinate = parser.parse(coordinateString.trim());
+        const parsedCoordinate: Coordinate = coordinateParser.parse(coordinateString.trim());
 
         return parsedCoordinate;
     }

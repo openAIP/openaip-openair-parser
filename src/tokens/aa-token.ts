@@ -43,9 +43,6 @@ export class AaToken extends AbstractLineToken<Metadata> {
     }
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is AA line e.g. "AA 2023-12-16T12:00Z/2023-12-16T13:00Z" or "NONE/2023-12-16T13:00Z" or "AA 2023-12-16T12:00Z/NONE" or "NONE"
         return /^AA\s+.*$/.test(line);
     }

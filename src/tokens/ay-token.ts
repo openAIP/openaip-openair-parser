@@ -47,10 +47,7 @@ export class AyToken extends AbstractLineToken<Metadata> {
     }
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
-        // is AC line e.g. "AC D"
+        // is AY line e.g. "AY CTA"
         return /^AY\s+.*$/.test(line);
     }
 

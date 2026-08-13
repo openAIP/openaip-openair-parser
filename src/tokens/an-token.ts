@@ -14,9 +14,6 @@ export class AnToken extends AbstractLineToken<Metadata> {
     static TYPE: TokenType = TokenTypeEnum.AN;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is AN line e.g. "AN ED-R10B Todendorf-Putlos MON-SAT+"
         return /^AN\s+.*$/.test(line);
     }

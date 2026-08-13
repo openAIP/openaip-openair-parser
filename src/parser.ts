@@ -87,6 +87,8 @@ export class Parser {
     protected currentState: ParserState = ParserStateEnum.START;
     protected currentToken: IToken | undefined = undefined;
     protected geojson: FeatureCollection<Polygon | LineString, AirspaceProperties> | undefined = undefined;
+    // reused across airspace blocks - createAirspace() resets internal state itself
+    protected airspaceFactory: AirspaceFactory;
 
     constructor(config?: Config) {
         validateSchema(config, ConfigSchema, { assert: true, name: 'config' });
@@ -95,6 +97,10 @@ export class Parser {
         const parserVersion = config?.version || ParserVersionEnum.VERSION_2;
         const defaultParserConfig = defaultConfigFactory(parserVersion);
         this.config = { ...defaultParserConfig, ...config } as Required<Config>;
+                this.airspaceFactory = new AirspaceFactory({
+                    geometryDetail: this.config.geometryDetail,
+                    version: this.config.version,
+                });
     }
 
     parse(filepath: string): ParserResult {
@@ -229,11 +235,7 @@ export class Parser {
      * Builds airspace from a given list of airspace tokens.
      */
     protected buildAirspace(airspaceTokens: IToken[]): void {
-        const factory = new AirspaceFactory({
-            geometryDetail: this.config.geometryDetail,
-            version: this.config.version,
-        });
-        const airspace = factory.createAirspace(airspaceTokens);
+        const airspace = this.airspaceFactory.createAirspace(airspaceTokens);
         if (airspace != null) {
             // push new airspace to list
             this.airspaces.push(airspace);

@@ -13,9 +13,6 @@ export class VdToken extends AbstractLineToken<Metadata> {
     public static TYPE: TokenType = TokenTypeEnum.VD;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is VD line e.g. "V D=-"
         return /^V\s+D=[+-]$/.test(line);
     }

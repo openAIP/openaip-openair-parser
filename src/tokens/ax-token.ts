@@ -13,9 +13,6 @@ export class AxToken extends AbstractLineToken<Metadata> {
     public static TYPE: TokenType = TokenTypeEnum.AX;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is AX line e.g. "AX 7000"
         return /^AX\s+.*$/.test(line);
     }

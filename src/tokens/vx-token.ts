@@ -8,6 +8,9 @@ import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
 
 type Metadata = { coordinate: Coordinate };
 
+// CoordinateParser is stateless - reuse a single instance instead of allocating one per line
+const coordinateParser = new CoordinateParser();
+
 /**
  * Tokenizes "V X=" airspace circle center coordinate definition.
  */
@@ -15,9 +18,6 @@ export class VxToken extends AbstractLineToken<Metadata> {
     public static TYPE: TokenType = TokenTypeEnum.VX;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is V line e.g. "V X=53:24:25 N 010:25:10 E"
         return /^V\s+X=.*$/.test(line);
     }
@@ -34,8 +34,7 @@ export class VxToken extends AbstractLineToken<Metadata> {
         const linePartCoordinate = line.replace(/^V\s+[X]=/, '');
         let coordinate: Coordinate;
         try {
-            const parser = new CoordinateParser();
-            coordinate = parser.parse(linePartCoordinate.trim());
+            coordinate = coordinateParser.parse(linePartCoordinate.trim());
         } catch (err) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown coordinate definition '${line}'` });
         }

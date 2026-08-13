@@ -13,9 +13,6 @@ export class AhToken extends AbstractAltitudeToken {
     public static TYPE: TokenType = TokenTypeEnum.AH;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is AH line e.g. "AH 40000ft AMSL"
         return /^AH\s+.*$/.test(line);
     }

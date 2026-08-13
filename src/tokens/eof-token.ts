@@ -38,9 +38,6 @@ export class EofToken extends AbstractLineToken<undefined> {
     }
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // IMPORTANT cannot handle any line
         return false;
     }

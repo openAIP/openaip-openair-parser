@@ -13,9 +13,6 @@ export class AlToken extends AbstractAltitudeToken {
     public static TYPE: TokenType = TokenTypeEnum.AL;
 
     canHandle(line: string): boolean {
-        // IMPORTANT only validate string - string MAY be empty
-        validateSchema(line, z.string(), { assert: true, name: 'line' });
-
         // is AL line e.g. "AL GND"
         return /^AL\s+.*$/.test(line);
     }
