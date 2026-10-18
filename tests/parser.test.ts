@@ -250,6 +250,9 @@ describe('Format Version 2: Test parse airspace definition blocks', () => {
     test('parse airspace with optional AY type command', () => {
         expectFixtureToMatchExpectedResult('version-2/ay.txt', 'version-2/ay-result.json');
     });
+    test('parse airspace without AY type command', () => {
+        expectFixtureToMatchExpectedResult('version-2/ay-missing.txt', 'version-2/ay-missing-result.json');
+    });
     test('parse airspace with AF frequency command and missing optional AG ground station', () => {
         expectFixtureToMatchExpectedResult('version-2/af-only.txt', 'version-2/af-only-result.json');
     });

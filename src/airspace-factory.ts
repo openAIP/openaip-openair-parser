@@ -14,7 +14,8 @@ import { AltitudeUnitEnum } from './altitude-unit.enum.js';
 import { ParserError } from './parser-error.js';
 import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 import { AaToken, BY_NOTAM_ACTIVATION } from './tokens/aa-token.js';
-import { AbstractLineToken, type IToken } from './tokens/abstract-line-token.js';;
+import { AbstractLineToken, type IToken } from './tokens/abstract-line-token.js';
+
 import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
 import { AgToken } from './tokens/ag-token.js';
@@ -53,10 +54,12 @@ function destinationKm(center: Position, distanceKm: number, bearingDeg: number)
     const latitude2 = Math.asin(
         Math.sin(latitude1) * Math.cos(radians) + Math.cos(latitude1) * Math.sin(radians) * Math.cos(bearingRad)
     );
-    const longitude2 = longitude1 + Math.atan2(
-        Math.sin(bearingRad) * Math.sin(radians) * Math.cos(latitude1),
-        Math.cos(radians) - Math.sin(latitude1) * Math.sin(latitude2)
-    );
+    const longitude2 =
+        longitude1 +
+        Math.atan2(
+            Math.sin(bearingRad) * Math.sin(radians) * Math.cos(latitude1),
+            Math.cos(radians) - Math.sin(latitude1) * Math.sin(latitude2)
+        );
     const lng = (longitude2 % (2 * Math.PI)) * (180 / Math.PI);
     const lat = (latitude2 % (2 * Math.PI)) * (180 / Math.PI);
     return [lng, lat];

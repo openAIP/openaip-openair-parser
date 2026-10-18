@@ -97,10 +97,10 @@ export class Parser {
         const parserVersion = config?.version || ParserVersionEnum.VERSION_2;
         const defaultParserConfig = defaultConfigFactory(parserVersion);
         this.config = { ...defaultParserConfig, ...config } as Required<Config>;
-                this.airspaceFactory = new AirspaceFactory({
-                    geometryDetail: this.config.geometryDetail,
-                    version: this.config.version,
-                });
+        this.airspaceFactory = new AirspaceFactory({
+            geometryDetail: this.config.geometryDetail,
+            version: this.config.version,
+        });
     }
 
     parse(filepath: string): ParserResult {
@@ -188,12 +188,11 @@ export class Parser {
                     success: false,
                     error: err,
                 };
-            } else {
-                return {
-                    success: false,
-                    error: new ParserError({ errorMessage: 'Unhandled parser error' }),
-                };
             }
+
+            // unexpected errors indicate a bug, not a malformed input file - rethrow instead of
+            // masking it as a parse failure
+            throw err;
         }
     }
 
