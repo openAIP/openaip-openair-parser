@@ -248,37 +248,31 @@ describe('Test parse airspace definition blocks', () => {
 
 describe('Format Version 2: Test parse airspace definition blocks', () => {
     test('parse airspace with optional AY type command', () => {
-        expectFixtureToMatchExpectedResult('version-2/ay.txt', 'version-2/ay-result.json');
+        expectFixtureToMatchExpectedResult('ay.txt', 'ay-result.json');
     });
     test('parse airspace without AY type command', () => {
-        expectFixtureToMatchExpectedResult('version-2/ay-missing.txt', 'version-2/ay-missing-result.json');
+        expectFixtureToMatchExpectedResult('ay-missing.txt', 'ay-missing-result.json');
     });
     test('parse airspace with AF frequency command and missing optional AG ground station', () => {
-        expectFixtureToMatchExpectedResult('version-2/af-only.txt', 'version-2/af-only-result.json');
+        expectFixtureToMatchExpectedResult('af-only.txt', 'af-only-result.json');
     });
     test('parse airspace with AF frequency before AG ground station command', () => {
-        expectFixtureToMatchExpectedResult('version-2/af-before-ag.txt', 'version-2/af-before-ag-result.json');
+        expectFixtureToMatchExpectedResult('af-before-ag.txt', 'af-before-ag-result.json');
     });
     test('parse airspace with AG ground station before AF frequency command', () => {
-        expectFixtureToMatchExpectedResult('version-2/ag-before-af.txt', 'version-2/ag-before-af-result.json');
+        expectFixtureToMatchExpectedResult('ag-before-af.txt', 'ag-before-af-result.json');
     });
     test('parse airspace with AF and AG commands after altitude commands', () => {
-        expectFixtureToMatchExpectedResult(
-            'version-2/af-ag-after-altitude.txt',
-            'version-2/af-ag-after-altitude-result.json'
-        );
+        expectFixtureToMatchExpectedResult('af-ag-after-altitude.txt', 'af-ag-after-altitude-result.json');
     });
     test('parse airspace with AF and AG commands in arbitrary order', () => {
-        expectFixtureToMatchExpectedResult(
-            'version-2/af-ag-arbitrary-order.txt',
-            'version-2/af-ag-arbitrary-order-result.json'
-        );
+        expectFixtureToMatchExpectedResult('af-ag-arbitrary-order.txt', 'af-ag-arbitrary-order-result.json');
     });
     test('parse airspace with multiple AA activation windows including open intervals', () => {
-        expectFixtureToMatchExpectedResult('version-2/aa-multiple.txt', 'version-2/aa-multiple-result.json');
+        expectFixtureToMatchExpectedResult('aa-multiple.txt', 'aa-multiple-result.json');
     });
     test('parse airspace with all version 2 commands', () => {
-        expectFixtureToMatchExpectedResult('version-2/all-commands.txt', 'version-2/all-commands-result.json');
+        expectFixtureToMatchExpectedResult('version2-all-commands.txt', 'version2-all-commands-result.json');
     });
     test('parse activation times', () => {
         const expectedJson = loadParserJsonResult('activation-times-result.json');
