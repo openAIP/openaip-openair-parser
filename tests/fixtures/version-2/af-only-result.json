@@ -1,0 +1,28 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "value": "123.505"
+                },
+                "transponderCode": 7000,
+                "byNotam": false,
+                "upperCeiling": {
+                    "value": 40000,
+                    "unit": "FT",
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
+                }
+            }
+        }
+    ]
+}

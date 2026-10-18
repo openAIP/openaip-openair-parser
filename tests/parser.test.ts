@@ -240,27 +240,42 @@ describe('Test parse airspace definition blocks', () => {
 
         geojson.features.map((value) => delete value.id);
         geojson.features.map((value) => delete (value.properties as any).id);
-        
+
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
     });
 });
 
 describe('Format Version 2: Test parse airspace definition blocks', () => {
-    test('parse commands', () => {
-        const expectedJson = loadParserJsonResult('version-2-commands-result.json');
-        const openairParser = new Parser();
-        const { success } = openairParser.parse('./tests/fixtures/version-2-commands.txt');
-        const geojson = openairParser.toGeojson();
-        // remove unnecessary props from received json - only check properties
-
-        expectedJson.features.map((value: any) => delete value.geometry);
-        geojson.features.map((value) => delete value.id);
-        geojson.features.map((value) => delete (value.properties as any).id);
-        geojson.features.map((value: any) => delete value.geometry);
-
-        expect(success).toBe(true);
-        expect(geojson).toEqual(expectedJson);
+    test('parse airspace with optional AY type command', () => {
+        expectFixtureToMatchExpectedResult('version-2/ay.txt', 'version-2/ay-result.json');
+    });
+    test('parse airspace with AF frequency command and missing optional AG ground station', () => {
+        expectFixtureToMatchExpectedResult('version-2/af-only.txt', 'version-2/af-only-result.json');
+    });
+    test('parse airspace with AF frequency before AG ground station command', () => {
+        expectFixtureToMatchExpectedResult('version-2/af-before-ag.txt', 'version-2/af-before-ag-result.json');
+    });
+    test('parse airspace with AG ground station before AF frequency command', () => {
+        expectFixtureToMatchExpectedResult('version-2/ag-before-af.txt', 'version-2/ag-before-af-result.json');
+    });
+    test('parse airspace with AF and AG commands after altitude commands', () => {
+        expectFixtureToMatchExpectedResult(
+            'version-2/af-ag-after-altitude.txt',
+            'version-2/af-ag-after-altitude-result.json'
+        );
+    });
+    test('parse airspace with AF and AG commands in arbitrary order', () => {
+        expectFixtureToMatchExpectedResult(
+            'version-2/af-ag-arbitrary-order.txt',
+            'version-2/af-ag-arbitrary-order-result.json'
+        );
+    });
+    test('parse airspace with multiple AA activation windows including open intervals', () => {
+        expectFixtureToMatchExpectedResult('version-2/aa-multiple.txt', 'version-2/aa-multiple-result.json');
+    });
+    test('parse airspace with all version 2 commands', () => {
+        expectFixtureToMatchExpectedResult('version-2/all-commands.txt', 'version-2/all-commands-result.json');
     });
     test('parse activation times', () => {
         const expectedJson = loadParserJsonResult('activation-times-result.json');
@@ -676,6 +691,27 @@ function loadParserJsonResult(filename: string) {
     const fileContent = fs.readFileSync(filePath);
 
     return JSON.parse(fileContent.toString());
+}
+
+/**
+ * Parses the given fixture file (relative to "tests/fixtures") and asserts that parsing succeeds and that the
+ * resulting GeoJSON properties match the expected result JSON file. Geometry and internal ids are removed before
+ * comparison - only properties are checked.
+ */
+function expectFixtureToMatchExpectedResult(fixtureFilename: string, expectedResultFilename: string) {
+    const expectedJson = loadParserJsonResult(expectedResultFilename);
+    const openairParser = new Parser();
+    const { success } = openairParser.parse(`./tests/fixtures/${fixtureFilename}`);
+    const geojson = openairParser.toGeojson();
+    // remove unnecessary props from received json - only check properties
+
+    expectedJson.features.map((value: any) => delete value.geometry);
+    geojson.features.map((value) => delete value.id);
+    geojson.features.map((value) => delete (value.properties as any).id);
+    geojson.features.map((value: any) => delete value.geometry);
+
+    expect(success).toBe(true);
+    expect(geojson).toEqual(expectedJson);
 }
 
 /**

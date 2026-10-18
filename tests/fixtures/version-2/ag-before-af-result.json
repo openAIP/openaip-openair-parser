@@ -1,0 +1,28 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "TMA Todendorf-Putlos",
+                "class": "D",
+                "type": "TMA",
+                "frequency": {
+                    "name": "Ground Station Name",
+                    "value": "123.505"
+                },
+                "byNotam": false,
+                "upperCeiling": {
+                    "value": 40000,
+                    "unit": "FT",
+                    "referenceDatum": "MSL"
+                },
+                "lowerCeiling": {
+                    "value": 0,
+                    "unit": "FT",
+                    "referenceDatum": "GND"
+                }
+            }
+        }
+    ]
+}
