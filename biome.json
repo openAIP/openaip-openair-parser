@@ -32,7 +32,8 @@
                 "noExplicitAny": "off"
             },
             "complexity": {
-                "noBannedTypes": "off"
+                "noBannedTypes": "off",
+                "useOptionalChain": "off"
             }
         }
     },
