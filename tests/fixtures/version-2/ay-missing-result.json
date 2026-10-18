@@ -6,7 +6,6 @@
             "properties": {
                 "name": "TMA Todendorf-Putlos",
                 "class": "D",
-                "type": "NONE",
                 "transponderCode": 7000,
                 "byNotam": false,
                 "upperCeiling": {

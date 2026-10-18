@@ -110,7 +110,7 @@ export class AirspaceFactory {
         this.reset();
         this.tokens = tokens;
         this.airspace = new Airspace();
-        // if version 2 is used, set byNotam to false by default
+        // if version 2 is used, set optional/default values
         if (this.version === ParserVersionEnum.VERSION_2) {
             this.airspace.byNotam = false;
         }
@@ -320,11 +320,6 @@ export class AirspaceFactory {
     protected validateTokenInventory(): void {
         // tokens that are always required, no matter if "standard" or "extended" format is used
         const requiredTokens = [AcToken.TYPE, AnToken.TYPE, AlToken.TYPE, AhToken.TYPE];
-        // if version 2 is used, add the version 2 tokens to the required tokens list
-        if (this.version === ParserVersionEnum.VERSION_2) {
-            // AY token is required, all others are optional
-            requiredTokens.push(AyToken.TYPE);
-        }
         const requiredTokensInventory: TokenType[] = [];
         let definitionBlockStart: number | undefined;
 

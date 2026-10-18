@@ -588,17 +588,7 @@ describe('Version 2: Test parse invalid airspace definition blocks', () => {
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error?.message).toEqual(
-            'Error found at line 3: Airspace definition block is missing required tokens: AL, AH, AY'
-        );
-    });
-    test('single airspace with missing AY tag', () => {
-        const openairParser = new Parser();
-        const { success, error } = openairParser.parse('./tests/fixtures/missing-AY.txt');
-
-        expect(success).toBe(false);
-        expect(error).toBeDefined();
-        expect(error?.message).toEqual(
-            'Error found at line 1: Airspace definition block is missing required tokens: AY'
+            'Error found at line 3: Airspace definition block is missing required tokens: AL, AH'
         );
     });
     test('airspace with invalid activation times', () => {
