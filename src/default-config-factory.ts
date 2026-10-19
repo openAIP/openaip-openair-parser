@@ -40,7 +40,9 @@ export function defaultConfigFactory(version: ParserVersion): ParserConfig {
         unlimited: 999,
         // Defines the level of detail (smoothness) of arc/circular geometries.
         geometryDetail: 100,
-        // Defines the minimum distance between two points in meters. If two points are closer than this value, they will be merged into one point. Defaults to 0.
+        // Defines the minimum distance between two points in meters. If two directly consecutive points are closer
+        // than this value, they are merged into one point. Points that the outline passes more than once are never merged
+        // as removing them would alter the geometry. Defaults to 0.
         consumeDuplicateBuffer: 0,
         // If true, validates each built airspace geometry to be valid/simple geometry - also checks for self intersections.
         validateGeometry: true,

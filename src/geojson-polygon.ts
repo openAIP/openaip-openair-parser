@@ -3,6 +3,7 @@ import {
     bearing as calcBearing,
     distance as calcDistance,
     kinks as checkSelfIntersections,
+    convex,
     featureCollection as createFeatureCollection,
     point as createPoint,
     polygon as createPolygon,
@@ -132,9 +133,20 @@ export function getLargestPolygon(polygons: Polygon[]): Polygon {
 }
 
 /**
- * Tries to create a valid geometry without any self-intersections and holes from the input coordinates.
- * This does ALTER the geometry and will return a valid geometry instead. Depending on the size of self-intersections,
- * holes and other errors, the returned geometry may differ A LOT from the original one!
+ * Tries to create a valid geometry from the input coordinates by applying a ladder of repairs in decreasing order
+ * of fidelity. This does ALTER the geometry and will return a valid geometry instead - depending on the error, the
+ * returned geometry may differ A LOT from the original one! The ladder is:
+ *
+ * 1. Lossless preparation - close the ring, remove consecutive duplicate points and collinear intermediate points.
+ * 2. If the prepared ring is already valid, it is returned unchanged.
+ * 3. Revisited vertices - the ring is split at each vertex the outline passes more than once and the largest
+ *    enclosed loop is kept. This interprets the "seam" encoding of an airspace with a hole (outer ring -> seam ->
+ *    hole -> seam back -> outer ring) as well as degenerate spikes (a -> b -> a): the largest loop is the outer
+ *    ring, the smaller loops (the hole outline, the spike) are discarded. NOTE until holes are supported, the
+ *    hole area is over-included in the result - this is the closest possible single-polygon approximation.
+ * 4. Self intersections - the ring is unkinked and the largest simple polygon is kept.
+ * 5. Convex hull - if unkinking fails, the convex hull of all points is used.
+ * 6. Envelope - the bounding box of all points as a last resort.
  *
  * This function only takes a list of coordinates which makes it possible to pass an invalid polygon geometry
  * and return a valid polygon geometry instead. The function requires at least three coordinates. The 4th, i.e. the
@@ -145,7 +157,7 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
     validateSchema(
         config,
         z
-            .object({ buffer: z.number().int().min(0).optional() })
+            .object({ consumeDuplicateBuffer: z.number().int().min(0).optional() })
             .strict()
             .optional(),
         {
@@ -164,9 +176,26 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
         }
         // create a polygon feature from the coordinates
         const polygon = createPolygon([coordinates]).geometry;
-        // prepare "raw" coordinates first before creating a polygon feature
+        // stage 1: lossless preparation - consecutive duplicates and collinear intermediate points
         let fixedPolygon = removeDuplicatePoints(polygon, { consumeDuplicateBuffer });
         fixedPolygon = removeIntermediatePoints(fixedPolygon);
+        // stage 2: if the prepared ring is already valid, no fix is required - return it unchanged
+        if (isValid(fixedPolygon)) {
+            return withRightHandRule(fixedPolygon);
+        }
+        // stage 3: split the ring at revisited vertices (seam/spike encodings) and keep the largest loop - this
+        // preserves the outer ring without cutting corners off it
+        const preparedCoordinates = fixedPolygon.coordinates[0];
+        const largestLoop = extractLargestLoop(preparedCoordinates);
+        if (largestLoop !== preparedCoordinates && largestLoop.length >= 4) {
+            const loopPolygon = withRightHandRule(createPolygon([largestLoop]).geometry);
+            if (isValid(loopPolygon)) {
+                return loopPolygon;
+            }
+            // the largest loop is still invalid (e.g. due to a self intersection) - continue the repair on it
+            fixedPolygon = loopPolygon;
+        }
+        // stage 4: unkink the ring and keep the largest simple polygon
         const unkinkedFeatureCollection = unkinkPolygon(fixedPolygon) as FeatureCollection<Polygon>;
         // convert to list of polygon geometries
         const fixedPolygons = unkinkedFeatureCollection.features.map((feature) => feature.geometry);
@@ -174,8 +203,24 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
         const polygonsWithRightHandRule = fixedPolygons.map((polygon) => {
             return withRightHandRule(polygon);
         });
-
-        return getLargestPolygon(polygonsWithRightHandRule);
+        const largestPolygon = getLargestPolygon(polygonsWithRightHandRule);
+        if (isValid(largestPolygon)) {
+            return largestPolygon;
+        }
+        // stage 5: use the convex hull of all points as a fallback
+        const pointFeatures: Feature<Point>[] = [];
+        for (const coord of coordinates) {
+            pointFeatures.push(createPoint(coord));
+        }
+        const convexHullFeature = convex(createFeatureCollection(pointFeatures));
+        if (convexHullFeature != null && convexHullFeature.geometry.type === 'Polygon') {
+            const hullPolygon = withRightHandRule(convexHullFeature.geometry);
+            if (isValid(hullPolygon)) {
+                return hullPolygon;
+            }
+        }
+        // stage 6: use the envelope (bounding box) as a last resort
+        return envelope(createFeatureCollection(pointFeatures)).geometry;
     } catch (err) {
         /*
         Use "envelope" on edge cases that cannot be fixed with above logic. Resulting geometry will be
@@ -208,8 +253,71 @@ export function withRightHandRule(polygon: Polygon): Polygon {
 }
 
 /**
- * Removes high duplicate coordinates by default. Optional can be configured to also remove a coordinate if
- * another coordinate is within a defined buffer in meters.
+ * Splits a closed ring at every vertex the outline passes more than once and returns the loop that encloses the
+ * largest area as a closed ring. If the ring has no revisited vertices, the input ring is returned as is (same
+ * reference).
+ *
+ * The ring is traversed once while keeping the current path. When a vertex is reached that is already on the path,
+ * the part of the path from its first visit up to now is a closed loop: it is cut out and the traversal continues
+ * from that vertex. What remains at the end is the final loop. For the seam encoding of an airspace with a hole
+ * (outer ring -> seam -> hole -> seam back -> outer ring) this yields the outer ring, the hole outline and the
+ * degenerate seam (P -> Q -> P) - the outer ring is the largest of them. Loops with fewer than three distinct
+ * vertices (spikes, seams) enclose no area and are discarded.
+ */
+function extractLargestLoop(ring: Position[]): Position[] {
+    // work on the open ring, i.e. without the closing coordinate
+    const openRing = ring.slice(0, -1);
+    const toKey = (coord: Position) => `${coord[0]},${coord[1]}`;
+
+    const loops: Position[][] = [];
+    const path: Position[] = [];
+    // maps a coordinate key to its index on the current path
+    const pathIndex = new Map<string, number>();
+    for (const coord of openRing) {
+        const key = toKey(coord);
+        const firstVisitIndex = pathIndex.get(key);
+        if (firstVisitIndex != null) {
+            // vertex is revisited - cut out the loop from its first visit up to now, keep the vertex on the path
+            const loop = path.splice(firstVisitIndex + 1);
+            for (const removed of loop) {
+                pathIndex.delete(toKey(removed));
+            }
+            loops.push([coord, ...loop, coord]);
+            continue;
+        }
+        pathIndex.set(key, path.length);
+        path.push(coord);
+    }
+    // no revisited vertex found - ring is returned unchanged
+    if (loops.length === 0) {
+        return ring;
+    }
+    // the remaining path is the final loop
+    loops.push([...path, path[0]]);
+
+    let largestLoop: Position[] = ring;
+    let largestLoopArea = 0;
+    for (const loop of loops) {
+        // a closed loop requires at least three distinct vertices to enclose an area
+        if (loop.length < 4) continue;
+        const loopArea = getArea(createPolygon([loop]));
+        if (loopArea > largestLoopArea) {
+            largestLoopArea = loopArea;
+            largestLoop = loop;
+        }
+    }
+
+    return largestLoop;
+}
+
+/**
+ * Removes duplicate coordinates that directly follow each other. Optional can be configured to also remove a
+ * coordinate if it is within a defined buffer in meters of the coordinate directly before it.
+ *
+ * IMPORTANT Only consecutive duplicates are removed. A coordinate the outline passes more than once with other
+ * points in between is NOT a duplicate in the geometric sense: it is the corner of two different pairs of edges
+ * and removing it replaces those edges with a chord, which alters the geometry (e.g. the seam encoding of an
+ * airspace with a hole, see https://github.com/openAIP/openaip-openair-parser/issues/53).
  */
 export function removeDuplicatePoints(polygon: Polygon, config?: { consumeDuplicateBuffer?: number }): Polygon {
     validateSchema(polygon, GeoJsonPolygonSchema, { assert: true, name: 'polygon' });
@@ -235,34 +343,38 @@ export function removeDuplicatePoints(polygon: Polygon, config?: { consumeDuplic
 
     // duplicate detection buffer in kilometers
     const bufferKm = consumeDuplicateBuffer / 1000;
+
+    // checks if two coordinates are to be considered duplicates of each other
+    const isDuplicate = (a: Position, b: Position): boolean => {
+        if (bufferKm === 0) {
+            // with no buffer, duplicates are exact-equal points
+            return a[0] === b[0] && a[1] === b[1];
+        }
+        // cheap bounding-box lower-bound check: if either the north-south or east-west
+        // component alone already exceeds the buffer, the great-circle distance certainly
+        // does too, so the expensive haversine call can be skipped (result is identical)
+        const nsKm = Math.abs(a[1] - b[1]) * 110.0;
+        if (nsKm > bufferKm) return false;
+        const cosLat = Math.cos((Math.max(Math.abs(a[1]), Math.abs(b[1])) * Math.PI) / 180);
+        const ewKm = Math.abs(a[0] - b[0]) * 111.32 * cosLat;
+        if (ewKm > bufferKm) return false;
+        return calcDistance(a, b, { units: 'kilometers' }) <= bufferKm;
+    };
+
     const processed: Position[] = [];
-    if (bufferKm === 0) {
-        // fast path: with no buffer, duplicates are exact-equal points -> O(N) via a key set
-        // instead of O(N^2) haversine distance computations
-        const seen = new Set<string>();
-        for (const coord of coordinates) {
-            const key = `${coord[0]},${coord[1]}`;
-            if (seen.has(key)) continue;
-            seen.add(key);
-            processed.push(coord);
+    for (const coord of coordinates) {
+        // only compare against the previous coordinate that was kept - a point is a duplicate only if it repeats
+        // its direct predecessor; a point the outline revisits later is kept as it is topologically relevant
+        const previous = processed[processed.length - 1];
+        if (previous != null && isDuplicate(previous, coord)) {
+            continue;
         }
-    } else {
-        for (const coord of coordinates) {
-            const exists = processed.find((value) => {
-                // cheap bounding-box lower-bound check: if either the north-south or east-west
-                // component alone already exceeds the buffer, the great-circle distance certainly
-                // does too, so the expensive haversine call can be skipped (result is identical)
-                const nsKm = Math.abs(value[1] - coord[1]) * 110.0;
-                if (nsKm > bufferKm) return false;
-                const cosLat = Math.cos((Math.max(Math.abs(value[1]), Math.abs(coord[1])) * Math.PI) / 180);
-                const ewKm = Math.abs(value[0] - coord[0]) * 111.32 * cosLat;
-                if (ewKm > bufferKm) return false;
-                return calcDistance(value, coord, { units: 'kilometers' }) <= bufferKm;
-            });
-            if (exists == null) {
-                processed.push(coord);
-            }
-        }
+        processed.push(coord);
+    }
+    // treat a last coordinate that duplicates the first coordinate as a duplicate closure - it is dropped and the
+    // exact first coordinate is appended below to close the polygon
+    if (processed.length >= 4 && isDuplicate(processed[0], processed[processed.length - 1]) === true) {
+        processed.pop();
     }
     // make sure that the last coordinate equals the first coordinate - i.e. close the polygon
     if (processed[0] !== processed[processed.length - 1]) {
@@ -302,6 +414,16 @@ export function removeIntermediatePoints(polygon: Polygon, config?: { greedyVari
         for (let i = 0; i + 1 < coordIdx; i++) {
             const coordA = coordinateList[i];
             const coordB = coordinateList[i + 1];
+            // a coordinate that equals one of the segment endpoints only touches the segment - it is NOT intermediate
+            // between two other coordinates. This is essential to keep coordinates the outline revisits, e.g. the ends
+            // of a seam that encodes an airspace with a hole, see
+            // https://github.com/openAIP/openaip-openair-parser/issues/53
+            if (
+                (coordLng === coordA[0] && coordLat === coordA[1]) ||
+                (coordLng === coordB[0] && coordLat === coordB[1])
+            ) {
+                continue;
+            }
             // cheap bbox pre-check: if coord lies outside the bbox of the (coordA, coordB) segment it
             // cannot be between them, so the bearings cannot be ~180° apart - skip the costly calcBearing calls
             const minX = Math.min(coordA[0], coordB[0]);

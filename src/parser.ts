@@ -36,7 +36,9 @@ export type Config = {
     unlimited?: number;
     // Defines the steps that are used to calculate arcs and circles. Defaults to 50. Higher values mean smoother circles but a higher number of polygon points.
     geometryDetail?: number;
-    // Defines the minimum distance between two points in meters. If two points are closer than this value, they will be merged into one point. Defaults to 0.
+    // Defines the minimum distance between two points in meters, see "removeDuplicatePoints". If two directly
+    // consecutive points are closer than this value, they are merged into one point. Points the outline passes more
+    // than once are never merged as removing them would alter the geometry. Defaults to 0.
     consumeDuplicateBuffer?: number;
     // If true, the GeoJson features are validated. Parser will throw an error if an invalid geometry is found. Defaults to true.
     validateGeometry?: boolean;

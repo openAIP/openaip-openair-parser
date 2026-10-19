@@ -229,7 +229,9 @@ const config = {
   fixGeometry: false,
   // If true, warns about expired temporary airspaces
   warnIfExpired: false,
-  // Defines the minimum distance between two points in meters. If two points are closer than this value, they will be merged into one point. Defaults to 0.
+  // Defines the minimum distance between two points in meters. If two directly consecutive points are closer than
+  // this value, they are merged into one point. Points the outline passes more than once are never merged.
+  // Defaults to 0.
   consumeDuplicateBuffer: 0,
   // Sets the output geometry. Can be either "POLYGON" or "LINESTRING". Defaults to "POLYGON". "LINESTRING" can be used
   // to visualize invalid geometry definitions. Note that "validateGeometry" and "fixGeometry" has NO effect on "LINESTRING" geometry output!
