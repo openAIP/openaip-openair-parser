@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { area, distance } from '@turf/turf';
 import appRoot from 'app-root-path';
+import type { Feature, Polygon } from 'geojson';
 import { describe, expect, test, vi } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
@@ -122,6 +124,54 @@ describe('Test parse airspace definition blocks', () => {
 
         expect(success).toBe(true);
         expect(geojson).toEqual(expectedJson);
+    });
+    test('parse airspace with small circular geometry', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success } = openairParser.parse('./tests/fixtures/small-circle.txt');
+        const { features } = openairParser.toGeojson();
+        const coordinates = (features[0].geometry as Polygon).coordinates[0] as [number, number][];
+
+        expect(success).toBe(true);
+        // with the default geometry detail of 100, a circle is created with 100 points + 1 closing point - independent of its radius
+        expect(coordinates).toHaveLength(101);
+        // polygon ring is closed
+        expect(coordinates[0]).toEqual(coordinates[coordinates.length - 1]);
+        // all points are placed on the defined circle radius of 0.05 NM (~92.6 m) around the center coordinate
+        const centerCoordinate: [number, number] = [8.48, 49 + 3 / 60 + 46 / 3600];
+        for (const coordinate of coordinates) {
+            const distanceToCenter = distance(centerCoordinate, coordinate, { units: 'meters' });
+            expect(distanceToCenter).toBeGreaterThan(91);
+            expect(distanceToCenter).toBeLessThan(94);
+        }
+        // the circle area is preserved - the geometry is not thinned out to a low-detail polygon
+        const circleArea = area(features[0] as Feature<Polygon>);
+        expect(circleArea).toBeGreaterThan(0.998 * Math.PI * 92.6 ** 2);
+    });
+    test('parse laser beam airspace with micro circular geometry', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success } = openairParser.parse('./tests/fixtures/laser-beam.txt');
+        const { features } = openairParser.toGeojson();
+        const coordinates = (features[0].geometry as Polygon).coordinates[0] as [number, number][];
+
+        expect(success).toBe(true);
+        // even a micro circle with a radius of 0.00161 NM (~3 m) keeps the full geometry detail and is not rejected
+        expect(coordinates).toHaveLength(101);
+        expect(coordinates[0]).toEqual(coordinates[coordinates.length - 1]);
+        // all points are placed on the defined circle radius of ~3 m around the center coordinate
+        const centerCoordinate: [number, number] = [12 + 37 / 60 + 50 / 3600, 35 + 31 / 60 + 6 / 3600];
+        for (const coordinate of coordinates) {
+            const distanceToCenter = distance(centerCoordinate, coordinate, { units: 'meters' });
+            expect(distanceToCenter).toBeGreaterThan(2);
+            expect(distanceToCenter).toBeLessThan(4);
+        }
+        const circleArea = area(features[0] as Feature<Polygon>);
+        expect(circleArea).toBeGreaterThan(25);
     });
     test('parse airspace with clockwise arc geometry', () => {
         const expectedJson = loadParserJsonResult('arc-cw-result.json');
@@ -513,18 +563,16 @@ describe('Test parse invalid airspace definition blocks', () => {
             "Error found at line 2: Geometry of airspace 'RMZ Rochefort 119.3' starting on line 2 is invalid. First and last Position are not equivalent."
         );
     });
-    test('parse laser beam airspace with too small circular geometry', () => {
+    test('parse airspace with zero radius circle geometry', () => {
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
-        const { success, error } = openairParser.parse('./tests/fixtures/laser-beam.txt');
+        const { success, error } = openairParser.parse('./tests/fixtures/circle-radius-zero.txt');
 
         expect(success).toBe(false);
         expect(error).toBeDefined();
-        expect(error?.message).toEqual(
-            'Error found at line 6: The polygon dimensions are too small to create a polygon.'
-        );
+        expect(error?.message).toEqual("Error found at line 6: Error found at line 6: Invalid circle radius '0'");
     });
     test('airspace with coordinate minutes set to 60 are rejected', () => {
         // read from expected file and remove last "blank line" in file (automatically added by IDE)

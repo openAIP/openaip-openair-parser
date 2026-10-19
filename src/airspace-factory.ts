@@ -459,19 +459,12 @@ export class AirspaceFactory {
             units: 'meters',
         });
         const [coordinates] = geometry.coordinates;
-        /*
-        When creating circles and arcs, there may be self-intersections if the defined coordinatesof center and start-/endpoints and radius
-        do not match exactly. These self-intersecting coordinates are usually very close together and when removed, the airspace
-        geometry basically does not change at all. To mitigate returning invalid geometries, remove duplicates with a specified buffer
-        after the circle is created.
-        */
-        const refinedCoordinates = this.removeNearestCoordinates(coordinates, { minAllowedDistance: 200 });
         // make sure that the last coordinate equals the first coordinate - i.e. close the polygon
-        if (refinedCoordinates[0] !== refinedCoordinates[refinedCoordinates.length - 1]) {
-            refinedCoordinates.push(refinedCoordinates[0]);
+        if (coordinates[0] !== coordinates[coordinates.length - 1]) {
+            coordinates.push(coordinates[0]);
         }
         // IMPORTANT set coordinates => calculated circle coordinates are the only coordinates
-        this.airspace.addCoordinates(refinedCoordinates);
+        this.airspace.addCoordinates(coordinates);
     }
 
     protected handleDbToken(token: DbToken): void {
@@ -716,37 +709,6 @@ export class AirspaceFactory {
                 }
             }
         }
-    }
-
-    protected removeNearestCoordinates(coordinates: Position[], config: { minAllowedDistance?: number }): Position[] {
-        const defaultConfig = { minAllowedDistance: 200 };
-        const { minAllowedDistance } = { ...defaultConfig, ...config };
-        const bufferKm = minAllowedDistance / 1000;
-        const processed: Position[] = [];
-        for (const coord of coordinates) {
-            const exists = processed.find((value) => {
-                // cheap bounding-box lower-bound check: if either the north-south or east-west
-                // component alone already exceeds the buffer, the great-circle distance certainly
-                // does too, so the expensive haversine call can be skipped (result is identical)
-                const nsKm = Math.abs(value[1] - coord[1]) * 110.0;
-                if (nsKm > bufferKm) return false;
-                const cosLat = Math.cos((Math.max(Math.abs(value[1]), Math.abs(coord[1])) * Math.PI) / 180);
-                const ewKm = Math.abs(value[0] - coord[0]) * 111.32 * cosLat;
-                if (ewKm > bufferKm) return false;
-                return calcDistance(value, coord, { units: 'kilometers' }) <= bufferKm;
-            });
-            if (exists == null) {
-                processed.push(coord);
-            }
-        }
-        if (processed.length < 4) {
-            throw new ParserError({
-                lineNumber: this.currentLineNumber,
-                errorMessage: 'The polygon dimensions are too small to create a polygon.',
-            });
-        }
-
-        return processed;
     }
 
     /**

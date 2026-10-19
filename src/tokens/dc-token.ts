@@ -31,7 +31,12 @@ export class DcToken extends AbstractLineToken<Metadata> {
         if (!isRadius) {
             throw new ParserError({ lineNumber, errorMessage: `Unknown circle radius definition '${line}'` });
         }
-        token.tokenized = { line, lineNumber, metadata: { radius: parseFloat(linePartRadius) } };
+        const radius = parseFloat(linePartRadius);
+        // radius must be a positive number
+        if (radius <= 0) {
+            throw new ParserError({ lineNumber, errorMessage: `Invalid circle radius '${radius}'` });
+        }
+        token.tokenized = { line, lineNumber, metadata: { radius } };
 
         return token;
     }
