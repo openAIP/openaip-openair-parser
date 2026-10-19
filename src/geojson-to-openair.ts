@@ -3,6 +3,7 @@ import { sprintf } from 'sprintf-js';
 import { z } from 'zod';
 import type { Activation, AirspaceProperties } from './airspace.js';
 import { AltitudeReferenceDatumEnum } from './altitude-reference-datum.enum.js';
+import { normalizeLongitude } from './geojson-polygon.js';
 import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 import { validateSchema } from './validate-schema.js';
 
@@ -115,7 +116,8 @@ function toActivationTime(activation: Activation): string {
 
 function toCoordinate(value: Position): string {
     const [x, y] = value;
-    const lon = convertDecToDms(x, 'lon');
+    // geometries crossing the antimeridian may have longitudes outside the -180 to 180 range
+    const lon = convertDecToDms(normalizeLongitude(x), 'lon');
     const lat = convertDecToDms(y, 'lat');
 
     return `${lat} ${lon}`;

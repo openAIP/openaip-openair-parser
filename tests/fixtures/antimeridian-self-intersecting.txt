@@ -1,0 +1,9 @@
+AC R
+AN Self intersecting polygon crossing the antimeridian
+AH FL100
+AL GND
+DP 10:00:00 S 170:00:00 E
+DP 10:00:00 S 170:00:00 W
+DP 20:00:00 S 170:00:00 E
+DP 20:00:00 S 170:00:00 W
+DP 10:00:00 S 170:00:00 E

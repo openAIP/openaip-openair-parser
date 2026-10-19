@@ -7,6 +7,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
 import { Parser } from '../src/parser.js';
+import type { ParserError } from '../src/parser-error.js';
 import { ParserVersionEnum } from '../src/parser-version.enum.js';
 
 const ALLOWED_CLASSES_VERSION_1 = [
@@ -813,6 +814,89 @@ describe('Test airspace with loops touching the outer ring', () => {
     });
 });
 
+// Geometries crossing the antimeridian (180/-180 longitude) are output with continuous longitudes, i.e. longitudes may
+// exceed the -180 to 180 range. Otherwise, edges spanning the antimeridian would go around the whole globe and cause
+// false self intersections.
+describe('Test airspace crossing the antimeridian', () => {
+    test('airspace with polygon crossing the antimeridian is valid', () => {
+        const { geometry, geometryArea } = parseValidatedPolygon('antimeridian-polygon.txt');
+
+        expectContinuousLongitudes(geometry.coordinates[0]);
+        expect(Math.abs(geometryArea - getIntendedArea(rectangle(-10, 170, -20, 190), []))).toBeLessThan(
+            AREA_TOLERANCE
+        );
+    });
+    test('airspace with polygon crossing the antimeridian is not altered by fix geometry', () => {
+        const { geometry, geometryArea } = parseFixedSimplePolygon('antimeridian-polygon.txt');
+
+        expectContinuousLongitudes(geometry.coordinates[0]);
+        expect(Math.abs(geometryArea - getIntendedArea(rectangle(-10, 170, -20, 190), []))).toBeLessThan(
+            AREA_TOLERANCE
+        );
+    });
+    test('airspace with arc crossing the antimeridian is valid', () => {
+        const { geometry } = parseValidatedPolygon('antimeridian-arc.txt');
+        const longitudes = geometry.coordinates[0].map((coord) => coord[0]);
+
+        expectContinuousLongitudes(geometry.coordinates[0]);
+        expect(Math.min(...longitudes)).toBeCloseTo(dm(179, 40), 4);
+        expect(Math.max(...longitudes)).toBeCloseTo(dm(180, 20), 4);
+    });
+    test('airspace with polygon crossing the antimeridian is output as OpenAir with normalized longitudes', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success } = openairParser.parse('./tests/fixtures/antimeridian-polygon.txt');
+        const points = openairParser.toOpenair().filter((line) => line.startsWith('DP '));
+
+        expect(success).toBe(true);
+        expect(points).toContain('DP 20:00:00 S 170:00:00 W');
+        expect(points).toContain('DP 10:00:00 S 170:00:00 W');
+        for (const point of points) {
+            const lonDegrees = Number(point.match(/ (\d{3}):\d{2}:\d{2} [EW]$/)?.[1]);
+            expect(lonDegrees).toBeLessThanOrEqual(180);
+        }
+    });
+    test('airspace with self intersecting polygon crossing the antimeridian is rejected', () => {
+        expectRejectedDueToSelfIntersection(
+            'antimeridian-self-intersecting.txt',
+            'Self intersecting polygon crossing the antimeridian'
+        );
+    });
+    test('airspace with self intersecting polygon crossing the antimeridian returns continuous error geometry', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success, error } = openairParser.parse('./tests/fixtures/antimeridian-self-intersecting.txt');
+        const { geometry, selfIntersections } = error as ParserError;
+
+        expect(success).toBe(false);
+        expect(geometry?.type).toEqual('LineString');
+        expectContinuousLongitudes(geometry?.coordinates as number[][]);
+        // the self intersection of the bow tie lies on the antimeridian
+        expect(selfIntersections?.length).toBeGreaterThan(0);
+        for (const intersection of selfIntersections ?? []) {
+            expect(intersection[0]).toBeCloseTo(180, 4);
+        }
+    });
+    test('airspace with polygon crossing the antimeridian is output as LINESTRING with continuous longitudes', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+            outputGeometry: OutputGeometryEnum.LINESTRING,
+        });
+        const { success } = openairParser.parse('./tests/fixtures/antimeridian-polygon.txt');
+        const { geometry } = openairParser.toGeojson().features[0];
+
+        expect(success).toBe(true);
+        expect(geometry.type).toEqual('LineString');
+        expectContinuousLongitudes(geometry.coordinates as number[][]);
+        expect(Math.max(...(geometry.coordinates as number[][]).map((coord) => coord[0]))).toEqual(190);
+    });
+});
+
 describe('Test output formats', () => {
     test('check correct openair output', () => {
         // read from expected file and remove last "blank line" in file (automatically added by IDE)
@@ -887,6 +971,31 @@ function expectRejectedDueToSelfIntersection(fixtureFilename: string, airspaceNa
     expect(error?.message).toEqual(
         `Error found at line 1: Geometry of airspace '${airspaceName}' starting on line 1 is invalid due to self intersection.`
     );
+}
+
+/**
+ * Parses the given fixture with the default configuration, i.e. with geometry validation, and returns the polygon.
+ */
+function parseValidatedPolygon(fixtureFilename: string): { geometry: Polygon; geometryArea: number } {
+    const openairParser = new Parser({
+        version: ParserVersionEnum.VERSION_1,
+        allowedClasses: ALLOWED_CLASSES_VERSION_1,
+    });
+    const { success, error } = openairParser.parse(`./tests/fixtures/${fixtureFilename}`);
+    expect(error).toBeUndefined();
+    expect(success).toBe(true);
+    const feature = openairParser.toGeojson().features[0] as Feature<Polygon>;
+
+    return { geometry: feature.geometry, geometryArea: area(feature) };
+}
+
+/**
+ * Asserts that consecutive coordinates never jump across the antimeridian.
+ */
+function expectContinuousLongitudes(coordinates: number[][]) {
+    for (let i = 1; i < coordinates.length; i++) {
+        expect(Math.abs(coordinates[i][0] - coordinates[i - 1][0])).toBeLessThanOrEqual(180);
+    }
 }
 
 /**

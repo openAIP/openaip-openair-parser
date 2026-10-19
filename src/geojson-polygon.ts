@@ -71,14 +71,78 @@ export function validate(polygon: Polygon): void {
 export function getSelfIntersections(polygon: Polygon): Position[] {
     validateSchema(polygon, GeoJsonPolygonSchema, { assert: true, name: 'polygon' });
 
-    const polygonFeature = createPolygon(polygon.coordinates);
+    // rings that cross the antimeridian must be checked with continuous longitudes, otherwise the edges spanning
+    // the antimeridian are treated as edges that go around the whole globe and are reported as self intersections
+    const rings = polygon.coordinates.map((ring) => unwrapAntimeridian(ring));
+    const isUnwrapped = rings.some((ring, index) => ring !== polygon.coordinates[index]);
+    const polygonFeature = createPolygon(rings);
     const checkResult = checkSelfIntersections(polygonFeature);
     const selfIntersections: Position[] = [];
     for (const feature of checkResult.features) {
-        selfIntersections.push(feature.geometry.coordinates);
+        const [lon, ...rest] = feature.geometry.coordinates;
+        // report intersections within the same longitude range as the input coordinates
+        selfIntersections.push(isUnwrapped ? [normalizeLongitude(lon), ...rest] : feature.geometry.coordinates);
     }
 
     return selfIntersections;
+}
+
+/**
+ * Makes the longitudes of a coordinate list continuous if it crosses the antimeridian (180/-180 longitude), i.e.
+ * consecutive coordinates never differ by more than 180 degrees longitude. Longitudes of the returned coordinates may
+ * be outside the -180 to 180 range, e.g. [179, 0], [-179, 0] becomes [179, 0], [181, 0]. This is required for all
+ * planar geometry operations (validation, self-intersection checks, winding order, fixes) to work on geometries
+ * that cross the antimeridian. If the coordinates do not cross the antimeridian, the input list is returned as is.
+ */
+export function unwrapAntimeridian(coordinates: Position[]): Position[] {
+    validateSchema(coordinates, z.array(GeoJsonPositionSchema), { assert: true, name: 'coordinates' });
+
+    let isCrossing = false;
+    for (let i = 1; i < coordinates.length; i++) {
+        if (Math.abs(coordinates[i][0] - coordinates[i - 1][0]) > 180) {
+            isCrossing = true;
+            break;
+        }
+    }
+    if (isCrossing === false) {
+        return coordinates;
+    }
+
+    const unwrapped: Position[] = [[...coordinates[0]]];
+    for (let i = 1; i < coordinates.length; i++) {
+        const [lon, ...rest] = coordinates[i];
+        // keep the reference to the first coordinate for a closing coordinate - consumers compare by reference
+        if (i === coordinates.length - 1 && coordinates[i] === coordinates[0]) {
+            unwrapped.push(unwrapped[0]);
+            continue;
+        }
+        let delta = lon - coordinates[i - 1][0];
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+        unwrapped.push([roundCoordinate(unwrapped[i - 1][0] + delta), ...rest]);
+    }
+    // make sure the unwrapped coordinates overlap the -180 to 180 range
+    const longitudes = unwrapped.map((coord) => coord[0]);
+    const shift = Math.min(...longitudes) >= 180 ? -360 : Math.max(...longitudes) <= -180 ? 360 : 0;
+    if (shift !== 0) {
+        // use a set as the closing coordinate may reference the first coordinate
+        for (const coord of new Set(unwrapped)) {
+            coord[0] = roundCoordinate(coord[0] + shift);
+        }
+    }
+
+    return unwrapped;
+}
+
+/**
+ * Normalizes a longitude value to the -180 to 180 range.
+ */
+export function normalizeLongitude(lon: number): number {
+    if (lon >= -180 && lon <= 180) {
+        return lon;
+    }
+
+    return roundCoordinate((((lon % 360) + 540) % 360) - 180);
 }
 
 /**
@@ -178,6 +242,8 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
 
     const defaultConfig = { consumeDuplicateBuffer: 0 };
     const { consumeDuplicateBuffer } = { ...defaultConfig, ...config };
+    // all repair stages operate in planar space and require continuous longitudes
+    coordinates = unwrapAntimeridian(coordinates);
 
     try {
         // check if we have a closed polygon coordinates list - this is the least required constraint to create a polygon

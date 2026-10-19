@@ -142,7 +142,7 @@ export class Airspace {
         const airspaceGeometry =
             outputGeometry === OutputGeometryEnum.POLYGON
                 ? this.buildPolygonGeometry({ validateGeometry, fixGeometry, consumeDuplicateBuffer })
-                : createLinestring(this.coordinates).geometry;
+                : this.buildLineStringGeometry();
         // create a GeoJSON feature from the geometry
         const feature = createFeature<Polygon | LineString, AirspaceProperties>(
             airspaceGeometry,
@@ -169,10 +169,13 @@ export class Airspace {
         const token: IToken = this.consumedTokens[0] as IToken;
         const lineNumber: number = token.toTokenized().lineNumber as number;
         let airspacePolygon: Polygon;
+        // make longitudes continuous for geometries that cross the antimeridian - all subsequent geometry operations
+        // are planar and would otherwise detect self intersections on edges that span the antimeridian
+        const coordinates = geojsonPolygon.unwrapAntimeridian(this.coordinates);
 
         // create a polygon from the coordinates - run also geometry adjustments that do not alter the geometry
         try {
-            airspacePolygon = createPolygon([this.coordinates]).geometry;
+            airspacePolygon = createPolygon([coordinates]).geometry;
             airspacePolygon = geojsonPolygon.removeDuplicatePoints(airspacePolygon, { consumeDuplicateBuffer });
             airspacePolygon = geojsonPolygon.removeIntermediatePoints(airspacePolygon);
             airspacePolygon = geojsonPolygon.withRightHandRule(airspacePolygon);
@@ -187,7 +190,7 @@ export class Airspace {
             // geometry is checked for other issues like self-intersections etc and other fixes are applied.
             if (fixGeometry === true) {
                 try {
-                    airspacePolygon = geojsonPolygon.createFixedPolygon(this.coordinates);
+                    airspacePolygon = geojsonPolygon.createFixedPolygon(coordinates);
                 } catch (err) {
                     if (err instanceof SyntaxError) {
                         throw new ParserError({
@@ -249,6 +252,14 @@ export class Airspace {
         return airspacePolygon;
     }
 
+    /**
+     * Builds a line string geometry from the coordinates. Like polygon geometries, line strings that cross the
+     * antimeridian are built with continuous longitudes.
+     */
+    protected buildLineStringGeometry(): LineString {
+        return createLinestring(geojsonPolygon.unwrapAntimeridian(this.coordinates)).geometry;
+    }
+
     protected validateAirspacePolygon(polygon: Polygon): { isValid: boolean; selfIntersections?: Position[] } {
         let selfIntersections: Position[] = [];
         let isValid: boolean = false;
@@ -293,7 +304,7 @@ export class Airspace {
     protected asLineStringGeometry(): LineString | undefined {
         try {
             // return as GeoJSON line feature
-            return createLinestring(this.coordinates).geometry;
+            return this.buildLineStringGeometry();
         } catch (err) {
             // possible that geometry cannot be created due to too few points
             return undefined;
