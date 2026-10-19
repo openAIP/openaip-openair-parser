@@ -1,0 +1,16 @@
+AC D
+AN Square with a lobe touching the outer ring
+AL 1500ft AMSL
+AH 2500ft AMSL
+* NO hole - the triangular loop lies OUTSIDE the square and touches it at V (50:10:00 N 008:20:00 E)
+* outer ring to V
+DP 50:10:00 N 008:00:00 E
+DP 50:10:00 N 008:20:00 E
+* triangular lobe outside the square - starts and ends at V
+DP 50:12:00 N 008:22:00 E
+DP 50:12:00 N 008:24:00 E
+DP 50:10:00 N 008:20:00 E
+* rest of the outer ring
+DP 50:00:00 N 008:20:00 E
+DP 50:00:00 N 008:00:00 E
+DP 50:10:00 N 008:00:00 E

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { area, distance } from '@turf/turf';
+import { area, distance, kinks, polygon } from '@turf/turf';
 import appRoot from 'app-root-path';
 import type { Feature, Polygon } from 'geojson';
 import { describe, expect, test, vi } from 'vitest';
@@ -704,133 +704,112 @@ describe('Test parse invalid airspace definition blocks and fix geometry', () =>
     });
 });
 
-describe('Test parse airspace definition blocks with hole seam encoding', () => {
-    // OpenAir has no record for an inner ring - an airspace with a hole is written with a "seam": the outline runs
-    // from the outer ring to the hole, around the hole, back along the same edge, and on around the outer ring. Such
-    // an outline is not a simple ring: it touches itself at both ends of the seam and cannot be represented as a
-    // single simple polygon. The parser must never silently cut geometry away to force it into one, see
-    // https://github.com/openAIP/openaip-openair-parser/issues/53
-    test('airspace with seam encoded hole defined outer ring first is rejected due to self intersection by default', () => {
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_1,
-            allowedClasses: ALLOWED_CLASSES_VERSION_1,
-        });
-        const { success, error } = openairParser.parse('./tests/fixtures/seam-hole-outer-ring-first.txt');
-
-        expect(success).toBe(false);
-        expect(error).toBeDefined();
-        expect(error?.message).toEqual(
-            "Error found at line 1: Geometry of airspace 'Square with a hole' starting on line 1 is invalid due to self intersection."
-        );
-    });
-    test('airspace with seam encoded hole defined outer ring first keeps its full seam outline if not validated', () => {
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_1,
-            allowedClasses: ALLOWED_CLASSES_VERSION_1,
-            validateGeometry: false,
-        });
-        const { success } = openairParser.parse('./tests/fixtures/seam-hole-outer-ring-first.txt');
-        const { features } = openairParser.toGeojson();
-        const { geometry } = features[0];
-
-        expect(success).toBe(true);
-        expect(geometry.type).toEqual('Polygon');
-        const ring = (geometry as Polygon).coordinates[0];
-        // the complete seam outline is preserved - a point the outline passes more than once is NOT removed
-        expect(ring.length).toEqual(11);
-        expect(ring[0]).toEqual(ring[ring.length - 1]);
-        // the algebraic area of the seam ring equals the intended airspace area: outer square minus hole
-        const geometryArea = area(features[0] as Feature<Polygon>);
-        expect(geometryArea).toBeGreaterThan(387.4 * 1000 * 1000);
-        expect(geometryArea).toBeLessThan(388.4 * 1000 * 1000);
-    });
-    test('airspace with seam encoded hole defined outer ring first is fixed into its outer ring if fix geometry is set', () => {
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_1,
-            allowedClasses: ALLOWED_CLASSES_VERSION_1,
-            fixGeometry: true,
-        });
-        const { success } = openairParser.parse('./tests/fixtures/seam-hole-outer-ring-first.txt');
-        const { features } = openairParser.toGeojson();
-        const { geometry } = features[0];
-
-        expect(success).toBe(true);
-        expect(geometry.type).toEqual('Polygon');
-        expect(geometry.coordinates.length).toEqual(1);
-        // the outer ring is kept exactly - the hole is over-included, no part of the defined airspace is cut away
-        expect((geometry as Polygon).coordinates[0].length).toEqual(5);
-        const geometryArea = area(features[0] as Feature<Polygon>);
-        expect(geometryArea).toBeGreaterThan(440.3 * 1000 * 1000);
-        expect(geometryArea).toBeLessThan(441.3 * 1000 * 1000);
-    });
-    test('airspace with seam encoded hole defined hole first is rejected due to self intersection by default', () => {
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_1,
-            allowedClasses: ALLOWED_CLASSES_VERSION_1,
-        });
-        const { success, error } = openairParser.parse('./tests/fixtures/seam-hole-hole-first.txt');
-
-        expect(success).toBe(false);
-        expect(error).toBeDefined();
-        expect(error?.message).toEqual(
-            "Error found at line 1: Geometry of airspace 'Frankfurt' starting on line 1 is invalid due to self intersection."
-        );
-    });
-    test('airspace with seam encoded hole defined hole first keeps its full seam outline if not validated', () => {
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_1,
-            allowedClasses: ALLOWED_CLASSES_VERSION_1,
-            validateGeometry: false,
-        });
-        const { success } = openairParser.parse('./tests/fixtures/seam-hole-hole-first.txt');
-        const { features } = openairParser.toGeojson();
-        const { geometry } = features[0];
-
-        expect(success).toBe(true);
-        expect(geometry.type).toEqual('Polygon');
-        const ring = (geometry as Polygon).coordinates[0];
-        // 22 defined points - all revisited points of the seam are preserved
-        expect(ring.length).toEqual(22);
-        expect(ring[0]).toEqual(ring[ring.length - 1]);
-    });
-    test('airspace with seam encoded hole defined hole first is fixed into its outer ring if fix geometry is set', () => {
-        const openairParser = new Parser({
-            version: ParserVersionEnum.VERSION_1,
-            allowedClasses: ALLOWED_CLASSES_VERSION_1,
-            fixGeometry: true,
-        });
-        const { success } = openairParser.parse('./tests/fixtures/seam-hole-hole-first.txt');
-        const { features } = openairParser.toGeojson();
-        const { geometry } = features[0];
-
-        expect(success).toBe(true);
-        expect(geometry.type).toEqual('Polygon');
-        expect(geometry.coordinates.length).toEqual(1);
-        // the 8 points of the outer ring plus closing point - hole outline and seam are discarded
-        expect((geometry as Polygon).coordinates[0].length).toEqual(9);
-        // 1028.0 km2 defined airspace plus the 443.9 km2 hole that cannot be represented by a single polygon
-        const geometryArea = area(features[0] as Feature<Polygon>);
-        expect(geometryArea).toBeGreaterThan(1471.4 * 1000 * 1000);
-        expect(geometryArea).toBeLessThan(1472.4 * 1000 * 1000);
-    });
-    test('airspace with consecutive duplicate points is reduced to the simple square', () => {
+// See https://github.com/openAIP/openaip-openair-parser/issues/53 - duplicate point removal must never alter the
+// defined geometry. Only points that repeat their direct predecessor are removed, a point the outline passes again
+// later is kept.
+describe('Test duplicate point removal does not alter the defined geometry', () => {
+    test('airspace with consecutive duplicate points is valid and reduced to the plain square', () => {
+        // VALID input - the repeated point directly follows itself, i.e. it is a zero-length edge
         const openairParser = new Parser({
             version: ParserVersionEnum.VERSION_1,
             allowedClasses: ALLOWED_CLASSES_VERSION_1,
         });
         const { success } = openairParser.parse('./tests/fixtures/duplicate-points-consecutive.txt');
-        const { features } = openairParser.toGeojson();
-        const { geometry } = features[0];
+        const feature = openairParser.toGeojson().features[0] as Feature<Polygon>;
+        const outline = feature.geometry.coordinates[0];
 
         expect(success).toBe(true);
-        expect(geometry.type).toEqual('Polygon');
-        const ring = (geometry as Polygon).coordinates[0];
-        // the consecutive duplicate point is consumed - the ring is the plain square
-        expect(ring.length).toEqual(5);
-        expect(ring[0]).toEqual(ring[ring.length - 1]);
-        const geometryArea = area(features[0] as Feature<Polygon>);
-        expect(geometryArea).toBeGreaterThan(440.3 * 1000 * 1000);
-        expect(geometryArea).toBeLessThan(441.3 * 1000 * 1000);
+        expect(outline.length).toEqual(5);
+        expect(Math.abs(area(feature) - getIntendedArea(SQUARE_OUTER_RING, []))).toBeLessThan(AREA_TOLERANCE);
+    });
+    test('airspace with seam encoded hole defined outer ring first keeps all revisited points if not validated', () => {
+        const feature = parseUnvalidatedPolygon('seam-hole-outer-ring-first.txt');
+        const outline = feature.geometry.coordinates[0];
+
+        // all 11 defined points are kept - previously the 2nd visits of P and Q were removed, cutting a quarter away
+        expect(outline.length).toEqual(11);
+        // the hole is defined opposite to the outer ring, so the area of the raw outline is outer square minus hole
+        expect(Math.abs(area(feature) - SEAM_HOLE_OUTER_RING_FIRST_AREA)).toBeLessThan(AREA_TOLERANCE);
+    });
+    test('airspace with seam encoded hole defined hole first keeps all revisited points if not validated', () => {
+        const feature = parseUnvalidatedPolygon('seam-hole-hole-first.txt');
+
+        // all 22 defined points are kept - the area is NOT asserted: the hole is defined in the same direction as the
+        // outer ring, so the area of the raw outline is outer ring PLUS hole
+        expect(feature.geometry.coordinates[0].length).toEqual(22);
+    });
+});
+
+// OpenAir has no record for an inner ring - an airspace with a hole is written with a "seam": the outline runs from
+// the outer ring to the hole, around the hole, back along the same edge, and on around the outer ring. The outline
+// touches itself at both ends of each seam, i.e. it is INVALID and rejected by default. With "fixGeometry" it is
+// converted into a single simple "keyhole" polygon whose bridge return path is offset by 1m.
+describe('Test airspace with seam encoded holes', () => {
+    test('airspace with seam encoded hole defined outer ring first is rejected by default', () => {
+        expectRejectedDueToSelfIntersection('seam-hole-outer-ring-first.txt', 'Square with a hole');
+    });
+    test('airspace with seam encoded hole defined outer ring first is fixed into a keyhole polygon', () => {
+        const { geometry, geometryArea } = parseFixedSimplePolygon('seam-hole-outer-ring-first.txt');
+
+        // same number of points as defined - only the 2nd visits of P and Q are moved by 1m
+        expect(geometry.coordinates[0].length).toEqual(11);
+        expect(Math.abs(geometryArea - SEAM_HOLE_OUTER_RING_FIRST_AREA)).toBeLessThan(AREA_TOLERANCE);
+    });
+    test('airspace with seam encoded hole defined hole first is rejected by default', () => {
+        expectRejectedDueToSelfIntersection('seam-hole-hole-first.txt', 'Frankfurt');
+    });
+    test('airspace with seam encoded hole defined hole first is fixed into a keyhole polygon', () => {
+        const { geometryArea } = parseFixedSimplePolygon('seam-hole-hole-first.txt');
+
+        expect(Math.abs(geometryArea - SEAM_HOLE_HOLE_FIRST_AREA)).toBeLessThan(AREA_TOLERANCE);
+    });
+    test('airspace with two seam encoded holes is rejected by default', () => {
+        expectRejectedDueToSelfIntersection('seam-two-holes.txt', 'Square with two holes');
+    });
+    test('airspace with two seam encoded holes is fixed into a keyhole polygon', () => {
+        const { geometryArea } = parseFixedSimplePolygon('seam-two-holes.txt');
+        const intendedArea = getIntendedArea(SQUARE_OUTER_RING, [
+            rectangle(dm(50, 7), dm(8, 3), dm(50, 3), dm(8, 8)),
+            rectangle(dm(50, 7), dm(8, 12), dm(50, 3), dm(8, 17)),
+        ]);
+
+        expect(Math.abs(geometryArea - intendedArea)).toBeLessThan(AREA_TOLERANCE);
+    });
+});
+
+// A loop that touches the outer ring at a single vertex - without a seam - makes the outline touch itself at that
+// vertex, i.e. it is INVALID and rejected by default. With "fixGeometry", a loop inside the outer ring is a hole and
+// becomes a keyhole, a loop outside the outer ring is NOT a hole and is discarded.
+describe('Test airspace with loops touching the outer ring', () => {
+    test('airspace with hole touching the outer ring is rejected by default', () => {
+        expectRejectedDueToSelfIntersection(
+            'hole-touching-outer-ring.txt',
+            'Square with a hole touching the outer ring'
+        );
+    });
+    test('airspace with hole touching the outer ring is fixed into a keyhole polygon', () => {
+        const { geometryArea } = parseFixedSimplePolygon('hole-touching-outer-ring.txt');
+        const hole = [
+            [dm(8, 10), dm(50, 10)],
+            [dm(8, 13), dm(50, 6)],
+            [dm(8, 7), dm(50, 6)],
+            [dm(8, 10), dm(50, 10)],
+        ];
+
+        expect(Math.abs(geometryArea - getIntendedArea(SQUARE_OUTER_RING, [hole]))).toBeLessThan(AREA_TOLERANCE);
+    });
+    test('airspace with lobe touching the outer ring is rejected by default', () => {
+        expectRejectedDueToSelfIntersection(
+            'lobe-touching-outer-ring.txt',
+            'Square with a lobe touching the outer ring'
+        );
+    });
+    test('airspace with lobe touching the outer ring is fixed into its largest loop, not into a keyhole polygon', () => {
+        const { geometry, geometryArea } = parseFixedSimplePolygon('lobe-touching-outer-ring.txt');
+
+        // the lobe is discarded, the square is kept and NOT reduced by the lobe area
+        expect(geometry.coordinates[0].length).toEqual(5);
+        expect(Math.abs(geometryArea - getIntendedArea(SQUARE_OUTER_RING, []))).toBeLessThan(AREA_TOLERANCE);
     });
 });
 
@@ -850,6 +829,101 @@ describe('Test output formats', () => {
         expect(removeBlanksAtEof(openair).join('\n')).toEqual(removeBlanksAtEof(expected).join('\n'));
     });
 });
+
+// maximum allowed deviation from the intended area in m2 - covers the hairline channel of a keyhole polygon
+const AREA_TOLERANCE = 0.1 * 1000 * 1000;
+
+/**
+ * Converts degrees and minutes into decimal degrees.
+ */
+function dm(degrees: number, minutes: number): number {
+    return degrees + minutes / 60;
+}
+
+/**
+ * Creates a closed rectangular ring from its north-west and south-east corner.
+ */
+function rectangle(north: number, west: number, south: number, east: number): number[][] {
+    return [
+        [west, north],
+        [west, south],
+        [east, south],
+        [east, north],
+        [west, north],
+    ];
+}
+
+// outer ring 50:10N-50:00N / 008:00E-008:20E shared by the hole fixtures
+const SQUARE_OUTER_RING = rectangle(dm(50, 10), dm(8, 0), dm(50, 0), dm(8, 20));
+// intended area of "seam-hole-outer-ring-first.txt" - outer square minus the hole, 387.9 km2
+const SEAM_HOLE_OUTER_RING_FIRST_AREA = getIntendedArea(SQUARE_OUTER_RING, [
+    rectangle(dm(50, 7), dm(8, 7), dm(50, 3), dm(8, 13)),
+]);
+// intended area of "seam-hole-hole-first.txt" - 1471.9 km2 outer ring minus the 443.9 km2 hole (Frankfurt CTR)
+const SEAM_HOLE_HOLE_FIRST_AREA = 1028.0 * 1000 * 1000;
+
+/**
+ * Returns the area in m2 of a polygon with holes, i.e. the area the OpenAir definition is meant to describe.
+ */
+function getIntendedArea(outerRing: number[][], holes: number[][][]): number {
+    return area(polygon([outerRing, ...holes]));
+}
+
+/**
+ * Parses the given fixture with "fixGeometry" and asserts that the result is a single simple polygon without
+ * revisited vertices and self intersections.
+ */
+/**
+ * Parses the given fixture with the default configuration and asserts that it is rejected due to self intersection.
+ */
+function expectRejectedDueToSelfIntersection(fixtureFilename: string, airspaceName: string) {
+    const openairParser = new Parser({
+        version: ParserVersionEnum.VERSION_1,
+        allowedClasses: ALLOWED_CLASSES_VERSION_1,
+    });
+    const { success, error } = openairParser.parse(`./tests/fixtures/${fixtureFilename}`);
+
+    expect(success).toBe(false);
+    expect(error?.message).toEqual(
+        `Error found at line 1: Geometry of airspace '${airspaceName}' starting on line 1 is invalid due to self intersection.`
+    );
+}
+
+/**
+ * Parses the given fixture without geometry validation and returns the unaltered polygon.
+ */
+function parseUnvalidatedPolygon(fixtureFilename: string): Feature<Polygon> {
+    const openairParser = new Parser({
+        version: ParserVersionEnum.VERSION_1,
+        allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        validateGeometry: false,
+    });
+    const { success } = openairParser.parse(`./tests/fixtures/${fixtureFilename}`);
+    expect(success).toBe(true);
+
+    return openairParser.toGeojson().features[0] as Feature<Polygon>;
+}
+
+function parseFixedSimplePolygon(fixtureFilename: string): { geometry: Polygon; geometryArea: number } {
+    const openairParser = new Parser({
+        version: ParserVersionEnum.VERSION_1,
+        allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        fixGeometry: true,
+    });
+    const { success, error } = openairParser.parse(`./tests/fixtures/${fixtureFilename}`);
+    expect(error).toBeUndefined();
+    expect(success).toBe(true);
+    const feature = openairParser.toGeojson().features[0] as Feature<Polygon>;
+    const { geometry } = feature;
+
+    expect(geometry.type).toEqual('Polygon');
+    expect(geometry.coordinates.length).toEqual(1);
+    const vertices = geometry.coordinates[0].slice(0, -1).map((coord) => coord.join(','));
+    expect(new Set(vertices).size).toEqual(vertices.length);
+    expect(kinks(feature).features).toEqual([]);
+
+    return { geometry, geometryArea: area(feature) };
+}
 
 function loadParserJsonResult(filename: string) {
     const filePath = path.resolve(`${appRoot}/tests/fixtures/${filename}`);

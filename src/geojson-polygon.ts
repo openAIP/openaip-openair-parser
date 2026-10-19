@@ -1,5 +1,6 @@
 import { check } from '@placemarkio/check-geojson';
 import {
+    booleanPointInPolygon,
     bearing as calcBearing,
     distance as calcDistance,
     kinks as checkSelfIntersections,
@@ -22,6 +23,13 @@ export const GeoJsonPolygonSchema = z.object({
     coordinates: z.array(z.array(GeoJsonPositionSchema).min(4)),
     bbox: z.array(z.number()).optional(),
 });
+
+// distance in meters by which the return path of a keyhole bridge is offset from its outbound path - well below
+// the precision of OpenAir coordinates (1 second ~ 30m) but above the precision of the parser output (6 decimals)
+const KEYHOLE_OFFSET_METERS = 1;
+// maximum number of candidate bridges (closest vertex pairs first) that are tried per hole
+const KEYHOLE_MAX_BRIDGE_CANDIDATES = 100;
+const METERS_PER_DEGREE = 111320;
 
 const RemoveIntermediatePointsConfigSchema = z
     .object({ greedyVariance: z.number().int().optional() })
@@ -139,14 +147,16 @@ export function getLargestPolygon(polygons: Polygon[]): Polygon {
  *
  * 1. Lossless preparation - close the ring, remove consecutive duplicate points and collinear intermediate points.
  * 2. If the prepared ring is already valid, it is returned unchanged.
- * 3. Revisited vertices - the ring is split at each vertex the outline passes more than once and the largest
- *    enclosed loop is kept. This interprets the "seam" encoding of an airspace with a hole (outer ring -> seam ->
- *    hole -> seam back -> outer ring) as well as degenerate spikes (a -> b -> a): the largest loop is the outer
- *    ring, the smaller loops (the hole outline, the spike) are discarded. NOTE until holes are supported, the
- *    hole area is over-included in the result - this is the closest possible single-polygon approximation.
- * 4. Self intersections - the ring is unkinked and the largest simple polygon is kept.
- * 5. Convex hull - if unkinking fails, the convex hull of all points is used.
- * 6. Envelope - the bounding box of all points as a last resort.
+ * 3. Keyhole - an airspace with a hole is written in OpenAir with a "seam" (outer ring -> seam -> hole -> seam
+ *    back -> outer ring) that revisits vertices. The ring is split into its loops and each loop inside the outer
+ *    ring is connected to it with a bridge whose return path is offset by KEYHOLE_OFFSET_METERS. The result is a
+ *    single simple polygon without revisited vertices that excludes the hole except for a hairline channel.
+ * 4. Revisited vertices - the ring is split at each vertex the outline passes more than once and the largest
+ *    enclosed loop is kept. Removes degenerate spikes (a -> b -> a) and, if no keyhole could be created, keeps
+ *    the outer ring of a seam encoded airspace - the hole area is then over-included.
+ * 5. Self intersections - the ring is unkinked and the largest simple polygon is kept.
+ * 6. Convex hull - if unkinking fails, the convex hull of all points is used.
+ * 7. Envelope - the bounding box of all points as a last resort.
  *
  * This function only takes a list of coordinates which makes it possible to pass an invalid polygon geometry
  * and return a valid polygon geometry instead. The function requires at least three coordinates. The 4th, i.e. the
@@ -183,9 +193,21 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
         if (isValid(fixedPolygon)) {
             return withRightHandRule(fixedPolygon);
         }
-        // stage 3: split the ring at revisited vertices (seam/spike encodings) and keep the largest loop - this
-        // preserves the outer ring without cutting corners off it
         const preparedCoordinates = fixedPolygon.coordinates[0];
+        // stage 3: connect holes encoded with a seam to the outer ring with an offset bridge (keyhole)
+        try {
+            const keyholeRing = createKeyholeRing(preparedCoordinates);
+            if (keyholeRing != null) {
+                const keyholePolygon = withRightHandRule(createPolygon([keyholeRing]).geometry);
+                if (isValid(keyholePolygon)) {
+                    return keyholePolygon;
+                }
+            }
+        } catch (err) {
+            // keyhole could not be created - continue with the next stage
+        }
+        // stage 4: split the ring at revisited vertices (seam/spike encodings) and keep the largest loop - this
+        // preserves the outer ring without cutting corners off it
         const largestLoop = extractLargestLoop(preparedCoordinates);
         if (largestLoop !== preparedCoordinates && largestLoop.length >= 4) {
             const loopPolygon = withRightHandRule(createPolygon([largestLoop]).geometry);
@@ -195,7 +217,7 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
             // the largest loop is still invalid (e.g. due to a self intersection) - continue the repair on it
             fixedPolygon = loopPolygon;
         }
-        // stage 4: unkink the ring and keep the largest simple polygon
+        // stage 5: unkink the ring and keep the largest simple polygon
         const unkinkedFeatureCollection = unkinkPolygon(fixedPolygon) as FeatureCollection<Polygon>;
         // convert to list of polygon geometries
         const fixedPolygons = unkinkedFeatureCollection.features.map((feature) => feature.geometry);
@@ -207,7 +229,7 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
         if (isValid(largestPolygon)) {
             return largestPolygon;
         }
-        // stage 5: use the convex hull of all points as a fallback
+        // stage 6: use the convex hull of all points as a fallback
         const pointFeatures: Feature<Point>[] = [];
         for (const coord of coordinates) {
             pointFeatures.push(createPoint(coord));
@@ -219,7 +241,7 @@ export function createFixedPolygon(coordinates: Position[], config?: { consumeDu
                 return hullPolygon;
             }
         }
-        // stage 6: use the envelope (bounding box) as a last resort
+        // stage 7: use the envelope (bounding box) as a last resort
         return envelope(createFeatureCollection(pointFeatures)).geometry;
     } catch (err) {
         /*
@@ -253,34 +275,30 @@ export function withRightHandRule(polygon: Polygon): Polygon {
 }
 
 /**
- * Splits a closed ring at every vertex the outline passes more than once and returns the loop that encloses the
- * largest area as a closed ring. If the ring has no revisited vertices, the input ring is returned as is (same
- * reference).
+ * Splits a closed ring at every vertex the outline passes more than once and returns all loops as closed rings.
+ * If the ring has no revisited vertices, a single loop is returned.
  *
  * The ring is traversed once while keeping the current path. When a vertex is reached that is already on the path,
  * the part of the path from its first visit up to now is a closed loop: it is cut out and the traversal continues
  * from that vertex. What remains at the end is the final loop. For the seam encoding of an airspace with a hole
  * (outer ring -> seam -> hole -> seam back -> outer ring) this yields the outer ring, the hole outline and the
- * degenerate seam (P -> Q -> P) - the outer ring is the largest of them. Loops with fewer than three distinct
- * vertices (spikes, seams) enclose no area and are discarded.
+ * degenerate seam (P -> Q -> P).
  */
-function extractLargestLoop(ring: Position[]): Position[] {
+function splitIntoLoops(ring: Position[]): Position[][] {
     // work on the open ring, i.e. without the closing coordinate
     const openRing = ring.slice(0, -1);
-    const toKey = (coord: Position) => `${coord[0]},${coord[1]}`;
-
     const loops: Position[][] = [];
     const path: Position[] = [];
     // maps a coordinate key to its index on the current path
     const pathIndex = new Map<string, number>();
     for (const coord of openRing) {
-        const key = toKey(coord);
+        const key = toCoordinateKey(coord);
         const firstVisitIndex = pathIndex.get(key);
         if (firstVisitIndex != null) {
             // vertex is revisited - cut out the loop from its first visit up to now, keep the vertex on the path
             const loop = path.splice(firstVisitIndex + 1);
             for (const removed of loop) {
-                pathIndex.delete(toKey(removed));
+                pathIndex.delete(toCoordinateKey(removed));
             }
             loops.push([coord, ...loop, coord]);
             continue;
@@ -288,12 +306,23 @@ function extractLargestLoop(ring: Position[]): Position[] {
         pathIndex.set(key, path.length);
         path.push(coord);
     }
-    // no revisited vertex found - ring is returned unchanged
-    if (loops.length === 0) {
-        return ring;
-    }
     // the remaining path is the final loop
     loops.push([...path, path[0]]);
+
+    return loops;
+}
+
+/**
+ * Splits a closed ring at every vertex the outline passes more than once and returns the loop that encloses the
+ * largest area as a closed ring. If the ring has no revisited vertices, the input ring is returned as is (same
+ * reference). Loops with fewer than three distinct vertices (spikes, seams) enclose no area and are discarded.
+ */
+function extractLargestLoop(ring: Position[]): Position[] {
+    const loops = splitIntoLoops(ring);
+    // no revisited vertex found - ring is returned unchanged
+    if (loops.length === 1) {
+        return ring;
+    }
 
     let largestLoop: Position[] = ring;
     let largestLoopArea = 0;
@@ -308,6 +337,241 @@ function extractLargestLoop(ring: Position[]): Position[] {
     }
 
     return largestLoop;
+}
+
+/**
+ * Creates a "keyhole" ring from a closed ring that encodes holes with seams, i.e. revisits vertices. The ring is
+ * split into its loops - the largest loop is the outer ring, every other loop that encloses an area must lie inside
+ * the outer ring and is a hole. Each hole is connected to the outer ring with a bridge between the closest vertex
+ * pair that does not cross any edge. The return path of each bridge is then offset by KEYHOLE_OFFSET_METERS into
+ * the polygon so that no vertex is visited twice and the ring does not touch itself.
+ *
+ * Returns the closed keyhole ring or null if the ring does not encode holes or the holes cannot be connected. The
+ * returned ring must still be validated.
+ */
+function createKeyholeRing(ring: Position[]): Position[] | null {
+    const loops = splitIntoLoops(ring)
+        // a closed loop requires at least three distinct vertices to enclose an area
+        .filter((loop) => loop.length >= 4)
+        .map((loop) => ({ loop, area: getArea(createPolygon([loop])) }))
+        .filter(({ area }) => area > 0)
+        .sort((a, b) => b.area - a.area)
+        .map(({ loop }) => loop);
+    // without at least an outer ring and a hole, there is nothing to connect
+    if (loops.length < 2) {
+        return null;
+    }
+    const [outerLoop, ...holeLoops] = loops;
+    const outerPolygon = createPolygon([outerLoop]);
+    const outerKeys = new Set(outerLoop.map(toCoordinateKey));
+    // all rings are open rings from here on - outer ring counter-clockwise, holes clockwise
+    const holes: Position[][] = [];
+    for (const holeLoop of holeLoops) {
+        // a hole must lie inside the outer ring - it may only touch the outer ring at shared vertices
+        const unsharedVertices = holeLoop.filter((coord) => outerKeys.has(toCoordinateKey(coord)) === false);
+        if (unsharedVertices.length === 0) {
+            return null;
+        }
+        const isInside = unsharedVertices.every((coord) =>
+            booleanPointInPolygon(coord, outerPolygon, { ignoreBoundary: true })
+        );
+        if (isInside === false) {
+            return null;
+        }
+        holes.push(orientRing(holeLoop.slice(0, -1), false));
+    }
+
+    let keyholeRing = orientRing(outerLoop.slice(0, -1), true);
+    for (let i = 0; i < holes.length; i++) {
+        const hole = holes[i];
+        const bridge = findBridge(keyholeRing, hole, holes.slice(i + 1));
+        if (bridge == null) {
+            return null;
+        }
+        const { ringIndex, holeIndex } = bridge;
+        const bridgeStart = keyholeRing[ringIndex];
+        // hole vertices starting with the bridge end
+        const holeFromBridgeEnd = [...hole.slice(holeIndex), ...hole.slice(0, holeIndex)];
+        // walk the bridge to the hole, around the hole and back - if the hole touches the outer ring at the bridge
+        // start, the bridge has no length and only the bridge start is revisited
+        const bridgedHole = isEqualPosition(bridgeStart, holeFromBridgeEnd[0])
+            ? [...holeFromBridgeEnd.slice(1), bridgeStart]
+            : [...holeFromBridgeEnd, holeFromBridgeEnd[0], bridgeStart];
+        keyholeRing = [...keyholeRing.slice(0, ringIndex + 1), ...bridgedHole, ...keyholeRing.slice(ringIndex + 1)];
+    }
+
+    return offsetRevisitedVertices(keyholeRing);
+}
+
+/**
+ * Finds the closest pair of a vertex of the (open) ring and a vertex of the (open) hole whose connecting segment does
+ * not cross any edge of the ring, the hole or the remaining holes. Vertices that are already visited more than once
+ * in the ring, i.e. the ends of previously created bridges, are not used as bridge start.
+ */
+function findBridge(
+    ring: Position[],
+    hole: Position[],
+    remainingHoles: Position[][]
+): { ringIndex: number; holeIndex: number } | null {
+    const ringKeyCounts = new Map<string, number>();
+    for (const coord of ring) {
+        const key = toCoordinateKey(coord);
+        ringKeyCounts.set(key, (ringKeyCounts.get(key) ?? 0) + 1);
+    }
+    const candidates: { ringIndex: number; holeIndex: number; distance: number }[] = [];
+    for (let ringIndex = 0; ringIndex < ring.length; ringIndex++) {
+        if ((ringKeyCounts.get(toCoordinateKey(ring[ringIndex])) ?? 0) > 1) continue;
+        for (let holeIndex = 0; holeIndex < hole.length; holeIndex++) {
+            candidates.push({ ringIndex, holeIndex, distance: getPlanarDistance(ring[ringIndex], hole[holeIndex]) });
+        }
+    }
+    candidates.sort((a, b) => a.distance - b.distance);
+
+    const edges = [ring, hole, ...remainingHoles].flatMap((openRing) => getRingEdges(openRing));
+    for (const candidate of candidates.slice(0, KEYHOLE_MAX_BRIDGE_CANDIDATES)) {
+        const bridgeStart = ring[candidate.ringIndex];
+        const bridgeEnd = hole[candidate.holeIndex];
+        // a bridge without length (hole touches the ring) cannot cross anything
+        if (isEqualPosition(bridgeStart, bridgeEnd)) {
+            return candidate;
+        }
+        const crossesEdge = edges.some(([edgeStart, edgeEnd]) => {
+            // edges connected to the bridge ends touch the bridge by definition
+            const isConnected = [edgeStart, edgeEnd].some(
+                (coord) => isEqualPosition(coord, bridgeStart) || isEqualPosition(coord, bridgeEnd)
+            );
+            return isConnected === false && segmentsIntersect(bridgeStart, bridgeEnd, edgeStart, edgeEnd);
+        });
+        if (crossesEdge === false) {
+            return candidate;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Takes an open, counter-clockwise ring and moves every repeated visit of a vertex KEYHOLE_OFFSET_METERS along the
+ * bisector of its corner into the polygon interior. Returns the closed ring or null if a corner has no defined
+ * bisector.
+ */
+function offsetRevisitedVertices(openRing: Position[]): Position[] | null {
+    const seenKeys = new Set<string>();
+    const result: Position[] = [];
+    for (let i = 0; i < openRing.length; i++) {
+        const vertex = openRing[i];
+        const key = toCoordinateKey(vertex);
+        if (seenKeys.has(key) === false) {
+            seenKeys.add(key);
+            result.push(vertex);
+            continue;
+        }
+        const previous = openRing[(i - 1 + openRing.length) % openRing.length];
+        const next = openRing[(i + 1) % openRing.length];
+        // local planar frame in meters around the vertex
+        const metersPerDegreeLon = METERS_PER_DEGREE * Math.cos((vertex[1] * Math.PI) / 180);
+        const incoming = normalizeVector(
+            (vertex[0] - previous[0]) * metersPerDegreeLon,
+            (vertex[1] - previous[1]) * METERS_PER_DEGREE
+        );
+        const outgoing = normalizeVector(
+            (next[0] - vertex[0]) * metersPerDegreeLon,
+            (next[1] - vertex[1]) * METERS_PER_DEGREE
+        );
+        if (incoming == null || outgoing == null) {
+            return null;
+        }
+        // the ring is counter-clockwise, i.e. the interior is left of the direction of travel - the bisector is the
+        // sum of the left normals of the incoming and outgoing edge
+        const bisector = normalizeVector(-incoming[1] - outgoing[1], incoming[0] + outgoing[0]);
+        if (bisector == null) {
+            return null;
+        }
+        result.push([
+            roundCoordinate(vertex[0] + (bisector[0] * KEYHOLE_OFFSET_METERS) / metersPerDegreeLon),
+            roundCoordinate(vertex[1] + (bisector[1] * KEYHOLE_OFFSET_METERS) / METERS_PER_DEGREE),
+        ]);
+    }
+    result.push(result[0]);
+
+    return result;
+}
+
+/**
+ * Returns the open ring in the requested orientation.
+ */
+function orientRing(openRing: Position[], counterClockwise: boolean): Position[] {
+    // shoelace formula - positive for counter-clockwise rings
+    let signedArea = 0;
+    for (let i = 0; i < openRing.length; i++) {
+        const current = openRing[i];
+        const next = openRing[(i + 1) % openRing.length];
+        signedArea += current[0] * next[1] - next[0] * current[1];
+    }
+    const isCounterClockwise = signedArea > 0;
+
+    return isCounterClockwise === counterClockwise ? openRing : [...openRing].reverse();
+}
+
+function getRingEdges(openRing: Position[]): [Position, Position][] {
+    return openRing.map((coord, index) => [coord, openRing[(index + 1) % openRing.length]]);
+}
+
+/**
+ * Checks if two segments intersect, including touching and collinear overlapping segments.
+ */
+function segmentsIntersect(a: Position, b: Position, c: Position, d: Position): boolean {
+    const orientation = (p: Position, q: Position, r: Position): number => {
+        const value = (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]);
+        return value === 0 ? 0 : value > 0 ? 1 : -1;
+    };
+    const isOnSegment = (p: Position, q: Position, r: Position): boolean =>
+        Math.min(p[0], q[0]) <= r[0] &&
+        r[0] <= Math.max(p[0], q[0]) &&
+        Math.min(p[1], q[1]) <= r[1] &&
+        r[1] <= Math.max(p[1], q[1]);
+
+    const o1 = orientation(a, b, c);
+    const o2 = orientation(a, b, d);
+    const o3 = orientation(c, d, a);
+    const o4 = orientation(c, d, b);
+    if (o1 !== o2 && o3 !== o4) return true;
+    if (o1 === 0 && isOnSegment(a, b, c)) return true;
+    if (o2 === 0 && isOnSegment(a, b, d)) return true;
+    if (o3 === 0 && isOnSegment(c, d, a)) return true;
+    if (o4 === 0 && isOnSegment(c, d, b)) return true;
+
+    return false;
+}
+
+function getPlanarDistance(a: Position, b: Position): number {
+    const metersPerDegreeLon = METERS_PER_DEGREE * Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
+
+    return Math.hypot((a[0] - b[0]) * metersPerDegreeLon, (a[1] - b[1]) * METERS_PER_DEGREE);
+}
+
+function normalizeVector(x: number, y: number): [number, number] | null {
+    const length = Math.hypot(x, y);
+    if (length < 1e-9) {
+        return null;
+    }
+
+    return [x / length, y / length];
+}
+
+function isEqualPosition(a: Position, b: Position): boolean {
+    return a[0] === b[0] && a[1] === b[1];
+}
+
+function toCoordinateKey(coord: Position): string {
+    return `${coord[0]},${coord[1]}`;
+}
+
+/**
+ * Rounds a coordinate value to 6 decimal places - the precision used by the parser.
+ */
+function roundCoordinate(value: number): number {
+    return parseFloat(value.toFixed(6));
 }
 
 /**

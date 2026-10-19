@@ -1,0 +1,16 @@
+AC D
+AN Square with a hole touching the outer ring
+AL 1500ft AMSL
+AH 2500ft AMSL
+* outer ring to V (50:10:00 N 008:10:00 E) on the northern edge
+DP 50:10:00 N 008:00:00 E
+DP 50:10:00 N 008:10:00 E
+* triangular hole - starts and ends at V, touches the outer ring at V without a seam
+DP 50:06:00 N 008:07:00 E
+DP 50:06:00 N 008:13:00 E
+DP 50:10:00 N 008:10:00 E
+* rest of the outer ring
+DP 50:10:00 N 008:20:00 E
+DP 50:00:00 N 008:20:00 E
+DP 50:00:00 N 008:00:00 E
+DP 50:10:00 N 008:00:00 E

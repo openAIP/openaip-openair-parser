@@ -2,6 +2,7 @@ AC D
 AN Frankfurt
 AH 2500ft AMSL
 AL 1500ft AMSL
+* seam P (50:08:34 N 008:27:50 E) -> Q (50:05:23 N 008:29:41 E), then hole (Frankfurt CTR) - starts and ends at Q
 DP 50:08:34 N 008:27:50 E
 DP 50:05:23 N 008:29:41 E
 DP 50:07:40 N 008:39:07 E
@@ -15,7 +16,9 @@ DP 49:56:14 N 008:23:24 E
 DP 50:00:21 N 008:20:53 E
 DP 50:02:54 N 008:19:27 E
 DP 50:05:23 N 008:29:41 E
+* seam back Q -> P
 DP 50:08:34 N 008:27:50 E
+* outer ring - starts and ends at P
 DP 50:13:00 N 008:46:22 E
 DP 49:59:33 N 008:53:43 E
 DP 49:50:27 N 008:38:44 E

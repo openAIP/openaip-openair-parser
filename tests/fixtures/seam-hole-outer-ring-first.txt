@@ -2,14 +2,17 @@ AC D
 AN Square with a hole
 AL 1500ft AMSL
 AH 2500ft AMSL
+* outer ring - starts and ends at P (50:10:00 N 008:00:00 E)
 DP 50:10:00 N 008:00:00 E
 DP 50:10:00 N 008:20:00 E
 DP 50:00:00 N 008:20:00 E
 DP 50:00:00 N 008:00:00 E
 DP 50:10:00 N 008:00:00 E
+* seam P -> Q (50:07:00 N 008:07:00 E), then hole - starts and ends at Q
 DP 50:07:00 N 008:07:00 E
 DP 50:03:00 N 008:07:00 E
 DP 50:03:00 N 008:13:00 E
 DP 50:07:00 N 008:13:00 E
 DP 50:07:00 N 008:07:00 E
+* seam back Q -> P, closes the outline
 DP 50:10:00 N 008:00:00 E

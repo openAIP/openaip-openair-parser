@@ -1,0 +1,25 @@
+AC D
+AN Square with two holes
+AL 1500ft AMSL
+AH 2500ft AMSL
+* seam P1 (50:10:00 N 008:00:00 E) -> Q1 (50:07:00 N 008:03:00 E), then first hole - starts and ends at Q1
+DP 50:10:00 N 008:00:00 E
+DP 50:07:00 N 008:03:00 E
+DP 50:03:00 N 008:03:00 E
+DP 50:03:00 N 008:08:00 E
+DP 50:07:00 N 008:08:00 E
+DP 50:07:00 N 008:03:00 E
+* seam back Q1 -> P1, then outer ring to P2 (50:10:00 N 008:20:00 E)
+DP 50:10:00 N 008:00:00 E
+DP 50:10:00 N 008:20:00 E
+* seam P2 -> Q2 (50:07:00 N 008:17:00 E), then second hole - starts and ends at Q2
+DP 50:07:00 N 008:17:00 E
+DP 50:07:00 N 008:12:00 E
+DP 50:03:00 N 008:12:00 E
+DP 50:03:00 N 008:17:00 E
+DP 50:07:00 N 008:17:00 E
+* seam back Q2 -> P2, then rest of the outer ring back to P1
+DP 50:10:00 N 008:20:00 E
+DP 50:00:00 N 008:20:00 E
+DP 50:00:00 N 008:00:00 E
+DP 50:10:00 N 008:00:00 E
