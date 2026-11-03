@@ -1,6 +1,6 @@
 >[!IMPORTANT]
 >We welcome every contributor and we are interested in improving this OSS together. To have fruitful discussions on each topic, please submit issues
->and pull requests in your own human words. State the problem that exists or a new feature that could be implemented and outline a way to achieve that 
+>and pull requests in your own human words. State the problem that exists or a new feature that could be implemented and outline a way to achieve that
 >goal. That being said, we will close issues and pull requests created with AI without further notice!
 
 
@@ -518,10 +518,10 @@ Format:
 DE <axis>,<axis>,<azimuth>
 ```
 
-- `axis`: the two axis dimensions of the ellipse in nautical miles `nm` (unit omitted). The axes may be defined in any order.
+- `axis`: the two axis dimensions of the ellipse in nautical miles `NM` (unit omitted). The axes may be defined in any order.
 - `azimuth`: the compass bearing of the major (longest) axis in degrees (0-359), independent of the definition order of the axis dimensions.
 
-Example - an ellipse with axis dimensions of `80x40` km and an azimuth of the major axis of `053` degrees:
+Example - an ellipse with axis dimensions of `43.2x21.6` km and an azimuth of the major axis of `053` degrees:
 
 ```text
 AC D
@@ -533,7 +533,7 @@ V X=45:05:27 N 009:39:59 E
 DE 43.2,21.6,053
 ```
 
-The axis dimensions are `43.2` nm (~80 km) and `21.6` nm (~40 km), the major (longest) axis points towards `053` degrees.
+The axis dimensions are `43.2` NM and `21.6` NM, the major (longest) axis points towards `053` degrees.
 
 # Migration to OpenAIR Parser Version 2
 
