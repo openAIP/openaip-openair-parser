@@ -18,6 +18,7 @@ import { CommentToken } from './tokens/comment-token.js';
 import { DaToken } from './tokens/da-token.js';
 import { DbToken } from './tokens/db-token.js';
 import { DcToken } from './tokens/dc-token.js';
+import { DeToken } from './tokens/de-token.js';
 import { DpToken } from './tokens/dp-token.js';
 import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
@@ -117,6 +118,7 @@ export class Tokenizer {
             new AgToken({ tokenTypes: TOKEN_TYPES, version }),
             new AxToken({ tokenTypes: TOKEN_TYPES, version }),
             new AaToken({ tokenTypes: TOKEN_TYPES, version, warnIfExpired }),
+            new DeToken({ tokenTypes: TOKEN_TYPES, version }),
         ];
 
         // build prefix -> tokenizer dispatch maps for fast line routing
@@ -139,6 +141,7 @@ export class Tokenizer {
             AG: TokenTypeEnum.AG,
             AX: TokenTypeEnum.AX,
             AA: TokenTypeEnum.AA,
+            DE: TokenTypeEnum.DE,
         };
         for (const [prefix, type] of Object.entries(twoLetterPrefixes)) {
             const tokenizer = byType.get(type);

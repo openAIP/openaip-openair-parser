@@ -2,6 +2,7 @@ import { Parser as CoordinateParser } from '@openaip/coordinate-parser';
 import type { Coordinate } from '@openaip/coordinate-parser/types';
 import { z } from 'zod';
 import { ParserError } from '../parser-error.js';
+import { ParserVersionEnum } from '../parser-version.enum.js';
 import { validateSchema } from '../validate-schema.js';
 import { AbstractLineToken, type IToken } from './abstract-line-token.js';
 import { type TokenType, TokenTypeEnum } from './token-type.enum.js';
@@ -44,7 +45,8 @@ export class VxToken extends AbstractLineToken<Metadata> {
     }
 
     getAllowedNextTokens(): TokenType[] {
-        return [
+        // defines allowed tokens in the original format
+        let allowedNextTokens: TokenType[] = [
             TokenTypeEnum.COMMENT,
             TokenTypeEnum.DC,
             TokenTypeEnum.DB,
@@ -52,5 +54,11 @@ export class VxToken extends AbstractLineToken<Metadata> {
             TokenTypeEnum.VD,
             TokenTypeEnum.SKIPPED,
         ];
+        // inject version 2 tokens if required
+        if (this.version === ParserVersionEnum.VERSION_2) {
+            allowedNextTokens = allowedNextTokens.concat([TokenTypeEnum.DE]);
+        }
+
+        return allowedNextTokens;
     }
 }

@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { area, distance, kinks, polygon } from '@turf/turf';
+import { area, bearing, distance, kinks, polygon } from '@turf/turf';
 import appRoot from 'app-root-path';
-import type { Feature, Polygon } from 'geojson';
+import type { Feature, LineString, Polygon } from 'geojson';
 import { describe, expect, test, vi } from 'vitest';
 import { AltitudeUnitEnum } from '../src/altitude-unit.enum.js';
 import { OutputGeometryEnum } from '../src/output-geometry.enum.js';
@@ -174,6 +174,26 @@ describe('Test parse airspace definition blocks', () => {
         const circleArea = area(features[0] as Feature<Polygon>);
         expect(circleArea).toBeGreaterThan(25);
     });
+
+    test('parse airspace with ellipse geometry', () => {
+        const openairParser = new Parser({});
+        const { success } = openairParser.parse('./tests/fixtures/de-ellipse.txt');
+        const { features } = openairParser.toGeojson();
+        // axis dimensions 80x40 km (43.2x21.6 NM), azimuth of the major (longest) axis 053 degrees
+        expectEllipseGeometry(features, (43.2 * 1852) / 2, (21.6 * 1852) / 2, 53);
+        expect(success).toBe(true);
+    });
+
+    test('parse airspace with ellipse geometry with swapped axis dimensions', () => {
+        const openairParser = new Parser({});
+        const { success } = openairParser.parse('./tests/fixtures/de-ellipse-swapped-axes.txt');
+        const { features } = openairParser.toGeojson();
+        // axis dimensions 40x80 km (21.6x43.2 NM) - the order of the axis dimensions is irrelevant,
+        // the azimuth always refers to the major (longest) axis and describes the same ellipse as above
+        expectEllipseGeometry(features, (21.6 * 1852) / 2, (43.2 * 1852) / 2, 53);
+        expect(success).toBe(true);
+    });
+
     test('parse airspace with clockwise arc geometry', () => {
         const expectedJson = loadParserJsonResult('arc-cw-result.json');
         const openairParser = new Parser({
@@ -574,6 +594,19 @@ describe('Test parse invalid airspace definition blocks', () => {
         expect(success).toBe(false);
         expect(error).toBeDefined();
         expect(error?.message).toEqual("Error found at line 6: Error found at line 6: Invalid circle radius '0'");
+    });
+    test('airspace with DE ellipse definition is rejected in version 1', () => {
+        const openairParser = new Parser({
+            version: ParserVersionEnum.VERSION_1,
+            allowedClasses: ALLOWED_CLASSES_VERSION_1,
+        });
+        const { success, error } = openairParser.parse('./tests/fixtures/de-ellipse-version-1.txt');
+
+        expect(success).toBe(false);
+        expect(error).toBeDefined();
+        expect(error?.message).toEqual(
+            "Error found at line 6: Token 'VX' on line 5 does not allow subsequent token 'DE' on line 6"
+        );
     });
     test('airspace with coordinate minutes set to 60 are rejected', () => {
         // read from expected file and remove last "blank line" in file (automatically added by IDE)
@@ -1060,6 +1093,58 @@ function expectFixtureToMatchExpectedResult(fixtureFilename: string, expectedRes
 
     expect(success).toBe(true);
     expect(geojson).toEqual(expectedJson);
+}
+
+/**
+ * Asserts that the given GeoJSON feature collection contains the ellipse geometry defined by a "DE" fixture:
+ * an ellipse with the given semi-axes (derived from the DE axis dimensions in NM) centered on the
+ * "V X=45:05:27 N 009:39:59 E" coordinate, with the major (longest) axis pointing towards the given azimuth.
+ * The order of the axis dimensions is irrelevant - the azimuth always refers to the major (longest) axis.
+ */
+function expectEllipseGeometry(
+    features: Feature<Polygon | LineString>[],
+    xSemiAxisMeters: number,
+    ySemiAxisMeters: number,
+    azimuthDeg: number
+): void {
+    expect(features).toHaveLength(1);
+    const coordinates = (features[0].geometry as Polygon).coordinates[0] as [number, number][];
+    // full geometry detail is applied - the ellipse is rendered with the configured number of steps
+    expect(coordinates).toHaveLength(101);
+    // polygon ring is closed
+    expect(coordinates[0]).toEqual(coordinates[coordinates.length - 1]);
+    // all points are placed between the two semi-axes around the center coordinate
+    const minSemiAxis = Math.min(xSemiAxisMeters, ySemiAxisMeters);
+    const maxSemiAxis = Math.max(xSemiAxisMeters, ySemiAxisMeters);
+    const centerCoordinate: [number, number] = [9 + 39 / 60 + 59 / 3600, 45 + 5 / 60 + 27 / 3600];
+    let maxDistance = -Infinity;
+    let minDistance = Infinity;
+    let maxDistanceBearing = 0;
+    let minDistanceBearing = 0;
+    for (const coordinate of coordinates) {
+        const distanceToCenter = distance(centerCoordinate, coordinate, { units: 'meters' });
+        expect(distanceToCenter).toBeGreaterThan(minSemiAxis - 2);
+        expect(distanceToCenter).toBeLessThan(maxSemiAxis + 2);
+        if (distanceToCenter > maxDistance) {
+            maxDistance = distanceToCenter;
+            maxDistanceBearing = bearing(centerCoordinate, coordinate);
+        }
+        if (distanceToCenter < minDistance) {
+            minDistance = distanceToCenter;
+            minDistanceBearing = bearing(centerCoordinate, coordinate);
+        }
+    }
+    // the major (longest) axis points towards the given azimuth, the minor axis perpendicular to it - an axis
+    // is undirected, so compare its bearing modulo 180 degrees
+    if (xSemiAxisMeters !== ySemiAxisMeters) {
+        const majorAxisBearing = ((azimuthDeg % 180) + 180) % 180;
+        const minorAxisBearing = (majorAxisBearing + 90) % 180;
+        expect(((maxDistanceBearing % 180) + 180) % 180).toBeCloseTo(majorAxisBearing, 0);
+        expect(((minDistanceBearing % 180) + 180) % 180).toBeCloseTo(minorAxisBearing, 0);
+    }
+    // the ellipse area is preserved - the geometry is not thinned out to a low-detail polygon
+    const ellipseArea = area(features[0] as Feature<Polygon>);
+    expect(ellipseArea).toBeGreaterThan(0.99 * Math.PI * xSemiAxisMeters * ySemiAxisMeters);
 }
 
 /**

@@ -4,6 +4,7 @@ import {
     distance as calcDistance,
     buffer as createBuffer,
     circle as createCircle,
+    ellipse as createEllipse,
     lineString as createLineString,
     destination,
 } from '@turf/turf';
@@ -15,7 +16,6 @@ import { ParserError } from './parser-error.js';
 import { type ParserVersion, ParserVersionEnum } from './parser-version.enum.js';
 import { AaToken, BY_NOTAM_ACTIVATION } from './tokens/aa-token.js';
 import { AbstractLineToken, type IToken } from './tokens/abstract-line-token.js';
-
 import { AcToken } from './tokens/ac-token.js';
 import { AfToken } from './tokens/af-token.js';
 import { AgToken } from './tokens/ag-token.js';
@@ -29,6 +29,7 @@ import { CommentToken } from './tokens/comment-token.js';
 import { DaToken } from './tokens/da-token.js';
 import { DbToken } from './tokens/db-token.js';
 import { DcToken } from './tokens/dc-token.js';
+import { DeToken } from './tokens/de-token.js';
 import { DpToken } from './tokens/dp-token.js';
 import { DyToken } from './tokens/dy-token.js';
 import { EofToken } from './tokens/eof-token.js';
@@ -41,29 +42,6 @@ import { validateSchema } from './validate-schema.js';
 
 // Earth radius in meters as used by @turf/helpers (6371008.8); kilometers factor for lengthToRadians
 const TURF_EARTH_RADIUS_KM = 6371008.8 / 1000;
-
-/**
- * Direct geodesic "destination" computation, bit-identical to @turf/destination with
- * { units: 'kilometers' }, but without allocating a turf Feature per point. Returns [lng, lat].
- */
-function destinationKm(center: Position, distanceKm: number, bearingDeg: number): Position {
-    const longitude1 = (center[0] % 360) * (Math.PI / 180);
-    const latitude1 = (center[1] % 360) * (Math.PI / 180);
-    const bearingRad = (bearingDeg % 360) * (Math.PI / 180);
-    const radians = distanceKm / TURF_EARTH_RADIUS_KM;
-    const latitude2 = Math.asin(
-        Math.sin(latitude1) * Math.cos(radians) + Math.cos(latitude1) * Math.sin(radians) * Math.cos(bearingRad)
-    );
-    const longitude2 =
-        longitude1 +
-        Math.atan2(
-            Math.sin(bearingRad) * Math.sin(radians) * Math.cos(latitude1),
-            Math.cos(radians) - Math.sin(latitude1) * Math.sin(latitude2)
-        );
-    const lng = (longitude2 % (2 * Math.PI)) * (180 / Math.PI);
-    const lat = (latitude2 % (2 * Math.PI)) * (180 / Math.PI);
-    return [lng, lat];
-}
 
 export type Config = {
     geometryDetail: number;
@@ -157,6 +135,29 @@ export class AirspaceFactory {
     }
 
     /**
+     * Direct geodesic "destination" computation, bit-identical to @turf/destination with
+     * { units: 'kilometers' }, but without allocating a turf Feature per point. Returns [lng, lat].
+     */
+    protected destinationKm(center: Position, distanceKm: number, bearingDeg: number): Position {
+        const longitude1 = (center[0] % 360) * (Math.PI / 180);
+        const latitude1 = (center[1] % 360) * (Math.PI / 180);
+        const bearingRad = (bearingDeg % 360) * (Math.PI / 180);
+        const radians = distanceKm / TURF_EARTH_RADIUS_KM;
+        const latitude2 = Math.asin(
+            Math.sin(latitude1) * Math.cos(radians) + Math.cos(latitude1) * Math.sin(radians) * Math.cos(bearingRad)
+        );
+        const longitude2 =
+            longitude1 +
+            Math.atan2(
+                Math.sin(bearingRad) * Math.sin(radians) * Math.cos(latitude1),
+                Math.cos(radians) - Math.sin(latitude1) * Math.sin(latitude2)
+            );
+        const lng = (longitude2 % (2 * Math.PI)) * (180 / Math.PI);
+        const lat = (latitude2 % (2 * Math.PI)) * (180 / Math.PI);
+        return [lng, lat];
+    }
+
+    /**
      * Builds a coordinates list from an airway definition. The coordinate list can then be used to
      * create a polygon geometry.
      */
@@ -224,6 +225,9 @@ export class AirspaceFactory {
                 break;
             case DaToken.TYPE:
                 this.handleDaToken(token as DaToken);
+                break;
+            case DeToken.TYPE:
+                this.handleDeToken(token as DeToken);
                 break;
             case BlankToken.TYPE:
                 this.handleBlankToken(token as BlankToken);
@@ -486,6 +490,43 @@ export class AirspaceFactory {
         });
         // add arc coordinates to the airspace coordinates
         this.airspace.addCoordinates(arcCoordinates);
+    }
+
+    /**
+     * Creates an ellipse geometry from the last VToken coordinate and a DeToken.
+     */
+    protected handleDeToken(token: DeToken): void {
+        const { lineNumber, metadata } = token.toTokenized();
+        const { x, y, azimuth } = metadata;
+        const precedingVxToken = this.getNextToken<VxToken>(token, VxToken.TYPE, false);
+
+        if (precedingVxToken == null) {
+            throw new ParserError({ lineNumber, errorMessage: 'Preceding VX token not found.' });
+        }
+        // to create an ellipse, the center point coordinate from the previous VToken is required
+        const { metadata: vxTokenMetadata } = precedingVxToken.toTokenized();
+        const { coordinate } = vxTokenMetadata;
+
+        // DE axis dimensions are given in NM - the major (longest) axis may be defined in any order.
+        // Convert them to semi-axis lengths in meters, turf expects semi-axes
+        const semiXM = (x / 2) * 1852;
+        const semiYM = (y / 2) * 1852;
+        // the DE azimuth is the compass bearing of the major (longest) axis - turf angles the x-axis clockwise
+        // from east (x-axis bearing = angle + 90, y-axis bearing = angle) => align the major axis with the azimuth
+        const angle = x >= y ? azimuth + 90 : azimuth;
+
+        const { geometry } = createEllipse(this.toArrayLike(coordinate), semiXM, semiYM, {
+            steps: this.geometryDetail,
+            angle,
+            units: 'meters',
+        });
+        const [coordinates] = geometry.coordinates;
+        // make sure that the last coordinate equals the first coordinate - i.e. close the polygon
+        if (coordinates[0] !== coordinates[coordinates.length - 1]) {
+            coordinates.push(coordinates[0]);
+        }
+        // IMPORTANT set coordinates => calculated ellipse coordinates are the only coordinates
+        this.airspace.addCoordinates(coordinates);
     }
 
     protected getBuildDbArcCoordinates(token: DbToken): {
@@ -764,7 +805,7 @@ export class AirspaceFactory {
             if (bearing < -180) bearing += 360;
             // create arc point at current bearing and radius
             // direct geodesic math - no turf Feature allocation per point
-            coordinates.push(destinationKm(arcCenterCoordinate, currentRadius, bearing));
+            coordinates.push(this.destinationKm(arcCenterCoordinate, currentRadius, bearing));
         }
         // ensure the last point exactly matches the target
         coordinates[coordinates.length - 1] = endCoordinate;

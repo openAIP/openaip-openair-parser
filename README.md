@@ -507,6 +507,34 @@ Or indicate activation by NOTAM:
 AA NONE
 ```
 
+#### DE
+
+An optional command that defines an ellipse geometry. The center of the ellipse is defined by the coordinate of a preceding `V X` command - the `V X` command is required. Like with the
+`DC` circle command, the ellipse is the only geometry of the airspace and replaces all other geometry definitions.
+
+Format:
+
+```text
+DE <axis>,<axis>,<azimuth>
+```
+
+- `axis`: the two axis dimensions of the ellipse in nautical miles `nm` (unit omitted). The axes may be defined in any order.
+- `azimuth`: the compass bearing of the major (longest) axis in degrees (0-359), independent of the definition order of the axis dimensions.
+
+Example - an ellipse with axis dimensions of `80x40` km and an azimuth of the major axis of `053` degrees:
+
+```text
+AC D
+AY TMA
+AN TMA Ellipse
+AH 40000ft AMSL
+AL GND
+V X=45:05:27 N 009:39:59 E
+DE 43.2,21.6,053
+```
+
+The axis dimensions are `43.2` nm (~80 km) and `21.6` nm (~40 km), the major (longest) axis points towards `053` degrees.
+
 # Migration to OpenAIR Parser Version 2
 
 The new version 2 of the OpenAIR Parser is a complete rewrite with lots of improvements and fixes but it also introduces **several breaking changes**! Please note the following most relevant changes:
